@@ -62,7 +62,7 @@ export interface PanelData {
   timeRange: TimeRange;
 }
 
-export interface PanelProps<T = any> {
+export interface PanelProps<T = unknown> {
   /** ID of the panel within the current dashboard */
   id: number;
 
@@ -144,10 +144,10 @@ export type PanelOptionEditorsRegistry = Registry<PanelOptionsEditorItem>;
 
 export interface PanelOptionsEditorProps<TValue> extends StandardEditorProps<TValue> {}
 
-export interface PanelOptionsEditorItem<TOptions = any, TValue = any, TSettings = any>
+export interface PanelOptionsEditorItem<TOptions = unknown, TValue = unknown, TSettings = unknown>
   extends OptionsEditorItem<TOptions, TSettings, PanelOptionsEditorProps<TValue>, TValue> {}
 
-export interface PanelOptionsEditorConfig<TOptions, TSettings = any, TValue = any>
+export interface PanelOptionsEditorConfig<TOptions, TSettings = unknown, TValue = unknown>
   extends OptionEditorConfig<TOptions, TSettings, TValue> {}
 
 /**

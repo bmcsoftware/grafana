@@ -96,7 +96,7 @@ export interface LiveChannelMessageEvent<T> {
   message: T;
 }
 
-export type LiveChannelEvent<T = any> =
+export type LiveChannelEvent<T = unknown> =
   | LiveChannelStatusEvent
   | LiveChannelJoinEvent
   | LiveChannelLeaveEvent

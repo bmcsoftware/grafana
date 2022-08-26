@@ -33,7 +33,7 @@ export interface OptionsEditorItem<TOptions, TSettings, TEditorProps, TValue>
 export interface OptionsUIRegistryBuilderAPI<
   TOptions,
   TEditorProps,
-  T extends OptionsEditorItem<TOptions, any, TEditorProps, any>
+  T extends OptionsEditorItem<TOptions, unknown, TEditorProps, unknown>
 > {
   addNumberInput?<TSettings extends NumberFieldConfigSettings = NumberFieldConfigSettings>(
     config: OptionEditorConfig<TOptions, TSettings, number>
@@ -59,11 +59,11 @@ export interface OptionsUIRegistryBuilderAPI<
     config: OptionEditorConfig<TOptions, TSettings, TOption>
   ): this;
 
-  addBooleanSwitch?<TSettings = any>(config: OptionEditorConfig<TOptions, TSettings, boolean>): this;
+  addBooleanSwitch?<TSettings = unknown>(config: OptionEditorConfig<TOptions, TSettings, boolean>): this;
 
-  addUnitPicker?<TSettings = any>(config: OptionEditorConfig<TOptions, TSettings, string>): this;
+  addUnitPicker?<TSettings = unknown>(config: OptionEditorConfig<TOptions, TSettings, string>): this;
 
-  addColorPicker?<TSettings = any>(config: OptionEditorConfig<TOptions, TSettings, string>): this;
+  addColorPicker?<TSettings = unknown>(config: OptionEditorConfig<TOptions, TSettings, string>): this;
 
   /**
    * Enables custom editor definition
@@ -80,7 +80,7 @@ export interface OptionsUIRegistryBuilderAPI<
 export abstract class OptionsUIRegistryBuilder<
   TOptions,
   TEditorProps,
-  T extends OptionsEditorItem<TOptions, any, TEditorProps, any>
+  T extends OptionsEditorItem<TOptions, unknown, TEditorProps, unknown>
 > implements OptionsUIRegistryBuilderAPI<TOptions, TEditorProps, T>
 {
   private properties: T[] = [];

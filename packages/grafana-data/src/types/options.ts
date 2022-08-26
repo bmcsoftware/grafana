@@ -5,7 +5,7 @@ import { DataFrame } from './dataFrame';
  *
  * @beta
  */
-export interface OptionEditorConfig<TOptions, TSettings = any, TValue = any> {
+export interface OptionEditorConfig<TOptions, TSettings = unknown, TValue = unknown> {
   /**
    * Path of the option property to control.
    *

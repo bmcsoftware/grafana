@@ -1,4 +1,4 @@
-export interface ScopedVar<T = any> {
+export interface ScopedVar<T = unknown> {
   text: any;
   value: T;
   [key: string]: any;
