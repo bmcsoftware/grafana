@@ -155,17 +155,16 @@ const useRuleFolderFilter = (existingRuleForm: RuleForm | null) => {
     (hit: DashboardSearchHit) => {
       const rbacDisabledFallback = contextSrv.hasEditPermissionInFolders;
 
-      const canCreateRuleInFolder = contextSrv.hasAccessInMetadata(
-        AccessControlAction.AlertingRuleCreate,
-        hit,
-        rbacDisabledFallback
-      );
+      const hasSlash = hit.title?.indexOf('/') !== -1;
+
+      const canCreateRuleInFolder =
+        contextSrv.hasAccessInMetadata(AccessControlAction.AlertingRuleCreate, hit, rbacDisabledFallback) && !hasSlash;
 
       const canUpdateInCurrentFolder =
         existingRuleForm &&
         hit.folderId === existingRuleForm.id &&
-        contextSrv.hasAccessInMetadata(AccessControlAction.AlertingRuleUpdate, hit, rbacDisabledFallback);
-
+        contextSrv.hasAccessInMetadata(AccessControlAction.AlertingRuleUpdate, hit, rbacDisabledFallback) &&
+        !hasSlash;
       return canCreateRuleInFolder || canUpdateInCurrentFolder;
     },
     [existingRuleForm]
