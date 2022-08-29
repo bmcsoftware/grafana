@@ -121,7 +121,7 @@ export function UserProfile({
           </table>
         </div>
         <div className={styles.buttonRow}>
-          {canDelete && (
+          {canDelete && config.buildInfo.env === 'development' && (
             <>
               <Button variant="destructive" onClick={showDeleteUserModal(true)} ref={deleteUserRef}>
                 Delete user
@@ -282,16 +282,18 @@ export class UserProfileRow extends PureComponent<UserProfileRowProps, UserProfi
             <span>{this.props.value}</span>
           )}
         </td>
-        <td>
-          <ConfirmButton
-            confirmText="Save"
-            onClick={this.onEditClick}
-            onConfirm={this.onSave}
-            onCancel={this.onCancelClick}
-          >
-            Edit
-          </ConfirmButton>
-        </td>
+        {config.buildInfo.env === 'development' && (
+          <td>
+            <ConfirmButton
+              confirmText="Save"
+              onClick={this.onEditClick}
+              onConfirm={this.onSave}
+              onCancel={this.onCancelClick}
+            >
+              Edit
+            </ConfirmButton>
+          </td>
+        )}
       </tr>
     );
   }

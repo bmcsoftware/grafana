@@ -22,6 +22,8 @@ import {
   getDataSourcesSearchQuery,
 } from './state/selectors';
 import { setDataSourcesLayoutMode, setDataSourcesSearchQuery } from './state/reducers';
+import { getFeatureStatus, FEATURE_CONST } from '../dashboard/services/featureFlagSrv';
+import { isGrafanaAdmin } from '../plugins/admin/permissions';
 
 function mapStateToProps(state: StoreState) {
   return {
@@ -64,9 +66,12 @@ export class DataSourcesListPage extends PureComponent<Props> {
     const { dataSources, dataSourcesCount, navModel, layoutMode, searchQuery, setDataSourcesSearchQuery, hasFetched } =
       this.props;
 
+    // BMC code - inline change
     const canCreateDataSource =
-      contextSrv.hasPermission(AccessControlAction.DataSourcesCreate) &&
-      contextSrv.hasPermission(AccessControlAction.DataSourcesWrite);
+      (contextSrv.hasPermission(AccessControlAction.DataSourcesCreate) &&
+        contextSrv.hasPermission(AccessControlAction.DataSourcesWrite) &&
+        getFeatureStatus(FEATURE_CONST.DASHBOARDS_SSRF_FEATURE_NAME)) ||
+      isGrafanaAdmin();
 
     const linkButton = {
       href: 'datasources/new',

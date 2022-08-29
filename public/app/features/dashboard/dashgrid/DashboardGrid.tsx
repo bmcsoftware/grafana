@@ -15,7 +15,7 @@ import { DashboardModel, PanelModel } from '../state';
 import { Subscription } from 'rxjs';
 import { DashboardPanelsChangedEvent } from 'app/types/events';
 import { GridPos } from '../state/PanelModel';
-import { config } from '@grafana/runtime';
+import { config, locationService } from '@grafana/runtime';
 
 export interface Props {
   dashboard: DashboardModel;
@@ -25,6 +25,11 @@ export interface Props {
 
 export interface State {
   isLayoutInitialized: boolean;
+  // BMC code - Start
+  // author(kmejdi) - used for report scheduler PDF generation
+  simple: boolean;
+  orientation: string;
+  // BMC code - End
 }
 
 export class DashboardGrid extends PureComponent<Props, State> {
@@ -41,11 +46,26 @@ export class DashboardGrid extends PureComponent<Props, State> {
 
     this.state = {
       isLayoutInitialized: false,
+      // BMC code - Start
+      // author(kmejdi) - used for report scheduler PDF generation
+      simple: false,
+      orientation: 'portrait',
+      // BMC code - End
     };
   }
 
   componentDidMount() {
     const { dashboard } = this.props;
+    // BMC code - Start
+    // author(kmejdi) - report scheduler related code
+    const simple = locationService.getSearch().has('simple');
+    const orientation = locationService.getSearch().get('orientation') ?? 'portrait';
+    this.setState({
+      ...this.state,
+      simple: simple,
+      orientation: orientation,
+    });
+    // BMC code - End
     this.eventSubs.add(dashboard.events.subscribe(DashboardPanelsChangedEvent, this.triggerForceUpdate));
   }
 
@@ -53,9 +73,35 @@ export class DashboardGrid extends PureComponent<Props, State> {
     this.eventSubs.unsubscribe();
   }
 
+  // BMC code - Start
+  // author(kmejdi) - used for report scheduler PDF generation
+  updatePanelsForReport(w: number, h: number, firstPanelLoaded = true) {
+    const { simple, orientation } = this.state;
+    if (!simple) {
+      return { w, h };
+    }
+
+    if (!orientation || orientation !== 'landscape') {
+      return {
+        w: 24,
+        h: 12,
+      };
+    } else {
+      return {
+        w: 24,
+        h: firstPanelLoaded ? 22 : 25,
+      };
+    }
+  }
+  // BMC Code - End
+
   buildLayout() {
     const layout = [];
     this.panelMap = {};
+    // BMC code - Start
+    // author(kmejdi) - used for report scheduler PDF generation
+    let firstPanelLoaded = true;
+    // BMC Code - End
 
     for (const panel of this.props.dashboard.panels) {
       if (!panel.key) {
@@ -68,12 +114,24 @@ export class DashboardGrid extends PureComponent<Props, State> {
         continue;
       }
 
+      // BMC code - Start
+      // author(kmejdi) - used for report scheduler PDF generation
+      const panelSize = this.updatePanelsForReport(panel.gridPos.w, panel.gridPos.h, firstPanelLoaded);
+      if (panel.type !== 'row') {
+        firstPanelLoaded = false;
+      }
+      // BMC code - End
+
       const panelPos: any = {
         i: panel.key,
         x: panel.gridPos.x,
         y: panel.gridPos.y,
-        w: panel.gridPos.w,
-        h: panel.gridPos.h,
+        // BMC code - Start
+        // author(kmejdi) - used for report scheduler PDF generation
+        // w: panel.gridPos.w,
+        // h: panel.gridPos.h,
+        ...panelSize,
+        // BMC code - End
       };
 
       if (panel.type === 'row') {

@@ -30,6 +30,8 @@ type Team struct {
 // COMMANDS
 
 type CreateTeamCommand struct {
+	//Added Abhishek_06182020, Extended Create Team API to additionally accept Teamid as optional input parameter
+	Id    int64  `json:"id"`
 	Name  string `json:"name" binding:"Required"`
 	Email string `json:"email"`
 	OrgId int64  `json:"-"`

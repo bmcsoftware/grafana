@@ -2,6 +2,7 @@ package httpclientprovider
 
 import (
 	"fmt"
+	"github.com/grafana/grafana/pkg/models"
 	"net/http"
 	"time"
 
@@ -17,7 +18,7 @@ import (
 var newProviderFunc = sdkhttpclient.NewProvider
 
 // New creates a new HTTP client provider with pre-configured middlewares.
-func New(cfg *setting.Cfg, tracer tracing.Tracer, features featuremgmt.FeatureToggles) *sdkhttpclient.Provider {
+func New(cfg *setting.Cfg, validator models.PluginRequestValidator, tracer tracing.Tracer, features featuremgmt.FeatureToggles) *sdkhttpclient.Provider {
 	logger := log.New("httpclient")
 	userAgent := fmt.Sprintf("Grafana/%s", cfg.BuildVersion)
 
@@ -28,6 +29,7 @@ func New(cfg *setting.Cfg, tracer tracing.Tracer, features featuremgmt.FeatureTo
 		sdkhttpclient.BasicAuthenticationMiddleware(),
 		sdkhttpclient.CustomHeadersMiddleware(),
 		ResponseLimitMiddleware(cfg.ResponseLimit),
+		RedirectLimitMiddleware(validator),
 	}
 
 	if cfg.SigV4AuthEnabled {

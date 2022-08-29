@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/css';
-import { GrafanaTheme2, PluginType } from '@grafana/data';
-import { useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+
 import { CatalogPlugin } from '../../types';
 
 type Props = {
@@ -9,12 +9,13 @@ type Props = {
 };
 
 export function PluginUpdateAvailableBadge({ plugin }: Props): React.ReactElement | null {
-  const styles = useStyles2(getStyles);
 
   // Currently renderer plugins are not supported by the catalog due to complications related to installation / update / uninstall.
-  if (plugin.hasUpdate && !plugin.isCore && plugin.type !== PluginType.renderer) {
-    return <p className={styles.hasUpdate}>Update available!</p>;
-  }
+  // BMC Code : Comment below block
+  // if (plugin.hasUpdate && !plugin.isCore && plugin.type !== PluginType.renderer) {
+  //   return <p className={styles.hasUpdate}>Update available!</p>;
+  // }
+  // End
 
   return null;
 }

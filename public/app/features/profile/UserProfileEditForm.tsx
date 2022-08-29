@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Trans, t } from '@lingui/macro';
-import { Button, Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
-import { selectors } from '@grafana/e2e-selectors';
+import { Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
+//import { Button, Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
+//import { selectors } from '@grafana/e2e-selectors';
 import { UserDTO } from 'app/types';
-import config from 'app/core/config';
 import { ProfileUpdateFields } from './types';
 
 export interface Props {
@@ -12,7 +12,7 @@ export interface Props {
   updateProfile: (payload: ProfileUpdateFields) => void;
 }
 
-const { disableLoginForm } = config;
+const disableLoginForm = true;
 
 export const UserProfileEditForm: FC<Props> = ({ user, isSavingUser, updateProfile }) => {
   const onSubmitProfileUpdate = (data: ProfileUpdateFields) => {
@@ -67,7 +67,7 @@ export const UserProfileEditForm: FC<Props> = ({ user, isSavingUser, updateProfi
               />
             </Field>
 
-            <div className="gf-form-button-row">
+            {/* <div className="gf-form-button-row">
               <Button
                 variant="primary"
                 disabled={isSavingUser}
@@ -75,7 +75,7 @@ export const UserProfileEditForm: FC<Props> = ({ user, isSavingUser, updateProfi
               >
                 <Trans id="common.save">Save</Trans>
               </Button>
-            </div>
+            </div> */}
           </FieldSet>
         );
       }}
