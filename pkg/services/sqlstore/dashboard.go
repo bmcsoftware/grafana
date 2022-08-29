@@ -34,7 +34,7 @@ func init() {
 	bus.AddHandler("sql", GetDashboardPermissionsForUser)
 	bus.AddHandler("sql", GetDashboardsBySlug)
 	bus.AddHandler("sql", HasEditPermissionInFolders)
-	bus.AddHandler("sql", HasAdminPermissionInFolders)
+	bus.AddHandler("sql", HasAdminPermissionInDashboardsOrFolders)
 
 	prometheus.MustRegister(shadowSearchCounter)
 }
@@ -433,6 +433,8 @@ func deleteDashboard(cmd *models.DeleteDashboardCommand, sess *DBSession) error 
 		"DELETE FROM dashboard_version WHERE dashboard_id = ?",
 		"DELETE FROM annotation WHERE dashboard_id = ?",
 		"DELETE FROM dashboard_provisioning WHERE dashboard_id = ?",
+		"DELETE from report_scheduler where id = (select report_scheduler_id from report_data where dashboard_id = ?)",
+		"DELETE FROM report_data WHERE dashboard_id = ?",
 		"DELETE FROM dashboard_acl WHERE dashboard_id = ?",
 	}
 
@@ -827,14 +829,14 @@ func HasEditPermissionInFolders(ctx context.Context, query *models.HasEditPermis
 	})
 }
 
-func HasAdminPermissionInFolders(ctx context.Context, query *models.HasAdminPermissionInFoldersQuery) error {
+func HasAdminPermissionInDashboardsOrFolders(ctx context.Context, query *models.HasAdminPermissionInDashboardsOrFoldersQuery) error {
 	if query.SignedInUser.HasRole(models.ROLE_ADMIN) {
 		query.Result = true
 		return nil
 	}
 
 	builder := &SQLBuilder{}
-	builder.Write("SELECT COUNT(dashboard.id) AS count FROM dashboard WHERE dashboard.org_id = ? AND dashboard.is_folder = ?", query.SignedInUser.OrgId, dialect.BooleanStr(true))
+	builder.Write("SELECT COUNT(dashboard.id) AS count FROM dashboard WHERE dashboard.org_id = ?", query.SignedInUser.OrgId)
 	builder.WriteDashboardPermissionFilter(query.SignedInUser, models.PERMISSION_ADMIN)
 
 	type folderCount struct {

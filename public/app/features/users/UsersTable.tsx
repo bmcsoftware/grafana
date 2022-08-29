@@ -4,6 +4,7 @@ import { OrgRolePicker } from '../admin/OrgRolePicker';
 import { Button, ConfirmModal } from '@grafana/ui';
 import { OrgRole } from '@grafana/data';
 import { contextSrv } from 'app/core/core';
+import config from 'app/core/config';
 import { fetchBuiltinRoles, fetchRoleOptions } from 'app/core/components/RolePicker/api';
 import { UserRolePicker } from 'app/core/components/RolePicker/UserRolePicker';
 
@@ -51,7 +52,7 @@ const UsersTable: FC<Props> = (props) => {
             <th>Email</th>
             <th>Name</th>
             <th>Seen</th>
-            <th>Role</th>
+            {config.buildInfo.env === 'development' && <th>Role</th>}
             <th style={{ width: '34px' }} />
           </tr>
         </thead>
@@ -80,6 +81,8 @@ const UsersTable: FC<Props> = (props) => {
                 </td>
                 <td className="width-1">{user.lastSeenAtAge}</td>
 
+                {config.buildInfo.env === 'development' && (
+                <>
                 <td className="width-8">
                   {contextSrv.licensedAccessControlEnabled() ? (
                     <UserRolePicker
@@ -113,6 +116,8 @@ const UsersTable: FC<Props> = (props) => {
                       aria-label="Delete user"
                     />
                   </td>
+                  )}
+                </>
                 )}
               </tr>
             );

@@ -19,6 +19,7 @@ import { getNavModel } from '../../core/selectors/navModel';
 import { AccessControlAction, StoreState, Unit, UserDTO, UserFilter } from '../../types';
 import { changeFilter, changePage, changeQuery, fetchUsers } from './state/actions';
 import PageLoader from '../../core/components/PageLoader/PageLoader';
+import config from 'app/core/config';
 
 export interface FilterProps {
   filters: UserFilter[];
@@ -100,7 +101,7 @@ const UserListAdminPageUnConnected: React.FC<Props> = ({
               <FilterComponent key={index} filters={filters} onChange={changeFilter} className={styles.filter} />
             ))}
           </div>
-          {contextSrv.hasPermission(AccessControlAction.UsersCreate) && (
+          {contextSrv.hasPermission(AccessControlAction.UsersCreate) && config.buildInfo.env === 'development' && (
             <LinkButton href="admin/users/create" variant="primary">
               New user
             </LinkButton>

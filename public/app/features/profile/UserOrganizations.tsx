@@ -36,9 +36,9 @@ export class UserOrganizations extends PureComponent<Props> {
                 <th>
                   <Trans id="user-orgs.name-column">Name</Trans>
                 </th>
-                <th>
+                {/* <th>
                   <Trans id="user-orgs.role-column">Role</Trans>
-                </th>
+                </th> */}
                 <th />
               </tr>
             </thead>
@@ -47,7 +47,7 @@ export class UserOrganizations extends PureComponent<Props> {
                 return (
                   <tr key={index}>
                     <td>{org.name}</td>
-                    <td>{org.role}</td>
+                    {/* <td>{org.role}</td> */}
                     <td className="text-right">
                       {org.orgId === user?.orgId ? (
                         <Button variant="secondary" size="sm" disabled>

@@ -19,6 +19,7 @@ export enum AppNotificationTimeout {
   Warning = 5000,
   Success = 3000,
   Error = 7000,
+  Info = 0,
 }
 
 export interface AppNotificationsState {

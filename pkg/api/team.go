@@ -26,8 +26,8 @@ func (hs *HTTPServer) CreateTeam(c *models.ReqContext) response.Response {
 	if !accessControlEnabled && c.OrgRole == models.ROLE_VIEWER {
 		return response.Error(403, "Not allowed to create team.", nil)
 	}
-
-	team, err := createTeam(hs.SQLStore, cmd.Name, cmd.Email, c.OrgId)
+	// BMC Code 
+	team, err := createTeam(hs.SQLStore, cmd.Name, cmd.Email, c.OrgId, cmd.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrTeamNameTaken) {
 			return response.Error(409, "Team name taken", err)
@@ -278,8 +278,7 @@ func (hs *HTTPServer) UpdateTeamPreferences(c *models.ReqContext) response.Respo
 }
 
 // createTeam creates a team.
-//
-// Stubbable by tests.
-var createTeam = func(sqlStore *sqlstore.SQLStore, name, email string, orgID int64) (models.Team, error) {
-	return sqlStore.CreateTeam(name, email, orgID)
+// BMC Code
+var createTeam = func(sqlStore *sqlstore.SQLStore, name, email string, orgID int64, Id int64) (models.Team, error) {
+	return sqlStore.CreateTeam(name, email, orgID, Id)
 }

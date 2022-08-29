@@ -88,6 +88,7 @@ class NewDataSourcePage extends PureComponent<Props> {
             {this.renderPlugins(category.plugins, category.id)}
           </div>
         ))}
+        {/* BMC Code hide this option
         <div className="add-data-source-more">
           <LinkButton
             variant="secondary"
@@ -97,7 +98,7 @@ class NewDataSourcePage extends PureComponent<Props> {
           >
             Find more data source plugins on grafana.com
           </LinkButton>
-        </div>
+        </div> */}
       </>
     );
   }
