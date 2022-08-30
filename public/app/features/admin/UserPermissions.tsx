@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { config } from 'app/core/config';
 import { ConfirmButton, RadioButtonGroup, Icon } from '@grafana/ui';
 import { AccessControlAction } from 'app/types';
 import { contextSrv } from 'app/core/core';
@@ -58,18 +59,20 @@ export function UserPermissions({ isGrafanaAdmin, onGrafanaAdminChange }: Props)
                     )}
                   </td>
                 )}
-                <td>
-                  {canChangePermissions && (
-                    <ConfirmButton
-                      onClick={onChangeClick}
-                      onConfirm={handleGrafanaAdminChange}
-                      onCancel={onCancelClick}
-                      confirmText="Change"
-                    >
-                      Change
-                    </ConfirmButton>
-                  )}
-                </td>
+                {config.buildInfo.env === 'development' && (
+                  <td>
+                    {canChangePermissions && (
+                      <ConfirmButton
+                        onClick={onChangeClick}
+                        onConfirm={handleGrafanaAdminChange}
+                        onCancel={onCancelClick}
+                        confirmText="Change"
+                      >
+                        Change
+                      </ConfirmButton>
+                    )}
+                  </td>
+                )}
               </tr>
             </tbody>
           </table>

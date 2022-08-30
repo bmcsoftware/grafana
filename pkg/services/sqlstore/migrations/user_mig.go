@@ -36,7 +36,9 @@ func addUserMigrations(mg *Migrator) {
 	mg.AddMigration("create user table", NewAddTableMigration(userV1))
 	// add indices
 	mg.AddMigration("add unique index user.login", NewAddIndexMigration(userV1, userV1.Indices[0]))
-	mg.AddMigration("add unique index user.email", NewAddIndexMigration(userV1, userV1.Indices[1]))
+	// Start Abhishek, 08232020, disable unique index on email column
+	//mg.AddMigration("add unique index user.email", NewAddIndexMigration(userV1, userV1.Indices[1]))
+	// Start Abhishek, 08232020, disable unique index on email column
 
 	// ---------------------
 	// account -> org changes
@@ -69,7 +71,9 @@ func addUserMigrations(mg *Migrator) {
 		},
 		Indices: []*Index{
 			{Cols: []string{"login"}, Type: UniqueIndex},
-			{Cols: []string{"email"}, Type: UniqueIndex},
+			// Start Abhishek, 08232020, disable unique index on email column
+			//{Cols: []string{"email"}, Type: UniqueIndex},
+			// End Abhishek, 08232020, disable unique index on email column
 		},
 	}
 
@@ -127,6 +131,10 @@ func addUserMigrations(mg *Migrator) {
 		Cols: []string{"login", "email"},
 	}))
 
+	// Start Abhishek, 07122020, alter id column to bigint
+	mg.AddMigration("alter user.id to bigint", NewRawSQLMigration("").
+		Postgres("ALTER TABLE public.user ALTER COLUMN id TYPE int8;"))
+	// End Abhishek, 07122020, alter id column to bigint
 	mg.AddMigration("Add is_service_account column to user", NewAddColumnMigration(userV2, &Column{
 		Name: "is_service_account", Type: DB_Bool, Nullable: false, Default: "0",
 	}))

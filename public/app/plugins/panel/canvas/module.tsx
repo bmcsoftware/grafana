@@ -2,7 +2,7 @@ import { PanelPlugin } from '@grafana/data';
 
 import { CanvasPanel, InstanceState } from './CanvasPanel';
 import { PanelOptions } from './models.gen';
-import { getElementEditor } from './editor/elementEditor';
+import { getElementEditor } from './editor/ElementEditor';
 import { getLayerEditor } from './editor/layerEditor';
 import { GroupState } from 'app/features/canvas/runtime/group';
 

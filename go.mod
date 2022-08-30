@@ -260,6 +260,16 @@ require (
 	github.com/grafana/dskit v0.0.0-20211011144203-3a88ec0b675f // indirect
 )
 
+// BMC code - begin - custom dependencies
+require (
+	github.bmc.com/DSOM-ADE/authz-go v0.0.0-20210513070043-9eb5f367fb34
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
+	github.com/microcosm-cc/bluemonday v1.0.2
+)
+
+// BMC code - end
+
 // Use fork of crewjam/saml with fixes for some issues until changes get merged into upstream
 replace github.com/crewjam/saml => github.com/grafana/saml v0.0.0-20211007135653-aed1b2edd86b
 

@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React, { ComponentType, Suspense } from 'react';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 import { config, locationService, navigationLogger } from '@grafana/runtime';
 import { Provider } from 'react-redux';
@@ -16,6 +16,9 @@ import { AppNotificationList } from './core/components/AppNotifications/AppNotif
 import { SearchWrapper } from 'app/features/search';
 import { LiveConnectionWarning } from './features/live/LiveConnectionWarning';
 import { AngularRoot } from './angular/AngularRoot';
+import { getFeatureStatus } from './features/dashboard/services/featureFlagSrv';
+import { isGrafanaAdmin } from './features/plugins/admin/permissions';
+const GainsightAgreement = React.lazy(() => import('./features/gainsight/GainsightAgreement'));
 
 interface AppWrapperProps {
   app: GrafanaApp;
@@ -115,6 +118,11 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
                       {bodyRenderHooks.map((Hook, index) => (
                         <Hook key={index.toString()} />
                       ))}
+                      {getFeatureStatus('gainsight') && !isGrafanaAdmin() && (
+                        <Suspense fallback={<></>}>
+                          <GainsightAgreement isModal={true}></GainsightAgreement>
+                        </Suspense>
+                      )}
                     </main>
                   </Router>
                 </div>

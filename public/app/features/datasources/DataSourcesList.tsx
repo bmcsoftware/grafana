@@ -5,6 +5,7 @@ import React, { FC } from 'react';
 import { DataSourceSettings, LayoutMode } from '@grafana/data';
 import { Card, Tag, useStyles } from '@grafana/ui';
 import { css } from '@emotion/css';
+import { isGrafanaAdmin } from '../plugins/admin/permissions';
 
 export interface Props {
   dataSources: DataSourceSettings[];
@@ -13,13 +14,14 @@ export interface Props {
 
 export const DataSourcesList: FC<Props> = ({ dataSources, layoutMode }) => {
   const styles = useStyles(getStyles);
+  const disabled = !isGrafanaAdmin();
 
   return (
     <ul className={styles.list}>
       {dataSources.map((dataSource, index) => {
         return (
           <li key={dataSource.id}>
-            <Card heading={dataSource.name} href={`datasources/edit/${dataSource.uid}`}>
+            <Card heading={dataSource.name} href={`datasources/edit/${dataSource.uid}`} disabled={disabled}>
               <Card.Figure>
                 <img src={dataSource.typeLogoUrl} alt={dataSource.name} />
               </Card.Figure>

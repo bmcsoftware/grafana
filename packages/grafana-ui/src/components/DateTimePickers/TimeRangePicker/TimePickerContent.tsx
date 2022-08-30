@@ -186,7 +186,7 @@ export const TimePickerContentWithScreenSize: React.FC<PropsWithScreenSize> = (p
   };
 
   return (
-    <div id="TimePickerContent" className={cx(styles.container, className)}>
+    <div id="TimePickerContent" className={cx(styles.container, className) + ' override'}>
       <div className={styles.body}>
         {(!isFullscreen || !hideQuickRanges) && (
           <div className={styles.rightSide}>

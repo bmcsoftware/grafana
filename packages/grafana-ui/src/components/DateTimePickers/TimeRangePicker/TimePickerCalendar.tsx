@@ -95,7 +95,7 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {
     return (
       <FocusScope contain restoreFocus autoFocus>
         <section
-          className={styles.container}
+          className={styles.container + ' override'}
           onClick={stopPropagation}
           aria-label={selectors.components.TimePicker.calendar.label}
           ref={ref}

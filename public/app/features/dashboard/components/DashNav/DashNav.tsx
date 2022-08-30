@@ -6,7 +6,7 @@ import { playlistSrv } from 'app/features/playlist/PlaylistSrv';
 // Components
 import { DashNavButton } from './DashNavButton';
 import { DashNavTimeControls } from './DashNavTimeControls';
-import { ButtonGroup, ModalsController, ToolbarButton, PageToolbar } from '@grafana/ui';
+import { ButtonGroup, ModalsController, ToolbarButton, PageToolbar, Tooltip } from '@grafana/ui';
 import { locationUtil, textUtil } from '@grafana/data';
 // State
 import { updateTimeZoneForSession } from 'app/features/profile/state/reducers';
@@ -17,6 +17,7 @@ import { ShareModal } from 'app/features/dashboard/components/ShareModal';
 import { SaveDashboardModalProxy } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardModalProxy';
 import { locationService } from '@grafana/runtime';
 import { toggleKioskMode } from 'app/core/navigation/kiosk';
+import { config } from 'app/core/config';
 import { getDashboardSrv } from '../../services/DashboardSrv';
 
 const mapDispatchToProps = {
@@ -147,6 +148,32 @@ class DashNav extends PureComponent<Props> {
             />
           )}
         </ModalsController>
+      );
+    }
+    if (canShare) {
+      const { theme } = config;
+      buttons.push(
+        <div key="button-reports" style={{ display: 'flex' }}>
+          <Tooltip content="Manage scheduled reports">
+            <a
+              onClick={() => {
+                sessionStorage.removeItem('reportFilter');
+                locationService.push({
+                  search: locationService.getSearch().toString(),
+                  pathname: `/reports/d/${dashboard.uid}`,
+                });
+              }}
+            >
+              <img
+                style={{
+                  width: '22px',
+                  filter: theme.isDark ? 'brightness(1.2)' : 'brightness(0.5)',
+                }}
+                src="public/img/icon_scheduler.svg"
+              />
+            </a>
+          </Tooltip>
+        </div>
       );
     }
 

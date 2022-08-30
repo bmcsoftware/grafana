@@ -12,6 +12,7 @@ import {
 
 import { NEW_VARIABLE_ID } from './state/types';
 import { VariableQueryProps } from '../../types';
+import { DateTime } from '../../../../packages/grafana-data/src/datetime/moment_wrapper';
 
 export enum VariableRefresh {
   never, // removed from the UI
@@ -78,6 +79,10 @@ export interface QueryVariableModel extends DataSourceVariableModel {
 
 export interface TextBoxVariableModel extends VariableWithOptions {
   originalQuery: string | null;
+}
+
+export interface DatePickerVariableModel extends VariableWithOptions {
+  originalQuery: TimeRange | null;
 }
 
 export interface ConstantVariableModel extends VariableWithOptions {}
@@ -164,4 +169,15 @@ export class VariablesChanged extends BusEventWithPayload<VariablesChangedEvent>
 
 export class VariablesChangedInUrl extends BusEventWithPayload<VariablesChangedEvent> {
   static type = 'variables-changed-in-url';
+}
+
+export interface RawTimeRange {
+  from: DateTime | string;
+  to: DateTime | string;
+}
+
+export interface TimeRange {
+  from: DateTime;
+  to: DateTime;
+  raw: RawTimeRange;
 }

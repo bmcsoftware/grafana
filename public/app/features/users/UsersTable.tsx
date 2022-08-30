@@ -4,6 +4,7 @@ import { OrgRolePicker } from '../admin/OrgRolePicker';
 import { Button, ConfirmModal } from '@grafana/ui';
 import { OrgRole } from '@grafana/data';
 import { contextSrv } from 'app/core/core';
+import config from 'app/core/config';
 import { fetchBuiltinRoles, fetchRoleOptions, UserRolePicker } from 'app/core/components/RolePicker/UserRolePicker';
 
 export interface Props {
@@ -51,7 +52,7 @@ const UsersTable: FC<Props> = (props) => {
           <th>Email</th>
           <th>Name</th>
           <th>Seen</th>
-          <th>Role</th>
+          {config.buildInfo.env === 'development' && <th>Role</th>}
           <th style={{ width: '34px' }} />
         </tr>
       </thead>
@@ -79,48 +80,51 @@ const UsersTable: FC<Props> = (props) => {
                 </span>
               </td>
               <td className="width-1">{user.lastSeenAtAge}</td>
+              {config.buildInfo.env === 'development' && (
+                <>
+                  <td className="width-8">
+                    {contextSrv.accessControlEnabled() ? (
+                      <UserRolePicker
+                        userId={user.userId}
+                        orgId={orgId}
+                        builtInRole={user.role}
+                        onBuiltinRoleChange={(newRole) => onRoleChange(newRole, user)}
+                        getRoleOptions={getRoleOptions}
+                        getBuiltinRoles={getBuiltinRoles}
+                        disabled={rolePickerDisabled}
+                      />
+                    ) : (
+                      <OrgRolePicker
+                        aria-label="Role"
+                        value={user.role}
+                        disabled={!canUpdateRole}
+                        onChange={(newRole) => onRoleChange(newRole, user)}
+                      />
+                    )}
+                  </td>
 
-              <td className="width-8">
-                {contextSrv.accessControlEnabled() ? (
-                  <UserRolePicker
-                    userId={user.userId}
-                    orgId={orgId}
-                    builtInRole={user.role}
-                    onBuiltinRoleChange={(newRole) => onRoleChange(newRole, user)}
-                    getRoleOptions={getRoleOptions}
-                    getBuiltinRoles={getBuiltinRoles}
-                    disabled={rolePickerDisabled}
-                  />
-                ) : (
-                  <OrgRolePicker
-                    aria-label="Role"
-                    value={user.role}
-                    disabled={!canUpdateRole}
-                    onChange={(newRole) => onRoleChange(newRole, user)}
-                  />
-                )}
-              </td>
-
-              {canRemoveFromOrg && (
-                <td>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => setShowRemoveModal(user.login)}
-                    icon="times"
-                    aria-label="Delete user"
-                  />
-                  <ConfirmModal
-                    body={`Are you sure you want to delete user ${user.login}?`}
-                    confirmText="Delete"
-                    title="Delete"
-                    onDismiss={() => setShowRemoveModal(false)}
-                    isOpen={user.login === showRemoveModal}
-                    onConfirm={() => {
-                      onRemoveUser(user);
-                    }}
-                  />
-                </td>
+                  {canRemoveFromOrg && (
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => setShowRemoveModal(user.login)}
+                        icon="times"
+                        aria-label="Delete user"
+                      />
+                      <ConfirmModal
+                        body={`Are you sure you want to delete user ${user.login}?`}
+                        confirmText="Delete"
+                        title="Delete"
+                        onDismiss={() => setShowRemoveModal(false)}
+                        isOpen={user.login === showRemoveModal}
+                        onConfirm={() => {
+                          onRemoveUser(user);
+                        }}
+                      />
+                    </td>
+                  )}
+                </>
               )}
             </tr>
           );

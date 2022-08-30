@@ -26,6 +26,7 @@ func HandleNoCacheHeader(ctx *models.ReqContext) {
 
 func AddDefaultResponseHeaders(cfg *setting.Cfg) web.Handler {
 	return func(c *web.Context) {
+		addSecurityHeadersTemp(c, cfg)
 		c.Resp.Before(func(w web.ResponseWriter) {
 			// if response has already been written, skip.
 			if w.Written() {
@@ -75,4 +76,26 @@ func addNoCacheHeaders(w web.ResponseWriter) {
 
 func addXFrameOptionsDenyHeader(w web.ResponseWriter) {
 	w.Header().Set("X-Frame-Options", "deny")
+}
+
+// Adding temporary function to add needed security headers.
+// ToDo: Check how plain grafana is already handling that and make the necessary to make it work that way.
+func addSecurityHeadersTemp(c *web.Context, cfg *setting.Cfg) {
+	if cfg.ContentTypeProtectionHeader {
+		c.Resp.Header().Add("X-Content-Type-Options", "nosniff")
+	}
+
+	if cfg.XSSProtectionHeader {
+		c.Resp.Header().Add("X-XSS-Protection", "1; mode=block")
+	}
+
+	if !strings.HasPrefix(c.Req.URL.Path, "/api/datasources/proxy/") {
+		c.Resp.Header().Add("Cache-Control", "no-cache")
+		c.Resp.Header().Add("Pragma", "no-cache")
+		c.Resp.Header().Add("Expires", "-1")
+	}
+
+	if !cfg.AllowEmbedding {
+		c.Resp.Header().Add("X-Frame-Options", "deny")
+	}
 }

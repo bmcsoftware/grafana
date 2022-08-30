@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { css, cx } from '@emotion/css';
 import { useTheme2, styleMixins } from '@grafana/ui';
 import { colorManipulator } from '@grafana/data';
+import { Icon } from '@grafana/ui/src/components/Icon/Icon';
 
 export interface BrandComponentProps {
   className?: string;
@@ -42,7 +43,7 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 };
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
-  return <img className={className} src="public/img/grafana_icon.svg" alt="Grafana" />;
+  return <Icon className={className} name="bmc-home" size="xl" />;
 };
 
 const LoginBoxBackground = () => {
@@ -58,8 +59,8 @@ export class Branding {
   static LoginBackground = LoginBackground;
   static MenuLogo = MenuLogo;
   static LoginBoxBackground = LoginBoxBackground;
-  static AppTitle = 'Grafana';
-  static LoginTitle = 'Welcome to Grafana';
+  static AppTitle = 'BMC Helix Dashboards';
+  static LoginTitle = 'Welcome to BMC Helix Dashboards';
   static GetLoginSubTitle = (): null | string => {
     return null;
   };
