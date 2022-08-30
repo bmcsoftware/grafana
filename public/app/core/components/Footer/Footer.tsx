@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { config } from '@grafana/runtime';
+// import { config } from '@grafana/runtime';
 import { Icon, IconName } from '@grafana/ui';
+import { customConfigSrv, DefaultCustomConfiguration } from 'app/features/org/state/configuration';
 
 export interface FooterLink {
   text: string;
@@ -10,34 +11,35 @@ export interface FooterLink {
   target?: string;
 }
 
-export let getFooterLinks = (): FooterLink[] => {
+export let getFooterLinks = (config?: any): FooterLink[] => {
   return [
     {
       text: 'Documentation',
       icon: 'document-info',
-      url: 'https://grafana.com/docs/grafana/latest/?utm_source=grafana_footer',
+      url: config?.docLink || DefaultCustomConfiguration.docLink,
       target: '_blank',
     },
     {
       text: 'Support',
       icon: 'question-circle',
-      url: 'https://grafana.com/products/enterprise/?utm_source=grafana_footer',
+      url: config?.supportLink || DefaultCustomConfiguration.supportLink,
       target: '_blank',
     },
     {
       text: 'Community',
       icon: 'comments-alt',
-      url: 'https://community.grafana.com/?utm_source=grafana_footer',
+      url: config?.communityLink || DefaultCustomConfiguration.communityLink,
       target: '_blank',
     },
   ];
 };
 
+/*
+//author(kmejdi)
 export let getVersionLinks = (): FooterLink[] => {
   const { buildInfo, licenseInfo } = config;
   const links: FooterLink[] = [];
   const stateInfo = licenseInfo.stateInfo ? ` (${licenseInfo.stateInfo})` : '';
-
   links.push({ text: `${buildInfo.edition}${stateInfo}`, url: licenseInfo.licenseUrl });
 
   if (buildInfo.hideVersion) {
@@ -58,6 +60,15 @@ export let getVersionLinks = (): FooterLink[] => {
 
   return links;
 };
+//author(kmejdi) - End
+*/
+
+//author(kmejdi) - Start
+//Update footer links
+export let getVersionLinks = (): FooterLink[] => {
+  return [];
+};
+//author(kmejdi) - End
 
 export function setFooterLinksFn(fn: typeof getFooterLinks) {
   getFooterLinks = fn;
@@ -68,7 +79,17 @@ export function setVersionLinkFn(fn: typeof getFooterLinks) {
 }
 
 export const Footer: FC = React.memo(() => {
-  const links = getFooterLinks().concat(getVersionLinks());
+  // const links = getFooterLinks().concat(getVersionLinks());
+
+  // BMC code - begin
+  const [links, setLinks] = React.useState<FooterLink[]>(() => getFooterLinks());
+  React.useEffect(() => {
+    customConfigSrv.getCustomConfiguration().then((data) => {
+      const footerLinks = getFooterLinks(data).concat(getVersionLinks());
+      setLinks(footerLinks);
+    });
+  }, []);
+  // BMC code - end
 
   return (
     <footer className="footer">

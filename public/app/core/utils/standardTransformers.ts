@@ -21,6 +21,8 @@ import { convertFieldTypeTransformRegistryItem } from '../components/Transformer
 import { fieldLookupTransformRegistryItem } from '../components/TransformersUI/lookupGazetteer/FieldLookupTransformerEditor';
 import { extractFieldsTransformRegistryItem } from '../components/TransformersUI/extractFields/ExtractFieldsTransformerEditor';
 import { spatialTransformRegistryItem } from '../components/TransformersUI/spatial/SpatialTransformerEditor';
+// BMC Code
+import { advanceFunctionsTransformRegistryItem } from '../components/TransformersUI/AdvanceFunctionsTransformerEditor';
 
 export const getStandardTransformers = (): Array<TransformerRegistryItem<any>> => {
   return [
@@ -46,5 +48,7 @@ export const getStandardTransformers = (): Array<TransformerRegistryItem<any>> =
     spatialTransformRegistryItem,
     fieldLookupTransformRegistryItem,
     extractFieldsTransformRegistryItem,
+    // BMC Code
+    advanceFunctionsTransformRegistryItem,
   ];
 };

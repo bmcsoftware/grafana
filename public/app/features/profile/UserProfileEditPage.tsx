@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useMount } from 'react-use';
 import { NavModel } from '@grafana/data';
@@ -13,6 +13,9 @@ import SharedPreferences from 'app/core/components/SharedPreferences/SharedPrefe
 import { UserTeams } from './UserTeams';
 import UserOrganizations from './UserOrganizations';
 import UserSessions from './UserSessions';
+import { getFeatureStatus } from '../dashboard/services/featureFlagSrv';
+
+const GainsightAgreement = React.lazy(() => import('../gainsight/GainsightAgreement'));
 
 export interface OwnProps {
   navModel: NavModel;
@@ -68,6 +71,11 @@ export function UserProfileEditPage({
         <VerticalGroup spacing="md">
           <UserProfileEditForm updateProfile={updateUserProfile} isSavingUser={isUpdating} user={user} />
           <SharedPreferences resourceUri="user" />
+          {getFeatureStatus('gainsight') && (
+            <Suspense fallback={<></>}>
+              <GainsightAgreement isModal={false}></GainsightAgreement>
+            </Suspense>
+          )}
           <UserTeams isLoading={teamsAreLoading} teams={teams} />
           <UserOrganizations isLoading={orgsAreLoading} setUserOrg={changeUserOrg} orgs={orgs} user={user} />
           <UserSessions isLoading={sessionsAreLoading} revokeUserSession={revokeUserSession} sessions={sessions} />

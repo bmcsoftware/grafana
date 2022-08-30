@@ -1,0 +1,51 @@
+/*
+ * Copyright (C) 2021 BMC Software Inc
+ * Added by abhasin at 03/08/2021
+ */
+
+package api
+
+import (
+	"context"
+
+	"github.com/grafana/grafana/pkg/api/dtos"
+	"github.com/grafana/grafana/pkg/api/response"
+	"github.com/grafana/grafana/pkg/bus"
+	"github.com/grafana/grafana/pkg/models"
+)
+
+func GetCalculatedField(c *models.ReqContext) response.Response {
+	query := &models.GetCalculatedField{
+		OrgId: c.OrgId,
+	}
+	data, err := getCalculatedFieldData(c.Req.Context(), query)
+	if err != nil {
+		return FailResponse(err)
+	}
+
+	result := make([]*dtos.CalculatedField, 0)
+	for _, field := range data {
+		result = append(result, fieldInJson(field))
+	}
+	return SuccessResponse(result)
+}
+
+func getCalculatedFieldData(ctx context.Context, query *models.GetCalculatedField) ([]*models.CalculatedField, error) {
+	if err := bus.Dispatch(ctx, query); err != nil {
+		return nil, err
+	}
+	return query.Result, nil
+}
+
+func fieldInJson(report *models.CalculatedField) *dtos.CalculatedField {
+
+	json := &dtos.CalculatedField{
+		FormName:    report.FormName,
+		Module:      report.Module,
+		Name:        report.Name,
+		SqlQuery:    report.SqlQuery,
+		Aggregation: report.Aggregation,
+	}
+
+	return json
+}

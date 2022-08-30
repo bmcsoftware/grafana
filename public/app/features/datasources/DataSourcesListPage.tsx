@@ -22,6 +22,7 @@ import {
   getDataSourcesSearchQuery,
 } from './state/selectors';
 import { setDataSourcesLayoutMode, setDataSourcesSearchQuery } from './state/reducers';
+import { isGrafanaAdmin } from '../plugins/admin/permissions';
 
 function mapStateToProps(state: StoreState) {
   return {
@@ -66,7 +67,8 @@ export class DataSourcesListPage extends PureComponent<Props> {
 
     const canCreateDataSource =
       contextSrv.hasPermission(AccessControlAction.DataSourcesCreate) &&
-      contextSrv.hasPermission(AccessControlAction.DataSourcesWrite);
+      contextSrv.hasPermission(AccessControlAction.DataSourcesWrite) &&
+      isGrafanaAdmin();
 
     const linkButton = {
       href: 'datasources/new',

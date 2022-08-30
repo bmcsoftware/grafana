@@ -233,17 +233,20 @@ func (ss *SQLStore) CreateUser(ctx context.Context, cmd models.CreateUserCommand
 		if cmd.Email == "" {
 			cmd.Email = cmd.Login
 		}
-
-		exists, err := sess.Where("email=? OR login=?", cmd.Email, cmd.Login).Get(&models.User{})
-		if err != nil {
-			return err
-		}
+		//Start, Abhishek 05302021, Allow duplicate emails
+		//ADEReportingChange
+		//exists, _ := sess.Where("org_id=?  AND (email=? OR login=?)", orgId, cmd.Email, cmd.Login).Get(&models.User{})
+		exists, _ := sess.Where("org_id=?  AND login=?", orgId, cmd.Login).Get(&models.User{})
+		//End, Abhishek 05302021, Allow duplicate emails
 		if exists {
 			return models.ErrUserAlreadyExists
 		}
 
 		// create user
 		user = &models.User{
+			//Start Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+			Id: cmd.Id,
+			//End Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
 			Email:            cmd.Email,
 			Name:             cmd.Name,
 			Login:            cmd.Login,

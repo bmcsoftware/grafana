@@ -15,6 +15,7 @@ import NavBarItem from './NavBarItem';
 import { NavBarSection } from './NavBarSection';
 import { NavBarMenu } from './NavBarMenu';
 import { NavBarItemWithoutMenu } from './NavBarItemWithoutMenu';
+import { customConfigSrv } from 'app/features/org/state/configuration';
 
 const homeUrl = config.appSubUrl || '/';
 
@@ -51,11 +52,20 @@ export const NavBarUnconnected = React.memo(({ navBarTree }: Props) => {
   };
   const navTree = cloneDeep(navBarTree);
   const topItems = navTree.filter((item) => item.section === NavSection.Core);
+  // BMC Code Start
+  const [footerLinkData, setFooterLinkData] = useState<any>();
+  React.useEffect(() => {
+    customConfigSrv.getCustomConfiguration().then((data) => {
+      setFooterLinkData(data);
+    });
+  }, []);
   const bottomItems = enrichConfigItems(
     navTree.filter((item) => item.section === NavSection.Config),
     location,
-    toggleSwitcherModal
+    toggleSwitcherModal,
+    footerLinkData
   );
+  // BMC Code End
   const activeItem = isSearchActive(location) ? searchItem : getActiveItem(navTree, location.pathname);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -100,7 +110,9 @@ export const NavBarUnconnected = React.memo(({ navBarTree }: Props) => {
             key={`${link.id}-${index}`}
             isActive={isMatchOrChildMatch(link, activeItem)}
             reverseMenuDirection
-            link={link}
+            // BMC Code change
+            // link={link}
+            link={{ ...link, subTitle: undefined }}
           >
             {link.icon && <Icon name={link.icon as IconName} size="xl" />}
             {link.img && <img src={link.img} alt={`${link.text} logo`} />}

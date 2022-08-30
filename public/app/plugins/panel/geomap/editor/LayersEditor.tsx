@@ -6,7 +6,7 @@ import { DropResult } from 'react-beautiful-dnd';
 import { GeomapPanelOptions, MapLayerState } from '../types';
 import { GeomapInstanceState } from '../GeomapPanel';
 import { geomapLayerRegistry } from '../layers/registry';
-import { dataLayerFilter } from './layerEditor';
+import { dataLayerFilter } from './LayerEditor';
 import { AddLayerButton } from 'app/core/components/Layers/AddLayerButton';
 import { LayerDragDropList } from 'app/core/components/Layers/LayerDragDropList';
 

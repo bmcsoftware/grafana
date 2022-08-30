@@ -5877,7 +5877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc-config@npm:~0.15.2":
+"@microsoft/tsdoc-config@npm:0.15.2, @microsoft/tsdoc-config@npm:~0.15.2":
   version: 0.15.2
   resolution: "@microsoft/tsdoc-config@npm:0.15.2"
   dependencies:
@@ -9050,6 +9050,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookie@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@types/cookie@npm:0.3.3"
+  checksum: 450c930d792a4fd5a93645b4123f02596368f904dbb1fe6fbb5043bce8f6ecf877a08511c6ba11c8e28168f62bc278e68d214f002fab927c9056c0bc69f21370
+  languageName: node
+  linkType: hard
+
 "@types/d3-array@npm:*":
   version: 3.0.2
   resolution: "@types/d3-array@npm:3.0.2"
@@ -10321,6 +10328,15 @@ __metadata:
     "@types/glob": "*"
     "@types/node": "*"
   checksum: b47fa302f46434cba704d20465861ad250df79467d3d289f9d6490d3aeeb41e8cb32dd80bd1a8fd833d1e185ac719fbf9be12e05ad9ce9be094d8ee8f1405347
+  languageName: node
+  linkType: hard
+
+"@types/sanitize-html@npm:2.3.2":
+  version: 2.3.2
+  resolution: "@types/sanitize-html@npm:2.3.2"
+  dependencies:
+    htmlparser2: ^6.0.0
+  checksum: 7f5b7e8a354d247a8fc6edc7c6fee8a7537bfda9002f5b15e127e3329896d5c2ad52ec9db8ba8503db0f6cdce724b68ea6533256aeb5ec367682ee536bae5b65
   languageName: node
   linkType: hard
 
@@ -12497,6 +12513,13 @@ __metadata:
   version: 2.2.2
   resolution: "attr-accept@npm:2.2.2"
   checksum: 496f7249354ab53e522510c1dc8f67a1887382187adde4dc205507d2f014836a247073b05e9d9ea51e2e9c7f71b0d2aa21730af80efa9af2d68303e5f0565c4d
+  languageName: node
+  linkType: hard
+
+"autobind-decorator@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "autobind-decorator@npm:2.4.0"
+  checksum: 6fcc922580d3585a3aeef1a480f935c0827b1a4505b9e39ff9bcad9039958bd47b27a4e35152f566e01befb2924701dbc9f744ec29eeb880c99eef8e39fce4a3
   languageName: node
   linkType: hard
 
@@ -14908,6 +14931,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie@npm:^0.4.0":
+  version: 0.4.2
+  resolution: "cookie@npm:0.4.2"
+  checksum: a00833c998bedf8e787b4c342defe5fa419abd96b32f4464f718b91022586b8f1bafbddd499288e75c037642493c83083da426c6a9080d309e3bd90fd11baa9b
+  languageName: node
+  linkType: hard
+
 "copy-anything@npm:^2.0.1":
   version: 2.0.3
   resolution: "copy-anything@npm:2.0.3"
@@ -15031,6 +15061,13 @@ __metadata:
   version: 3.19.0
   resolution: "core-js@npm:3.19.0"
   checksum: 9f03e72f01d9eeafb2724ee5787ab8d6e7dcf0e3b44c4dec23e6a0cfc9e2e0a76460b77ce7d1d0be09db918618b11595fad6838978ff97f2684270738898c5a2
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.21.1":
+  version: 3.21.1
+  resolution: "core-js@npm:3.21.1"
+  checksum: d68eddd831340ad5b24ac29c72fda022a43b17f194c4278b6b875a843283d316502cb4abd07f28631d6ebc4387f66aa06e2b1b3c8fd7e08096a751b5c63f6889
   languageName: node
   linkType: hard
 
@@ -15175,6 +15212,13 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: a9a1503d4390d8b59ad86f4607de7870b39cad43d929813599a23714831e81c520bddf61bcdd1f8e30f05fd3a2b71ae8538e946eb2786dc65c2bbc520f692eff
+  languageName: node
+  linkType: hard
+
+"cronstrue@npm:1.106.0":
+  version: 1.106.0
+  resolution: "cronstrue@npm:1.106.0"
+  checksum: ee84e5f31fb5d85a03e628d10fe3a2b73e3998321a8b1b22302f83c830895b80f2e03f7bbc76ec0105fcb5ce615c585c5b7ee309242b1d3f24e5a9d5fb455b91
   languageName: node
   linkType: hard
 
@@ -17661,6 +17705,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-tsdoc@npm:^0.2.14":
+  version: 0.2.14
+  resolution: "eslint-plugin-tsdoc@npm:0.2.14"
+  dependencies:
+    "@microsoft/tsdoc": 0.13.2
+    "@microsoft/tsdoc-config": 0.15.2
+  checksum: cb00835ac74de031a01415b2595dd055808de65fcfbd2582ab52cba191e63d41f0d19f83f767b842e437c54204e063f9d9044409bd66a2c58a333873352a0d14
+  languageName: node
+  linkType: hard
+
 "eslint-scope@npm:5.1.1, eslint-scope@npm:^5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
@@ -19680,6 +19734,7 @@ __metadata:
     "@types/react-window": 1.8.5
     "@types/redux-mock-store": 1.0.3
     "@types/reselect": 2.2.0
+    "@types/sanitize-html": 2.3.2
     "@types/semver": 7.3.9
     "@types/slate": 0.47.2
     "@types/slate-plain-serializer": 0.7.2
@@ -19717,6 +19772,7 @@ __metadata:
     common-tags: 1.8.2
     copy-webpack-plugin: 9.0.1
     core-js: 3.20.2
+    cronstrue: 1.106.0
     css-loader: 6.5.1
     css-minimizer-webpack-plugin: 3.4.1
     cypress: 9.3.1
@@ -19761,6 +19817,8 @@ __metadata:
     jest-date-mock: 1.0.8
     jest-junit: 13.0.0
     jest-matcher-utils: 27.4.6
+    jodit: 3.8.6
+    jodit-react: 1.1.5
     jquery: 3.6.0
     json-source-map: 0.6.1
     jsurl: ^0.1.5
@@ -19795,6 +19853,7 @@ __metadata:
     prettier: 2.5.1
     prismjs: 1.26.0
     prop-types: 15.8.1
+    query-string: 6.13.8
     raw-loader: 4.0.2
     rc-cascader: 3.2.1
     rc-drawer: 4.4.3
@@ -19834,6 +19893,7 @@ __metadata:
     rimraf: 3.0.2
     rst2html: "github:thoward/rst2html#990cb89f2a300cdd9151790be377c4c0840df809"
     rxjs: 7.5.1
+    sanitize-html: 2.4.0
     sass: 1.49.0
     sass-loader: 12.4.0
     search-query-parser: 1.6.0
@@ -19857,6 +19917,7 @@ __metadata:
     ts-node: 10.4.0
     tslib: 2.3.1
     typescript: 4.4.4
+    universal-cookie: 4.0.4
     uplot: 1.6.19
     uuid: 8.3.2
     vendor: "link:./public/vendor"
@@ -19868,6 +19929,7 @@ __metadata:
     webpack-dev-server: 4.7.2
     webpack-merge: 5.8.0
     whatwg-fetch: 3.6.2
+    zone.js: 0.7.8
   languageName: unknown
   linkType: soft
 
@@ -20454,7 +20516,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^6.1.0":
+"htmlparser2@npm:^6.0.0, htmlparser2@npm:^6.1.0":
   version: 6.1.0
   resolution: "htmlparser2@npm:6.1.0"
   dependencies:
@@ -23143,6 +23205,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jodit-react@npm:1.1.5":
+  version: 1.1.5
+  resolution: "jodit-react@npm:1.1.5"
+  dependencies:
+    jodit: ^3.7.1
+  peerDependencies:
+    react: ~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    react-dom: ~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 483331d41de933f53e8e4d78a9cea16b278bddcafc8d4486330f75fdfef61e18c65e93b6fced69a7fb87eb0189659c175e594fc6bc6577455815d22aa7ba3a5c
+  languageName: node
+  linkType: hard
+
+"jodit@npm:3.8.6":
+  version: 3.8.6
+  resolution: "jodit@npm:3.8.6"
+  dependencies:
+    autobind-decorator: ^2.4.0
+    eslint-plugin-tsdoc: ^0.2.14
+  checksum: 7d099a386d80f75945bda4ab25dd4cd19a3943b3e0cdab4c89a572d46e70ec7f80ef7ed2700acd04c208c2ca72afe93e3f84ea5072824e63aa5a0cde48971a6d
+  languageName: node
+  linkType: hard
+
+"jodit@npm:^3.7.1":
+  version: 3.16.6
+  resolution: "jodit@npm:3.16.6"
+  dependencies:
+    autobind-decorator: ^2.4.0
+    core-js: ^3.21.1
+  checksum: d083bedc19c52f06db3151c89e24b74594f63a318511c88d1e0211ffbf16d2d0bc596b50466b230e81c7ed09ea6b25feb68b536e68747f855c9beaea72380360
+  languageName: node
+  linkType: hard
+
 "joi@npm:^17.4.0":
   version: 17.4.2
   resolution: "joi@npm:17.4.2"
@@ -23636,17 +23730,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"klona@npm:^2.0.3, klona@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "klona@npm:2.0.5"
+  checksum: 8c976126ea252b766e648a4866e1bccff9d3b08432474ad80c559f6c7265cf7caede2498d463754d8c88c4759895edd8210c85c0d3155e6aae4968362889466f
+  languageName: node
+  linkType: hard
+
 "klona@npm:^2.0.4":
   version: 2.0.4
   resolution: "klona@npm:2.0.4"
   checksum: abc6690882e0e6f5cf70451b79a6de95a27be56ced283d1d6d7e610db7d824e5da1f142f8073466dfbcfa887ee001b98f6dcfbcf02759828ba356b90202a74c5
-  languageName: node
-  linkType: hard
-
-"klona@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "klona@npm:2.0.5"
-  checksum: 8c976126ea252b766e648a4866e1bccff9d3b08432474ad80c559f6c7265cf7caede2498d463754d8c88c4759895edd8210c85c0d3155e6aae4968362889466f
   languageName: node
   linkType: hard
 
@@ -25442,6 +25536,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nanoid@npm:^3.3.1":
+  version: 3.3.2
+  resolution: "nanoid@npm:3.3.2"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: 376717f0685251fad77850bd84c6b8d57837c71eeb1c05be7c742140cc1835a5a2953562add05166d6dbc8fb65f3fdffa356213037b967a470e1691dc3e7b9cc
+  languageName: node
+  linkType: hard
+
 "nanomatch@npm:^1.2.9":
   version: 1.2.13
   resolution: "nanomatch@npm:1.2.13"
@@ -26830,6 +26933,13 @@ __metadata:
     qs: ^6.9.4
     query-string: ^6.13.8
   checksum: d1704c0027489b64838c608c3f075fe3599c18a7413fa92e7074a0157e5bcc1a4ef73e7ae9bd9dbf5fad1809137437310cc69a57e5f5130ea17226165f3e942a
+  languageName: node
+  linkType: hard
+
+"parse-srcset@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "parse-srcset@npm:1.0.2"
+  checksum: 3a0380380c6082021fcce982f0b89fb8a493ce9dfd7d308e5e6d855201e80db8b90438649b31fdd82a3d6089a8ca17dccddaa2b730a718389af4c037b8539ebf
   languageName: node
   linkType: hard
 
@@ -28236,6 +28346,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss@npm:^8.0.2":
+  version: 8.4.12
+  resolution: "postcss@npm:8.4.12"
+  dependencies:
+    nanoid: ^3.3.1
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.2
+  checksum: 248e3d0f9bbb8efaafcfda7f91627a29bdc9a19f456896886330beb28c5abea0e14c7901b35191928602e2eccbed496b1e94097d27a0b2a980854cd00c7a835f
+  languageName: node
+  linkType: hard
+
 "postcss@npm:^8.2.1, postcss@npm:^8.2.15, postcss@npm:^8.3.11, postcss@npm:^8.3.5":
   version: 8.3.11
   resolution: "postcss@npm:8.3.11"
@@ -28855,6 +28976,17 @@ __metadata:
   version: 6.5.2
   resolution: "qs@npm:6.5.2"
   checksum: 24af7b9928ba2141233fba2912876ff100403dba1b08b20c3b490da9ea6c636760445ea2211a079e7dfa882a5cf8f738337b3748c8bdd0f93358fa8881d2db8f
+  languageName: node
+  linkType: hard
+
+"query-string@npm:6.13.8":
+  version: 6.13.8
+  resolution: "query-string@npm:6.13.8"
+  dependencies:
+    decode-uri-component: ^0.2.0
+    split-on-first: ^1.0.0
+    strict-uri-encode: ^2.0.0
+  checksum: da14ec801113542a8e659061cbdb5950db790b8d9527752f8e119b2df2acc4c6cde80603f7cf718bf5db0f9e166f599237a2ee0e1b275c7395d24b7ee5211174
   languageName: node
   linkType: hard
 
@@ -31360,6 +31492,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sanitize-html@npm:2.4.0":
+  version: 2.4.0
+  resolution: "sanitize-html@npm:2.4.0"
+  dependencies:
+    deepmerge: ^4.2.2
+    escape-string-regexp: ^4.0.0
+    htmlparser2: ^6.0.0
+    is-plain-object: ^5.0.0
+    klona: ^2.0.3
+    parse-srcset: ^1.0.2
+    postcss: ^8.0.2
+  checksum: e1ac0c54f4ad29463a5b7ab5ac3ff5b15d39e4dd16ff96483b0e1669a5bb3c04cbd269e30e95106a988ce0c433e5f895a7852d9d9af5f6606bf40be8be24b3dc
+  languageName: node
+  linkType: hard
+
 "sass-loader@npm:12.4.0":
   version: 12.4.0
   resolution: "sass-loader@npm:12.4.0"
@@ -32214,6 +32361,13 @@ __metadata:
   version: 0.6.2
   resolution: "source-map-js@npm:0.6.2"
   checksum: 9c8151a29e00fd8d3ba87709fdf9a9ce48313d653f4a29a39b4ae53d346ac79e005de624796ff42eff55cbaf26d2e87f4466001ca87831d400d818c5cf146a0e
+  languageName: node
+  linkType: hard
+
+"source-map-js@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "source-map-js@npm:1.0.2"
+  checksum: c049a7fc4deb9a7e9b481ae3d424cc793cb4845daa690bc5a05d428bf41bf231ced49b4cf0c9e77f9d42fdb3d20d6187619fc586605f5eabe995a316da8d377c
   languageName: node
   linkType: hard
 
@@ -34706,6 +34860,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"universal-cookie@npm:4.0.4":
+  version: 4.0.4
+  resolution: "universal-cookie@npm:4.0.4"
+  dependencies:
+    "@types/cookie": ^0.3.3
+    cookie: ^0.4.0
+  checksum: bb2bafa7eb7e213e5448924329572dd1a913be00e23906189be2a0dc889b0eea1750f9c33462fc1c911d89092dbd82f6e220c2d61c4057bb3f69e7665d9d8ddf
+  languageName: node
+  linkType: hard
+
 "universal-deep-strict-equal@npm:^1.2.1":
   version: 1.2.2
   resolution: "universal-deep-strict-equal@npm:1.2.2"
@@ -36352,6 +36516,13 @@ __metadata:
   bin:
     z-schema: bin/z-schema
   checksum: 084b2f16043ac0a892914ee29cc0b4fafd9338133eec0345cd6ced25e814f647fa67be1090ad5f606759c2c1f2f8c28127960ba187f437f1caf6fb8cd45d7336
+  languageName: node
+  linkType: hard
+
+"zone.js@npm:0.7.8":
+  version: 0.7.8
+  resolution: "zone.js@npm:0.7.8"
+  checksum: b89e872cce467f5ce5e404d915cdd9da4e5c5f3527a84d38871f9b4294307738cfb2192fcb2555b2d1a98a061ce6d08e66af707b26348a54b4a2fa48ec49dc94
   languageName: node
   linkType: hard
 

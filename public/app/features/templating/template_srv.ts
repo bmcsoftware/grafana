@@ -1,7 +1,7 @@
 import { escape, isString, property } from 'lodash';
 import { deprecationWarning, ScopedVars, TimeRange } from '@grafana/data';
 import { getFilteredVariables, getVariables, getVariableWithName } from '../variables/state/selectors';
-import { variableRegex } from '../variables/utils';
+import { variableRegex, dateRangeExtract } from '../variables/utils';
 import { isAdHoc } from '../variables/guard';
 import { AdHocVariableFilter, AdHocVariableModel, VariableModel } from '../variables/types';
 import { getDataSourceSrv, setTemplateSrv, TemplateSrv as BaseTemplateSrv } from '@grafana/runtime';
@@ -115,12 +115,17 @@ export class TemplateSrv implements BaseTemplateSrv {
     return filters;
   }
 
-  formatValue(value: any, format: any, variable: any, text?: string): string {
+  // BMC Code to update function definition, emptyValue parameter
+  formatValue(value: any, format: any, variable: any, text?: string, emptyValue?: string): string {
     // for some scopedVars there is no variable
     variable = variable || {};
 
     if (value === null || value === undefined) {
       return '';
+    }
+
+    if (value.length === 0 && emptyValue) {
+      return emptyValue;
     }
 
     if (isAdHoc(variable) && format !== FormatRegistryID.queryParam) {
@@ -257,7 +262,8 @@ export class TemplateSrv implements BaseTemplateSrv {
     return value;
   }
 
-  replace(target?: string, scopedVars?: ScopedVars, format?: string | Function): string {
+  // BMC Code to update function definition, emptyValue parameter
+  replace(target?: string, scopedVars?: ScopedVars, format?: string | Function, emptyValue?: string): string {
     if (!target) {
       return target ?? '';
     }
@@ -274,7 +280,7 @@ export class TemplateSrv implements BaseTemplateSrv {
         const text = this.getVariableText(variableName, value, scopedVars);
 
         if (value !== null && value !== undefined) {
-          return this.formatValue(value, fmt, variable, text);
+          return this.formatValue(value, fmt, variable, text, emptyValue);
         }
       }
 
@@ -286,12 +292,12 @@ export class TemplateSrv implements BaseTemplateSrv {
         const value = variableAdapters.get(variable.type).getValueForUrl(variable);
         const text = isAdHoc(variable) ? variable.id : variable.current.text;
 
-        return this.formatValue(value, fmt, variable, text);
+        return this.formatValue(value, fmt, variable, text, emptyValue);
       }
 
       const systemValue = this.grafanaVariables[variable.current.value];
       if (systemValue) {
-        return this.formatValue(systemValue, fmt, variable);
+        return this.formatValue(systemValue, fmt, variable, undefined, emptyValue);
       }
 
       let value = variable.current.value;
@@ -311,11 +317,24 @@ export class TemplateSrv implements BaseTemplateSrv {
           [variableName]: { value, text },
         });
         if (fieldValue !== null && fieldValue !== undefined) {
-          return this.formatValue(fieldValue, fmt, variable, text);
+          return this.formatValue(fieldValue, fmt, variable, text, emptyValue);
         }
       }
 
-      const res = this.formatValue(value, fmt, variable, text);
+      // BMC Code Starts
+      if (variable.type === 'datepicker' && (fmt === 'from' || fmt === 'to')) {
+        const dateTimeVal = dateRangeExtract(value);
+        switch (fmt) {
+          case 'from':
+            return dateTimeVal[0] ?? match;
+          case 'to':
+            return dateTimeVal[1] ?? match;
+          default:
+            return match;
+        }
+      }
+      // BMC Code Ends
+      const res = this.formatValue(value, fmt, variable, text, emptyValue);
       return res;
     });
   }

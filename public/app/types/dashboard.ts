@@ -82,4 +82,6 @@ export interface DashboardState {
   initError: DashboardInitError | null;
   permissions: DashboardAcl[];
   modifiedQueries: QueriesToUpdateOnDashboardLoad | null;
+  // BMC Code
+  gainSightUserPreferences?: any;
 }
