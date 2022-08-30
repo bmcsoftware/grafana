@@ -1,6 +1,7 @@
 package httpclientprovider
 
 import (
+	"github.com/grafana/grafana/pkg/services/validations"
 	"testing"
 
 	sdkhttpclient "github.com/grafana/grafana-plugin-sdk-go/backend/httpclient"
@@ -23,10 +24,10 @@ func TestHTTPClientProvider(t *testing.T) {
 		})
 		tracer, err := tracing.InitializeTracerForTest()
 		require.NoError(t, err)
-		_ = New(&setting.Cfg{SigV4AuthEnabled: false}, tracer, featuremgmt.WithFeatures())
+		_ = New(&setting.Cfg{SigV4AuthEnabled: false}, &validations.OSSPluginRequestValidator{}, tracer, featuremgmt.WithFeatures())
 		require.Len(t, providerOpts, 1)
 		o := providerOpts[0]
-		require.Len(t, o.Middlewares, 6)
+		require.Len(t, o.Middlewares, 7)
 		require.Equal(t, TracingMiddlewareName, o.Middlewares[0].(sdkhttpclient.MiddlewareName).MiddlewareName())
 		require.Equal(t, DataSourceMetricsMiddlewareName, o.Middlewares[1].(sdkhttpclient.MiddlewareName).MiddlewareName())
 		require.Equal(t, SetUserAgentMiddlewareName, o.Middlewares[2].(sdkhttpclient.MiddlewareName).MiddlewareName())
@@ -47,10 +48,10 @@ func TestHTTPClientProvider(t *testing.T) {
 		})
 		tracer, err := tracing.InitializeTracerForTest()
 		require.NoError(t, err)
-		_ = New(&setting.Cfg{SigV4AuthEnabled: true}, tracer, featuremgmt.WithFeatures())
+		_ = New(&setting.Cfg{SigV4AuthEnabled: true}, &validations.OSSPluginRequestValidator{}, tracer, featuremgmt.WithFeatures())
 		require.Len(t, providerOpts, 1)
 		o := providerOpts[0]
-		require.Len(t, o.Middlewares, 7)
+		require.Len(t, o.Middlewares, 8)
 		require.Equal(t, TracingMiddlewareName, o.Middlewares[0].(sdkhttpclient.MiddlewareName).MiddlewareName())
 		require.Equal(t, DataSourceMetricsMiddlewareName, o.Middlewares[1].(sdkhttpclient.MiddlewareName).MiddlewareName())
 		require.Equal(t, SetUserAgentMiddlewareName, o.Middlewares[2].(sdkhttpclient.MiddlewareName).MiddlewareName())
@@ -58,5 +59,6 @@ func TestHTTPClientProvider(t *testing.T) {
 		require.Equal(t, sdkhttpclient.CustomHeadersMiddlewareName, o.Middlewares[4].(sdkhttpclient.MiddlewareName).MiddlewareName())
 		require.Equal(t, ResponseLimitMiddlewareName, o.Middlewares[5].(sdkhttpclient.MiddlewareName).MiddlewareName())
 		require.Equal(t, SigV4MiddlewareName, o.Middlewares[6].(sdkhttpclient.MiddlewareName).MiddlewareName())
+		require.Equal(t, SigV4MiddlewareName, o.Middlewares[7].(sdkhttpclient.MiddlewareName).MiddlewareName())
 	})
 }

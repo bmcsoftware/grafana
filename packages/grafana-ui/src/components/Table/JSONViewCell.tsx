@@ -34,7 +34,7 @@ export function JSONViewCell(props: TableCellProps): JSX.Element {
   return (
     <Tooltip placement="auto-start" content={content} theme="info-alt">
       <div {...cellProps} className={tableStyles.cellContainer}>
-        {!link && <div className={cx(tableStyles.cellText, txt)}>{value}</div>}
+        {!link && <div className={cx(tableStyles.cellText, txt)}>{displayValue}</div>}
         {link && (
           <a
             href={link.href}

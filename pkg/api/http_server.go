@@ -221,6 +221,11 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	}
 	hs.registerRoutes()
 
+	// BMC Code start
+	hs.log.Info("Registering Report Scheduler Api's")
+	hs.registerSchedulerRoutes()
+	// BMC Code end
+
 	if err := hs.declareFixedRoles(); err != nil {
 		return nil, err
 	}
@@ -530,6 +535,13 @@ func (hs *HTTPServer) apiHealthHandler(ctx *web.Context) {
 	if !hs.Cfg.AnonymousHideVersion {
 		data.Set("version", hs.Cfg.BuildVersion)
 		data.Set("commit", hs.Cfg.BuildCommit)
+
+		//BMC Code - Start
+		//author(kmejdi)
+		//Add ade version from env variables
+		version := os.Getenv("RELEASE_VERSION")
+		data.Set("version.ade", version)
+		//BMC Code - End
 	}
 
 	if !hs.databaseHealthy(ctx.Req.Context()) {

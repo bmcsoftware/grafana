@@ -52,6 +52,15 @@ async function fetchDashboard(
           return null;
         }
 
+        // Uncomment below code snippet to enable feature flag
+        // const tenantFeatureDTO = await fetchTenantFeatures();
+        // loadFeatures(tenantFeatureDTO);
+        // End
+
+        // <!-- BMC code - Gainsight PX Tag-->
+        // loadGainSightScript(dispatch);
+        // <!-- BMC code - Gainsight PX Tag-->
+
         // disable some actions on the default home dashboard
         dashDTO.meta.canSave = false;
         dashDTO.meta.canShare = false;

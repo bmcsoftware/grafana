@@ -14,9 +14,12 @@ export default class AppNotificationItem extends Component<Props> {
 
   componentDidMount() {
     const { appNotification, onClearNotification } = this.props;
-    setTimeout(() => {
-      onClearNotification(appNotification.id);
-    }, appNotification.timeout);
+    // BMC Code: next line only, disabling auto close for Gainsight User level consent alert
+    if (appNotification.timeout) {
+      setTimeout(() => {
+        onClearNotification(appNotification.id);
+      }, appNotification.timeout);
+    }
   }
 
   render() {

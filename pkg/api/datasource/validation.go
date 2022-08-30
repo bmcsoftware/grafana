@@ -3,7 +3,10 @@ package datasource
 import (
 	"errors"
 	"fmt"
+	goval "github.com/asaskevich/govalidator"
+	"net"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 
@@ -37,6 +40,10 @@ type URLValidationError struct {
 	Err error
 
 	URL string
+}
+
+func init() {
+	goval.SetFieldsRequiredByDefault(true)
 }
 
 // Error returns the error message.
@@ -88,3 +95,92 @@ func ValidateURL(typeName, urlStr string) (*url.URL, error) {
 
 	return u, nil
 }
+
+//author ateli - Mitigation for SSRF issue - DRJ71-3206
+//Start
+func ValidateSSRF(typeName, urlStr string) (*url.URL, error) {
+	if typeName != "DS_MYSQL" || typeName != "DS_MSSQL" || typeName != "DS_POSTGRES" {
+		var RESTRICTED_STACK_DOMAINS = os.Getenv("RESTRICTED_STACK_DOMAINS")
+		var EXTERNAL_URL_IDENTIFIERS = os.Getenv("EXTERNAL_URL_IDENTIFIERS")
+		var EXTERNAL_URL_VALIDATION_PATTERN = os.Getenv("EXTERNAL_URL_VALIDATION_PATTERN")
+
+		if RESTRICTED_STACK_DOMAINS != "" && EXTERNAL_URL_IDENTIFIERS != "" && EXTERNAL_URL_VALIDATION_PATTERN != "" {
+
+			regexTpl := strings.Replace(EXTERNAL_URL_VALIDATION_PATTERN, "#CUSTOMER#", "([a-zA-Z0-9-]+)", -1)
+			regexTpl = strings.Replace(regexTpl, ".#TENANT_NAME#", "(.)([a-zA-Z0-9-]+)", -1)
+			regexTpl = strings.Replace(regexTpl, "#ENV_NAME#", "([a-zA-Z0-9-]+)", -1)
+			regexTpl = strings.Replace(regexTpl, ".#DOMAIN#", "(.)([a-zA-Z0-9-.]+)", -1)
+			regexTpl = strings.Replace(regexTpl, "#PORT#", "([:0-9]*)", -1)
+
+			regexTpl = fmt.Sprintf("(%s)", regexTpl)
+
+			reg := regexp.MustCompile(regexTpl)
+			match := reg.MatchString(urlStr)
+			if !match {
+				return nil, fmt.Errorf("URL validation failed, Please follow the allowed URL pattern")
+			}
+			res := reg.FindStringSubmatch(urlStr)
+			
+			if len(res) < 6 {
+				return nil, fmt.Errorf("URL is not Allowed")
+			}
+			DOMAIN := res[7]
+			CUSTOMER := res[2]
+
+			restrictedDomains := strings.Split(RESTRICTED_STACK_DOMAINS, ",")
+			isValidDomain := false
+			for _, restrictedDomain := range restrictedDomains {
+				if DOMAIN == restrictedDomain {
+					isValidDomain = true
+				}
+			}
+			if !isValidDomain {
+				return nil, fmt.Errorf("domain is not Allowed")
+			}
+
+			externalUrlIdentifiers := strings.Split(EXTERNAL_URL_IDENTIFIERS, ",")
+			isValidCustomer := false
+			for _, identifiers := range externalUrlIdentifiers {
+				if CUSTOMER == identifiers {
+					isValidCustomer = true
+				}
+			}
+			if !isValidCustomer {
+				return nil, fmt.Errorf("customer is not allowed")
+			}
+
+			return nil, nil
+		} else {
+			dsURL, err := url.Parse(urlStr)
+
+			//Valid URL Check
+			if err != nil {
+				return nil, fmt.Errorf("Invalid URL Pattern, Please provide valid URL")
+			}
+			_, dsPort, _ := net.SplitHostPort(dsURL.Host)
+			dsAddress := dsURL.Host
+
+			//IP Address Check
+			isIPAddress := goval.IsIP(dsAddress)
+			if isIPAddress {
+				return nil, fmt.Errorf("IP Address is not allowed, Please provide FQDN")
+			}
+
+			// Port Number Check
+			if dsPort != "" {
+				return nil, fmt.Errorf("Port is not allowed, Please provide FQDN")
+			}
+
+			//Protocol Check
+			if dsURL.Scheme == "HTTP" || dsURL.Scheme == "http" {
+				return nil, fmt.Errorf("HTTP Protocol is not allowed, Please provide HTTPS URL")
+
+			}
+
+			return nil, nil
+		}
+	}
+	return nil, nil
+}
+
+//End

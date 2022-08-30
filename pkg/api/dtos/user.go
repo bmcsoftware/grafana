@@ -14,6 +14,9 @@ type SignUpStep2Form struct {
 }
 
 type AdminCreateUserForm struct {
+	//Start Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+	Id int64 `json:"id"`
+	//End Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
 	Email    string `json:"email"`
 	Login    string `json:"login"`
 	Name     string `json:"name"`
