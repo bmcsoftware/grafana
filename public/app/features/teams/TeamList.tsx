@@ -120,31 +120,39 @@ export class TeamList extends PureComponent<Props, State> {
             )}
           </td>
         )}
-        <td className="text-right">
-          <DeleteButton
-            aria-label="Delete team"
-            size="sm"
-            disabled={!canDelete}
-            onConfirm={() => this.deleteTeam(team)}
-          />
-        </td>
+        {config.buildInfo.env === 'development' && (
+          <>
+            <td className="text-right">
+              <DeleteButton
+                aria-label="Delete team"
+                size="sm"
+                disabled={!canDelete}
+                onConfirm={() => this.deleteTeam(team)}
+              />
+            </td>
+          </>
+        )}
+        ;
       </tr>
     );
   }
 
   renderEmptyList() {
     return (
-      <EmptyListCTA
-        title="You haven't created any teams yet."
-        buttonIcon="users-alt"
-        buttonLink="org/teams/new"
-        buttonTitle=" New team"
-        buttonDisabled={!contextSrv.hasPermission(AccessControlAction.ActionTeamsCreate)}
-        proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
-        proTipLink=""
-        proTipLinkTitle=""
-        proTipTarget="_blank"
-      />
+      <>
+        {config.buildInfo.env === 'development' && (
+          <EmptyListCTA
+            title="You haven't created any teams yet."
+            buttonIcon="users-alt"
+            buttonLink="org/teams/new"
+            buttonTitle=" New team"
+            proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
+            proTipLink=""
+            proTipLinkTitle=""
+            proTipTarget="_blank"
+          />
+        )}
+      </>
     );
   }
 
@@ -171,10 +179,11 @@ export class TeamList extends PureComponent<Props, State> {
           <div className="gf-form gf-form--grow">
             <FilterInput placeholder="Search teams" value={searchQuery} onChange={this.onSearchQueryChange} />
           </div>
-
-          <LinkButton href={newTeamHref} disabled={!canCreate}>
-            New Team
-          </LinkButton>
+          {config.buildInfo.env === 'development' && (
+            <LinkButton href={newTeamHref} disabled={!canCreate}>
+              New Team
+            </LinkButton>
+          )}
         </div>
 
         <div className="admin-list-table">

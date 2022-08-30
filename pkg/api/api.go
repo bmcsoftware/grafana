@@ -36,6 +36,21 @@ func (hs *HTTPServer) registerRoutes() {
 
 	r := hs.RouteRegister
 
+	//author(ateli) - Start
+	//Custom API to refresh expired JWT token from IMS
+	r.Post("/ims/refresh-jwt", routing.Wrap(hs.RefreshJWTToken))
+	//author(ateli) - End
+
+	//author(kmejdi) - Start
+	//Fetch user info from IMS
+	r.Get("/ims/userinfo", reqSignedIn, routing.Wrap(GetImsUserInfo))
+	//Update user preferences
+	r.Post("/ims/users/preferences", reqSignedIn, routing.Wrap(SetImsUserInfo))
+	//author(kmejdi) - End
+
+	//Added two API for getting feature flags
+	r.Get("/tenantfeatures", routing.Wrap(hs.GetTenantFeatures))
+
 	// not logged in views
 	r.Get("/logout", hs.Logout)
 	r.Post("/login", quota("session"), routing.Wrap(hs.LoginPost))
@@ -52,8 +67,8 @@ func (hs *HTTPServer) registerRoutes() {
 	r.Get("/org/", authorize(reqOrgAdmin, orgPreferencesAccessEvaluator), hs.Index)
 	r.Get("/org/new", authorizeInOrg(reqGrafanaAdmin, acmiddleware.UseGlobalOrg, orgsCreateAccessEvaluator), hs.Index)
 	r.Get("/datasources/", authorize(reqOrgAdmin, dataSourcesConfigurationAccessEvaluator), hs.Index)
-	r.Get("/datasources/new", authorize(reqOrgAdmin, dataSourcesNewAccessEvaluator), hs.Index)
-	r.Get("/datasources/edit/*", authorize(reqOrgAdmin, dataSourcesEditAccessEvaluator), hs.Index)
+	r.Get("/datasources/new", authorize(reqGrafanaAdmin, dataSourcesNewAccessEvaluator), hs.Index)
+	r.Get("/datasources/edit/*", authorize(reqGrafanaAdmin, dataSourcesEditAccessEvaluator), hs.Index)
 	r.Get("/org/users", authorize(reqOrgAdmin, ac.EvalPermission(ac.ActionOrgUsersRead)), hs.Index)
 	r.Get("/org/users/new", reqOrgAdmin, hs.Index)
 	r.Get("/org/users/invite", authorize(reqOrgAdmin, ac.EvalPermission(ac.ActionUsersCreate)), hs.Index)
@@ -132,7 +147,7 @@ func (hs *HTTPServer) registerRoutes() {
 
 	// dashboard snapshots
 	r.Get("/dashboard/snapshot/*", reqNoAuth, hs.Index)
-	r.Get("/dashboard/snapshots/", reqSignedIn, hs.Index)
+	r.Get("/dashboard/snapshots/", reqSignedIn, middleware.IsSnapshotEnabled, hs.Index)
 
 	// api renew session based on cookie
 	r.Get("/api/login/ping", quota("session"), routing.Wrap(hs.LoginAPIPing))
@@ -200,7 +215,7 @@ func (hs *HTTPServer) registerRoutes() {
 		apiRoute.Group("/teams", func(teamsRoute routing.RouteRegister) {
 			teamsRoute.Get("/:teamId", authorize(reqSignedIn, ac.EvalPermission(ac.ActionTeamsRead, ac.ScopeTeamsID)), routing.Wrap(hs.GetTeamByID))
 			teamsRoute.Get("/search", authorize(reqSignedIn, ac.EvalPermission(ac.ActionTeamsRead)), routing.Wrap(hs.SearchTeams))
-		})
+		}, reqSignedIn)
 
 		// org information available to all users.
 		apiRoute.Group("/org", func(orgRoute routing.RouteRegister) {
@@ -227,11 +242,31 @@ func (hs *HTTPServer) registerRoutes() {
 			// prefs
 			orgRoute.Get("/preferences", authorize(reqOrgAdmin, ac.EvalPermission(ActionOrgsPreferencesRead)), routing.Wrap(hs.GetOrgPreferences))
 			orgRoute.Put("/preferences", authorize(reqOrgAdmin, ac.EvalPermission(ActionOrgsPreferencesWrite)), routing.Wrap(hs.UpdateOrgPreferences))
+
+			orgRoute.Put("/configuration", reqOrgAdmin, routing.Wrap(AddCustomConfiguration))
+			orgRoute.Delete("/configuration", reqOrgAdmin, routing.Wrap(RefreshCustomConfiguration))
+
+			// BMC Code: Feature status update service
+			orgRoute.Put("/featurestatus", reqOrgAdmin, routing.Wrap(AddFeatureStatus))
 		})
 
 		// current org without requirement of user to be org admin
 		apiRoute.Group("/org", func(orgRoute routing.RouteRegister) {
 			orgRoute.Get("/users/lookup", authorize(reqOrgAdminFolderAdminOrTeamAdmin, ac.EvalPermission(ac.ActionOrgUsersRead)), routing.Wrap(hs.GetOrgUsersForCurrentOrgLookup))
+			orgRoute.Get("/configuration", routing.Wrap(GetCustomConfiguration))
+
+			//Service Management Calculated Field API's
+			// Deprecated: Use /calculatedfield instead.
+			orgRoute.Get("/calculatedfieldootb", routing.Wrap(GetCalculatedField))
+
+			orgRoute.Get("/calculatedfield", routing.Wrap(GetAllCalcFields))
+			orgRoute.Post("/calculatedfield", routing.Wrap(CreateNewCalcFields))
+			orgRoute.Delete("/calculatedfield", routing.Wrap(DeleteCalcFieldsById))
+			orgRoute.Put("/calculatedfield", routing.Wrap(ModifyCalcFieldsById))
+
+			// BMC Code: Feature status get service
+			orgRoute.Get("/featurestatus", routing.Wrap(GetFeatureStatus))
+
 		})
 
 		// create new org
@@ -274,14 +309,14 @@ func (hs *HTTPServer) registerRoutes() {
 		// Data sources
 		apiRoute.Group("/datasources", func(datasourceRoute routing.RouteRegister) {
 			datasourceRoute.Get("/", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesRead)), routing.Wrap(hs.GetDataSources))
-			datasourceRoute.Post("/", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesCreate)), quota("data_source"), routing.Wrap(AddDataSource))
-			datasourceRoute.Put("/:id", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesWrite, ScopeDatasourceID)), routing.Wrap(hs.UpdateDataSource))
-			datasourceRoute.Delete("/:id", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesDelete, ScopeDatasourceID)), routing.Wrap(hs.DeleteDataSourceById))
-			datasourceRoute.Delete("/uid/:uid", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesDelete, ScopeDatasourceUID)), routing.Wrap(hs.DeleteDataSourceByUID))
-			datasourceRoute.Delete("/name/:name", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesDelete, ScopeDatasourceName)), routing.Wrap(hs.DeleteDataSourceByName))
-			datasourceRoute.Get("/:id", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesRead)), routing.Wrap(hs.GetDataSourceById))
-			datasourceRoute.Get("/uid/:uid", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesRead)), routing.Wrap(hs.GetDataSourceByUID))
-			datasourceRoute.Get("/name/:name", authorize(reqOrgAdmin, ac.EvalPermission(ActionDatasourcesRead)), routing.Wrap(GetDataSourceByName))
+			datasourceRoute.Post("/", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesCreate)), quota("data_source"), routing.Wrap(AddDataSource))
+			datasourceRoute.Put("/:id", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesWrite, ScopeDatasourceID)), routing.Wrap(hs.UpdateDataSource))
+			datasourceRoute.Delete("/:id", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesDelete, ScopeDatasourceID)), routing.Wrap(hs.DeleteDataSourceById))
+			datasourceRoute.Delete("/uid/:uid", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesDelete, ScopeDatasourceUID)), routing.Wrap(hs.DeleteDataSourceByUID))
+			datasourceRoute.Delete("/name/:name", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesDelete, ScopeDatasourceName)), routing.Wrap(hs.DeleteDataSourceByName))
+			datasourceRoute.Get("/:id", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesRead)), routing.Wrap(hs.GetDataSourceById))
+			datasourceRoute.Get("/uid/:uid", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesRead)), routing.Wrap(hs.GetDataSourceByUID))
+			datasourceRoute.Get("/name/:name", authorize(reqGrafanaAdmin, ac.EvalPermission(ActionDatasourcesRead)), routing.Wrap(GetDataSourceByName))
 		})
 
 		apiRoute.Get("/datasources/id/:name", authorize(reqSignedIn, ac.EvalPermission(ActionDatasourcesIDRead, ScopeDatasourceName)), routing.Wrap(GetDataSourceIdByName))
@@ -361,7 +396,7 @@ func (hs *HTTPServer) registerRoutes() {
 
 		// Dashboard snapshots
 		apiRoute.Group("/dashboard/snapshots", func(dashboardRoute routing.RouteRegister) {
-			dashboardRoute.Get("/", routing.Wrap(SearchDashboardSnapshots))
+			dashboardRoute.Get("/", middleware.IsSnapshotEnabled, routing.Wrap(SearchDashboardSnapshots))
 		})
 
 		// Playlist
@@ -505,8 +540,20 @@ func (hs *HTTPServer) registerRoutes() {
 		adminUserRoute.Post("/:id/revoke-auth-token", authorize(reqGrafanaAdmin, ac.EvalPermission(ac.ActionUsersAuthTokenUpdate, userIDScope)), routing.Wrap(hs.AdminRevokeUserAuthToken))
 	})
 
+	// BMC code - begin
+
+	// rebranding
+	r.Get("/rebranding/custom_dashboard.css", reqSignedIn, routing.Wrap(GetTenantReBranding))
+
+	r.Get("/render/pdf", reqSignedIn, hs.CustomRenderToPdf)
+	r.Get("/render/csv", reqSignedIn, hs.CustomRenderToCsv)
+	r.Get("/render/*", reqSignedIn, hs.CustomRenderToPng)
+	// BMC code - end
+
+	// BMC code - begin
 	// rendering
-	r.Get("/render/*", reqSignedIn, hs.RenderToPng)
+	// r.Get("/render/*", reqSignedIn, hs.RenderToPng)
+	// BMC code - end
 
 	// grafana.net proxy
 	r.Any("/api/gnet/*", reqSignedIn, hs.ProxyGnetRequest)
@@ -516,11 +563,11 @@ func (hs *HTTPServer) registerRoutes() {
 	r.Get("/avatar/:hash", avatarCacheServer.Handler)
 
 	// Snapshots
-	r.Post("/api/snapshots/", reqSnapshotPublicModeOrSignedIn, CreateDashboardSnapshot)
-	r.Get("/api/snapshot/shared-options/", reqSignedIn, GetSharingOptions)
-	r.Get("/api/snapshots/:key", routing.Wrap(GetDashboardSnapshot))
-	r.Get("/api/snapshots-delete/:deleteKey", reqSnapshotPublicModeOrSignedIn, routing.Wrap(DeleteDashboardSnapshotByDeleteKey))
-	r.Delete("/api/snapshots/:key", reqEditorRole, routing.Wrap(DeleteDashboardSnapshot))
+	r.Post("/api/snapshots/", reqSnapshotPublicModeOrSignedIn, middleware.IsSnapshotEnabled, CreateDashboardSnapshot)
+	r.Get("/api/snapshot/shared-options/", reqSignedIn, middleware.IsSnapshotEnabled, GetSharingOptions)
+	r.Get("/api/snapshots/:key", middleware.IsSnapshotEnabled, routing.Wrap(GetDashboardSnapshot))
+	r.Get("/api/snapshots-delete/:deleteKey", reqSnapshotPublicModeOrSignedIn, middleware.IsSnapshotEnabled, routing.Wrap(DeleteDashboardSnapshotByDeleteKey))
+	r.Delete("/api/snapshots/:key", reqEditorRole, middleware.IsSnapshotEnabled, routing.Wrap(DeleteDashboardSnapshot))
 
 	// Frontend logs
 	sourceMapStore := frontendlogging.NewSourceMapStore(hs.Cfg, hs.pluginStaticRouteResolver, frontendlogging.ReadSourceMapFromFS)

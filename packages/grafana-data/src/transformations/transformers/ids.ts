@@ -30,4 +30,6 @@ export enum DataTransformerID {
   fieldLookup = 'fieldLookup',
   spatial = 'spatial',
   extractFields = 'extractFields',
+  // BMC Code
+  advanceFunctions = 'advanceFunctions',
 }

@@ -216,3 +216,10 @@ func OrgAdminFolderAdminOrTeamAdmin(c *models.ReqContext) {
 
 	accessForbidden(c)
 }
+
+func IsSnapshotEnabled(c *models.ReqContext) {
+	ok := sqlstore.IsFeatureEnabled(c.OrgId, "Snapshot")
+	if !ok {
+		accessForbidden(c)
+	}
+}

@@ -259,7 +259,9 @@ require (
 
 require (
 	github.com/Azure/go-autorest/autorest/adal v0.9.15 // indirect
+	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/containerd/containerd v1.5.9 // indirect
+	github.com/gorilla/css v1.0.0 // indirect
 	github.com/grafana/dskit v0.0.0-20211011144203-3a88ec0b675f // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/klauspost/compress v1.13.1 // indirect
@@ -267,6 +269,15 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.8 // indirect
 	github.com/segmentio/asm v1.1.1 // indirect
 )
+
+// BMC code - begin - custom dependencies
+require (
+	github.bmc.com/DSOM-ADE/authz-go v0.0.0-20210728224912-0e79c1159b4f
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
+	github.com/microcosm-cc/bluemonday v1.0.18
+)
+// BMC code - end
 
 // Use fork of crewjam/saml with fixes for some issues until changes get merged into upstream
 replace github.com/crewjam/saml => github.com/grafana/saml v0.0.0-20211007135653-aed1b2edd86b
