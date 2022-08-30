@@ -65,6 +65,15 @@ import { DatasourceSrv } from './features/plugins/datasource_srv';
 import { AngularApp } from './angular';
 import { ModalManager } from './core/services/ModalManager';
 import { initWindowRuntime } from './features/runtime/init';
+
+// BMC Code starts
+import { loadFeatures, getFeatureStatus, loadGrafanaFeatures } from './features/dashboard/services/featureFlagSrv';
+import { TenantFeatureDTO } from './types/features';
+import { StoreState } from 'app/types';
+import { Store } from 'redux';
+import { getGainsightData } from './core/services/ims_srv';
+import { updateGainSightUserPreferences } from './features/dashboard/state/reducers';
+// BMC Code ends
 import { createQueryVariableAdapter } from './features/variables/query/adapter';
 import { createCustomVariableAdapter } from './features/variables/custom/adapter';
 import { createTextBoxVariableAdapter } from './features/variables/textbox/adapter';
@@ -73,6 +82,7 @@ import { createDataSourceVariableAdapter } from './features/variables/datasource
 import { createIntervalVariableAdapter } from './features/variables/interval/adapter';
 import { createAdHocVariableAdapter } from './features/variables/adhoc/adapter';
 import { createSystemVariableAdapter } from './features/variables/system/adapter';
+import { createDatePickerVariableAdapter } from './features/variables/datepicker/adapter';
 
 // add move to lodash for backward compatabilty with plugins
 // @ts-ignore
@@ -108,7 +118,7 @@ export class GrafanaApp {
       setTimeZoneResolver(() => config.bootData.user.timezone);
       // Important that extension reducers are initialized before store
       addExtensionReducers();
-      configureStore();
+      const store: Store<StoreState> = configureStore();
       initExtensions();
 
       standardEditorsRegistry.setInit(getAllOptionEditors);
@@ -123,6 +133,7 @@ export class GrafanaApp {
         createIntervalVariableAdapter(),
         createAdHocVariableAdapter(),
         createSystemVariableAdapter(),
+        createDatePickerVariableAdapter(),
       ]);
       monacoLanguageRegistry.setInit(getDefaultMonacoLanguages);
 
@@ -153,6 +164,19 @@ export class GrafanaApp {
 
       // Preload selected app plugins
       await preloadPlugins(config.pluginsToPreload);
+
+      // BMC code starts
+      // Uncomment below code snippet to enable feature flag
+      const tenantFeatureDTO = await fetchTenantFeatures();
+      loadFeatures(tenantFeatureDTO);
+      // Suppress the error
+      if (getFeatureStatus('gainsight')) {
+        await loadGainSightScript(store).catch((e: any) => {
+          return true;
+        });
+      }
+      // End
+      // BMC code ends
 
       ReactDOM.render(
         React.createElement(AppWrapper, {
@@ -259,5 +283,70 @@ function reportMetricPerformanceMark(metricName: string, prefix = '', suffix = '
     reportPerformance(`${prefix}${metricName}${suffix}`, Math.round(metric.startTime) / 1000);
   }
 }
+
+// Uncomment below code snippet to enable feature flag
+async function fetchTenantFeatures(): Promise<TenantFeatureDTO[] | null> {
+  const response = await Promise.all([
+    backendSrv.get('/tenantfeatures'),
+    loadGrafanaFeatures().catch((e) => {
+      console.log(e);
+    }),
+  ]);
+  return response[0];
+}
+// End
+
+// <!-- BMC code - Gainsight PX Tag-->
+const loadGainSightScript = async (store: Store<StoreState>): Promise<any> => {
+  // Get GS-Tag from IMS userinfo endpoint
+  var { gsTag, canShareUserPII, preferences } = await getGainsightData();
+  await store.dispatch(updateGainSightUserPreferences(preferences));
+
+  if (!gsTag) {
+    return;
+  }
+
+  const user = contextSrv.user;
+  const identity: any = {};
+
+  // user opts-in
+  if (canShareUserPII) {
+    identity.id = user.id;
+    identity.username = user.login;
+    identity.email = user.email;
+    identity.orgName = user.orgName;
+    identity.tenantId = user.orgId;
+  }
+  // user opts-out
+  else {
+    identity.id = user.id;
+    identity.tenantId = user.orgId;
+  }
+
+  const url = 'https://documents.bmc.com/products/docs/gainsight/main/aptrinsic.js';
+  const param = gsTag;
+  const i = 'aptrinsic';
+  (window as any)[i] =
+    (window as any)[i] ||
+    function () {
+      ((window as any)[i].q = (window as any)[i].q || []).push(arguments);
+    };
+  (window as any)[i].p = param;
+  const node = document.createElement('script');
+  node.async = true;
+  node.src = url + '?a=' + param;
+  const script = document.getElementsByTagName('script')[0];
+  node.onload = (_: any) => {
+    console.log('Gainsight is loaded');
+    (window as any)[i]('identify', identity);
+    (window as any)[i]('set', 'globalContext', { application: 'dashboards' });
+  };
+  node.onerror = (error: any) => {
+    console.error('An error occurred while loading GainSight script; reason: ', error);
+  };
+  script?.parentNode?.insertBefore(node, script);
+};
+
+// <!-- BMC code - Gainsight PX Tag-->
 
 export default new GrafanaApp();

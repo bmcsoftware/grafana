@@ -52,8 +52,7 @@
     "watch": "yarn start -d watch,start core:start --watchTheme",
     "ci:test-frontend": "yarn run test:ci && yarn grafana-toolkit node-version-check",
     "i18n:extract": "lingui extract",
-    "i18n:compile": "lingui compile",
-    "postinstall": "husky install"
+    "i18n:compile": "lingui compile"
   },
   "grafana": {
     "whatsNewUrl": "https://grafana.com/docs/grafana/next/whatsnew/whats-new-in-v8-4/",
@@ -147,6 +146,7 @@
     "@types/react-window": "1.8.5",
     "@types/redux-mock-store": "1.0.3",
     "@types/reselect": "2.2.0",
+    "@types/sanitize-html": "2.3.2",
     "@types/semver": "7.3.9",
     "@types/slate": "0.47.2",
     "@types/slate-plain-serializer": "0.7.2",
@@ -193,6 +193,8 @@
     "jest-date-mock": "1.0.8",
     "jest-junit": "13.0.0",
     "jest-matcher-utils": "27.4.6",
+    "jodit": "3.8.6",
+    "jodit-react": "1.1.5",
     "lerna": "^4.0.0",
     "lint-staged": "12.3.1",
     "mini-css-extract-plugin": "2.5.2",
@@ -229,7 +231,8 @@
     "webpack-bundle-analyzer": "4.5.0",
     "webpack-cli": "4.9.1",
     "webpack-dev-server": "4.7.2",
-    "webpack-merge": "5.8.0"
+    "webpack-merge": "5.8.0",
+    "zone.js": "0.7.8"
   },
   "dependencies": {
     "@emotion/css": "11.7.1",
@@ -285,6 +288,7 @@
     "comlink": "4.3.1",
     "common-tags": "1.8.2",
     "core-js": "3.20.2",
+    "cronstrue": "1.106.0",
     "d3": "5.15.0",
     "d3-force": "^2.1.1",
     "d3-scale-chromatic": "1.5.0",
@@ -322,6 +326,7 @@
     "pluralize": "^8.0.0",
     "prismjs": "1.26.0",
     "prop-types": "15.8.1",
+    "query-string": "6.13.8",
     "rc-cascader": "3.2.1",
     "rc-drawer": "4.4.3",
     "rc-slider": "9.7.5",
@@ -355,6 +360,7 @@
     "reselect": "4.1.5",
     "rst2html": "github:thoward/rst2html#990cb89f2a300cdd9151790be377c4c0840df809",
     "rxjs": "7.5.1",
+    "sanitize-html": "2.4.0",
     "sass": "link:./public/sass",
     "search-query-parser": "1.6.0",
     "selecto": "1.13.2",
@@ -366,6 +372,7 @@
     "tether-drop": "https://github.com/torkelo/drop",
     "tinycolor2": "1.4.2",
     "tslib": "2.3.1",
+    "universal-cookie": "4.0.4",
     "uplot": "1.6.19",
     "uuid": "8.3.2",
     "vendor": "link:./public/vendor",

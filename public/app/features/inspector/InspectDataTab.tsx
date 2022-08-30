@@ -248,6 +248,7 @@ export class InspectDataTab extends PureComponent<Props, State> {
             toggleDownloadForExcel={this.toggleDownloadForExcel}
           />
           <Button
+            id={'custom-csv-selector-download-csv'}
             variant="primary"
             onClick={() => this.exportCsv(dataFrames[dataFrameIndex], { useExcelHeader: this.state.downloadForExcel })}
             className={css`

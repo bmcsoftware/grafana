@@ -19,6 +19,8 @@ import { renameByRegexTransformer } from './transformers/renameByRegex';
 import { filterByValueTransformer } from './transformers/filterByValue';
 import { histogramTransformer } from './transformers/histogram';
 import { convertFieldTypeTransformer } from './transformers/convertFieldType';
+//BMC Code
+import { advanceFunctionsTransformer } from './transformers/advanceFunctions';
 
 export const standardTransformers = {
   noopTransformer,
@@ -43,4 +45,6 @@ export const standardTransformers = {
   renameByRegexTransformer,
   histogramTransformer,
   convertFieldTypeTransformer,
+  // BMC Code
+  advanceFunctionsTransformer,
 };
