@@ -131,9 +131,9 @@ export class TablePanelCtrl extends MetricsPanelCtrl {
   render() {
     this.table = transformDataToTable(this.dataRaw, this.panel);
     this.table.sort(this.panel.sort);
-
     this.renderer = new TableRenderer(
       this.panel,
+      this,
       this.table,
       this.dashboard.getTimezone(),
       this.$sanitize,

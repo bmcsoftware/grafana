@@ -67,6 +67,14 @@ import { AngularApp } from './angular';
 import { ModalManager } from './core/services/ModalManager';
 import { initWindowRuntime } from './features/runtime/init';
 
+// BMC Code starts
+import { loadFeatures, getFeatureStatus } from './features/dashboard/services/featureFlagSrv';
+import { TenantFeatureDTO } from './types/features';
+import { StoreState } from 'app/types';
+import { Store } from 'redux';
+import { getGainsightData } from './core/services/ims_srv';
+import { updateGainSightUserPreferences } from './features/dashboard/state/reducers';
+// BMC Code ends
 // add move to lodash for backward compatabilty with plugins
 // @ts-ignore
 _.move = arrayMove;
@@ -101,7 +109,7 @@ export class GrafanaApp {
       setTimeZoneResolver(() => config.bootData.user.timezone);
       // Important that extension reducers are initialized before store
       addExtensionReducers();
-      configureStore();
+      const store: Store<StoreState> = configureStore();
       initExtensions();
 
       standardEditorsRegistry.setInit(getAllOptionEditors);
@@ -137,6 +145,19 @@ export class GrafanaApp {
 
       // Preload selected app plugins
       await preloadPlugins(config.pluginsToPreload);
+
+      // BMC code starts
+      // Uncomment below code snippet to enable feature flag
+      const tenantFeatureDTO = await fetchTenantFeatures();
+      loadFeatures(tenantFeatureDTO);
+      // Suppress the error
+      if (getFeatureStatus('gainsight')) {
+        await loadGainSightScript(store).catch((e: any) => {
+          return true;
+        });
+      }
+      // End
+      // BMC code ends
 
       ReactDOM.render(
         React.createElement(AppWrapper, {
@@ -243,5 +264,63 @@ function reportMetricPerformanceMark(metricName: string, prefix = '', suffix = '
     reportPerformance(`${prefix}${metricName}${suffix}`, Math.round(metric.startTime) / 1000);
   }
 }
+
+// Uncomment below code snippet to enable feature flag
+async function fetchTenantFeatures(): Promise<TenantFeatureDTO[] | null> {
+  const response: TenantFeatureDTO[] = await backendSrv.get('/tenantfeatures');
+  return response;
+}
+// End
+
+// <!-- BMC code - Gainsight PX Tag-->
+const loadGainSightScript = async (store: Store<StoreState>): Promise<any> => {
+  // Get GS-Tag from IMS userinfo endpoint
+  var { gsTag, canShareUserPII, preferences } = await getGainsightData();
+  await store.dispatch(updateGainSightUserPreferences(preferences));
+  if (!gsTag) {
+    return;
+  }
+
+  const user = contextSrv.user;
+  const identity: any = {};
+
+  // user opts-in
+  if (canShareUserPII) {
+    identity.id = user.id;
+    identity.username = user.login;
+    identity.email = user.email;
+    identity.orgName = user.orgName;
+    identity.tenantId = user.orgId;
+  }
+  // user opts-out
+  else {
+    identity.id = user.id;
+    identity.tenantId = user.orgId;
+  }
+
+  const url = 'https://web-sdk.aptrinsic.com/api/aptrinsic.js';
+  const param = gsTag;
+  const i = 'aptrinsic';
+  (window as any)[i] =
+    (window as any)[i] ||
+    function () {
+      ((window as any)[i].q = (window as any)[i].q || []).push(arguments);
+    };
+  (window as any)[i].p = param;
+  const node = document.createElement('script');
+  node.async = true;
+  node.src = url + '?a=' + param;
+  const script = document.getElementsByTagName('script')[0];
+  node.onload = (_: any) => {
+    console.log('Gainsight is loaded');
+    (window as any)[i]('identify', identity);
+    (window as any)[i]('set', 'globalContext', { application: 'dashboards' });
+  };
+  node.onerror = (error: any) => {
+    console.error('An error occurred while loading GainSight script; reason: ', error);
+  };
+  script?.parentNode?.insertBefore(node, script);
+};
+// <!-- BMC code - Gainsight PX Tag-->
 
 export default new GrafanaApp();

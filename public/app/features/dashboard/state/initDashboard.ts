@@ -44,13 +44,21 @@ async function fetchDashboard(
       case DashboardRoutes.Home: {
         // load home dash
         const dashDTO: DashboardDTO = await backendSrv.get('/api/dashboards/home');
-
         // if user specified a custom home dashboard redirect to that
         if (dashDTO.redirectUri) {
           const newUrl = locationUtil.stripBaseFromUrl(dashDTO.redirectUri);
           locationService.replace(newUrl);
           return null;
         }
+
+        // Uncomment below code snippet to enable feature flag
+        // const tenantFeatureDTO = await fetchTenantFeatures();
+        // loadFeatures(tenantFeatureDTO);
+        // End
+
+        // <!-- BMC code - Gainsight PX Tag-->
+        // loadGainSightScript(dispatch);
+        // <!-- BMC code - Gainsight PX Tag-->
 
         // disable some actions on the default home dashboard
         dashDTO.meta.canSave = false;

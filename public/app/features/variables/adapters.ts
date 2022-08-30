@@ -8,6 +8,7 @@ import { VariablePickerProps } from './pickers/types';
 import { createQueryVariableAdapter } from './query/adapter';
 import { createCustomVariableAdapter } from './custom/adapter';
 import { createTextBoxVariableAdapter } from './textbox/adapter';
+import { createDatePickerVariableAdapter } from './datepicker/adapter';
 import { createConstantVariableAdapter } from './constant/adapter';
 import { createDataSourceVariableAdapter } from './datasource/adapter';
 import { createIntervalVariableAdapter } from './interval/adapter';
@@ -41,6 +42,7 @@ export const getDefaultVariableAdapters = () => [
   createIntervalVariableAdapter(),
   createAdHocVariableAdapter(),
   createSystemVariableAdapter(),
+  createDatePickerVariableAdapter(),
 ];
 
 export const variableAdapters = new Registry<VariableAdapter<any>>();

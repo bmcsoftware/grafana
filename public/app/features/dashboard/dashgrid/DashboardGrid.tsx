@@ -15,7 +15,7 @@ import { DashboardModel, PanelModel } from '../state';
 import { Subscription } from 'rxjs';
 import { DashboardPanelsChangedEvent } from 'app/types/events';
 import { GridPos } from '../state/PanelModel';
-import { config } from '@grafana/runtime';
+import { config, locationService } from '@grafana/runtime';
 
 export interface Props {
   dashboard: DashboardModel;
@@ -25,6 +25,8 @@ export interface Props {
 
 export interface State {
   isLayoutInitialized: boolean;
+  simple: boolean;
+  orientation: string;
 }
 
 export class DashboardGrid extends PureComponent<Props, State> {
@@ -41,11 +43,20 @@ export class DashboardGrid extends PureComponent<Props, State> {
 
     this.state = {
       isLayoutInitialized: false,
+      simple: false,
+      orientation: 'portrait',
     };
   }
 
   componentDidMount() {
     const { dashboard } = this.props;
+    const simple = locationService.getSearch().has('simple');
+    const orientation = locationService.getSearch().get('orientation') ?? 'portrait';
+    this.setState({
+      ...this.state,
+      simple: simple,
+      orientation: orientation,
+    });
     this.eventSubs.add(dashboard.events.subscribe(DashboardPanelsChangedEvent, this.triggerForceUpdate));
   }
 
@@ -53,9 +64,29 @@ export class DashboardGrid extends PureComponent<Props, State> {
     this.eventSubs.unsubscribe();
   }
 
+  updatePanelsForReport(w: number, h: number, firstPanelLoaded = true) {
+    const { simple, orientation } = this.state;
+    if (!simple) {
+      return { w, h };
+    }
+
+    if (!orientation || orientation !== 'landscape') {
+      return {
+        w: 24,
+        h: 12,
+      };
+    } else {
+      return {
+        w: 24,
+        h: firstPanelLoaded ? 22 : 25,
+      };
+    }
+  }
+
   buildLayout() {
     const layout = [];
     this.panelMap = {};
+    let firstPanelLoaded = true;
 
     for (const panel of this.props.dashboard.panels) {
       if (!panel.key) {
@@ -67,13 +98,16 @@ export class DashboardGrid extends PureComponent<Props, State> {
         console.log('panel without gridpos');
         continue;
       }
+      const panelSize = this.updatePanelsForReport(panel.gridPos.w, panel.gridPos.h, firstPanelLoaded);
+      if (panel.type !== 'row') {
+        firstPanelLoaded = false;
+      }
 
       const panelPos: any = {
         i: panel.key,
         x: panel.gridPos.x,
         y: panel.gridPos.y,
-        w: panel.gridPos.w,
-        h: panel.gridPos.h,
+        ...panelSize,
       };
 
       if (panel.type === 'row') {
@@ -143,6 +177,17 @@ export class DashboardGrid extends PureComponent<Props, State> {
 
   renderPanels(gridWidth: number) {
     const panelElements = [];
+
+    // Reset last panel bottom
+    this.lastPanelBottom = 0;
+
+    // This is to avoid layout re-flows, accessing window.innerHeight can trigger re-flow
+    // We assume here that if width change height might have changed as well
+    if (this.gridWidth !== gridWidth) {
+      this.windowHeight = window.innerHeight ?? 1000;
+      this.windowWidth = window.innerWidth;
+      this.gridWidth = gridWidth;
+    }
 
     // Reset last panel bottom
     this.lastPanelBottom = 0;

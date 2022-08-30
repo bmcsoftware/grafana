@@ -74,22 +74,41 @@ export class TeamList extends PureComponent<Props, any> {
             onConfirm={() => this.deleteTeam(team)}
           />
         </td>
+        {config.buildInfo.env === 'development' && (
+          <>
+            <td className="link-td">
+              <a href={teamUrl}>{team.memberCount}</a>
+            </td>
+            <td className="text-right">
+              <DeleteButton
+                aria-label="Delete team"
+                size="sm"
+                disabled={!canDelete}
+                onConfirm={() => this.deleteTeam(team)}
+              />
+            </td>
+          </>
+        )}
       </tr>
     );
   }
 
   renderEmptyList() {
     return (
-      <EmptyListCTA
-        title="You haven't created any teams yet."
-        buttonIcon="users-alt"
-        buttonLink="org/teams/new"
-        buttonTitle=" New team"
-        proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
-        proTipLink=""
-        proTipLinkTitle=""
-        proTipTarget="_blank"
-      />
+      <>
+        {config.buildInfo.env === 'development' && (
+          <EmptyListCTA
+            title="You haven't created any teams yet."
+            buttonIcon="users-alt"
+            buttonLink="org/teams/new"
+            buttonTitle=" New team"
+            proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
+            proTipLink=""
+            proTipLinkTitle=""
+            proTipTarget="_blank"
+          />
+        )}
+      </>
     );
   }
 
@@ -106,9 +125,11 @@ export class TeamList extends PureComponent<Props, any> {
             <FilterInput placeholder="Search teams" value={searchQuery} onChange={this.onSearchQueryChange} />
           </div>
 
-          <LinkButton className={disabledClass} href={newTeamHref}>
-            New Team
-          </LinkButton>
+          {config.buildInfo.env === 'development' && (
+            <LinkButton className={disabledClass} href={newTeamHref}>
+              New Team
+            </LinkButton>
+          )}
         </div>
 
         <div className="admin-list-table">
@@ -118,7 +139,7 @@ export class TeamList extends PureComponent<Props, any> {
                 <th />
                 <th>Name</th>
                 <th>Email</th>
-                <th>Members</th>
+                {config.buildInfo.env === 'development' && <th>Members</th>}
                 <th style={{ width: '1%' }} />
               </tr>
             </thead>

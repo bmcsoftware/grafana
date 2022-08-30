@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/grafana/grafana/pkg/api/apierrors"
 	"github.com/grafana/grafana/pkg/api/dtos"
@@ -77,6 +78,36 @@ func (hs *HTTPServer) CreateFolder(c *models.ReqContext) response.Response {
 				c.SignedInUser.UserId, "error", err)
 		}
 	}
+
+	//author(ateli) - start
+	//Changes to make folder private by default, Fix for DRJ71-743
+	var items []*models.DashboardAcl
+	items = append(items, &models.DashboardAcl{
+		OrgID:       c.OrgId,
+		DashboardID: folder.Id,
+		UserID:      c.UserId,
+		TeamID:      0,
+		Role:        nil,
+		Permission:  models.PermissionType(4),
+		Created:     time.Now(),
+		Updated:     time.Now(),
+	})
+
+	if err := updateDashboardACL(c.Req.Context(), hs.SQLStore, folder.Id, items); err != nil {
+		if errors.Is(err, models.ErrDashboardAclInfoMissing) {
+			err = models.ErrFolderAclInfoMissing
+		}
+		if errors.Is(err, models.ErrDashboardPermissionDashboardEmpty) {
+			err = models.ErrFolderPermissionFolderEmpty
+		}
+
+		if errors.Is(err, models.ErrFolderAclInfoMissing) || errors.Is(err, models.ErrFolderPermissionFolderEmpty) {
+			return response.Error(409, err.Error(), err)
+		}
+
+		return response.Error(500, "Failed to create permission", err)
+	}
+	//author(ateli) - end
 
 	g := guardian.New(c.Req.Context(), folder.Id, c.OrgId, c.SignedInUser)
 	return response.JSON(200, toFolderDto(c.Req.Context(), g, folder))

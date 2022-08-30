@@ -20,6 +20,7 @@ import { OrgPicker, OrgSelectItem } from 'app/core/components/Select/OrgPicker';
 import { OrgRolePicker } from './OrgRolePicker';
 import { contextSrv } from 'app/core/core';
 import { UserRolePicker } from 'app/core/components/RolePicker/UserRolePicker';
+import { config } from 'app/core/config';
 
 interface Props {
   orgs: UserOrg[];
@@ -78,14 +79,18 @@ export class UserOrgs extends PureComponent<Props, State> {
               </tbody>
             </table>
           </div>
-          <div className={addToOrgContainerClass}>
-            {canAddToOrg && (
-              <Button variant="secondary" onClick={this.showOrgAddModal} ref={this.addToOrgButtonRef}>
-                Add user to organization
-              </Button>
-            )}
-          </div>
-          <AddToOrgModal isOpen={showAddOrgModal} onOrgAdd={onOrgAdd} onDismiss={this.dismissOrgAddModal} />
+          {config.buildInfo.env === 'development' && (
+            <>
+              <div className={addToOrgContainerClass}>
+                {canAddToOrg && (
+                  <Button variant="secondary" onClick={this.showOrgAddModal} ref={this.addToOrgButtonRef}>
+                    Add user to organization
+                  </Button>
+                )}
+              </div>
+              <AddToOrgModal isOpen={showAddOrgModal} onOrgAdd={onOrgAdd} onDismiss={this.dismissOrgAddModal} />
+            </>
+          )}
         </div>
       </>
     );

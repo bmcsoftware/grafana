@@ -1,7 +1,7 @@
 import { escape, isString, property } from 'lodash';
 import { deprecationWarning, ScopedVars, TimeRange } from '@grafana/data';
 import { getFilteredVariables, getVariables, getVariableWithName } from '../variables/state/selectors';
-import { variableRegex } from '../variables/utils';
+import { variableRegex, dateRangeExtract } from '../variables/utils';
 import { isAdHoc } from '../variables/guard';
 import { AdHocVariableFilter, AdHocVariableModel, VariableModel } from '../variables/types';
 import { getDataSourceSrv, setTemplateSrv, TemplateSrv as BaseTemplateSrv } from '@grafana/runtime';
@@ -315,6 +315,19 @@ export class TemplateSrv implements BaseTemplateSrv {
         }
       }
 
+      // BMC Code Starts
+      if (variable.type === 'datepicker' && (fmt === 'from' || fmt === 'to')) {
+        const dateTimeVal = dateRangeExtract(value);
+        switch (fmt) {
+          case 'from':
+            return dateTimeVal[0] ?? match;
+          case 'to':
+            return dateTimeVal[1] ?? match;
+          default:
+            return match;
+        }
+      }
+      // BMC Code Ends
       const res = this.formatValue(value, fmt, variable, text);
       return res;
     });

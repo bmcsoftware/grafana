@@ -25,7 +25,8 @@ const validateOrg = async (orgName: string) => {
     }
     return 'Something went wrong';
   }
-  return 'Organization already exists';
+  // return true if application already exist to allow different tenant with the same name (https://jira.bmc.com/browse/DRJ71-730)
+  return true;
 };
 
 interface PropsWithState {

@@ -86,23 +86,42 @@ func (en *EmailNotifier) Notify(evalContext *alerting.EvalContext) error {
 		SendEmailCommand: models.SendEmailCommand{
 			Subject: evalContext.GetNotificationTitle(),
 			Data: map[string]interface{}{
-				"Title":         evalContext.GetNotificationTitle(),
-				"State":         evalContext.Rule.State,
-				"Name":          evalContext.Rule.Name,
-				"StateModel":    evalContext.GetStateModel(),
-				"Message":       evalContext.Rule.Message,
-				"Error":         error,
-				"RuleUrl":       ruleURL,
-				"ImageLink":     "",
-				"EmbeddedImage": "",
-				"AlertPageUrl":  setting.AppUrl + "alerting",
-				"EvalMatches":   evalContext.EvalMatches,
+				"Title":            evalContext.GetNotificationTitle(),
+				"State":            evalContext.Rule.State,
+				"Name":             evalContext.Rule.Name,
+				"StateModel":       evalContext.GetStateModel(),
+				"Message":          evalContext.Rule.Message,
+				"Error":            error,
+				"RuleUrl":          ruleURL,
+				"ImageLink":        "",
+				"EmbeddedImage":    "",
+				"BMCEmbeddedImage": "",
+				"AlertPageUrl":     setting.AppUrl + "alerting",
+				"EvalMatches":      evalContext.EvalMatches,
 			},
 			To:            en.Addresses,
 			SingleEmail:   en.SingleEmail,
 			Template:      "alert_notification",
 			EmbeddedFiles: []string{},
 		},
+	}
+
+	// Get BMC Logo image file.
+	// If exist, ypdate 'BMCEmbeddedImage' and add to 'EmbededFiles'.
+	// If not exist, leave 'BMCEmbeddedImage' empty (BMC logo will not be part of the mail content).
+	path, err := os.Getwd()
+	if err != nil {
+		en.log.Error("Failed to get current dirctory for BMC logo", "error", err)
+	} else {
+		bmcLogoPath := path + "/public/img/bmc_helix_dark.png"
+		if _, err := os.Stat(bmcLogoPath); err != nil {
+			if os.IsNotExist(err) {
+				en.log.Error("BMC logo image file not exist on the provided location: "+bmcLogoPath, "error", err)
+			}
+		} else {
+			cmd.EmbeddedFiles = append(cmd.EmbeddedFiles, bmcLogoPath)
+			cmd.Data["BMCEmbeddedImage"] = "bmc_helix_dark.png"
+		}
 	}
 
 	if en.NeedsImage() {

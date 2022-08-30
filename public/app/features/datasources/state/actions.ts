@@ -25,6 +25,9 @@ import {
   testDataSourceSucceeded,
 } from './reducers';
 import { getDataSource, getDataSourceMeta } from './selectors';
+import { getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
+
+const BMC_HELIX_OLD_DATASOURCE = 'bmchelixold';
 
 export interface DataSourceTypesLoadedPayload {
   plugins: DataSourcePluginMeta[];
@@ -224,8 +227,15 @@ export function loadDataSourcePlugins(): ThunkResult<void> {
   return async (dispatch) => {
     dispatch(dataSourcePluginsLoad());
     const plugins = await getBackendSrv().get('/api/plugins', { enabled: 1, type: 'datasource' });
-    const categories = buildCategories(plugins);
-    dispatch(dataSourcePluginsLoaded({ plugins, categories }));
+    // BMC Code Starts
+    const filteredPlugins = plugins.filter(
+      (plugin: DataSourcePluginMeta) =>
+        plugin.id !== 'bmchelix-ade-datasource-old' ||
+        (plugin.id === 'bmchelix-ade-datasource-old' && getFeatureStatus(BMC_HELIX_OLD_DATASOURCE))
+    );
+    // BMC Code Ends
+    const categories = buildCategories(filteredPlugins);
+    dispatch(dataSourcePluginsLoaded({ plugins: filteredPlugins, categories }));
   };
 }
 
