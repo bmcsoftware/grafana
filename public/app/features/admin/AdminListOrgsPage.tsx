@@ -7,6 +7,7 @@ import { LinkButton } from '@grafana/ui';
 import { getBackendSrv } from '@grafana/runtime';
 import { AdminOrgsTable } from './AdminOrgsTable';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction } from 'app/types';
 
@@ -38,9 +39,11 @@ export const AdminListOrgsPages: FC = () => {
         <>
           <div className="page-action-bar">
             <div className="page-action-bar__spacer" />
-            <LinkButton icon="plus" href="org/new" disabled={!canCreateOrg}>
-              New org
-            </LinkButton>
+            {config.buildInfo.env === 'development' && (
+              <LinkButton icon="plus" href="org/new" disabled={!canCreateOrg}>
+                New org
+              </LinkButton>
+            )}
           </div>
           {state.error && getErrorMessage(state.error)}
           {state.loading && 'Fetching organizations'}

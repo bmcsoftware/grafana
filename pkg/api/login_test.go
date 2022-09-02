@@ -13,6 +13,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/grafana/grafana/pkg/services/encryption/ossencryption"
+
 	"github.com/grafana/grafana/pkg/api/dtos"
 	"github.com/grafana/grafana/pkg/api/response"
 	"github.com/grafana/grafana/pkg/api/routing"

@@ -201,6 +201,11 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	}
 	hs.registerRoutes()
 
+	// BMC Code start
+	hs.log.Info("Registering Report Scheduler Api's")
+	hs.registerSchedulerRoutes()
+	// BMC Code end
+
 	if err := hs.declareFixedRoles(); err != nil {
 		return nil, err
 	}

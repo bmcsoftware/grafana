@@ -19,7 +19,8 @@ export const getForcedLoginUrl = (url: string) => {
 export const enrichConfigItems = (
   items: NavModelItem[],
   location: Location<unknown>,
-  toggleOrgSwitcher: () => void
+  toggleOrgSwitcher: () => void,
+  footerLinkData?: any
 ) => {
   const { isSignedIn, user } = contextSrv;
   const onOpenShortcuts = () => {
@@ -52,7 +53,7 @@ export const enrichConfigItems = (
 
     if (link.id === 'help') {
       link.children = [
-        ...getFooterLinks(),
+        ...getFooterLinks(footerLinkData),
         {
           text: 'Keyboard shortcuts',
           icon: 'keyboard',

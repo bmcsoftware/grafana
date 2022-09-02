@@ -155,6 +155,17 @@ export class DashboardGrid extends PureComponent<Props, State> {
       this.gridWidth = gridWidth;
     }
 
+    // Reset last panel bottom
+    this.lastPanelBottom = 0;
+
+    // This is to avoid layout re-flows, accessing window.innerHeight can trigger re-flow
+    // We assume here that if width change height might have changed as well
+    if (this.gridWidth !== gridWidth) {
+      this.windowHeight = window.innerHeight ?? 1000;
+      this.windowWidth = window.innerWidth;
+      this.gridWidth = gridWidth;
+    }
+
     for (const panel of this.props.dashboard.panels) {
       const panelClasses = classNames({ 'react-grid-item--fullscreen': panel.isViewing });
 

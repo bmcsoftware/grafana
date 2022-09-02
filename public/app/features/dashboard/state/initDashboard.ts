@@ -22,6 +22,8 @@ import { DataQuery, locationUtil, setWeekStart } from '@grafana/data';
 import { initVariablesTransaction } from '../../variables/state/actions';
 import { emitDashboardViewEvent } from './analyticsProcessor';
 import { dashboardWatcher } from 'app/features/live/dashboard/dashboardWatcher';
+import { TenantFeatureDTO } from 'app/types/features';
+import { loadFeatures } from '../services/featureFlagSrv';
 import { config, locationService } from '@grafana/runtime';
 import { createDashboardQueryRunner } from '../../query/state/DashboardQueryRunner/DashboardQueryRunner';
 
@@ -44,13 +46,17 @@ async function fetchDashboard(
       case DashboardRoutes.Home: {
         // load home dash
         const dashDTO: DashboardDTO = await backendSrv.get('/api/dashboards/home');
-
         // if user specified a custom home dashboard redirect to that
         if (dashDTO.redirectUri) {
           const newUrl = locationUtil.stripBaseFromUrl(dashDTO.redirectUri);
           locationService.replace(newUrl);
           return null;
         }
+
+        // Uncomment below code snippet to enable feature flag
+        const tenantFeatureDTO = await fetchTenantFeatures();
+        loadFeatures(tenantFeatureDTO);
+        // End
 
         // disable some actions on the default home dashboard
         dashDTO.meta.canSave = false;
@@ -94,6 +100,13 @@ async function fetchDashboard(
     return null;
   }
 }
+
+// Uncomment below code snippet to enable feature flag
+async function fetchTenantFeatures(): Promise<TenantFeatureDTO[] | null> {
+  const response: TenantFeatureDTO[] = await backendSrv.get('/tenantfeatures');
+  return response;
+}
+// End
 
 /**
  * This action (or saga) does everything needed to bootstrap a dashboard & dashboard model.
