@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { LegacyForms, DeleteButton } from '@grafana/ui';
 const { Select } = LegacyForms;
 import { SelectableValue } from '@grafana/data';
-
+import { config } from 'app/core/config';
 import { TeamMember, teamsPermissionLevels, TeamPermissionLevel } from 'app/types';
 import { WithFeatureToggle } from 'app/core/components/WithFeatureToggle';
 import { updateTeamMember, removeTeamMember } from './state/actions';
@@ -101,12 +101,14 @@ export class TeamMemberRow extends PureComponent<Props> {
         {this.renderPermissions(member)}
         {syncEnabled && this.renderLabels(member.labels)}
         <td className="text-right">
-          <DeleteButton
-            aria-label="Remove team member"
-            size="sm"
-            disabled={!signedInUserIsTeamAdmin}
-            onConfirm={() => this.onRemoveMember(member)}
-          />
+          {config.buildInfo.env === 'development' && (
+            <DeleteButton
+              aria-label="Remove team member"
+              size="sm"
+              disabled={!signedInUserIsTeamAdmin}
+              onConfirm={() => this.onRemoveMember(member)}
+            />
+          )}
         </td>
       </tr>
     );

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"strings"
 	"time"
 
@@ -74,8 +75,9 @@ func getTeamSelectSQLBase(filteredUsers []string) string {
 		` FROM team as team `
 }
 
-func (ss *SQLStore) CreateTeam(name, email string, orgID int64) (models.Team, error) {
+func (ss *SQLStore) CreateTeam(name, email string, orgID int64, Id int64) (models.Team, error) {
 	team := models.Team{
+		Id:      Id,
 		Name:    name,
 		Email:   email,
 		OrgId:   orgID,
@@ -299,6 +301,35 @@ func (ss *SQLStore) AddTeamMember(userID, orgID, teamID int64, isExternal bool, 
 			Created:    time.Now(),
 			Updated:    time.Now(),
 			Permission: permission,
+		}
+
+		_, err := sess.Insert(&entity)
+		return err
+	})
+}
+
+// AddTeamMember adds a user to a team
+func AddTeamMember(cmd *models.AddTeamMemberCommand) error {
+	log.DefaultLogger.Info("Adding team member", "UserId", cmd.UserId, "Team ", cmd.TeamId)
+	return inTransaction(func(sess *DBSession) error {
+		if res, err := sess.Query("SELECT 1 from team_member WHERE org_id=? and team_id=? and user_id=?", cmd.OrgId, cmd.TeamId, cmd.UserId); err != nil {
+			return err
+		} else if len(res) == 1 {
+			return models.ErrTeamMemberAlreadyAdded
+		}
+
+		if _, err := teamExists(cmd.OrgId, cmd.TeamId, sess); err != nil {
+			return err
+		}
+
+		entity := models.TeamMember{
+			OrgId:      cmd.OrgId,
+			TeamId:     cmd.TeamId,
+			UserId:     cmd.UserId,
+			External:   cmd.External,
+			Created:    time.Now(),
+			Updated:    time.Now(),
+			Permission: cmd.Permission,
 		}
 
 		_, err := sess.Insert(&entity)

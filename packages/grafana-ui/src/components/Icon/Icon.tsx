@@ -35,6 +35,12 @@ const getIconStyles = stylesFactory((theme: GrafanaTheme) => {
 });
 
 function getIconSubDir(name: IconName, type: string): string {
+  // Begin BMC code changes
+  // Icons with bmc- name will lead to the custom bmc folder
+  if (name?.startsWith('bmc-')) {
+    return 'bmc/adapt';
+  }
+  // End - BMC code changes
   return name?.startsWith('gf-')
     ? 'custom'
     : alwaysMonoIcons.includes(name)

@@ -160,4 +160,10 @@ const tableStyles = {
   selectWrapper: css`
     padding: 8px;
   `,
+  noDataWrapper: css`
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `,
 };

@@ -41,6 +41,11 @@ type RenderingService struct {
 	pluginInfo      *plugins.Plugin
 	renderAction    renderFunc
 	renderCSVAction renderCSVFunc
+	// BMC code - begin
+	customPDFAction customPDFFunc
+	customCSVAction customCSVFunc
+	// BMC code - end
+
 	domain          string
 	inProgressCount int32
 	version         string
@@ -63,6 +68,14 @@ func ProvideService(cfg *setting.Cfg, remoteCache *remotecache.RemoteCache, rm p
 	if err != nil {
 		return nil, fmt.Errorf("failed to create CSVs directory %q: %w", cfg.CSVsDir, err)
 	}
+
+	// BMC code - begin
+	// ensure PDFsDir exists
+	err = os.MkdirAll(cfg.PDFsDir, 0700)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create PDFs directory %q: %w", cfg.PDFsDir, err)
+	}
+	// BMC code - end
 
 	var domain string
 	// set value used for domain attribute of renderKey cookie
@@ -109,6 +122,12 @@ func (rs *RenderingService) Run(ctx context.Context) error {
 		})
 		rs.renderAction = rs.renderViaHTTP
 		rs.renderCSVAction = rs.renderCSVViaHTTP
+
+		// BMC code - begin
+		rs.customPDFAction = rs.customPDFViaHTTP
+		rs.customCSVAction = rs.customCSVViaHTTP
+		// BMC code - end
+
 		<-ctx.Done()
 		return nil
 	}
@@ -140,8 +159,7 @@ func (rs *RenderingService) Run(ctx context.Context) error {
 	}
 
 	rs.log.Debug("No image renderer found/installed. " +
-		"For image rendering support please install the grafana-image-renderer plugin. " +
-		"Read more at https://grafana.com/docs/grafana/latest/administration/image_rendering/")
+		"For image rendering support please install the grafana-image-renderer plugin. ")
 
 	<-ctx.Done()
 	return nil
@@ -219,12 +237,12 @@ func (rs *RenderingService) render(ctx context.Context, opts Opts) (*RenderResul
 
 	if !rs.IsAvailable() {
 		rs.log.Warn("Could not render image, no image renderer found/installed. " +
-			"For image rendering support please install the grafana-image-renderer plugin. " +
-			"Read more at https://grafana.com/docs/grafana/latest/administration/image_rendering/")
+			"For image rendering support please install the grafana-image-renderer plugin. ")
 		return rs.renderUnavailableImage(), nil
 	}
 
-	rs.log.Info("Rendering", "path", opts.Path)
+	rs.log.Info("Rendering", "path", opts.Path, "orgId", opts.OrgID)
+
 	if math.IsInf(opts.DeviceScaleFactor, 0) || math.IsNaN(opts.DeviceScaleFactor) || opts.DeviceScaleFactor <= 0 {
 		opts.DeviceScaleFactor = 1
 	}
@@ -305,6 +323,12 @@ func (rs *RenderingService) getNewFilePath(rt RenderType) (string, error) {
 		ext = "csv"
 		folder = rs.Cfg.CSVsDir
 	}
+	// BMC code - begin
+	if rt == RenderPDF {
+		ext = "pdf"
+		folder = rs.Cfg.PDFsDir
+	}
+	// BMC code - end
 
 	return filepath.Abs(filepath.Join(folder, fmt.Sprintf("%s.%s", rand, ext)))
 }

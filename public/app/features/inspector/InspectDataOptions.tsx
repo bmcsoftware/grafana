@@ -121,6 +121,7 @@ export const InspectDataOptions: FC<Props> = ({
                   description="Table data is displayed with transformations defined in the panel Transform tab."
                 >
                   <Switch
+                    id={'custom-csv-selector-transformation'}
                     value={!!options.withTransforms}
                     onChange={() => onOptionsChange({ ...options, withTransforms: !options.withTransforms })}
                   />

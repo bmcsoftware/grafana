@@ -1,14 +1,17 @@
-FROM node:16-alpine3.14 as js-builder
+FROM aus-harbor-reg1.bmc.com/helix-cloudops/adereporting-base-node:16-alpine3.14 as js-builder
 
 ENV NODE_OPTIONS=--max_old_space_size=8000
 
-WORKDIR /grafana
-
+WORKDIR $GOPATH/src/github.com/grafana/grafana
 COPY package.json yarn.lock .yarnrc.yml ./
+
 COPY .yarn .yarn
 COPY packages packages
 COPY plugins-bundled plugins-bundled
+COPY .npmrc ./
+COPY .yarnrc ./
 
+RUN apk --no-cache add git
 RUN yarn install
 
 COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js babel.config.json ./
@@ -20,11 +23,11 @@ COPY emails emails
 ENV NODE_ENV production
 RUN yarn build
 
-FROM golang:1.17.3-alpine3.14 as go-builder
+FROM aus-harbor-reg1.bmc.com/helix-cloudops/adereporting-base-golang:1.17.0-alpine3.14 as go-builder
 
-RUN apk add --no-cache gcc g++ make
+RUN apk add --no-cache gcc g++ git make
 
-WORKDIR /grafana
+WORKDIR $GOPATH/src/github.com/grafana/grafana
 
 COPY go.mod go.sum embed.go Makefile build.go package.json ./
 COPY cue cue
@@ -35,16 +38,23 @@ COPY scripts scripts
 COPY cue.mod cue.mod
 COPY .bingo .bingo
 
+RUN go env -w GOPRIVATE=github.bmc.com
+RUN git config --system  url."https://adereprt:cbd8b50c8ab754d52bb30b6d2b2f7b65eb5055c2@github.bmc.com".insteadOf "https://github.bmc.com"
+
 RUN go mod verify
+#RUN go install github.com/google/wire/cmd/wire@v0.5.0
+#RUN wire gen -tags oss ./pkg/server
+#RUN go run build.go build
 RUN make build-go
 
 # Final stage
-FROM alpine:3.14.3
+FROM pun-harboreg-01.bmc.com/core-remedy-nightly/dsom/alpine_baseimage:latest
 
+USER root
 LABEL maintainer="Grafana team <hello@grafana.com>"
 
-ARG GF_UID="472"
-ARG GF_GID="0"
+ARG GF_UID="1000"
+ARG GF_GID="1000"
 
 ENV PATH="/usr/share/grafana/bin:$PATH" \
   GF_PATHS_CONFIG="/etc/grafana/grafana.ini" \
@@ -58,38 +68,36 @@ WORKDIR $GF_PATHS_HOME
 
 RUN apk add --no-cache ca-certificates bash tzdata musl-utils
 RUN apk add --no-cache openssl ncurses-libs ncurses-terminfo-base --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
+RUN apk add --no-cache curl supervisor --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
 RUN apk upgrade ncurses-libs ncurses-terminfo-base --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
 RUN apk info -vv | sort
 
+
+
 COPY conf ./conf
+COPY  supervisord.conf /opt/bmc/
+RUN mkdir -p "$GF_PATHS_HOME/.aws" && \
+    mkdir -p "$GF_PATHS_PROVISIONING/datasources" \
+             "$GF_PATHS_PROVISIONING/dashboards" \
+             "$GF_PATHS_PROVISIONING/notifiers" \
+             "$GF_PATHS_PROVISIONING/plugins" \
+             "$GF_PATHS_PROVISIONING/access-control" \
+             "$GF_PATHS_LOGS" \
+             "$GF_PATHS_PLUGINS" \
+             "$GF_PATHS_DATA" && \
+    cp "$GF_PATHS_HOME/conf/custom.ini" "$GF_PATHS_CONFIG" && \
+    cp "$GF_PATHS_HOME/conf/ldap.toml" /etc/grafana/ldap.toml && \
+    chown -R  bmcuser:bmc "$GF_PATHS_DATA" "$GF_PATHS_HOME/.aws" "$GF_PATHS_LOGS" "$GF_PATHS_PLUGINS" "$GF_PATHS_PROVISIONING" && \
+    chmod -R 777 "$GF_PATHS_DATA" "$GF_PATHS_HOME/.aws" "$GF_PATHS_LOGS" "$GF_PATHS_PLUGINS" "$GF_PATHS_PROVISIONING" && \
+    chown -R bmcuser:bmc "$GF_PATHS_CONFIG"
 
-RUN if [ ! $(getent group "$GF_GID") ]; then \
-  addgroup -S -g $GF_GID grafana; \
-  fi
-
-RUN export GF_GID_NAME=$(getent group $GF_GID | cut -d':' -f1) && \
-  mkdir -p "$GF_PATHS_HOME/.aws" && \
-  adduser -S -u $GF_UID -G "$GF_GID_NAME" grafana && \
-  mkdir -p "$GF_PATHS_PROVISIONING/datasources" \
-  "$GF_PATHS_PROVISIONING/dashboards" \
-  "$GF_PATHS_PROVISIONING/notifiers" \
-  "$GF_PATHS_PROVISIONING/plugins" \
-  "$GF_PATHS_PROVISIONING/access-control" \
-  "$GF_PATHS_LOGS" \
-  "$GF_PATHS_PLUGINS" \
-  "$GF_PATHS_DATA" && \
-  cp "$GF_PATHS_HOME/conf/sample.ini" "$GF_PATHS_CONFIG" && \
-  cp "$GF_PATHS_HOME/conf/ldap.toml" /etc/grafana/ldap.toml && \
-  chown -R "grafana:$GF_GID_NAME" "$GF_PATHS_DATA" "$GF_PATHS_HOME/.aws" "$GF_PATHS_LOGS" "$GF_PATHS_PLUGINS" "$GF_PATHS_PROVISIONING" && \
-  chmod -R 777 "$GF_PATHS_DATA" "$GF_PATHS_HOME/.aws" "$GF_PATHS_LOGS" "$GF_PATHS_PLUGINS" "$GF_PATHS_PROVISIONING"
-
-COPY --from=go-builder /grafana/bin/*/grafana-server /grafana/bin/*/grafana-cli ./bin/
-COPY --from=js-builder /grafana/public ./public
-COPY --from=js-builder /grafana/tools ./tools
+COPY --from=go-builder /go/src/github.com/grafana/grafana/bin/*/grafana-server /go/src/github.com/grafana/grafana/bin/*/grafana-cli ./bin/
+COPY --from=js-builder $GOPATH/src/github.com/grafana/grafana/public ./public
+COPY --from=js-builder $GOPATH/src/github.com/grafana/grafana/tools ./tools
 
 EXPOSE 3000
 
-COPY ./packaging/docker/run.sh /run.sh
-
-USER grafana
-ENTRYPOINT [ "/run.sh" ]
+COPY --chown=bmcuser:bmc ./packaging/docker/run.sh /run.sh
+COPY --chown=bmcuser:bmc ./packaging/docker/content-run.sh /content-run.sh
+USER bmcuser
+CMD ["/usr/bin/supervisord", "-c", "/opt/bmc/supervisord.conf"]

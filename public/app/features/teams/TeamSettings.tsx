@@ -5,6 +5,7 @@ import { Input, Field, Form, Button, FieldSet, VerticalGroup } from '@grafana/ui
 import { SharedPreferences } from 'app/core/components/SharedPreferences/SharedPreferences';
 import { updateTeam } from './state/actions';
 import { Team } from 'app/types';
+import { config } from 'app/core/config';
 
 const mapDispatchToProps = {
   updateTeam,
@@ -29,17 +30,18 @@ export const TeamSettings: FC<Props> = ({ team, updateTeam }) => {
         >
           {({ register }) => (
             <>
-              <Field label="Name">
+              <Field label="Name" disabled={config.buildInfo.env !== 'development'}>
                 <Input {...register('name', { required: true })} id="name-input" />
               </Field>
 
               <Field
+                disabled={config.buildInfo.env !== 'development'}
                 label="Email"
                 description="This is optional and is primarily used to set the team profile avatar (via gravatar service)."
               >
                 <Input {...register('email')} placeholder="team@email.com" type="email" id="email-input" />
               </Field>
-              <Button type="submit">Update</Button>
+              {config.buildInfo.env === 'development' && <Button type="submit">Update</Button>}
             </>
           )}
         </Form>

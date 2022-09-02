@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import { Button, Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
+import { Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
 import { UserDTO } from 'app/types';
-import config from 'app/core/config';
 import { ProfileUpdateFields } from './types';
 
 export interface Props {
@@ -10,7 +9,7 @@ export interface Props {
   updateProfile: (payload: ProfileUpdateFields) => void;
 }
 
-const { disableLoginForm } = config;
+const disableLoginForm = true;
 
 export const UserProfileEditForm: FC<Props> = ({ user, isSavingUser, updateProfile }) => {
   const onSubmitProfileUpdate = (data: ProfileUpdateFields) => {
@@ -49,11 +48,11 @@ export const UserProfileEditForm: FC<Props> = ({ user, isSavingUser, updateProfi
                 suffix={<InputSuffix />}
               />
             </Field>
-            <div className="gf-form-button-row">
+            {/* <div className="gf-form-button-row">
               <Button variant="primary" disabled={isSavingUser} aria-label="Edit user profile save button">
                 Save
               </Button>
-            </div>
+            </div> */}
           </FieldSet>
         );
       }}

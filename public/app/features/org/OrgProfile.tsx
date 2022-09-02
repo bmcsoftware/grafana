@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { Input, Field, FieldSet, Button, Form } from '@grafana/ui';
-import { contextSrv } from 'app/core/core';
-import { AccessControlAction } from 'app/types';
+import { Input, Field, FieldSet, Form } from '@grafana/ui';
+// import { contextSrv } from 'app/core/core';
+// import { AccessControlAction } from 'app/types';
 
 export interface Props {
   orgName: string;
@@ -12,18 +12,20 @@ interface FormDTO {
   orgName: string;
 }
 
+//BMC Code - added disabled and remove Update organization name button
 const OrgProfile: FC<Props> = ({ onSubmit, orgName }) => {
-  const canWriteOrg = contextSrv.hasPermission(AccessControlAction.OrgsWrite);
+  // const canWriteOrg = contextSrv.hasPermission(AccessControlAction.OrgsWrite);
 
   return (
     <Form defaultValues={{ orgName }} onSubmit={({ orgName }: FormDTO) => onSubmit(orgName)}>
       {({ register }) => (
-        <FieldSet label="Organization profile" disabled={!canWriteOrg}>
+        <FieldSet label="Organization profile" disabled>
           <Field label="Organization name">
             <Input id="org-name-input" type="text" {...register('orgName', { required: true })} />
           </Field>
-
-          <Button type="submit">Update organization name</Button>
+          {
+            //<Button type="submit">Update organization name</Button>
+          }
         </FieldSet>
       )}
     </Form>

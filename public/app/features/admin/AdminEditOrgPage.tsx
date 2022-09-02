@@ -11,6 +11,7 @@ import { Form, Field, Input, Button, Legend, Alert } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { GrafanaRouteComponentProps } from 'app/core/navigation/types';
 import { contextSrv } from 'app/core/core';
+import config from 'app/core/config';
 
 interface OrgNameDTO {
   orgName: string;
@@ -67,6 +68,7 @@ export const AdminEditOrgPage: FC<Props> = ({ match }) => {
     );
   };
 
+  // BMC Code- Disabled org name field
   return (
     <Page navModel={navModel}>
       <Page.Contents>
@@ -79,10 +81,15 @@ export const AdminEditOrgPage: FC<Props> = ({ match }) => {
             >
               {({ register, errors }) => (
                 <>
-                  <Field label="Name" invalid={!!errors.orgName} error="Name is required" disabled={!canWriteOrg}>
+                  <Field
+                    disabled={config.buildInfo.env !== 'development' || !canWriteOrg}
+                    label="Name"
+                    invalid={!!errors.orgName}
+                    error={'Name is required'}
+                  >
                     <Input {...register('orgName', { required: true })} id="org-name-input" />
                   </Field>
-                  <Button disabled={!canWriteOrg}>Update</Button>
+                  {config.buildInfo.env === 'development' && <Button disabled={!canWriteOrg}>Update</Button>}
                 </>
               )}
             </Form>
