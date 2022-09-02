@@ -137,15 +137,6 @@
 - …/public/app/features/org -> 'OrgCustomConfiguration.tsx'
 - …/public/app/core/components/SharedPreferences -> 'SharedPreferences.tsx'
 
-# ***Custom Encryption***
-- …/pkg/api -> 'http_server.go'
-- …/pkg/api -> 'login.go'
-- …/pkg/server -> 'wireexts_oss.go'
-- …/pkg/services/dashboardsnapshots -> 'dashboardsnapshots.go'
-- …/pkg/services/encryption/customossencryption -> 'customossencryption.go'
-- …/pkg/services/encryption -> 'customossencryptioninterface.go'
-- …/pkg/services/login/authinfoservice -> 'database.go'
-- …/pkg/services/login/authinfoservice -> 'service.go'
 
 # ***Table Old plugin***
 - …/public/app/plugins/panel/table-old -> 'column_options.ts'
