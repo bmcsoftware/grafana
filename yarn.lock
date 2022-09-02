@@ -5385,7 +5385,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc-config@npm:~0.15.2":
+"@microsoft/tsdoc-config@npm:0.15.2, @microsoft/tsdoc-config@npm:~0.15.2":
   version: 0.15.2
   resolution: "@microsoft/tsdoc-config@npm:0.15.2"
   dependencies:
@@ -8458,6 +8458,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookie@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@types/cookie@npm:0.3.3"
+  checksum: 450c930d792a4fd5a93645b4123f02596368f904dbb1fe6fbb5043bce8f6ecf877a08511c6ba11c8e28168f62bc278e68d214f002fab927c9056c0bc69f21370
+  languageName: node
+  linkType: hard
+
 "@types/d3-array@npm:*":
   version: 3.0.2
   resolution: "@types/d3-array@npm:3.0.2"
@@ -9750,6 +9757,15 @@ __metadata:
     "@types/glob": "*"
     "@types/node": "*"
   checksum: b47fa302f46434cba704d20465861ad250df79467d3d289f9d6490d3aeeb41e8cb32dd80bd1a8fd833d1e185ac719fbf9be12e05ad9ce9be094d8ee8f1405347
+  languageName: node
+  linkType: hard
+
+"@types/sanitize-html@npm:2.3.2":
+  version: 2.3.2
+  resolution: "@types/sanitize-html@npm:2.3.2"
+  dependencies:
+    htmlparser2: ^6.0.0
+  checksum: 7f5b7e8a354d247a8fc6edc7c6fee8a7537bfda9002f5b15e127e3329896d5c2ad52ec9db8ba8503db0f6cdce724b68ea6533256aeb5ec367682ee536bae5b65
   languageName: node
   linkType: hard
 
@@ -11898,6 +11914,13 @@ __metadata:
   version: 2.2.2
   resolution: "attr-accept@npm:2.2.2"
   checksum: 496f7249354ab53e522510c1dc8f67a1887382187adde4dc205507d2f014836a247073b05e9d9ea51e2e9c7f71b0d2aa21730af80efa9af2d68303e5f0565c4d
+  languageName: node
+  linkType: hard
+
+"autobind-decorator@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "autobind-decorator@npm:2.4.0"
+  checksum: 6fcc922580d3585a3aeef1a480f935c0827b1a4505b9e39ff9bcad9039958bd47b27a4e35152f566e01befb2924701dbc9f744ec29eeb880c99eef8e39fce4a3
   languageName: node
   linkType: hard
 
@@ -14241,6 +14264,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie@npm:^0.4.0":
+  version: 0.4.1
+  resolution: "cookie@npm:0.4.1"
+  checksum: bd7c47f5d94ab70ccdfe8210cde7d725880d2fcda06d8e375afbdd82de0c8d3b73541996e9ce57d35f67f672c4ee6d60208adec06b3c5fc94cebb85196084cf8
+  languageName: node
+  linkType: hard
+
 "copy-anything@npm:^2.0.1":
   version: 2.0.3
   resolution: "copy-anything@npm:2.0.3"
@@ -14524,6 +14554,13 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: a9a1503d4390d8b59ad86f4607de7870b39cad43d929813599a23714831e81c520bddf61bcdd1f8e30f05fd3a2b71ae8538e946eb2786dc65c2bbc520f692eff
+  languageName: node
+  linkType: hard
+
+"cronstrue@npm:^1.106.0":
+  version: 1.122.0
+  resolution: "cronstrue@npm:1.122.0"
+  checksum: fb542fd7a32a134292a74c47f9ccc8abb39abc271d23d7799acb06ebebfc085f198059cc8351f998790447d6172680ef4ea4bbee346847acd8dabf0e335a2fcb
   languageName: node
   linkType: hard
 
@@ -17015,6 +17052,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-tsdoc@npm:^0.2.14":
+  version: 0.2.14
+  resolution: "eslint-plugin-tsdoc@npm:0.2.14"
+  dependencies:
+    "@microsoft/tsdoc": 0.13.2
+    "@microsoft/tsdoc-config": 0.15.2
+  checksum: cb00835ac74de031a01415b2595dd055808de65fcfbd2582ab52cba191e63d41f0d19f83f767b842e437c54204e063f9d9044409bd66a2c58a333873352a0d14
+  languageName: node
+  linkType: hard
+
 "eslint-scope@npm:5.1.1, eslint-scope@npm:^5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
@@ -19129,6 +19176,7 @@ __metadata:
     "@types/react-window": 1.8.1
     "@types/redux-mock-store": 1.0.2
     "@types/reselect": 2.2.0
+    "@types/sanitize-html": 2.3.2
     "@types/semver": 7.3.8
     "@types/slate": 0.47.2
     "@types/slate-plain-serializer": 0.7.1
@@ -19168,6 +19216,7 @@ __metadata:
     common-tags: ^1.8.0
     copy-webpack-plugin: 9.0.1
     core-js: 3.10.0
+    cronstrue: ^1.106.0
     css-loader: 6.5.1
     css-minimizer-webpack-plugin: ^3.1.3
     cypress: 9.0.0
@@ -19212,6 +19261,8 @@ __metadata:
     jest-date-mock: 1.0.8
     jest-junit: 13.0.0
     jest-matcher-utils: 27.4.2
+    jodit: 3.8.6
+    jodit-react: 1.1.5
     jquery: 3.5.1
     json-source-map: 0.6.1
     jsurl: ^0.1.5
@@ -19246,6 +19297,7 @@ __metadata:
     prettier: 2.2.1
     prismjs: 1.25.0
     prop-types: 15.7.2
+    query-string: ^6.13.8
     raw-loader: 4.0.2
     rc-cascader: 1.5.0
     rc-drawer: 4.4.0
@@ -19285,6 +19337,7 @@ __metadata:
     rimraf: 3.0.1
     rst2html: "github:thoward/rst2html#990cb89f2a300cdd9151790be377c4c0840df809"
     rxjs: 7.3.0
+    sanitize-html: 2.4.0
     sass: 1.32.13
     sass-loader: 12.3.0
     search-query-parser: 1.5.4
@@ -19308,6 +19361,7 @@ __metadata:
     ts-node: 10.4.0
     tslib: 2.3.1
     typescript: 4.4.3
+    universal-cookie: 4.0.4
     uplot: 1.6.17
     uuid: 8.3.0
     vendor: "link:./public/vendor"
@@ -19319,6 +19373,7 @@ __metadata:
     webpack-dev-server: 4.4.0
     webpack-merge: 5.8.0
     whatwg-fetch: 3.1.0
+    zone.js: 0.7.8
   languageName: unknown
   linkType: soft
 
@@ -19922,7 +19977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^6.1.0":
+"htmlparser2@npm:^6.0.0, htmlparser2@npm:^6.1.0":
   version: 6.1.0
   resolution: "htmlparser2@npm:6.1.0"
   dependencies:
@@ -22664,6 +22719,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jodit-react@npm:1.1.5":
+  version: 1.1.5
+  resolution: "jodit-react@npm:1.1.5"
+  dependencies:
+    jodit: ^3.7.1
+  peerDependencies:
+    react: ~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    react-dom: ~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 483331d41de933f53e8e4d78a9cea16b278bddcafc8d4486330f75fdfef61e18c65e93b6fced69a7fb87eb0189659c175e594fc6bc6577455815d22aa7ba3a5c
+  languageName: node
+  linkType: hard
+
+"jodit@npm:3.8.6":
+  version: 3.8.6
+  resolution: "jodit@npm:3.8.6"
+  dependencies:
+    autobind-decorator: ^2.4.0
+    eslint-plugin-tsdoc: ^0.2.14
+  checksum: 7d099a386d80f75945bda4ab25dd4cd19a3943b3e0cdab4c89a572d46e70ec7f80ef7ed2700acd04c208c2ca72afe93e3f84ea5072824e63aa5a0cde48971a6d
+  languageName: node
+  linkType: hard
+
+"jodit@npm:^3.7.1":
+  version: 3.11.3
+  resolution: "jodit@npm:3.11.3"
+  dependencies:
+    autobind-decorator: ^2.4.0
+    eslint-plugin-tsdoc: ^0.2.14
+    postcss-less: ^5.0.0
+  checksum: fb4b132ad0bc8f4d8bb539c6fd5c3687e3491ef25501befa250190601d0af7d636ed35230f183f652c062ad888309acdd16218321870d7c3d697552577231543
+  languageName: node
+  linkType: hard
+
 "joi@npm:^17.4.0":
   version: 17.4.2
   resolution: "joi@npm:17.4.2"
@@ -23112,6 +23200,13 @@ __metadata:
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
   checksum: df82cd1e172f957bae9c536286265a5cdbd5eeca487cb0a3b2a7b41ef959fc61f8e7c0e9aeea9c114ccf2c166b6a8dd45a46fd619c1c569d210ecd2765ad5169
+  languageName: node
+  linkType: hard
+
+"klona@npm:^2.0.3":
+  version: 2.0.5
+  resolution: "klona@npm:2.0.5"
+  checksum: 8c976126ea252b766e648a4866e1bccff9d3b08432474ad80c559f6c7265cf7caede2498d463754d8c88c4759895edd8210c85c0d3155e6aae4968362889466f
   languageName: node
   linkType: hard
 
@@ -26256,6 +26351,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-srcset@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "parse-srcset@npm:1.0.2"
+  checksum: 3a0380380c6082021fcce982f0b89fb8a493ce9dfd7d308e5e6d855201e80db8b90438649b31fdd82a3d6089a8ca17dccddaa2b730a718389af4c037b8539ebf
+  languageName: node
+  linkType: hard
+
 "parse-url@npm:^6.0.0":
   version: 6.0.0
   resolution: "parse-url@npm:6.0.0"
@@ -26939,6 +27041,13 @@ __metadata:
     postcss: ^7.0.2
     postcss-values-parser: ^2.0.0
   checksum: 598229a7a05803b18cccde28114833e910367c5954341bea03c7d7b7b5a667dfb6a77ef9dd4a16d80fdff8b10dd44c478602a7d56e43687c8687af3710b4706f
+  languageName: node
+  linkType: hard
+
+"postcss-less@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "postcss-less@npm:5.0.0"
+  checksum: 98d164774327d84573e86511e238ee5489b5950615f47e947cbfbbb038c5f0c377216babb0367d509b2834a21cad1a4420617653b3ee30f46df168ad4f9e2cb7
   languageName: node
   linkType: hard
 
@@ -27638,6 +27747,17 @@ __metadata:
     picocolors: ^0.2.1
     source-map: ^0.6.1
   checksum: 4ac793f506c23259189064bdc921260d869a115a82b5e713973c5af8e94fbb5721a5cc3e1e26840500d7e1f1fa42a209747c5b1a151918a9bc11f0d7ed9048e3
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.0.2":
+  version: 8.4.5
+  resolution: "postcss@npm:8.4.5"
+  dependencies:
+    nanoid: ^3.1.30
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.1
+  checksum: b78abdd89c10f7b48f4bdcd376104a19d6e9c7495ab521729bdb3df315af6c211360e9f06887ad3bc0ab0f61a04b91d68ea11462997c79cced58b9ccd66fac07
   languageName: node
   linkType: hard
 
@@ -30677,6 +30797,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sanitize-html@npm:2.4.0":
+  version: 2.4.0
+  resolution: "sanitize-html@npm:2.4.0"
+  dependencies:
+    deepmerge: ^4.2.2
+    escape-string-regexp: ^4.0.0
+    htmlparser2: ^6.0.0
+    is-plain-object: ^5.0.0
+    klona: ^2.0.3
+    parse-srcset: ^1.0.2
+    postcss: ^8.0.2
+  checksum: e1ac0c54f4ad29463a5b7ab5ac3ff5b15d39e4dd16ff96483b0e1669a5bb3c04cbd269e30e95106a988ce0c433e5f895a7852d9d9af5f6606bf40be8be24b3dc
+  languageName: node
+  linkType: hard
+
 "sass-loader@npm:12.1.0":
   version: 12.1.0
   resolution: "sass-loader@npm:12.1.0"
@@ -31539,6 +31674,13 @@ __metadata:
   version: 0.6.2
   resolution: "source-map-js@npm:0.6.2"
   checksum: 9c8151a29e00fd8d3ba87709fdf9a9ce48313d653f4a29a39b4ae53d346ac79e005de624796ff42eff55cbaf26d2e87f4466001ca87831d400d818c5cf146a0e
+  languageName: node
+  linkType: hard
+
+"source-map-js@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "source-map-js@npm:1.0.1"
+  checksum: 22606113d62bbd468712b0cb0c46e9a8629de7eb081049c62a04d977a211abafd7d61455617f8b78daba0b6c0c7e7c88f8c6b5aaeacffac0a6676ecf5caac5ce
   languageName: node
   linkType: hard
 
@@ -34027,6 +34169,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"universal-cookie@npm:4.0.4":
+  version: 4.0.4
+  resolution: "universal-cookie@npm:4.0.4"
+  dependencies:
+    "@types/cookie": ^0.3.3
+    cookie: ^0.4.0
+  checksum: bb2bafa7eb7e213e5448924329572dd1a913be00e23906189be2a0dc889b0eea1750f9c33462fc1c911d89092dbd82f6e220c2d61c4057bb3f69e7665d9d8ddf
+  languageName: node
+  linkType: hard
+
 "universal-deep-strict-equal@npm:^1.2.1":
   version: 1.2.2
   resolution: "universal-deep-strict-equal@npm:1.2.2"
@@ -35704,6 +35856,13 @@ __metadata:
   bin:
     z-schema: bin/z-schema
   checksum: 084b2f16043ac0a892914ee29cc0b4fafd9338133eec0345cd6ced25e814f647fa67be1090ad5f606759c2c1f2f8c28127960ba187f437f1caf6fb8cd45d7336
+  languageName: node
+  linkType: hard
+
+"zone.js@npm:0.7.8":
+  version: 0.7.8
+  resolution: "zone.js@npm:0.7.8"
+  checksum: b89e872cce467f5ce5e404d915cdd9da4e5c5f3527a84d38871f9b4294307738cfb2192fcb2555b2d1a98a061ce6d08e66af707b26348a54b4a2fa48ec49dc94
   languageName: node
   linkType: hard
 

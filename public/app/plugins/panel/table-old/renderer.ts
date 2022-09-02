@@ -17,13 +17,15 @@ import {
 import { getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 import { ColumnRender, TableRenderModel, ColumnStyle } from './types';
 import { ColumnOptionsCtrl } from './column_options';
-
+import { RenderJSON } from './render_json';
+import { TablePanelCtrl } from './module';
 export class TableRenderer {
   formatters: any[] = [];
   colorState: any;
 
   constructor(
     private panel: { styles: ColumnStyle[]; pageSize: number },
+    private ctrl: TablePanelCtrl,
     private table: TableRenderModel,
     private timeZone: TimeZone,
     private sanitize: (v: any) => any,
@@ -204,12 +206,15 @@ export class TableRenderer {
         return formattedValueToString(valueFormatter(v, column.style.decimals, null));
       };
     }
-
+    if (column.style.type === 'jsonformat') {
+      return (v: any): any => {
+        return RenderJSON(v, this.timeZone, this.ctrl);
+      };
+    }
     return (value: any) => {
       return this.defaultCellFormatter(value, column.style);
     };
   }
-
   setColorState(value: any, style: ColumnStyle) {
     if (!style.colorMode) {
       return;

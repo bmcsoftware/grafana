@@ -5,7 +5,7 @@ import { StandardEditorProps } from '@grafana/data';
 import { PanelOptions } from '../models.gen';
 import { useObservable } from 'react-use';
 import { Subject } from 'rxjs';
-import { CanvasEditorOptions } from './elementEditor';
+import { CanvasEditorOptions } from './ElementEditor';
 import { Anchor, Placement } from 'app/features/canvas';
 import { NumberInput } from 'app/features/dimensions/editors/NumberInput';
 

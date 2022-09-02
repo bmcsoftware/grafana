@@ -433,6 +433,8 @@ func deleteDashboard(cmd *models.DeleteDashboardCommand, sess *DBSession) error 
 		"DELETE FROM dashboard_version WHERE dashboard_id = ?",
 		"DELETE FROM annotation WHERE dashboard_id = ?",
 		"DELETE FROM dashboard_provisioning WHERE dashboard_id = ?",
+		"DELETE from report_scheduler where id = (select report_scheduler_id from report_data where dashboard_id = ?)",
+		"DELETE FROM report_data WHERE dashboard_id = ?",
 		"DELETE FROM dashboard_acl WHERE dashboard_id = ?",
 	}
 

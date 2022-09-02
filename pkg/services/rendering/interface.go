@@ -73,4 +73,9 @@ type Service interface {
 	RenderCSV(ctx context.Context, opts CSVOpts) (*RenderCSVResult, error)
 	RenderErrorImage(theme Theme, error error) (*RenderResult, error)
 	GetRenderUser(key string) (*RenderUser, bool)
+
+	// BMC code - begin
+	CustomRenderPDF(ctx context.Context, opts CustomPDFOpts) (*RenderResult, error)
+	CustomRenderCSV(ctx context.Context, opts CustomCSVOpts) (*RenderResult, error)
+	// BMC code - end
 }

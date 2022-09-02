@@ -184,6 +184,27 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 	req.URL.Host = proxy.targetUrl.Host
 	req.Host = proxy.targetUrl.Host
 
+	// BMC started - change for multiple url configuration in source plugin
+	if strings.Contains(proxy.proxyPath, "api/arsys") && proxy.ds.JsonData != nil {
+		s, err := proxy.ds.JsonData.Map()
+		if s != nil && len(s) > 0 && err == nil {
+			pUrl := s["platformURL"].(string)
+			if pUrl != "" {
+				parsedUrl, _ := url.Parse(pUrl)
+				req.URL.Scheme = parsedUrl.Scheme
+				req.URL.Host = parsedUrl.Host
+				req.Host = parsedUrl.Host
+				proxy.targetUrl = parsedUrl
+			}
+
+		} else {
+			logger.Error("Datasource url for converged platfrom is not configured correctly.")
+			return
+		}
+	}
+
+	// end
+
 	reqQueryVals := req.URL.Query()
 
 	switch proxy.ds.Type {
@@ -221,6 +242,15 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 	dsAuth := req.Header.Get("X-DS-Authorization")
 	if len(dsAuth) > 0 {
 		req.Header.Del("X-DS-Authorization")
+		// BMC Send the rsso auth proxy token to external API - starts
+		if req.Header.Get("X-Jwt-Token") != "" {
+			if strings.Contains(proxy.proxyPath, "api/arsys") {
+				dsAuth = "IMS-JWT " + req.Header.Get("X-Jwt-Token")
+			} else {
+				dsAuth = "Bearer " + req.Header.Get("X-Jwt-Token")
+			}
+		}
+		//ends
 		req.Header.Set("Authorization", dsAuth)
 	}
 

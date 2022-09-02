@@ -5,6 +5,7 @@ import { getBackendSrv } from '@grafana/runtime';
 import { DashboardModel, PanelModel } from 'app/features/dashboard/state';
 import { getTimeSrv } from 'app/features/dashboard/services/TimeSrv';
 import { appEvents } from 'app/core/core';
+import { updateURLOrigin } from './utils';
 import { VariableRefresh } from '../../../variables/types';
 import { ShareModalTabProps } from './types';
 
@@ -96,6 +97,8 @@ export class ShareSnapshot extends PureComponent<Props, State> {
 
     try {
       const results: { deleteUrl: any; url: any } = await getBackendSrv().post(snapshotApiUrl, cmdData);
+      results.deleteUrl = updateURLOrigin(results.deleteUrl);
+      results.url = updateURLOrigin(results.url);
       this.setState({
         deleteUrl: results.deleteUrl,
         snapshotUrl: results.url,
