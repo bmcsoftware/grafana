@@ -99,9 +99,30 @@ func readPluginManifest(body []byte) (*pluginManifest, error) {
 	return manifest, nil
 }
 
+//BMC Code
+func isBMCPlugin(pluginID string) bool {
+	bmcPlugins := []string{"bmchelix-ade-datasource", "bmc-ade-bar", "bmc-ade-cross-tab",
+		"agenty-flowcharting-panel", "grafana-piechart-panel", "bmc-ade-combination-chart",
+		"snuids-trafficlights-panel", "grafana-csv-plugin", "bmc-record-details"}
+	for _, id := range bmcPlugins {
+		if id == pluginID {
+			return true
+		}
+	}
+	return false
+}
+
 // getPluginSignatureState returns the signature state for a plugin.
 func getPluginSignatureState(log log.Logger, plugin *plugins.PluginBase) (plugins.PluginSignatureState, error) {
 	log.Debug("Getting signature state of plugin", "plugin", plugin.Id, "isBackend", plugin.Backend)
+
+	// BMC code: workaround to mark BMC plugins as 'Signed'.
+	if isBMCPlugin(plugin.Id) {
+		return plugins.PluginSignatureState{
+			Status: plugins.PluginSignatureValid,
+		}, nil
+	}
+
 	manifestPath := filepath.Join(plugin.PluginDir, "MANIFEST.txt")
 
 	// nolint:gosec

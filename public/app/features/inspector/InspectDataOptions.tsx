@@ -121,6 +121,7 @@ export const InspectDataOptions: FC<Props> = ({
                   description="Table data is displayed with transformations defined in the panel Transform tab."
                 >
                   <Switch
+                    id={'custom-csv-selector-transformation'}
                     value={!!options.withTransforms}
                     onChange={() => onOptionsChange({ ...options, withTransforms: !options.withTransforms })}
                   />
@@ -132,13 +133,18 @@ export const InspectDataOptions: FC<Props> = ({
                   description="Table data is formatted with options defined in the Field and Override tabs."
                 >
                   <Switch
+                    id={'custom-csv-selector-formatter'}
                     value={!!options.withFieldConfig}
                     onChange={() => onOptionsChange({ ...options, withFieldConfig: !options.withFieldConfig })}
                   />
                 </Field>
               )}
               <Field label="Download for Excel" description="Adds header to CSV for use with Excel">
-                <Switch value={downloadForExcel} onChange={toggleDownloadForExcel} />
+                <Switch
+                  id={'custom-csv-selector-excel-header'}
+                  value={downloadForExcel}
+                  onChange={toggleDownloadForExcel}
+                />
               </Field>
             </HorizontalGroup>
           </VerticalGroup>

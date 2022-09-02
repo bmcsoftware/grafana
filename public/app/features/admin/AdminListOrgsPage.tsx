@@ -7,6 +7,7 @@ import { LinkButton } from '@grafana/ui';
 import { getBackendSrv } from '@grafana/runtime';
 import { AdminOrgsTable } from './AdminOrgsTable';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
+import config from 'app/core/config';
 
 const deleteOrg = async (orgId: number) => {
   return await getBackendSrv().delete('/api/orgs/' + orgId);
@@ -30,10 +31,12 @@ export const AdminListOrgsPages: FC = () => {
       <Page.Contents>
         <>
           <div className="page-action-bar">
-            <div className="page-action-bar__spacer" />
-            <LinkButton icon="plus" href="org/new">
-              New org
-            </LinkButton>
+            <div className="page-action-bar__spacer"></div>
+            {config.buildInfo.env === 'development' && (
+              <LinkButton icon="plus" href="org/new">
+                New org
+              </LinkButton>
+            )}
           </div>
           {state.loading && 'Fetching organizations'}
           {state.error}

@@ -42,6 +42,7 @@ const (
 	WeightExplore
 	WeightProfile
 	WeightAlerting
+	WeightReport
 	WeightPlugin
 	WeightConfig
 	WeightAdmin

@@ -74,8 +74,9 @@ func getTeamSelectSQLBase(filteredUsers []string) string {
 		` FROM team as team `
 }
 
-func (ss *SQLStore) CreateTeam(name, email string, orgID int64) (models.Team, error) {
+func (ss *SQLStore) CreateTeam(name, email string, orgID int64, Id int64) (models.Team, error) {
 	team := models.Team{
+		Id:      Id,
 		Name:    name,
 		Email:   email,
 		OrgId:   orgID,

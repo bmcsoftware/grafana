@@ -60,7 +60,8 @@ const NavBarDropdown = ({
             url={child.url}
           />
         ))}
-      {subtitleText && <li className={styles.subtitle}>{subtitleText}</li>}
+      {/* BMC code - hide grafana version
+      {subtitleText && <li className={styles.subtitle}>{subtitleText}</li>} */}
     </ul>
   );
 };
@@ -109,7 +110,6 @@ const getStyles = (theme: GrafanaTheme2, reverseDirection: Props['reverseDirecti
     margin-bottom: ${theme.spacing(1)};
     padding: ${theme.spacing(1)} ${theme.spacing(2)} ${theme.spacing(1)};
     white-space: nowrap;
-
     .sidemenu-open--xs & {
       border-bottom: none;
       margin-bottom: 0;

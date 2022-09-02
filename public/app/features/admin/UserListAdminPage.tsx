@@ -14,6 +14,7 @@ import {
 import { GrafanaTheme2 } from '@grafana/data';
 import Page from 'app/core/components/Page/Page';
 import { TagBadge } from 'app/core/components/TagFilter/TagBadge';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { getNavModel } from '../../core/selectors/navModel';
 import { AccessControlAction, StoreState, Unit, UserDTO } from '../../types';
@@ -87,7 +88,7 @@ const UserListAdminPageUnConnected: React.FC<Props> = ({
               className={styles.filter}
             />
           </div>
-          {contextSrv.hasPermission(AccessControlAction.UsersCreate) && (
+          {contextSrv.hasPermission(AccessControlAction.UsersCreate) && config.buildInfo.env === 'development' && (
             <LinkButton href="admin/users/create" variant="primary">
               New user
             </LinkButton>

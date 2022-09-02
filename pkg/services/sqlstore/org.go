@@ -92,24 +92,30 @@ func (ss *SQLStore) GetOrgByName(name string) (*models.Org, error) {
 	return &org, nil
 }
 
+// return always 'false' to allow different tenant with the same name (https://jira.bmc.com/browse/DRJ71-730)
 func isOrgNameTaken(name string, existingId int64, sess *DBSession) (bool, error) {
 	// check if org name is taken
-	var org models.Org
-	exists, err := sess.Where("name=?", name).Get(&org)
+	// var org models.Org
+	// exists, err := sess.Where("name=?", name).Get(&org)
 
-	if err != nil {
-		return false, nil
-	}
+	// if err != nil {
+	// 	return false, nil
+	// }
 
-	if exists && existingId != org.Id {
-		return true, nil
-	}
+	// if exists && existingId != org.Id {
+	// 	return true, nil
+	// }
 
 	return false, nil
 }
 
-func createOrg(name string, userID int64, engine *xorm.Engine) (models.Org, error) {
+//Start Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+//func createOrg(name string, userID int64, engine *xorm.Engine) (models.Org, error) {
+func createOrg(ID int64, name string, userID int64, engine *xorm.Engine) (models.Org, error) {
+	//End Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
 	org := models.Org{
+		//Added Abhishek_06082020, Extended Create Org API to additionally accept Orgid as optional input parameter
+		Id:      ID,
 		Name:    name,
 		Created: time.Now(),
 		Updated: time.Now(),
@@ -151,11 +157,18 @@ func createOrg(name string, userID int64, engine *xorm.Engine) (models.Org, erro
 
 // CreateOrgWithMember creates an organization with a certain name and a certain user as member.
 func (ss *SQLStore) CreateOrgWithMember(name string, userID int64) (models.Org, error) {
-	return createOrg(name, userID, ss.engine)
+	//Start Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+	//return createOrg(name, userID, ss.engine)
+	return createOrg(0, name, userID, ss.engine)
+	//End Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+
 }
 
 func CreateOrg(cmd *models.CreateOrgCommand) error {
-	org, err := createOrg(cmd.Name, cmd.UserId, x)
+	//Start Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+	//org, err := createOrg(cmd.Name, cmd.UserId, x)
+	org, err := createOrg(cmd.Id, cmd.Name, cmd.UserId, x)
+	//End Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
 	if err != nil {
 		return err
 	}

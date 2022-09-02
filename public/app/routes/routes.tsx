@@ -11,7 +11,9 @@ import ErrorPage from 'app/core/components/ErrorPage/ErrorPage';
 import { getPluginsAdminRoutes } from 'app/features/plugins/routes';
 import { contextSrv } from 'app/core/services/context_srv';
 import { getLiveRoutes } from 'app/features/live/pages/routes';
+import { getReportSchedulerRoutes } from './routes.scheduler';
 
+export const schedulerRoutes: RouteDescriptor[] = getReportSchedulerRoutes();
 export const extraRoutes: RouteDescriptor[] = [];
 
 export function getAppRoutes(): RouteDescriptor[] {
@@ -161,6 +163,7 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/org/new',
+      roles: () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "NewOrgPage" */ 'app/features/org/NewOrgPage')),
     },
     {
@@ -177,7 +180,7 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/org/apikeys',
-      roles: () => ['Editor', 'Admin'],
+      roles: () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "ApiKeysPage" */ 'app/features/api-keys/ApiKeysPage')
       ),
@@ -189,7 +192,6 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/org/teams/new',
-
       roles: () => (config.editorsCanAdmin ? [] : ['Admin']),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "CreateTeam" */ 'app/features/teams/CreateTeam')),
     },
@@ -241,6 +243,7 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/admin/users/create',
+      roles: () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "UserCreatePage" */ 'app/features/admin/UserCreatePage')
       ),
@@ -518,6 +521,7 @@ export function getAppRoutes(): RouteDescriptor[] {
     ...getPluginsAdminRoutes(),
     ...getLiveRoutes(),
     ...extraRoutes,
+    ...schedulerRoutes,
     {
       path: '/*',
       component: ErrorPage,

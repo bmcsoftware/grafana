@@ -37,6 +37,9 @@ export class GrafanaBootConfig implements GrafanaConfig {
   defaultDatasource = '';
   alertingEnabled = false;
   alertingErrorOrTimeout = '';
+  //BMC code :
+  FeatureFlagEnabled = true;
+  // End
   alertingNoDataOrNullValues = '';
   alertingMinInterval = 1;
   authProxyEnabled = false;

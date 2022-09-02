@@ -3,11 +3,11 @@ import { MapDispatchToProps, MapStateToProps } from 'react-redux';
 import { css } from '@emotion/css';
 import { AppEvents, GrafanaTheme2, NavModel } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
-import { Button, stylesFactory, withTheme2, Input, TextArea, Field, Form, FileUpload, Themeable2 } from '@grafana/ui';
+import { Button, stylesFactory, withTheme2, TextArea, Field, Form, FileUpload, Themeable2 } from '@grafana/ui';
 import Page from 'app/core/components/Page/Page';
 import { connectWithCleanUp } from 'app/core/components/connectWithCleanUp';
 import { ImportDashboardOverview } from './components/ImportDashboardOverview';
-import { validateDashboardJson, validateGcomDashboard } from './utils/validation';
+import { validateDashboardJson } from './utils/validation';
 import { fetchGcomDashboard, importDashboardJson } from './state/actions';
 import appEvents from 'app/core/app_events';
 import { getNavModel } from 'app/core/selectors/navModel';
@@ -82,7 +82,7 @@ class UnthemedDashboardImport extends PureComponent<Props> {
             Upload JSON file
           </FileUpload>
         </div>
-        <div className={styles.option}>
+        {/* <div className={styles.option}>
           <Form onSubmit={this.getGcomDashboard} defaultValues={{ gcomDashboard: '' }}>
             {({ register, errors }) => (
               <Field
@@ -103,13 +103,13 @@ class UnthemedDashboardImport extends PureComponent<Props> {
               </Field>
             )}
           </Form>
-        </div>
+        </div> */}
         <div className={styles.option}>
           <Form onSubmit={this.getDashboardFromJson} defaultValues={{ dashboardJson: '' }}>
             {({ register, errors }) => (
               <>
                 <Field
-                  label="Import via panel json"
+                  label="Import via dashboard json"
                   invalid={!!errors.dashboardJson}
                   error={errors.dashboardJson && errors.dashboardJson.message}
                 >

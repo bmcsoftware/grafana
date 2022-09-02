@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent, lazy, Suspense } from 'react';
 import { Modal, ModalTabsHeader, TabContent } from '@grafana/ui';
 import { DashboardModel, PanelModel } from 'app/features/dashboard/state';
 import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
@@ -7,8 +7,33 @@ import { ShareSnapshot } from './ShareSnapshot';
 import { ShareExport } from './ShareExport';
 import { ShareEmbed } from './ShareEmbed';
 import { ShareModalTabModel } from './types';
+import { LoadingChunkPlaceHolder } from 'app/core/components/DynamicImports/LoadingChunkPlaceHolder';
 import { contextSrv } from 'app/core/core';
 import { ShareLibraryPanel } from './ShareLibraryPanel';
+
+// BMC Code
+const ExportUtility = lazy(() => import(/* webpackChunkName: "ExportUtility" */ './ExportUtility'));
+
+const renderLoader = () => <LoadingChunkPlaceHolder />;
+
+export class LazyExportUtility extends PureComponent<Props, State> {
+  constructor(props: Props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Suspense fallback={renderLoader()}>
+        <ExportUtility {...this.props} />
+      </Suspense>
+    );
+  }
+}
+
+const downloadTab: ShareModalTabModel[] = [{ label: 'Download', value: 'download', component: LazyExportUtility }];
+// END
+
+// prettier-ignore
 
 const customDashboardTabs: ShareModalTabModel[] = [];
 const customPanelTabs: ShareModalTabModel[] = [];
@@ -45,9 +70,13 @@ function getTabs(props: Props) {
       tabs.push({ label: 'Library panel', value: 'library_panel', component: ShareLibraryPanel });
     }
     tabs.push(...customPanelTabs);
+    if (!panel.isEditing) {
+      tabs.push(...downloadTab);
+    }
   } else {
     tabs.push({ label: 'Export', value: 'export', component: ShareExport });
     tabs.push(...customDashboardTabs);
+    tabs.push(...downloadTab);
   }
 
   return tabs;
