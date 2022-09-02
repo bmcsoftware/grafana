@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   color: $text-color;
-  height: $input-height;
+  min-height: $input-height;
 
   .label-tag {
     margin: 0 5px;

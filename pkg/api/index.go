@@ -34,12 +34,13 @@ func (hs *HTTPServer) getProfileNode(c *models.ReqContext) *dtos.NavLink {
 		},
 	}
 
-	if setting.AddChangePasswordLink() {
-		children = append(children, &dtos.NavLink{
-			Text: "Change password", Id: "change-password", Url: hs.Cfg.AppSubURL + "/profile/password",
-			Icon: "lock",
-		})
-	}
+	// BMC Code
+	// if setting.AddChangePasswordLink() {
+	// 	children = append(children, &dtos.NavLink{
+	// 		Text: "Change password", Id: "change-password", Url: hs.Cfg.AppSubURL + "/profile/password",
+	// 		Icon: "lock",
+	// 	})
+	// }
 
 	if !setting.DisableSignoutMenu {
 		// add sign out first
@@ -150,7 +151,7 @@ func (hs *HTTPServer) getNavTree(c *models.ReqContext, hasEditPerm bool) ([]*dto
 		navTree = append(navTree, &dtos.NavLink{
 			Text:       "Home",
 			Id:         "home",
-			Icon:       "home-alt",
+			Icon:       "bmc-home",
 			Url:        hs.Cfg.AppSubURL + "/",
 			Section:    dtos.NavSectionCore,
 			SortWeight: dtos.WeightHome,
@@ -225,6 +226,41 @@ func (hs *HTTPServer) getNavTree(c *models.ReqContext, hasEditPerm bool) ([]*dto
 		})
 	}
 
+	var reportChildNavs []*dtos.NavLink
+
+	// Scheduler option is for all user roles
+	reportChildNavs = []*dtos.NavLink{
+		{
+			Text: "Reports",
+			Id:   "manage-reports",
+			Url:  setting.AppSubUrl + "/reports",
+			Icon: "file-alt",
+		},
+	}
+
+	// Settings is only reachable for ADMIN roles
+	if c.OrgRole == models.ROLE_ADMIN {
+		reportChildNavs = append(reportChildNavs, &dtos.NavLink{
+			Text: "Settings",
+			Id:   "report-branding",
+			Url:  setting.AppSubUrl + "/reports/branding",
+			Icon: "sliders-v-alt",
+		})
+	}
+
+	if c.OrgRole == models.ROLE_ADMIN || c.OrgRole == models.ROLE_EDITOR {
+		navTree = append(navTree, &dtos.NavLink{
+			Text:       "Scheduled Reports",
+			SubTitle:   "Create and manage reports distributed via e-mail",
+			Id:         "manage-reports",
+			Icon:       "bmc-file_text_clock",
+			Url:        setting.AppSubUrl + "/reports",
+			SortWeight: dtos.WeightReport,
+			Children:   reportChildNavs,
+			Section:    dtos.NavSectionCore,
+		})
+	}
+
 	appLinks, err := hs.getAppLinks(c)
 	if err != nil {
 		return nil, err
@@ -282,16 +318,16 @@ func (hs *HTTPServer) getNavTree(c *models.ReqContext, hasEditPerm bool) ([]*dto
 			Url:         hs.Cfg.AppSubURL + "/org",
 		})
 	}
-
-	if c.OrgRole == models.ROLE_ADMIN {
-		configNodes = append(configNodes, &dtos.NavLink{
-			Text:        "API keys",
-			Id:          "apikeys",
-			Description: "Create & manage API keys",
-			Icon:        "key-skeleton-alt",
-			Url:         hs.Cfg.AppSubURL + "/org/apikeys",
-		})
-	}
+	// BMC- Hide API Key option
+	// if c.OrgRole == models.ROLE_ADMIN {
+	// 	configNodes = append(configNodes, &dtos.NavLink{
+	// 		Text:        "API keys",
+	// 		Id:          "apikeys",
+	// 		Description: "Create & manage API keys",
+	// 		Icon:        "key-skeleton-alt",
+	// 		Url:         hs.Cfg.AppSubURL + "/org/apikeys",
+	// 	})
+	// }
 
 	if hs.Cfg.FeatureToggles["live-pipeline"] {
 		liveNavLinks := []*dtos.NavLink{}
@@ -369,7 +405,7 @@ func (hs *HTTPServer) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 	dashboardChildNavs := []*dtos.NavLink{}
 	if !hs.Cfg.IsNewNavigationEnabled() {
 		dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
-			Text: "Home", Id: "home", Url: hs.Cfg.AppSubURL + "/", Icon: "home-alt", HideFromTabs: true,
+			Text: "Home", Id: "home", Url: hs.Cfg.AppSubURL + "/", Icon: "bmc-home", HideFromTabs: true,
 		})
 		dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
 			Text: "Divider", Divider: true, Id: "divider", HideFromTabs: true,
@@ -458,11 +494,11 @@ func (hs *HTTPServer) buildCreateNavLinks(c *models.ReqContext) []*dtos.NavLink 
 	if c.OrgRole == models.ROLE_ADMIN || c.OrgRole == models.ROLE_EDITOR {
 		children = append(children, &dtos.NavLink{
 			Text: "Folder", SubTitle: "Create a new folder to organize your dashboards", Id: "folder",
-			Icon: "folder-plus", Url: hs.Cfg.AppSubURL + "/dashboards/folder/new",
+			Icon: "plus", Url: hs.Cfg.AppSubURL + "/dashboards/folder/new",
 		})
 	}
 	children = append(children, &dtos.NavLink{
-		Text: "Import", SubTitle: "Import dashboard from file or Grafana.com", Id: "import", Icon: "import",
+		Text: "Import", SubTitle: "Import dashboard from file or via dashboard json", Id: "import", Icon: "import",
 		Url: hs.Cfg.AppSubURL + "/dashboard/import",
 	})
 
@@ -595,7 +631,7 @@ func (hs *HTTPServer) setIndexViewData(c *models.ReqContext) (*dtos.IndexViewDat
 		AppNameBodyClass:        getAppNameBodyClass(hs.License.HasValidLicense()),
 		FavIcon:                 "public/img/fav32.png",
 		AppleTouchIcon:          "public/img/apple-touch-icon.png",
-		AppTitle:                "Grafana",
+		AppTitle:                "BMC Helix Dashboards",
 		NavTree:                 navTree,
 		Sentry:                  &hs.Cfg.Sentry,
 		Nonce:                   c.RequestNonce,

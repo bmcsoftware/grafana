@@ -22,6 +22,11 @@ import { DashboardSearchHit, DashboardSearchItemType } from 'app/features/search
 import { backendSrv } from 'app/core/services/backend_srv';
 import { PreferencesService } from 'app/core/services/PreferencesService';
 
+import { customConfigSrv, FEATURE_FLAG_CONFIGURABLE_LINK } from 'app/features/org/state/configuration';
+import { OrgCustomConfiguration } from 'app/features/org/OrgCustomConfiguration';
+import { getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
+import { contextSrv } from 'app/core/core';
+
 export interface Props {
   resourceUri: string;
   disabled?: boolean;
@@ -33,6 +38,10 @@ export interface State {
   timezone: string;
   weekStart: string;
   dashboards: DashboardSearchHit[];
+  docLink: string;
+  supportLink: string;
+  communityLink: string;
+  videoLink: string;
 }
 
 const themes: SelectableValue[] = [
@@ -54,6 +63,10 @@ export class SharedPreferences extends PureComponent<Props, State> {
       timezone: '',
       weekStart: '',
       dashboards: [],
+      docLink: '',
+      supportLink: '',
+      communityLink: '',
+      videoLink: '',
     };
   }
 
@@ -84,12 +97,18 @@ export class SharedPreferences extends PureComponent<Props, State> {
       }
     }
 
+    let config = await customConfigSrv.getCustomConfiguration();
+
     this.setState({
       homeDashboardId: prefs.homeDashboardId,
       theme: prefs.theme,
       timezone: prefs.timezone,
       weekStart: prefs.weekStart,
       dashboards: [defaultDashboardHit, ...dashboards],
+      communityLink: config.communityLink,
+      docLink: config.docLink,
+      supportLink: config.supportLink,
+      videoLink: config.videoLink,
     });
   }
 
@@ -125,14 +144,47 @@ export class SharedPreferences extends PureComponent<Props, State> {
     return dashboard.folderTitle + ' / ' + dashboard.title;
   };
 
+  onDocLinkChange = (event: any) => {
+    this.setState({ docLink: event.target.value });
+  };
+
+  onCommunityLinkChange = (event: any) => {
+    this.setState({ communityLink: event.target.value });
+  };
+
+  onSupportLinkChange = (event: any) => {
+    this.setState({ supportLink: event.target.value });
+  };
+
+  onVideoLinkChange = (event: any) => {
+    this.setState({ videoLink: event.target.value });
+  };
+
+  onSubmitConfiguration = async () => {
+    if (this.props.resourceUri !== 'org') {
+      return;
+    }
+    const config = this.state;
+    await customConfigSrv.setCustomConfiguration({
+      docLink: config.docLink,
+      supportLink: config.supportLink,
+      communityLink: config.communityLink,
+      videoLink: config.videoLink,
+    });
+  };
+
+  onSubmitFormCustom = async () => {
+    await Promise.all([this.onSubmitForm(), this.onSubmitConfiguration()]);
+    window.location.reload();
+  };
+
   render() {
     const { theme, timezone, weekStart, homeDashboardId, dashboards } = this.state;
     const { disabled } = this.props;
     const styles = getStyles();
-
     return (
-      <Form onSubmit={this.onSubmitForm}>
-        {() => {
+      <Form onSubmit={this.onSubmitFormCustom}>
+        {(form) => {
           return (
             <FieldSet label="Preferences" disabled={disabled}>
               <Field label="UI Theme">
@@ -184,11 +236,28 @@ export class SharedPreferences extends PureComponent<Props, State> {
                   inputId={'shared-preferences-week-start-picker'}
                 />
               </Field>
-              <div className="gf-form-button-row">
-                <Button variant="primary" aria-label="User preferences save button">
-                  Save
-                </Button>
-              </div>
+
+              {this.props.resourceUri === 'org' && getFeatureStatus(FEATURE_FLAG_CONFIGURABLE_LINK) && (
+                <OrgCustomConfiguration
+                  onDocLinkChange={this.onDocLinkChange}
+                  onCommunityLinkChange={this.onCommunityLinkChange}
+                  onSupportLinkChange={this.onSupportLinkChange}
+                  onVideoLinkChange={this.onVideoLinkChange}
+                  communityLink={this.state.communityLink}
+                  docLink={this.state.docLink}
+                  supportLink={this.state.supportLink}
+                  videoLink={this.state.videoLink}
+                  {...form}
+                />
+              )}
+
+              {(!contextSrv.isGrafanaAdmin || this.props.resourceUri === 'org') && (
+                <div className="gf-form-button-row">
+                  <Button variant="primary" aria-label="User preferences save button">
+                    Save
+                  </Button>
+                </div>
+              )}
             </FieldSet>
           );
         }}

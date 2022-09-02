@@ -42,6 +42,7 @@ export class ColumnOptionsCtrl {
       { text: 'String', value: 'string' },
       { text: 'Date', value: 'date' },
       { text: 'Hidden', value: 'hidden' },
+      { text: 'JSON Format', value: 'jsonformat' },
     ];
     this.fontSizes = ['80%', '90%', '100%', '110%', '120%', '130%', '150%', '160%', '180%', '200%', '220%', '250%'];
     this.dateFormats = [

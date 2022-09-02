@@ -11,7 +11,12 @@ import ErrorPage from 'app/core/components/ErrorPage/ErrorPage';
 import { getRoutes as getPluginCatalogRoutes } from 'app/features/plugins/admin/routes';
 import { contextSrv } from 'app/core/services/context_srv';
 import { getLiveRoutes } from 'app/features/live/pages/routes';
-import { getAlertingRoutes } from 'app/features/alerting/routes';
+// BMC Code start
+// import { getAlertingRoutes } from 'app/features/alerting/routes';
+import { getReportSchedulerRoutes } from './routes.scheduler';
+
+export const schedulerRoutes: RouteDescriptor[] = getReportSchedulerRoutes();
+// BMC Code end
 
 export const extraRoutes: RouteDescriptor[] = [];
 
@@ -161,6 +166,7 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/org/new',
+      roles: () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "NewOrgPage" */ 'app/features/org/NewOrgPage')),
     },
     {
@@ -177,7 +183,7 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/org/apikeys',
-      roles: () => ['Editor', 'Admin'],
+      roles: () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "ApiKeysPage" */ 'app/features/api-keys/ApiKeysPage')
       ),
@@ -241,6 +247,7 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/admin/users/create',
+      roles: () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "UserCreatePage" */ 'app/features/admin/UserCreatePage')
       ),
@@ -374,8 +381,11 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     ...getPluginCatalogRoutes(),
     ...getLiveRoutes(),
-    ...getAlertingRoutes(),
+    //BMC Code start
+    // ...getAlertingRoutes(),
     ...extraRoutes,
+    ...schedulerRoutes,
+    // BMC Code end
     {
       path: '/*',
       component: ErrorPage,

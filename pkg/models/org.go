@@ -31,6 +31,8 @@ type Org struct {
 // COMMANDS
 
 type CreateOrgCommand struct {
+	//Added Abhishek_06082020, Extended Create Org API to additionally accept Orgid as optional input parameter 
+	Id int64 `json:"id"`
 	Name string `json:"name" binding:"Required"`
 
 	// initial admin user for account

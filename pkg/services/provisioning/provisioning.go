@@ -176,7 +176,7 @@ func (ps *ProvisioningServiceImpl) ProvisionDashboards(ctx context.Context) erro
 	defer ps.mutex.Unlock()
 
 	ps.cancelPolling()
-	dashProvisioner.CleanUpOrphanedDashboards(ctx)
+	//dashProvisioner.CleanUpOrphanedDashboards(ctx)
 
 	err = dashProvisioner.Provision(ctx)
 	if err != nil {

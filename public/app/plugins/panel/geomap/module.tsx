@@ -4,7 +4,7 @@ import { GeomapInstanceState, GeomapPanel } from './GeomapPanel';
 import { MapViewEditor } from './editor/MapViewEditor';
 import { defaultView, GeomapPanelOptions } from './types';
 import { mapPanelChangedHandler, mapMigrationHandler } from './migrations';
-import { getLayerEditor } from './editor/layerEditor';
+import { getLayerEditor } from './editor/LayerEditor';
 import { LayersEditor } from './editor/LayersEditor';
 import { config } from '@grafana/runtime';
 
