@@ -37,6 +37,14 @@ func (hs *HTTPServer) registerRoutes() {
 
 	r := hs.RouteRegister
 
+	//author(ateli) - Start
+	//Custom API to refresh expired JWT token from IMS
+	r.Post("/ims/refresh-jwt", bind(dtos.IMSPayload{}), routing.Wrap(hs.RefreshJWTToken))
+	//author(ateli) - End
+
+	//Added two API for getting feature flags
+	r.Get("/tenantfeatures", routing.Wrap(hs.GetTenantFeatures))
+
 	// not logged in views
 	r.Get("/logout", hs.Logout)
 	r.Post("/login", quota("session"), bind(dtos.LoginCommand{}), routing.Wrap(hs.LoginPost))
@@ -195,7 +203,7 @@ func (hs *HTTPServer) registerRoutes() {
 		apiRoute.Group("/teams", func(teamsRoute routing.RouteRegister) {
 			teamsRoute.Get("/:teamId", routing.Wrap(hs.GetTeamByID))
 			teamsRoute.Get("/search", routing.Wrap(hs.SearchTeams))
-		})
+		}, reqOrgAdmin)
 
 		// org information available to all users.
 		apiRoute.Group("/org", func(orgRoute routing.RouteRegister) {
@@ -222,11 +230,16 @@ func (hs *HTTPServer) registerRoutes() {
 			// prefs
 			orgRoute.Get("/preferences", reqOrgAdmin, routing.Wrap(GetOrgPreferences))
 			orgRoute.Put("/preferences", reqOrgAdmin, bind(dtos.UpdatePrefsCmd{}), routing.Wrap(UpdateOrgPreferences))
+
+			orgRoute.Put("/configuration", reqOrgAdmin, bind(dtos.CustomConfiguration{}), routing.Wrap(AddCustomConfiguration))
+			orgRoute.Delete("/configuration", reqOrgAdmin, routing.Wrap(RefreshCustomConfiguration))
 		})
 
 		// current org without requirement of user to be org admin
 		apiRoute.Group("/org", func(orgRoute routing.RouteRegister) {
 			orgRoute.Get("/users/lookup", routing.Wrap(hs.GetOrgUsersForCurrentOrgLookup))
+			orgRoute.Get("/configuration", routing.Wrap(GetCustomConfiguration))
+			orgRoute.Get("/calculatedfield", routing.Wrap(GetCalculatedField))
 		})
 
 		// create new org
@@ -479,8 +492,19 @@ func (hs *HTTPServer) registerRoutes() {
 		adminUserRoute.Post("/:id/revoke-auth-token", authorize(reqGrafanaAdmin, ac.EvalPermission(ac.ActionUsersAuthTokenUpdate, userIDScope)), bind(models.RevokeAuthTokenCmd{}), routing.Wrap(hs.AdminRevokeUserAuthToken))
 	})
 
-	// rendering
-	r.Get("/render/*", reqSignedIn, hs.RenderToPng)
+	// rebranding
+	r.Get("/rebranding/custom_dashboard.css", reqSignedIn, routing.Wrap(GetTenantReBranding))
+
+	// BMC code - begin
+	r.Get("/render/pdf", reqSignedIn, hs.CustomRenderToPdf)
+	r.Get("/render/csv", reqSignedIn, hs.CustomRenderToCsv)
+	r.Get("/render/*", reqSignedIn, hs.CustomRenderToPng)
+	// BMC code - end
+
+	// BMC code - begin
+	// rendering - commenting this code because renderToPng is tweaked
+	//r.Get("/render/*", reqSignedIn, hs.RenderToPng)
+	// BMC code - end
 
 	// grafana.net proxy
 	r.Any("/api/gnet/*", reqSignedIn, ProxyGnetRequest)

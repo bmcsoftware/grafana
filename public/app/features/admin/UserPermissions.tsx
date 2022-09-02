@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { config } from 'app/core/config';
 import { ConfirmButton, RadioButtonGroup, Icon } from '@grafana/ui';
 import { cx } from '@emotion/css';
 import { AccessControlAction } from 'app/types';
@@ -61,7 +62,7 @@ export class UserPermissions extends PureComponent<Props, State> {
             <table className="filter-table form-inline">
               <tbody>
                 <tr>
-                  <td className="width-16">Grafana Admin</td>
+                  <td className="width-16">SaaS Admin</td>
                   {isEditing ? (
                     <td colSpan={2}>
                       <RadioButtonGroup
@@ -81,21 +82,23 @@ export class UserPermissions extends PureComponent<Props, State> {
                       )}
                     </td>
                   )}
-                  <td>
-                    <div className={changeButtonContainerClass}>
-                      {canChangePermissions && (
-                        <ConfirmButton
-                          className="pull-right"
-                          onClick={this.onChangeClick}
-                          onConfirm={this.onGrafanaAdminChange}
-                          onCancel={this.onCancelClick}
-                          confirmText="Change"
-                        >
-                          Change
-                        </ConfirmButton>
-                      )}
-                    </div>
-                  </td>
+                  {config.buildInfo.env === 'development' && (
+                    <td>
+                      <div className={changeButtonContainerClass}>
+                        {canChangePermissions && (
+                          <ConfirmButton
+                            className="pull-right"
+                            onClick={this.onChangeClick}
+                            onConfirm={this.onGrafanaAdminChange}
+                            onCancel={this.onCancelClick}
+                            confirmText="Change"
+                          >
+                            Change
+                          </ConfirmButton>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               </tbody>
             </table>

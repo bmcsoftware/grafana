@@ -42,7 +42,7 @@ export class ShareLink extends PureComponent<Props, State> {
     this.buildUrl();
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(_prevProps: Props, prevState: State) {
     const { useCurrentTimeRange, useShortUrl, selectedTheme } = this.state;
     if (
       prevState.useCurrentTimeRange !== useCurrentTimeRange ||
@@ -86,7 +86,7 @@ export class ShareLink extends PureComponent<Props, State> {
   render() {
     const { panel, dashboard } = this.props;
     const isRelativeTime = dashboard ? dashboard.time.to === 'now' : false;
-    const { useCurrentTimeRange, useShortUrl, selectedTheme, shareUrl, imageUrl } = this.state;
+    const { useCurrentTimeRange, selectedTheme, shareUrl, imageUrl } = this.state;
     const selectors = e2eSelectors.pages.SharePanelModal;
     const isDashboardSaved = Boolean(dashboard.id);
 
@@ -109,9 +109,12 @@ export class ShareLink extends PureComponent<Props, State> {
           <Field label="Theme">
             <RadioButtonGroup options={themeOptions} value={selectedTheme} onChange={this.onThemeChange} />
           </Field>
-          <Field label="Shorten URL">
+          {
+            // BMC code - hide this field
+            /* <Field label="Shorten URL">
             <Switch id="share-shorten-url" value={useShortUrl} onChange={this.onUrlShorten} />
-          </Field>
+          </Field> */
+          }
 
           <Field label="Link URL">
             <Input

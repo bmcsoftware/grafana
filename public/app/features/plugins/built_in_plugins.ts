@@ -64,6 +64,8 @@ import * as newsPanel from 'app/plugins/panel/news/module';
 import * as livePanel from 'app/plugins/panel/live/module';
 import * as debugPanel from 'app/plugins/panel/debug/module';
 import * as welcomeBanner from 'app/plugins/panel/welcome/module';
+import * as bmcwelcomeBanner from 'app/plugins/panel/bmcwelcome/module';
+import * as bmcVideoPanel from 'app/plugins/panel/bmcvideo/module';
 import * as nodeGraph from 'app/plugins/panel/nodeGraph/module';
 import * as histogramPanel from 'app/plugins/panel/histogram/module';
 import * as alertGroupsPanel from 'app/plugins/panel/alertGroups/module';
@@ -120,6 +122,8 @@ const builtInPlugins: any = {
   'app/plugins/panel/barchart/module': barChartPanel,
   'app/plugins/panel/logs/module': logsPanel,
   'app/plugins/panel/welcome/module': welcomeBanner,
+  'app/plugins/panel/bmcwelcome/module': bmcwelcomeBanner,
+  'app/plugins/panel/bmcvideo/module': bmcVideoPanel,
   'app/plugins/panel/nodeGraph/module': nodeGraph,
   'app/plugins/panel/histogram/module': histogramPanel,
   'app/plugins/panel/alertGroups/module': alertGroupsPanel,

@@ -245,6 +245,15 @@ require (
 	gopkg.in/asn1-ber.v1 v1.0.0-20181015200546-f715ec2f112d // indirect
 )
 
+// BMC code - begin - custom dependencies
+require (
+	github.bmc.com/DSOM-ADE/authz-go v0.0.0-20210513070043-9eb5f367fb34
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
+	github.com/microcosm-cc/bluemonday v1.0.2
+)
+// BMC code - end
+
 replace github.com/apache/thrift => github.com/apache/thrift v0.14.1
 
 replace gopkg.in/macaron.v1 => ./pkg/macaron

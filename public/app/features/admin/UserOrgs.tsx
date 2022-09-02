@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { css, cx } from '@emotion/css';
+import { config } from 'app/core/config';
 import { Button, ConfirmButton, Field, HorizontalGroup, Modal, stylesFactory, Themeable, withTheme } from '@grafana/ui';
 import { GrafanaTheme } from '@grafana/data';
 import { AccessControlAction, Organization, OrgRole, UserOrg } from 'app/types';
@@ -54,14 +55,18 @@ export class UserOrgs extends PureComponent<Props, State> {
               </tbody>
             </table>
           </div>
-          <div className={addToOrgContainerClass}>
-            {canAddToOrg && (
-              <Button variant="secondary" onClick={this.showOrgAddModal(true)}>
-                Add user to organization
-              </Button>
-            )}
-          </div>
-          <AddToOrgModal isOpen={showAddOrgModal} onOrgAdd={onOrgAdd} onDismiss={this.showOrgAddModal(false)} />
+          {config.buildInfo.env === 'development' && (
+            <>
+              <div className={addToOrgContainerClass}>
+                {canAddToOrg && (
+                  <Button variant="secondary" onClick={this.showOrgAddModal(true)}>
+                    Add user to organization
+                  </Button>
+                )}
+              </div>
+              <AddToOrgModal isOpen={showAddOrgModal} onOrgAdd={onOrgAdd} onDismiss={this.showOrgAddModal(false)} />
+            </>
+          )}
         </div>
       </>
     );
@@ -125,8 +130,8 @@ class UnThemedOrgRow extends PureComponent<OrgRowProps, OrgRowState> {
     const { currentRole, isChangingRole } = this.state;
     const styles = getOrgRowStyles(theme);
     const labelClass = cx('width-16', styles.label);
-    const canChangeRole = contextSrv.hasPermission(AccessControlAction.OrgUsersRoleUpdate);
-    const canRemoveFromOrg = contextSrv.hasPermission(AccessControlAction.OrgUsersRemove);
+    //const canChangeRole = contextSrv.hasPermission(AccessControlAction.OrgUsersRoleUpdate);
+    //const canRemoveFromOrg = contextSrv.hasPermission(AccessControlAction.OrgUsersRemove);
 
     return (
       <tr>
@@ -136,36 +141,36 @@ class UnThemedOrgRow extends PureComponent<OrgRowProps, OrgRowState> {
             <OrgRolePicker value={currentRole} onChange={this.onOrgRoleChange} />
           </td>
         ) : (
-          <td className="width-25">{org.role}</td>
+          <>{config.buildInfo.env === 'development' ? <td className="width-25">{org.role}</td> : <td>{org.role}</td>}</>
         )}
-        <td colSpan={1}>
-          <div className="pull-right">
-            {canChangeRole && (
-              <ConfirmButton
-                confirmText="Save"
-                onClick={this.onChangeRoleClick}
-                onCancel={this.onCancelClick}
-                onConfirm={this.onOrgRoleSave}
-              >
-                Change role
-              </ConfirmButton>
-            )}
-          </div>
-        </td>
-        <td colSpan={1}>
-          <div className="pull-right">
-            {canRemoveFromOrg && (
-              <ConfirmButton
-                confirmText="Confirm removal"
-                confirmVariant="destructive"
-                onCancel={this.onCancelClick}
-                onConfirm={this.onOrgRemove}
-              >
-                Remove from organization
-              </ConfirmButton>
-            )}
-          </div>
-        </td>
+        {config.buildInfo.env === 'development' && (
+          <>
+            <td colSpan={1}>
+              <div className="pull-right">
+                <ConfirmButton
+                  confirmText="Save"
+                  onClick={this.onChangeRoleClick}
+                  onCancel={this.onCancelClick}
+                  onConfirm={this.onOrgRoleSave}
+                >
+                  Change role
+                </ConfirmButton>
+              </div>
+            </td>
+            <td colSpan={1}>
+              <div className="pull-right">
+                <ConfirmButton
+                  confirmText="Confirm removal"
+                  confirmVariant="destructive"
+                  onCancel={this.onCancelClick}
+                  onConfirm={this.onOrgRemove}
+                >
+                  Remove from organization
+                </ConfirmButton>
+              </div>
+            </td>
+          </>
+        )}
       </tr>
     );
   }

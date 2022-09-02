@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Organization } from 'app/types';
 import { Button, ConfirmModal } from '@grafana/ui';
+import config from 'app/core/config';
 
 interface Props {
   orgs: Organization[];
@@ -27,15 +28,17 @@ export const AdminOrgsTable: FC<Props> = ({ orgs, onDelete }) => {
             <td className="link-td">
               <a href={`admin/orgs/edit/${org.id}`}>{org.name}</a>
             </td>
-            <td className="text-right">
-              <Button
-                variant="destructive"
-                size="sm"
-                icon="times"
-                onClick={() => setDeleteOrg(org)}
-                aria-label="Delete org"
-              />
-            </td>
+            {config.buildInfo.env === 'development' && (
+              <td className="text-right">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  icon="times"
+                  onClick={() => setDeleteOrg(org)}
+                  aria-label="Delete org"
+                />
+              </td>
+            )}
           </tr>
         ))}
       </tbody>

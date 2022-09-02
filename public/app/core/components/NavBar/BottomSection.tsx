@@ -13,6 +13,7 @@ import { getFooterLinks } from '../Footer/Footer';
 import { HelpModal } from '../help/HelpModal';
 import NavBarItem from './NavBarItem';
 import { getForcedLoginUrl, isLinkActive, isSearchActive } from './utils';
+import { customConfigSrv } from 'app/features/org/state/configuration';
 
 export default function BottomSection() {
   const theme = useTheme2();
@@ -42,6 +43,16 @@ export default function BottomSection() {
     }
   }
 
+  // BMC code - begin
+  // custom links - community/video/docs/support
+  const [links, setLinks] = React.useState<any[]>([]);
+  React.useEffect(() => {
+    customConfigSrv.getCustomConfiguration().then((data) => {
+      setLinks(getFooterLinks(data));
+    });
+  }, []);
+  // BMC code - end
+
   return (
     <div data-testid="bottom-section-items" className={styles.container}>
       {!isSignedIn && (
@@ -54,7 +65,10 @@ export default function BottomSection() {
 
         if (link.id === 'help') {
           menuItems = [
-            ...getFooterLinks(),
+            // ...getFooterLinks(),
+            // BMC code - begin
+            ...links,
+            // BMC code - end
             {
               text: 'Keyboard shortcuts',
               icon: 'keyboard',

@@ -10,9 +10,12 @@ import (
 	"net/mail"
 	"path"
 	"reflect"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.bmc.com/DSOM-ADE/authz-go"
 	"github.com/grafana/grafana/pkg/bus"
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/remotecache"
@@ -27,6 +30,12 @@ const (
 
 	// CachePrefix is a prefix for the cache key
 	CachePrefix = "auth-proxy-sync-ttl:%s"
+	//author(ateli) - start
+	//role constants to check valid permissions for logged in user
+	reportingViewer = "reporting.dashboards_permissions.viewer"
+	reportingEditor = "reporting.dashboards_permissions.editor"
+	reportingAdmin  = "reporting.dashboards_permissions.admin"
+	//author(ateli) - end
 )
 
 // getLDAPConfig gets LDAP config
@@ -84,7 +93,21 @@ type Options struct {
 
 // New instance of the AuthProxy.
 func New(cfg *setting.Cfg, options *Options) *AuthProxy {
-	header := options.Ctx.Req.Header.Get(cfg.AuthProxyHeaderName)
+	//header := options.Ctx.Req.Header.Get(cfg.AuthProxyHeaderName)
+	//auther(ateli) - start
+	//header := options.Ctx.Req.Header.Get(setting.AuthProxyHeaderName)
+	//Changes for userID as RSSOUser@RSSO Tenant - required to achieve unique userID's across tenants
+	RSSOUser := options.Ctx.Req.Header.Get("X-Webauth-User")
+	RSSOTenant := options.Ctx.Req.Header.Get("X-Rsso-Tenant")
+	header := RSSOUser
+
+	//abhishri, start, ignore appending tenant if its superuser realm tenant
+	if RSSOTenant != "" && RSSOTenant != "dashboards_superuser_tenant" {
+		header = RSSOUser + "@" + RSSOTenant
+	}
+	//abhishri, end, ignore appending tenant if its superuser realm tenant
+
+	//auther(ateli) - end
 	return &AuthProxy{
 		remoteCache: options.RemoteCache,
 		cfg:         cfg,
@@ -257,10 +280,34 @@ func (auth *AuthProxy) LoginViaLDAP() (int64, error) {
 
 // LoginViaHeader logs in user from the header only
 func (auth *AuthProxy) LoginViaHeader() (int64, error) {
+	//author(ateli) - start
+	encodedJwt := auth.ctx.Context.Req.Header.Get("X-Jwt-Token")
+	RSSOtenant := auth.ctx.Context.Req.Header.Get("X-Rsso-Tenant")
+	var decodedJwt *authz.UserInfo
+	var userId int64
+
+	if encodedJwt != "" {
+		usrObj, err := authz.Authorize(encodedJwt)
+		decodedJwt = usrObj
+		if err != nil {
+			log.Errorf(500, err.Error())
+		}
+		if decodedJwt != nil {
+			userId, _ = strconv.ParseInt(decodedJwt.UserID, 10, 64)
+		}
+	}
+	//author(ateli) - end
+
 	extUser := &models.ExternalUserInfo{
 		AuthModule: "authproxy",
 		AuthId:     auth.header,
 	}
+
+	//author(ateli) - start
+	if userId != 0 {
+		extUser.UserId = userId
+	}
+	//author(ateli) - end
 
 	switch auth.cfg.AuthProxyHeaderProperty {
 	case "username":
@@ -310,6 +357,34 @@ func (auth *AuthProxy) LoginViaHeader() (int64, error) {
 		return 0, err
 	}
 
+	//author(ateli) - start
+	//Changes for auth proxy auto sign-up feature, Assign user to correct ADE Tenant
+	if encodedJwt != "" {
+		//Remove New user from Main org
+		removeUserFromMainOrg := &models.RemoveOrgUserCommand{
+			UserId: upsert.Result.Id,
+			OrgId:  1,
+		}
+		err1 := bus.Dispatch(removeUserFromMainOrg)
+		if err1 != nil {
+			log.Errorf(500, "BMC Custom - Unable to Remove User from Main Org", err1.Error())
+		}
+		//add use in correct ADE org
+		if decodedJwt != nil {
+			orgId, _ := strconv.ParseInt(decodedJwt.Tenant_Id, 10, 64)
+			addUserInCorrectOrg := &models.AddOrgUserCommand{}
+			addUserInCorrectOrg.LoginOrEmail = decodedJwt.Principal_Id + "@" + RSSOtenant
+			addUserInCorrectOrg.Role = "Viewer"
+			addUserInCorrectOrg.OrgId = orgId
+			addUserInCorrectOrg.UserId = upsert.Result.Id
+			err2 := bus.Dispatch(addUserInCorrectOrg)
+			if err2 != nil {
+				log.Errorf(500, "BMC Custom - Unable to add user to correct ADE Org", err2.Error())
+			}
+		}
+	}
+
+	//author(ateli) - end
 	return upsert.Result.Id, nil
 }
 
@@ -376,3 +451,36 @@ func coerceProxyAddress(proxyAddr string) (*net.IPNet, error) {
 	}
 	return network, nil
 }
+
+//author(ateli) - Start
+//Method to check if user has valid reporting permission assigned in IMS
+func contains(s []string, searchterm string) bool {
+	i := sort.SearchStrings(s, searchterm)
+	return i < len(s) && strings.ToLower(s[i]) == searchterm
+}
+
+func (auth *AuthProxy) HasValidPermissions() error {
+	userID := auth.ctx.Context.Req.Header.Get("X-Webauth-User")
+	encodedJwt := auth.ctx.Context.Req.Header.Get("X-Jwt-Token")
+	var decodedJwt *authz.UserInfo
+	if encodedJwt != "" {
+		usrObj, err := authz.Authorize(encodedJwt)
+		decodedJwt = usrObj
+		if err != nil {
+			log.Errorf(500, err.Error())
+		}
+	}
+	if decodedJwt != nil {
+		sort.Strings(decodedJwt.Permissions)
+		//needreview
+		if contains(decodedJwt.Permissions, reportingViewer) || contains(decodedJwt.Permissions, reportingEditor) || contains(decodedJwt.Permissions, reportingAdmin) || contains(decodedJwt.Permissions, string('*')) {
+			return nil
+		}
+	}
+	if userID == auth.cfg.AdminUser {
+		return nil
+	}
+	return newError("To get permission to the Dashboard. Please contact your admin", errors.New("To get permission to the dashboard. Please contact your admin"))
+}
+
+//author(ateli) - End

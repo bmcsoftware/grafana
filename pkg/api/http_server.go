@@ -190,6 +190,8 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 		hs.log.Debug("Using provided listener")
 	}
 	hs.registerRoutes()
+	hs.log.Info("Registering Report Scheduler Api's")
+	hs.registerSchedulerRoutes()
 
 	if err := hs.declareFixedRoles(); err != nil {
 		return nil, err

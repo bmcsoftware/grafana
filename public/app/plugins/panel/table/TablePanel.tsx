@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import { Select, Table } from '@grafana/ui';
-import { DataFrame, FieldMatcherID, getFrameDisplayName, PanelProps, SelectableValue } from '@grafana/data';
+import { Table } from '@grafana/ui';
+import { DataFrame, FieldMatcherID, PanelProps, SelectableValue } from '@grafana/data';
 import { PanelOptions } from './models.gen';
 import { css } from '@emotion/css';
 import { config } from 'app/core/config';
@@ -103,37 +103,42 @@ export class TablePanel extends Component<Props> {
   }
 
   render() {
-    const { data, height, width } = this.props;
+    const { data, height, width, fieldConfig } = this.props;
+    const { defaults } = fieldConfig;
 
-    const count = data.series?.length;
-    const hasFields = data.series[0]?.fields.length;
+    const noDataText = defaults.noValue && defaults.noValue.length > 0 ? defaults.noValue : 'No Data';
 
-    if (!count || !hasFields) {
-      return <div className={tableStyles.noData}>No data</div>;
+    let count = data.series?.length;
+    if (!count || count < 1) {
+      return <div className={tableStyles.noDataWrapper}>{noDataText}</div>;
+    }
+    count = data.series[0]?.length;
+    if (!count || count < 1) {
+      return <div className={tableStyles.noDataWrapper}>{noDataText}</div>;
     }
 
     if (count > 1) {
       const inputHeight = config.theme.spacing.formInputHeight;
       const padding = 8 * 2;
       const currentIndex = this.getCurrentFrameIndex();
-      const names = data.series.map((frame, index) => {
-        return {
-          label: getFrameDisplayName(frame),
-          value: index,
-        };
-      });
+      // const names = data.series.map((frame, index) => {
+      //   return {
+      //     label: getFrameDisplayName(frame),
+      //     value: index,
+      //   };
+      // });
 
       return (
         <div className={tableStyles.wrapper}>
           {this.renderTable(data.series[currentIndex], width, height - inputHeight - padding)}
-          <div className={tableStyles.selectWrapper}>
+          {/* <div className={tableStyles.selectWrapper}>
             <Select
               menuShouldPortal
               options={names}
               value={names[currentIndex]}
               onChange={this.onChangeTableSelection}
             />
-          </div>
+          </div> */}
         </div>
       );
     }
@@ -158,5 +163,11 @@ const tableStyles = {
   `,
   selectWrapper: css`
     padding: 8px;
+  `,
+  noDataWrapper: css`
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   `,
 };

@@ -15,6 +15,9 @@ import (
 
 func (hs *HTTPServer) AdminCreateUser(c *models.ReqContext, form dtos.AdminCreateUserForm) response.Response {
 	cmd := models.CreateUserCommand{
+		//Start Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+		Id: form.Id,
+		//End Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
 		Login:    form.Login,
 		Email:    form.Email,
 		Password: form.Password,
@@ -40,7 +43,10 @@ func (hs *HTTPServer) AdminCreateUser(c *models.ReqContext, form dtos.AdminCreat
 		}
 
 		if errors.Is(err, models.ErrUserAlreadyExists) {
-			return response.Error(412, fmt.Sprintf("User with email '%s' or username '%s' already exists", form.Email, form.Login), err)
+			//Start, Abhishek 05302021, Allow duplicate emails
+			//return Error(412, fmt.Sprintf("User with email '%s' or username '%s' already exists", form.Email, form.Login), err)
+			return response.Error(412, fmt.Sprintf("User with username '%s' already exists", form.Login), err)
+			//End, Abhishek 05302021, Allow duplicate emails
 		}
 
 		return response.Error(500, "failed to create user", err)

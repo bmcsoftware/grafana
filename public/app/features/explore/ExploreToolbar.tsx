@@ -4,11 +4,10 @@ import classNames from 'classnames';
 import { css } from '@emotion/css';
 
 import { ExploreId, ExploreItemState } from 'app/types/explore';
-import { Icon, IconButton, SetInterval, ToolbarButton, ToolbarButtonRow, Tooltip } from '@grafana/ui';
+import { Icon, IconButton, SetInterval, ToolbarButton, ToolbarButtonRow } from '@grafana/ui';
 import { DataSourceInstanceSettings, RawTimeRange } from '@grafana/data';
 import { DataSourcePicker } from '@grafana/runtime';
 import { StoreState } from 'app/types/store';
-import { createAndCopyShortLink } from 'app/core/utils/shortLinks';
 import { changeDatasource } from './state/datasource';
 import { splitClose, splitOpen } from './state/main';
 import { syncTimes, changeRefreshInterval } from './state/time';
@@ -146,14 +145,14 @@ export class UnConnectedExploreToolbar extends PureComponent<Props> {
                   Split
                 </ToolbarButton>
               ) : null}
-
+              {/* BMC code : Remove short URL link because Grafana bug with PostgreSql DB 
               <Tooltip content={'Copy shortened link to the executed query'} placement="bottom">
                 <ToolbarButton
                   icon="share-alt"
                   onClick={() => createAndCopyShortLink(window.location.href)}
                   aria-label="Copy shortened link to the executed query"
                 />
-              </Tooltip>
+                </Tooltip>*/}
 
               {!isLive && (
                 <ExploreTimeControls

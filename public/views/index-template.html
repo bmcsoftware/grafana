@@ -20,11 +20,31 @@
     <link rel="icon" type="image/png" href="[[.FavIcon]]" />
     <link rel="apple-touch-icon" sizes="180x180" href="[[.AppleTouchIcon]]" />
     <link rel="mask-icon" href="[[.ContentDeliveryURL]]public/img/grafana_mask_icon.svg" color="#F05A28" />
-    <link
-      rel="stylesheet"
-      href="[[.ContentDeliveryURL]]public/build/grafana.[[ .Theme ]].<%= compilation.hash %>.css"
-    />
-
+    <link rel="stylesheet" href="[[.ContentDeliveryURL]]public/build/grafana.[[ .Theme ]].<%= compilation.hash %>.css" />
+    <!-- BMC code - begin -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+    <style>
+      .logo::before,
+      .logo-bmc-helix::before,
+      .logo-helix::before,
+      .logo-bmc::before {
+        content: '';
+        width: inherit;
+        display: inline-block;
+        vertical-align: bottom;
+      }
+      .logo-helix {
+        background-image: url(public/img/bmc_helix_light.svg);
+      }
+      .logo-helix.logo-light {
+        background-image: url(public/img/bmc_helix_dark.svg);
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="rebranding/custom_dashboard.css?ver=<%= compilation.hash %>" />
+    <!-- BMC code - end -->
     <script nonce="[[.Nonce]]">
       performance.mark('frontend_boot_css_time_seconds');
     </script>
@@ -38,7 +58,7 @@
   <body class="theme-[[ .Theme ]] [[.AppNameBodyClass]]">
     <style>
       .preloader {
-        height: 100%;
+        height: 90vh;
         flex-direction: column;
         display: flex;
         justify-content: center;
@@ -54,30 +74,29 @@
         animation-fill-mode: forwards;
       }
 
-      .preloader__bounce {
-        text-align: center;
-        animation-name: preloader-bounce;
-        animation-duration: 0.9s;
-        animation-iteration-count: infinite;
-      }
-
       .preloader__logo {
         display: inline-block;
-        animation-name: preloader-squash;
-        animation-duration: 0.9s;
-        animation-iteration-count: infinite;
-        width: 60px;
-        height: 60px;
+        width: 200px;
+        height: 100px;
         background-repeat: no-repeat;
         background-size: contain;
-        background-image: url('[[.LoadingLogo]]');
+        /* background-image: url('[[.LoadingLogo]]'); */
+      }
+      .logo {
+        display: inline-block;
+        width: 200px;
+        height: 100px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        /* background-image: url('[[.LoadingLogo]]'); */
       }
 
       .preloader__text {
         margin-top: 16px;
-        font-weight: 500;
-        font-size: 14px;
-        font-family: Sans-serif;
+        font-weight: 300;
+        font-size: 1.3125rem;
+        text-align: center;
+        font-family: 'Open Sans', 'Roboto', Sans-serif;
         opacity: 0;
         animation-name: preloader-fade-in;
         animation-duration: 0.9s;
@@ -93,6 +112,14 @@
         color: #d8d9da;
       }
 
+      .theme-light .preloader__logo {
+        /* background-image: url(public/img/bmc_helix_light.svg); */
+      }
+
+      .theme-dark .preloader__logo {
+        /* background-image: url(public/img/bmc_helix_dark.svg); */
+      }
+
       @keyframes preloader-fade-in {
         0% {
           opacity: 0;
@@ -101,18 +128,6 @@
         }
         100% {
           opacity: 1;
-        }
-      }
-
-      @keyframes preloader-bounce {
-        from,
-        to {
-          transform: translateY(0px);
-          animation-timing-function: cubic-bezier(0.3, 0, 0.1, 1);
-        }
-        50% {
-          transform: translateY(-50px);
-          animation-timing-function: cubic-bezier(0.9, 0, 0.7, 1);
         }
       }
 
@@ -150,7 +165,6 @@
       }
 
       /* stop logo animation */
-      .preloader--done .preloader__bounce,
       .preloader--done .preloader__logo {
         animation-name: none;
         display: none;
@@ -159,12 +173,50 @@
       .preloader--done .preloader__logo,
       .preloader--done .preloader__text {
         display: none;
-        color: #ff5705 !important;
         font-size: 15px;
       }
 
       .preloader--done .preloader__text--fail {
         display: block;
+      }
+
+      .main_text {
+        margin-top: 40px;
+        font-size: 32px;
+      }
+
+      .sub_text {
+        margin-top: 12px;
+        font-size: 18px;
+      }
+
+      .bmc_links {
+        color: #33a2e5;
+      }
+
+      .bmc_product_container {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        flex: 0 0 auto;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+        -webkit-flex: 0 0 auto;
+        -webkit-flex-flow: row;
+        -webkit-box-pack: center;
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -webkit-justify-content: center;
+        -ms-flex: 0 0 auto;
+        -ms-flex-flow: row;
+        -ms-flex-pack: center;
+        -ms-flex-align: center;
+        font-weight: 200;
+        font-size: 1.3125rem;
+        line-height: 1.875rem;
+        font-family: 'Open Sans', 'Roboto', Sans-serif;
       }
 
       [ng\:cloak],
@@ -176,32 +228,35 @@
 
     <div class="preloader">
       <div class="preloader__enter">
-        <div class="preloader__bounce">
-          <div class="preloader__logo"></div>
+        <div class="bmc_product_container">
+          <div class='logo logo-helix [[if eq .Theme "dark" ]] logo-light [[end]]' style="
+            width: 150px;
+            height: 30px;
+            background-size: contain;
+            background-position: center right;
+            background-repeat: no-repeat;"></div>
+          <div style="padding: 0 10px;">
+            Dashboards
+          </div>
+        </div>
+        <div class="preloader__text" style="font-size: 1.2rem;">
+          <i class="fa fa-spinner fa-spin"></i>
+          <span>Loading...</span>
         </div>
       </div>
-      <div class="preloader__text">Loading Grafana</div>
-      <div class="preloader__text preloader__text--fail">
-        <p>
-          <strong>If you're seeing this Grafana has failed to load its application files</strong>
-          <br />
-          <br />
-        </p>
-        <p>
-          1. This could be caused by your reverse proxy settings.<br /><br />
-          2. If you host grafana under subpath make sure your grafana.ini root_url setting includes subpath. If not
-          using a reverse proxy make sure to set serve_from_sub_path to true.<br />
-          <br />
-          3. If you have a local dev build make sure you build frontend using: yarn start, yarn start:hot, or yarn
-          build<br />
-          <br />
-          4. Sometimes restarting grafana-server can help<br />
-          <br />
-          5. Check if you are using a non-supported browser. For more information, refer to the list of
-          <a href="https://grafana.com/docs/grafana/latest/installation/requirements/#supported-web-browsers">
-            supported browsers</a
-          >.
-        </p>
+      <div class="text-center preloader__text preloader__text--fail">
+        <div>
+          <img src="public/img/bmc_app_failure_icon.svg" />
+        </div>
+        <div>
+          <h3 class="main_text">Oops... we couldn't load that page.</h3>
+        </div>
+        <div>
+          <span class="sub_text"
+            >The application has failed to load. Contact
+            <a class="bmc_links" href="https://www.bmc.com/support" target="_blank">BMC Support</a>.</span
+          >
+        </div>
       </div>
       <script nonce="[[.Nonce]]">
         // Check to see if browser is not supported by Grafana
@@ -278,6 +333,33 @@
         window.nonce = '[[.Nonce]]';
       [[end]]
     </script>
+
+    <!-- Gainsight PX Tag-->
+    [[if .User.IsSignedIn]]
+    <script type="text/javascript" nonce="[[.Nonce]]">
+      let gsFeatureFlag = localStorage.getItem('enabledFeatures')
+      if (gsFeatureFlag.includes('gainsight')) {
+        var gs_url = 'https://web-sdk.aptrinsic.com/api/aptrinsic.js', gs_param = 'AP-JZCKAMN4GBTD-2', gs_i = 'aptrinsic';
+        window[gs_i] = window[gs_i] || function() {(window[gs_i].q = window[gs_i].q || []).push(arguments); };
+        window[gs_i].p = gs_param;
+        var gs_node = document.createElement('script');
+        gs_node.async = true;
+        gs_node.src = gs_url + '?a=' + gs_param;
+        var gs_script = document.getElementsByTagName('script')[0];
+        gs_node.onload = (response) => {
+          aptrinsic('identify', {
+            "id": "[[.User.Id]]",
+            "tenantId": "[[.User.OrgId]]"
+          });
+        };
+        gs_node.onerror = (error) => {
+          console.error('An error occurred while loading GainSight script; reason: ', error);
+        };
+        gs_script.parentNode.insertBefore(gs_node, gs_script);
+      }
+    </script>
+    [[end]] 
+    <!-- Gainsight PX Tag-->
 
     [[if .GoogleTagManagerId]]
     <!-- Google Tag Manager -->

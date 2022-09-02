@@ -1,45 +1,76 @@
 import React, { FunctionComponent } from 'react';
-import { Button, stylesFactory } from '@grafana/ui';
+import { stylesFactory } from '@grafana/ui';
 import { css } from '@emotion/css';
-import { useUrlParams } from 'app/core/navigation/hooks';
-
 const getStyles = stylesFactory(() => {
-  return css`
-    width: 508px;
-    margin: 128px auto;
-  `;
+  return {
+    container: css`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 128px auto;
+      width: 40%;
+      @media only screen and (max-width: 1440px) {
+        width: 50%;
+      }
+      @media only screen and (max-width: 1200px) {
+        width: 60%;
+      }
+      @media only screen and (max-width: 992px) {
+        width: 80%;
+      }
+    `,
+    mainText: css`
+      text-align: center;
+      margin-top: 40px;
+      font-size: 32px;
+    `,
+    subText: css`
+      text-align: center;
+      margin-top: 12px;
+      font-size: 18px;
+    `,
+    detailsContainer: css`
+      margin-top: 30px;
+      width: 100%;
+    `,
+    links: css`
+      color: #33a2e5;
+    `,
+  };
 });
+
+const style = getStyles();
 
 interface Props {
   error: Error | null;
 }
 
-export const ErrorLoadingChunk: FunctionComponent<Props> = ({ error }) => {
-  const [params, updateUrlParams] = useUrlParams();
-
-  if (!params.get('chunkNotFound')) {
-    updateUrlParams({ chunkNotFound: true }, true);
-    window.location.reload();
-  }
-
-  return (
-    <div className={getStyles()}>
-      <h2>Unable to find application file</h2>
-      <br />
-      <h2 className="page-heading">Grafana has likely been updated. Please try reloading the page.</h2>
-      <br />
-      <div className="gf-form-group">
-        <Button size="md" variant="secondary" icon="repeat" onClick={() => window.location.reload()}>
-          Reload
-        </Button>
-      </div>
-      <details style={{ whiteSpace: 'pre-wrap' }}>
+export const ErrorLoadingChunk: FunctionComponent<Props> = ({ error }) => (
+  <div className={style.container}>
+    <div>
+      <img src="public/img/bmc_page_failure_icon.svg"></img>
+    </div>
+    <div>
+      <h3 className={style.mainText}>Oops... some unexpected error has occurred.</h3>
+    </div>
+    <div>
+      <p className={style.subText}>
+        Take a snapshot of the error details given below, and send it to&nbsp;
+        <a className={style.links} href="https://www.bmc.com/support" target="_blank" rel="noreferrer">
+          BMC Support
+        </a>
+        .
+      </p>
+    </div>
+    <div className={style.detailsContainer}>
+      <details style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontSize: '13px' }}>
         {error && error.message ? error.message : 'Unexpected error occurred'}
         <br />
         {error && error.stack ? error.stack : null}
       </details>
     </div>
-  );
-};
+  </div>
+);
 
 ErrorLoadingChunk.displayName = 'ErrorLoadingChunk';

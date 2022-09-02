@@ -52,6 +52,11 @@ export function buildBaseUrl() {
 
   return baseUrl;
 }
+//BMC Code
+export function buildHostUrl() {
+  return `${window.location.protocol}//${window.location.host}${config.appSubUrl}`;
+}
+//End
 
 export async function buildShareUrl(
   useCurrentTimeRange: boolean,
@@ -116,4 +121,16 @@ export function getLocalTimeZone() {
   }
 
   return '&tz=' + encodeURIComponent(options.timeZone);
+}
+
+export function updateURLOrigin(url: string) {
+  var parser = document.createElement('a');
+  parser.href = url;
+
+  if (parser.origin.localeCompare(window.location.origin) !== 0) {
+    const updatedURL = url.replace(parser.origin, window.location.origin);
+    return updatedURL;
+  }
+
+  return url;
 }

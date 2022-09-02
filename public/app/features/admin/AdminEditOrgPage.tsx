@@ -8,6 +8,7 @@ import { useAsyncFn } from 'react-use';
 import { getBackendSrv } from '@grafana/runtime';
 import { UrlQueryValue } from '@grafana/data';
 import { Form, Field, Input, Button, Legend } from '@grafana/ui';
+import config from 'app/core/config';
 import { css } from '@emotion/css';
 import { GrafanaRouteComponentProps } from 'app/core/navigation/types';
 
@@ -52,6 +53,7 @@ export const AdminEditOrgPage: FC<Props> = ({ match }) => {
     return await getBackendSrv().put('/api/orgs/' + orgId, { ...orgState.value, name });
   };
 
+  // BMC Code- Disabled org name field
   return (
     <Page navModel={navModel}>
       <Page.Contents>
@@ -65,10 +67,15 @@ export const AdminEditOrgPage: FC<Props> = ({ match }) => {
             >
               {({ register, errors }) => (
                 <>
-                  <Field label="Name" invalid={!!errors.orgName} error="Name is required">
+                  <Field
+                    label="Name"
+                    invalid={!!errors.orgName}
+                    disabled={config.buildInfo.env !== 'development'}
+                    error="Name is required"
+                  >
                     <Input {...register('orgName', { required: true })} id="org-name-input" />
                   </Field>
-                  <Button>Update</Button>
+                  {config.buildInfo.env === 'development' && <Button>Update</Button>}
                 </>
               )}
             </Form>
