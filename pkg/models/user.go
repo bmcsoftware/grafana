@@ -57,6 +57,10 @@ func (u *User) NameOrFallback() string {
 // COMMANDS
 
 type CreateUserCommand struct {
+	// BMC code
+	// Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+	Id               int64
+	// End
 	Email            string
 	Login            string
 	Name             string

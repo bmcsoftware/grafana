@@ -210,4 +210,9 @@ export const Pages = {
     itemMoveDown: 'Move playlist item order down',
     itemDelete: 'Delete playlist item',
   },
+  //BMC code :
+  Reports: {
+    url: '/reports',
+    reports: (title: string) => `Report search item ${title}`,
+  },
 };

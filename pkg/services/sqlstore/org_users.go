@@ -3,6 +3,7 @@ package sqlstore
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -328,3 +329,49 @@ func validateOneAdminLeftInOrg(orgId int64, sess *DBSession) error {
 
 	return err
 }
+
+// BMC Software Code - Add Admin to all orgs
+type GetAllOrgs struct {
+	Id int64 `xorm:"id"`
+}
+
+func (ss *SQLStore) addAdminToAllOrgs(ctx context.Context, userID int64) error {
+	return ss.WithTransactionalDbSession(ctx, func(sess *DBSession) error {
+		// Get all orgs
+		orgs := make([]*GetAllOrgs, 0)
+		err := sess.SQL("SELECT id FROM org WHERE id not in (SELECT org_id FROM org_user WHERE user_id = ?)", userID).Find(&orgs)
+		if err != nil {
+			ss.log.Error("Failed to fetch list of organizations", "error", err)
+			return err
+		}
+
+		if len(orgs) == 0 {
+			ss.log.Info("No organizations to sync with grafana admin")
+			return nil
+		}
+
+		ss.log.Info("Found " + strconv.Itoa(len(orgs)) + " organizations")
+		//Loop and add admin to each org
+		queries := make([]*models.OrgUser, 0)
+		for _, org := range orgs {
+			queries = append(queries, &models.OrgUser{
+				OrgId:   org.Id,
+				UserId:  userID,
+				Role:    models.ROLE_ADMIN,
+				Created: time.Now(),
+				Updated: time.Now(),
+			})
+		}
+
+		ss.log.Info("Adding admin to " + strconv.Itoa(len(queries)) + " organizations")
+		_, err = sess.Insert(queries)
+		if err != nil {
+			ss.log.Warn("Failed to add grafana admin user to org", "error", err)
+		} else {
+			ss.log.Warn("Successfully added grafana admin user to org", "error", err)
+		}
+		return nil
+	})
+}
+
+// BMC Software Code - END

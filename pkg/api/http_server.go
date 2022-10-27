@@ -278,6 +278,11 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	}
 	hs.registerRoutes()
 
+	// BMC code
+	hs.log.Info("Registering Report Scheduler Api's")
+	hs.registerSchedulerRoutes()
+	hs.registerReportSchedulerPlugin()
+	// End
 	// Register access control scope resolver for annotations
 	hs.AccessControl.RegisterScopeAttributeResolver(AnnotationTypeScopeResolver())
 
@@ -588,6 +593,12 @@ func (hs *HTTPServer) apiHealthHandler(ctx *web.Context) {
 	if !hs.Cfg.AnonymousHideVersion {
 		data.Set("version", hs.Cfg.BuildVersion)
 		data.Set("commit", hs.Cfg.BuildCommit)
+
+		// BMC code
+		// author(kmejdi) - Add ade version from env variables
+		version := os.Getenv("RELEASE_VERSION")
+		data.Set("adeVersion", version)
+		// End
 	}
 
 	if !hs.databaseHealthy(ctx.Req.Context()) {

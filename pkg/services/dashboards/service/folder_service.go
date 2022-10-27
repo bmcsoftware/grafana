@@ -171,8 +171,10 @@ func (f *FolderServiceImpl) CreateFolder(ctx context.Context, user *models.Signe
 	if !accesscontrol.IsDisabled(f.cfg) {
 		_, permissionErr = f.permissions.SetPermissions(ctx, orgID, folder.Uid, []accesscontrol.SetResourcePermissionCommand{
 			{UserID: userID, Permission: models.PERMISSION_ADMIN.String()},
-			{BuiltinRole: string(models.ROLE_EDITOR), Permission: models.PERMISSION_EDIT.String()},
-			{BuiltinRole: string(models.ROLE_VIEWER), Permission: models.PERMISSION_VIEW.String()},
+			//BMC Code Start - Fix for DRJ71-4418 - Changes related to folder and Dashboard permission in 9.x
+			//{BuiltinRole: string(models.ROLE_EDITOR), Permission: models.PERMISSION_EDIT.String()},
+			//{BuiltinRole: string(models.ROLE_VIEWER), Permission: models.PERMISSION_VIEW.String()},
+			//BMC Code End
 		}...)
 	} else if f.cfg.EditorsCanAdmin {
 		permissionErr = f.MakeUserAdmin(ctx, orgID, userID, folder.Id, true)
