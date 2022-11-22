@@ -114,4 +114,8 @@ type Service interface {
 	GetRenderUser(ctx context.Context, key string) (*RenderUser, bool)
 	HasCapability(capability CapabilityName) (CapabilitySupportRequestResult, error)
 	CreateRenderingSession(ctx context.Context, authOpts AuthOpts, sessionOpts SessionOpts) (Session, error)
+	// BMC code
+	CustomRenderPDF(ctx context.Context, opts CustomPDFOpts, session Session) (*RenderResult, error)
+	CustomRenderCSV(ctx context.Context, opts CustomCSVOpts, session Session) (*RenderResult, error)
+	// End
 }

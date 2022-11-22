@@ -10,6 +10,13 @@ require (
 	github.com/urfave/cli v1.22.5 // indirect
 )
 
+// BMC code
+require (
+	github.bmc.com/DSOM-ADE/authz-go v0.0.0-20210513070043-9eb5f367fb34
+)
+// End
+
+
 require (
 	4d63.com/gochecknoglobals v0.0.0-20201008074935-acfc0b28355a // indirect
 	github.com/BurntSushi/toml v0.3.1 // indirect

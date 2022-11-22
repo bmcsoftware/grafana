@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { Input, Field, Form, Button, FieldSet, VerticalGroup } from '@grafana/ui';
 import { SharedPreferences } from 'app/core/components/SharedPreferences/SharedPreferences';
+import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { AccessControlAction, Team } from 'app/types';
 
@@ -34,20 +35,23 @@ export const TeamSettings: FC<Props> = ({ team, updateTeam }) => {
         >
           {({ register }) => (
             <>
-              <Field label="Name" disabled={!canWriteTeamSettings}>
+              {/* BMC code - inline change */}
+              <Field label="Name" disabled={config.buildInfo.env !== 'development'}>
                 <Input {...register('name', { required: true })} id="name-input" />
               </Field>
 
+              {/* BMC code - inline change */}
               <Field
                 label="Email"
                 description="This is optional and is primarily used to set the team profile avatar (via gravatar service)."
-                disabled={!canWriteTeamSettings}
+                disabled={config.buildInfo.env !== 'development'}
               >
                 <Input {...register('email')} placeholder="team@email.com" type="email" id="email-input" />
               </Field>
-              <Button type="submit" disabled={!canWriteTeamSettings}>
+              {/* BMC code - inline change */}
+              {config.buildInfo.env === 'development' && <Button type="submit">
                 Update
-              </Button>
+              </Button>}
             </>
           )}
         </Form>

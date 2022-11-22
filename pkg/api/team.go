@@ -23,7 +23,8 @@ func (hs *HTTPServer) CreateTeam(c *models.ReqContext) response.Response {
 		return response.Error(403, "Not allowed to create team.", nil)
 	}
 
-	team, err := hs.SQLStore.CreateTeam(cmd.Name, cmd.Email, c.OrgId)
+	// BMC code - inline change
+	team, err := hs.SQLStore.CreateTeam(cmd.Name, cmd.Email, c.OrgId, cmd.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrTeamNameTaken) {
 			return response.Error(409, "Team name taken", err)

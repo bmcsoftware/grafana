@@ -43,6 +43,10 @@ type CleanUpService struct {
 
 func (srv *CleanUpService) Run(ctx context.Context) error {
 	srv.cleanUpTmpFiles()
+	// BMC code
+	srv.cleanUpPDFTmpFiles()
+	srv.cleanUpCSVTmpFiles()
+	// End
 
 	ticker := time.NewTicker(time.Minute * 10)
 	for {
@@ -52,6 +56,10 @@ func (srv *CleanUpService) Run(ctx context.Context) error {
 			defer cancelFn()
 
 			srv.cleanUpTmpFiles()
+			// BMC code
+			srv.cleanUpPDFTmpFiles()
+			srv.cleanUpCSVTmpFiles()
+			// End
 			srv.deleteExpiredSnapshots(ctx)
 			srv.deleteExpiredDashboardVersions(ctx)
 			srv.cleanUpOldAnnotations(ctxWithTimeout)
@@ -121,6 +129,67 @@ func (srv *CleanUpService) cleanUpTmpFolder(folder string) {
 	}
 
 	srv.log.Debug("Found old rendered file to delete", "folder", folder, "deleted", len(toDelete), "kept", len(files))
+}
+
+
+func (srv *CleanUpService) cleanUpPDFTmpFiles() {
+	if _, err := os.Stat(srv.Cfg.PDFsDir); os.IsNotExist(err) {
+		return
+	}
+
+	files, err := ioutil.ReadDir(srv.Cfg.PDFsDir)
+	if err != nil {
+		srv.log.Error("Problem reading pdf dir", "error", err)
+		return
+	}
+
+	var toDelete []os.FileInfo
+	var now = time.Now()
+
+	for _, file := range files {
+		if srv.shouldCleanupTempFile(file.ModTime(), now) {
+			toDelete = append(toDelete, file)
+		}
+	}
+
+	for _, file := range toDelete {
+		fullPath := path.Join(srv.Cfg.PDFsDir, file.Name())
+		err := os.Remove(fullPath)
+		if err != nil {
+			srv.log.Error("Failed to delete temp file", "file", file.Name(), "error", err)
+		}
+	}
+
+	srv.log.Debug("Found old rendered pdf to delete", "deleted", len(toDelete), "kept", len(files))
+}
+
+func (srv *CleanUpService) cleanUpCSVTmpFiles() {
+	if _, err := os.Stat(srv.Cfg.CSVsDir); os.IsNotExist(err) {
+		return
+	}
+
+	files, err := ioutil.ReadDir(srv.Cfg.CSVsDir)
+	if err != nil {
+		srv.log.Error("Problem reading csv dir", "error", err)
+		return
+	}
+
+	var toDelete []os.FileInfo
+	var now = time.Now()
+
+	for _, file := range files {
+		if srv.shouldCleanupTempFile(file.ModTime(), now) {
+			toDelete = append(toDelete, file)
+		}
+	}
+
+	for _, file := range toDelete {
+		fullPath := path.Join(srv.Cfg.CSVsDir, file.Name())
+		err := os.Remove(fullPath)
+		if err != nil {
+			srv.log.Error("Failed to delete temp file", "file", file.Name(), "error", err)
+		}
+	}
 }
 
 func (srv *CleanUpService) shouldCleanupTempFile(filemtime time.Time, now time.Time) bool {

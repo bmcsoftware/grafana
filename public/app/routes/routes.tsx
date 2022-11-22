@@ -7,8 +7,10 @@ import config from 'app/core/config';
 import { contextSrv } from 'app/core/services/context_srv';
 import UserAdminPage from 'app/features/admin/UserAdminPage';
 import LdapPage from 'app/features/admin/ldap/LdapPage';
-import { getAlertingRoutes } from 'app/features/alerting/routes';
+// import { getAlertingRoutes } from 'app/features/alerting/routes';
+import { FEATURE_CONST, getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
 import { getLiveRoutes } from 'app/features/live/pages/routes';
+import { isGrafanaAdmin } from 'app/features/plugins/admin/permissions';
 import { getRoutes as getPluginCatalogRoutes } from 'app/features/plugins/admin/routes';
 import { getProfileRoutes } from 'app/features/profile/routes';
 import { ServiceAccountPage } from 'app/features/serviceaccounts/ServiceAccountPage';
@@ -16,6 +18,8 @@ import { AccessControlAction, DashboardRoutes } from 'app/types';
 
 import { SafeDynamicImport } from '../core/components/DynamicImports/SafeDynamicImport';
 import { RouteDescriptor } from '../core/navigation/types';
+
+import { getCalcFieldRoutes } from './routes.calculatedFields';
 
 export const extraRoutes: RouteDescriptor[] = [];
 
@@ -109,6 +113,8 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/datasources/new',
+      // BMC code - next line
+      roles: () => (getFeatureStatus(FEATURE_CONST.DASHBOARDS_SSRF_FEATURE_NAME) || isGrafanaAdmin() ? [] : ['Reject']),
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "NewDataSourcePage"*/ '../features/datasources/NewDataSourcePage')
       ),
@@ -185,6 +191,12 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/org/new',
+      // BMC code - next line
+      roles: () =>
+        contextSrv.evaluatePermission(
+          () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
+          [AccessControlAction.ActionAPIKeysRead]
+        ),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "NewOrgPage" */ 'app/features/org/NewOrgPage')),
     },
     {
@@ -201,7 +213,11 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/org/apikeys',
-      roles: () => contextSrv.evaluatePermission(() => ['Admin'], [AccessControlAction.ActionAPIKeysRead]),
+      roles: () =>
+        contextSrv.evaluatePermission(
+          () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
+          [AccessControlAction.ActionAPIKeysRead]
+        ),
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "ApiKeysPage" */ 'app/features/api-keys/ApiKeysPage')
       ),
@@ -240,7 +256,8 @@ export function getAppRoutes(): RouteDescriptor[] {
       path: '/org/teams/new',
       roles: () =>
         contextSrv.evaluatePermission(
-          () => (config.editorsCanAdmin ? ['Editor', 'Admin'] : ['Admin']),
+          // BMC code - inline change
+          () => (config.editorsCanAdmin ? [] : ['Admin']),
           [AccessControlAction.ActionTeamsCreate]
         ),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "CreateTeam" */ 'app/features/teams/CreateTeam')),
@@ -249,7 +266,8 @@ export function getAppRoutes(): RouteDescriptor[] {
       path: '/org/teams/edit/:id/:page?',
       roles: () =>
         contextSrv.evaluatePermission(
-          () => (config.editorsCanAdmin ? ['Editor', 'Admin'] : ['Admin']),
+          // BMC code - inline change
+          () => (config.editorsCanAdmin ? [] : ['Admin']),
           [AccessControlAction.ActionTeamsRead, AccessControlAction.ActionTeamsCreate]
         ),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "TeamPages" */ 'app/features/teams/TeamPages')),
@@ -279,6 +297,12 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     {
       path: '/admin/users/create',
+      // BMC code - next line
+      roles: () =>
+        contextSrv.evaluatePermission(
+          () => (config.buildInfo.env !== 'development' ? ['rescrtictedAccess'] : []),
+          [AccessControlAction.ActionAPIKeysRead]
+        ),
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "UserCreatePage" */ 'app/features/admin/UserCreatePage')
       ),
@@ -426,9 +450,13 @@ export function getAppRoutes(): RouteDescriptor[] {
     },
     ...getPluginCatalogRoutes(),
     ...getLiveRoutes(),
-    ...getAlertingRoutes(),
+    // BMC code - next line
+    // ...getAlertingRoutes(),
     ...getProfileRoutes(),
+    // BMC code
     ...extraRoutes,
+    ...getCalcFieldRoutes(),
+    // BMC code end
     {
       path: '/*',
       component: ErrorPage,

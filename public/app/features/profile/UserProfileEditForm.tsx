@@ -1,9 +1,10 @@
 import { Trans, t } from '@lingui/macro';
 import React, { FC } from 'react';
 
-import { selectors } from '@grafana/e2e-selectors';
-import { Button, Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
-import config from 'app/core/config';
+import { Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
+//import { Button, Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
+//import { selectors } from '@grafana/e2e-selectors';
+// import config from 'app/core/config';
 import { UserDTO } from 'app/types';
 
 import { ProfileUpdateFields } from './types';
@@ -14,7 +15,8 @@ export interface Props {
   updateProfile: (payload: ProfileUpdateFields) => void;
 }
 
-const { disableLoginForm } = config;
+// BMC code - inline change
+const disableLoginForm = true;
 
 export const UserProfileEditForm: FC<Props> = ({ user, isSavingUser, updateProfile }) => {
   const onSubmitProfileUpdate = (data: ProfileUpdateFields) => {
@@ -69,16 +71,19 @@ export const UserProfileEditForm: FC<Props> = ({ user, isSavingUser, updateProfi
               />
             </Field>
 
-            <div className="gf-form-button-row">
-              <Button
-                variant="primary"
-                disabled={isSavingUser}
-                data-testid={selectors.components.UserProfile.profileSaveButton}
-                type="submit"
-              >
-                <Trans id="common.save">Save</Trans>
-              </Button>
-            </div>
+            {/* 
+              // BMC code
+              <div className="gf-form-button-row">
+                <Button
+                  variant="primary"
+                  disabled={isSavingUser}
+                  data-testid={selectors.components.UserProfile.profileSaveButton}
+                >
+                  <Trans id="common.save">Save</Trans>
+                </Button>
+              </div>
+              // End
+            */}
           </FieldSet>
         );
       }}

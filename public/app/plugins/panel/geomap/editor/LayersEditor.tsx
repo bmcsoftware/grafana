@@ -10,7 +10,7 @@ import { GeomapInstanceState } from '../GeomapPanel';
 import { geomapLayerRegistry } from '../layers/registry';
 import { GeomapPanelOptions, MapLayerState } from '../types';
 
-import { dataLayerFilter } from './layerEditor';
+import { dataLayerFilter } from './LayerEditor';
 
 type LayersEditorProps = StandardEditorProps<any, any, GeomapPanelOptions, GeomapInstanceState>;
 

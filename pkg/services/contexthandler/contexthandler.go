@@ -4,12 +4,15 @@ package contexthandler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.bmc.com/DSOM-ADE/authz-go"
 	"github.com/grafana/grafana/pkg/components/apikeygen"
 	apikeygenprefix "github.com/grafana/grafana/pkg/components/apikeygenprefixed"
 	"github.com/grafana/grafana/pkg/infra/log"
@@ -33,6 +36,12 @@ const (
 	InvalidUsernamePassword = "invalid username or password"
 	/* #nosec */
 	InvalidAPIKey = "invalid API key"
+	// BMC code
+	// Start Abhishek_06292020, roleupdate
+	reportingViewer = "reporting.dashboards_permissions.viewer"
+	reportingEditor = "reporting.dashboards_permissions.editor"
+	reportingAdmin  = "reporting.dashboards_permissions.admin"
+	// End
 )
 
 const ServiceName = "ContextHandler"
@@ -129,6 +138,27 @@ func (h *ContextHandler) Middleware(mContext *web.Context) {
 		}
 	}
 
+	// BMC code
+	//If we come here via authProxy, we are authenticated already and jwt token is available
+	encodedJWTToken := reqContext.Context.Req.Header.Get("X-JWT-Token")
+	var decodedToken *authz.UserInfo
+
+	//jwtTokenEncoded="abc"
+	//var userJwtToken = jwtToken{orgId: -1}
+	if encodedJWTToken != "" {
+		usrObj, err := authz.Authorize(encodedJWTToken)
+		decodedToken = usrObj
+		if err != nil {
+			reqContext.Logger.Error("Failed to decode JWT Token", "error", err.Error())
+			fmt.Errorf("500", err.Error())
+		}
+		h.UpdateTeamMembership(reqContext, usrObj)
+		if usrObj != nil {
+			orgID, _ = strconv.ParseInt(usrObj.Tenant_Id, 10, 64)
+		}
+	}
+	// End
+
 	// the order in which these are tested are important
 	// look for api key in Authorization header first
 	// then init session and look for userId in session
@@ -145,6 +175,13 @@ func (h *ContextHandler) Middleware(mContext *web.Context) {
 	}
 
 	reqContext.Logger = reqContext.Logger.New("userId", reqContext.UserId, "orgId", reqContext.OrgId, "uname", reqContext.Login)
+	// BMC code
+	//author (ateli) - start
+	//add JWT token in session cookie
+	//Commenting setting up JWT cookie code to fix DRJ71-2317
+	//cookies.WriteCookieCustom(ctx.Resp, "IMS_JWT_Token", encodedJWTToken, 0, nil)
+	// End
+
 	span.AddEvents(
 		[]string{"uname", "orgId", "userId"},
 		[]tracing.EventValue{
@@ -154,6 +191,13 @@ func (h *ContextHandler) Middleware(mContext *web.Context) {
 	)
 
 	mContext.Map(reqContext)
+
+	// BMC code
+	// Start Abhishek_06292020, roleupdate
+	if decodedToken != nil && encodedJWTToken != "" && reqContext.IsSignedIn {
+		updateRole(reqContext, decodedToken)
+	}
+	// End
 
 	// update last seen every 5min
 	if reqContext.ShouldUpdateLastSeenAt() {
@@ -497,6 +541,17 @@ func (h *ContextHandler) handleError(ctx *models.ReqContext, err error, statusCo
 
 func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext, orgID int64) bool {
 	username := reqContext.Req.Header.Get(h.Cfg.AuthProxyHeaderName)
+	//Changes for userID as RSSOUser@RSSO Tenant - required to achieve unique userID's across tenants
+	RSSOUser := reqContext.Req.Header.Get("X-Webauth-User")
+	RSSOTenant := reqContext.Req.Header.Get("X-Rsso-Tenant")
+
+	username = RSSOUser
+
+	//ignore appending tenant if its superuser realm tenant
+	if RSSOTenant != "" && RSSOTenant != "dashboards_superuser_tenant" {
+		username = RSSOUser + "@" + RSSOTenant
+	}
+	reqContext.Req.Header.Set("X-HELIX-AUTH", username)
 
 	logger := log.New("auth.proxy")
 
@@ -521,6 +576,23 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 		return true
 	}
 
+	// changes to be reverted (to be reviewed by Abhijeet Teli)
+	// BMC code
+	//author(ateli) - Permission check for RSSO user. If Reporting permission is not assigned in IMS then return error
+	if setting.Env != setting.Dev {
+		err := h.authProxy.HasValidPermissions(reqContext)
+		if err != nil {
+			logger.Error(
+				"User does not have sufficient privileges to access dashboards",
+				"username", reqContext.Context.Req.Header.Get("X-Webauth-User"),
+				"message", err.Error(),
+			)
+			reqContext.Handle(h.Cfg, 401, "Oops... sorry you dont have access to this Dashboard", err)
+			return true
+		}
+	}
+	// End
+
 	id, err := logUserIn(reqContext, h.authProxy, username, logger, false)
 	if err != nil {
 		h.handleError(reqContext, err, 407, nil)
@@ -528,7 +600,6 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 	}
 
 	logger.Debug("Got user ID, getting full user info", "userID", id)
-
 	user, err := h.authProxy.GetSignedInUser(id, orgID)
 	if err != nil {
 		// The reason we couldn't find the user corresponding to the ID might be that the ID was found from a stale
@@ -542,6 +613,7 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 				logger.Error("Got unexpected error when removing user from auth cache", "error", err)
 			}
 		}
+
 		id, err = logUserIn(reqContext, h.authProxy, username, logger, true)
 		if err != nil {
 			h.handleError(reqContext, err, 407, nil)
@@ -561,6 +633,9 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 	reqContext.SignedInUser = user
 	reqContext.IsSignedIn = true
 
+	// BMC code - next line
+	h.CheckIfUserSynced(reqContext)
+
 	// Remember user data in cache
 	if err := h.authProxy.Remember(reqContext, id); err != nil {
 		h.handleError(reqContext, err, 500, func(details error) {
@@ -576,3 +651,170 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 
 	return true
 }
+
+// BMC added UpdateTeamMembership function
+func (h *ContextHandler) UpdateTeamMembership(ctx *models.ReqContext, jwtTokenDetails *authz.UserInfo) {
+	if jwtTokenDetails != nil {
+		orgId, _ := strconv.ParseInt(jwtTokenDetails.Tenant_Id, 10, 64)
+		if orgId < 0 {
+			ctx.Logger.Debug("No jwtToken was passed")
+			return
+		}
+		//orgId := jwtTokenDetails.OrgId
+		userId := int64(0)
+		userId, _ = strconv.ParseInt(jwtTokenDetails.UserID, 10, 64)
+
+		//remove user from teams in DB if that team doesnt exist in jwt
+		ctx.Logger.Debug("Removing from team")
+		h.RemoveFromTeam(ctx, jwtTokenDetails)
+
+		//loop to add team membership for teams in jwt
+		for i := 0; i < len(jwtTokenDetails.Groups); i++ {
+			currentTeamId, _ := strconv.ParseInt(jwtTokenDetails.Groups[i], 10, 64)
+			// Make DB call
+			//query := models.GetTeamMembersQuery{OrgId: orgId, TeamId: teamIdFromHeader,UserId: c.ParamsInt64(":userId")}
+			ctx.Logger.Debug("Current team id is ", "currentTeamId", currentTeamId)
+			query := models.GetTeamMembersQuery{OrgId: orgId, TeamId: currentTeamId, UserId: userId}
+			ctx.Logger.Debug("GetTeamMembersQuery query is ", "query", query)
+			// skip adding if already a member of this team
+			if err := h.SQLStore.GetTeamMembers(ctx.Req.Context(), &query); err == nil && len(query.Result) > 0 {
+				for _, member := range query.Result {
+					ctx.Logger.Debug("User is already the member of this team", "name", member.Name)
+				}
+			} else {
+				// Add the new member in here
+				ctx.Logger.Debug("Adding userId in team", "userId", userId)
+
+				cmd := models.AddTeamMemberCommand{OrgId: orgId, TeamId: currentTeamId, UserId: userId}
+
+				if err := sqlstore.AddTeamMember(h.SQLStore, ctx.Req.Context(), &cmd); err != nil {
+					if err == models.ErrTeamNotFound {
+						ctx.Logger.Debug("Team not found")
+					}
+					if err == models.ErrTeamMemberAlreadyAdded {
+						ctx.Logger.Debug("User is already added to this team")
+					} else {
+						ctx.Logger.Debug("Failed to add user to team " + err.Error())
+					}
+				}
+			}
+		}
+	}
+
+}
+
+// BMC code
+// Abhishek_06202020, Team membership changes
+func (h *ContextHandler) RemoveFromTeam(ctx *models.ReqContext, jwtTokenDetails *authz.UserInfo) {
+	if jwtTokenDetails != nil {
+		orgId, _ := strconv.ParseInt(jwtTokenDetails.Tenant_Id, 10, 64)
+		//orgId := jwtTokenDetails.OrgId
+		userId := int64(0)
+		userId, _ = strconv.ParseInt(jwtTokenDetails.UserID, 10, 64)
+		teamId := int64(0)
+		//teamIdStr := string
+
+		//Fetch team list from DB for this user
+		getTeamsByUserQuery := models.GetTeamsByUserQuery{OrgId: orgId, UserId: userId}
+
+		if err := h.SQLStore.GetTeamsByUser(ctx.Req.Context(), &getTeamsByUserQuery); err != nil {
+			ctx.Logger.Debug("Team not found")
+			return
+		}
+
+		for _, t := range getTeamsByUserQuery.Result {
+			teamId = t.Id
+			//itemLoc := find(teamId, jwtTeamId)
+
+			// remove user from this team membership only if this team is not in the jwt team list
+			//if itemLoc < 0 {
+			if !contains(jwtTokenDetails.Groups, strconv.FormatInt(int64(teamId), 10)) {
+				if err := h.SQLStore.RemoveTeamMember(ctx.Req.Context(), &models.RemoveTeamMemberCommand{OrgId: orgId, TeamId: teamId, UserId: userId}); err != nil {
+					if err == models.ErrTeamNotFound {
+						ctx.Logger.Debug("Team not found")
+					}
+					if err == models.ErrTeamMemberNotFound {
+						ctx.Logger.Debug("Team member not found")
+					}
+					ctx.Logger.Debug("Failed to remove Member from Team")
+				}
+			}
+		}
+	}
+}
+
+func find(what int64, where []int64) (idx int) {
+	for i, v := range where {
+		if v == what {
+			return i
+		}
+	}
+	return -1
+}
+
+// End Abhishek_06202020, Team membership changes
+
+// Start Abhishek_06292020, roleupdate
+func contains(s []string, searchterm string) bool {
+	i := sort.SearchStrings(s, searchterm)
+	return i < len(s) && strings.ToLower(s[i]) == searchterm
+}
+
+func updateRole(ctx *models.ReqContext, jwtTokenDetails *authz.UserInfo) {
+
+	//assign roles
+	//if jwtTokenDetails.isSuperAdmin {
+	//	ctx.IsGrafanaAdmin = true
+	//	ctx.OrgRole = models.ROLE_ADMIN
+	//	return true
+	//}
+	sort.Strings(jwtTokenDetails.Permissions)
+
+	if contains(jwtTokenDetails.Permissions, reportingViewer) {
+		ctx.OrgRole = models.ROLE_VIEWER
+	}
+	if contains(jwtTokenDetails.Permissions, reportingEditor) {
+		ctx.OrgRole = models.ROLE_EDITOR
+	}
+	if contains(jwtTokenDetails.Permissions, reportingAdmin) || contains(jwtTokenDetails.Permissions, string('*')) {
+		ctx.OrgRole = models.ROLE_ADMIN
+	}
+}
+
+// End Abhishek_06292020, roleupdate
+
+//Additional check to see if User Id is in sync with IMS
+
+func (h *ContextHandler) CheckIfUserSynced(rCtx *models.ReqContext) {
+	logger := log.New("auth.proxy")
+	// Remove user if ID is not synced with ade-ID
+	encodedJWTToken := rCtx.Req.Header.Get("X-JWT-Token")
+	logger.Log("Checking if user is synced with IMS", "JWT Length", len(encodedJWTToken))
+	if encodedJWTToken != "" {
+		logger.Log("Decoding JWT Token")
+		decodedToken, err := authz.Authorize(encodedJWTToken)
+		if err != nil {
+			logger.Error("Failed to decode JWT Token", "err", err.Error())
+			return
+		}
+
+		ImsUserID, err := strconv.ParseInt(decodedToken.UserID, 10, 64)
+		if err != nil {
+			logger.Error("Failed to parse UserID from decoded JWT Token")
+		}
+		if decodedToken != nil && ImsUserID != rCtx.UserId {
+			logger.Info("User ID from request is not in sync with IMS - removing user", "UserID", rCtx.UserId)
+			removeUnsyncedUser := &models.DeleteUserCommand{
+				UserId: rCtx.UserId,
+			}
+			if err := h.SQLStore.DeleteUser(rCtx.Req.Context(), removeUnsyncedUser); err != nil {
+				logger.Error("Failed to remmove unsynced user", "err", err.Error())
+			}
+			logger.Info("User sync complete", "UserID", rCtx.UserId)
+		} else {
+			logger.Info("User ID from request is in sync with IMS", "UserID", rCtx.UserId)
+		}
+	}
+}
+
+// End

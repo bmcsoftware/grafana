@@ -19,6 +19,7 @@ import {
 import { UserRolePicker } from 'app/core/components/RolePicker/UserRolePicker';
 import { fetchRoleOptions, updateUserRoles } from 'app/core/components/RolePicker/api';
 import { OrgPicker, OrgSelectItem } from 'app/core/components/Select/OrgPicker';
+import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { AccessControlAction, Organization, OrgRole, Role, UserDTO, UserOrg } from 'app/types';
 
@@ -81,20 +82,25 @@ export class UserOrgs extends PureComponent<Props, State> {
               </tbody>
             </table>
           </div>
-          <div className={addToOrgContainerClass}>
-            {canAddToOrg && (
-              <Button variant="secondary" onClick={this.showOrgAddModal} ref={this.addToOrgButtonRef}>
-                Add user to organization
-              </Button>
-            )}
-          </div>
-          <AddToOrgModal
-            user={user}
-            userOrgs={orgs}
-            isOpen={showAddOrgModal}
-            onOrgAdd={onOrgAdd}
-            onDismiss={this.dismissOrgAddModal}
-          />
+          {/* BMC code - next line */}
+          {config.buildInfo.env === 'development' && (
+            <>
+              <div className={addToOrgContainerClass}>
+                {canAddToOrg && (
+                  <Button variant="secondary" onClick={this.showOrgAddModal} ref={this.addToOrgButtonRef}>
+                    Add user to organization
+                  </Button>
+                )}
+              </div>
+              <AddToOrgModal
+                user={user}
+                userOrgs={orgs}
+                isOpen={showAddOrgModal}
+                onOrgAdd={onOrgAdd}
+                onDismiss={this.dismissOrgAddModal}
+              />
+            </>
+          )}
         </div>
       </>
     );

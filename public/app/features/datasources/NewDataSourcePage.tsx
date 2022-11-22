@@ -90,16 +90,21 @@ class NewDataSourcePage extends PureComponent<Props> {
             {this.renderPlugins(category.plugins, category.id)}
           </div>
         ))}
-        <div className="add-data-source-more">
-          <LinkButton
-            variant="secondary"
-            href="https://grafana.com/plugins?type=datasource&utm_source=grafana_add_ds"
-            target="_blank"
-            rel="noopener"
-          >
-            Find more data source plugins on grafana.com
-          </LinkButton>
-        </div>
+        {/* 
+          // BMC code 
+          // Hide this option
+          <div className="add-data-source-more">
+            <LinkButton
+              variant="secondary"
+              href="https://grafana.com/plugins?type=datasource&utm_source=grafana_add_ds"
+              target="_blank"
+              rel="noopener"
+            >
+              Find more data source plugins on grafana.com
+            </LinkButton>
+          </div>
+          // End 
+        */}
       </>
     );
   }

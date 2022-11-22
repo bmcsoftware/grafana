@@ -1,3 +1,4 @@
+import { advanceFunctionsTransformer } from './transformers/advanceFunctions';
 import { calculateFieldTransformer } from './transformers/calculateField';
 import { concatenateTransformer } from './transformers/concat';
 import { convertFieldTypeTransformer } from './transformers/convertFieldType';
@@ -45,4 +46,7 @@ export const standardTransformers = {
   histogramTransformer,
   convertFieldTypeTransformer,
   groupingToMatrixTransformer,
+  // BMC code
+  advanceFunctionsTransformer,
+  // End
 };
