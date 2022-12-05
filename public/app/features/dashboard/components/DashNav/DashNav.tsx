@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom';
 
 import { locationUtil, textUtil } from '@grafana/data';
 import { locationService } from '@grafana/runtime';
-import { ButtonGroup, ModalsController, ToolbarButton, PageToolbar, useForceUpdate } from '@grafana/ui';
-import config from 'app/core/config';
+import { ButtonGroup, ModalsController, ToolbarButton, PageToolbar, useForceUpdate, Tooltip } from '@grafana/ui';
+import { config } from 'app/core/config';
 import { toggleKioskMode } from 'app/core/navigation/kiosk';
 import { DashboardCommentsModal } from 'app/features/dashboard/components/DashboardComments/DashboardCommentsModal';
 import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
@@ -171,6 +171,36 @@ export const DashNav = React.memo<Props>((props) => {
         </ModalsController>
       );
     }
+
+    // BMC code
+    if (canShare) {
+      const { theme } = config;
+      buttons.push(
+        <div key="button-reports" style={{ display: 'flex' }}>
+          <Tooltip content="Manage scheduled reports">
+            <a
+              onClick={() => {
+                sessionStorage.removeItem('reportFilter');
+                locationService.push({
+                  search: locationService.getSearch().toString(),
+                  pathname: `/a/reports/f/${dashboard.uid}`,
+                  
+                });
+              }}
+            >
+              <img
+                style={{
+                  width: '22px',
+                  filter: theme.isDark ? 'brightness(1.2)' : 'brightness(0.5)',
+                }}
+                src="public/img/icon_scheduler.svg"
+              />
+            </a>
+          </Tooltip>
+        </div>
+      );
+    }
+    // End
 
     addCustomContent(customLeftActions, buttons);
     return buttons;

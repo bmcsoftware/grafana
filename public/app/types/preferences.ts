@@ -8,4 +8,10 @@ export interface UserPreferencesDTO {
   queryHistory: {
     homeTab: '' | 'query' | 'starred';
   };
+  // BMC code
+  docLink: string;
+  supportLink: string;
+  communityLink: string;
+  videoLink: string;
+  // End
 }

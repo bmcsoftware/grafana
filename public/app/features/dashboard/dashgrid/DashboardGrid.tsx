@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Subscription } from 'rxjs';
 
-import { config } from '@grafana/runtime';
+import { config, locationService } from '@grafana/runtime';
 import { GRID_CELL_HEIGHT, GRID_CELL_VMARGIN, GRID_COLUMN_COUNT } from 'app/core/constants';
 import { cleanAndRemoveMany } from 'app/features/panel/state/actions';
 import { DashboardPanelsChangedEvent } from 'app/types/events';
@@ -25,6 +25,11 @@ export interface OwnProps {
 
 export interface State {
   isLayoutInitialized: boolean;
+  // BMC code
+  // author(kmejdi) - used for report scheduler PDF generation
+  simple: boolean;
+  orientation: string;
+  // End
 }
 
 const mapDispatchToProps = {
@@ -49,11 +54,26 @@ export class DashboardGridUnconnected extends PureComponent<Props, State> {
 
     this.state = {
       isLayoutInitialized: false,
+      // BMC code
+      // author(kmejdi) - used for report scheduler PDF generation
+      simple: false,
+      orientation: 'portrait',
+      // End
     };
   }
 
   componentDidMount() {
     const { dashboard } = this.props;
+    // BMC code
+    // author(kmejdi) - report scheduler related code
+    const simple = locationService.getSearch().has('simple');
+    const orientation = locationService.getSearch().get('orientation') ?? 'portrait';
+    this.setState({
+      ...this.state,
+      simple: simple,
+      orientation: orientation,
+    });
+    // End
     this.eventSubs.add(dashboard.events.subscribe(DashboardPanelsChangedEvent, this.triggerForceUpdate));
   }
 
@@ -62,10 +82,34 @@ export class DashboardGridUnconnected extends PureComponent<Props, State> {
     this.props.cleanAndRemoveMany(Object.keys(this.panelMap));
   }
 
+  // BMC code
+  // author(kmejdi) - used for report scheduler PDF generation
+  updatePanelsForReport(w: number, h: number, firstPanelLoaded = true) {
+    const { simple, orientation } = this.state;
+    if (!simple) {
+      return { w, h };
+    }
+
+    if (!orientation || orientation !== 'landscape') {
+      return {
+        w: 24,
+        h: 12,
+      };
+    } else {
+      return {
+        w: 24,
+        h: firstPanelLoaded ? 22 : 25,
+      };
+    }
+  }
+  // End
   buildLayout() {
     const layout = [];
     this.panelMap = {};
-
+    // BMC code
+    // author(kmejdi) - used for report scheduler PDF generation
+    let firstPanelLoaded = true;
+    // End
     for (const panel of this.props.dashboard.panels) {
       if (!panel.key) {
         panel.key = `panel-${panel.id}-${Date.now()}`;
@@ -77,12 +121,24 @@ export class DashboardGridUnconnected extends PureComponent<Props, State> {
         continue;
       }
 
+      // BMC code
+      // author(kmejdi) - used for report scheduler PDF generation
+      const panelSize = this.updatePanelsForReport(panel.gridPos.w, panel.gridPos.h, firstPanelLoaded);
+      if (panel.type !== 'row') {
+        firstPanelLoaded = false;
+      }
+      // End
+
       const panelPos: any = {
         i: panel.key,
         x: panel.gridPos.x,
         y: panel.gridPos.y,
-        w: panel.gridPos.w,
-        h: panel.gridPos.h,
+        // BMC code
+        // author(kmejdi) - used for report scheduler PDF generation
+        // w: panel.gridPos.w,
+        // h: panel.gridPos.h,
+        ...panelSize,
+        // End
       };
 
       if (panel.type === 'row') {

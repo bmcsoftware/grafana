@@ -77,6 +77,16 @@ var (
 	// HTTP server options
 	StaticRootPath string
 
+	// BMC code
+	// author (ateli) start - Custom config parameter to fetch IMS JWQT refresh endpoint
+	IMSJWTRefreshEP string
+	// author (ateli) end
+	// author (kmejdi) start - UI content service endpoint
+	UcsEndpoint string
+	// author (kmejdi) end
+	EnvType string
+	// End
+
 	// Security settings.
 	SecretKey              string
 	DisableGravatar        bool
@@ -151,6 +161,12 @@ var (
 	// Quota
 	Quota QuotaSettings
 
+	// BMC code
+	// feature flag
+	FeatureFlagEndpoint string
+	FeatureFlagEnabled  bool
+	// End
+
 	// Alerting
 	AlertingEnabled            *bool
 	ExecuteAlerts              bool
@@ -176,6 +192,16 @@ var (
 	GrafanaComUrl string
 
 	ImageUploadProvider string
+
+	// BMC code
+	// Reporting endpoint
+	ReportingServerURL                 string
+	ReportingServerPDFEndPoint         string
+	ReportingServerMailerEndPoint      string
+	ReportingServerExecuteOnceEndPoint string
+	ReportSchedulerTrialDefaultLimit   int
+	ReportSchedulerLicenseDefaultLimit int
+	// End
 )
 
 // AddChangePasswordLink returns if login form is disabled or not since
@@ -233,7 +259,11 @@ type Cfg struct {
 	Smtp SmtpSettings
 
 	// Rendering
-	ImagesDir                      string
+	ImagesDir string
+	// BMC code - Start
+	PDFsDir string
+	XLSsDir string
+	// End
 	CSVsDir                        string
 	RendererUrl                    string
 	RendererCallbackUrl            string
@@ -901,6 +931,18 @@ func (cfg *Cfg) Load(args CommandLineArgs) error {
 		return err
 	}
 
+	// BMC code
+	// author(ateli) start - Assign value for custom config parameter "IMSJWTRefreshEP"
+	server := iniFile.Section("server")
+	IMSJWTRefreshEP = valueAsString(server, "ims_jwt_refresh_endpoint", "")
+	// author(ateli) end
+
+	// author(kmejdi) start
+	UcsEndpoint = valueAsString(server, "ucs_endpoint", "")
+	// author(kmejdi) end
+	EnvType = valueAsString(server, "env_type", "HelixADE")
+	// End
+
 	if err := readDataProxySettings(iniFile, cfg); err != nil {
 		return err
 	}
@@ -1053,12 +1095,24 @@ func (cfg *Cfg) Load(args CommandLineArgs) error {
 	cfg.readDateFormats()
 	cfg.readSentryConfig()
 
+	// BMC code
+	reportScheduler := iniFile.Section("report_scheduler")
+	ReportingServerURL = valueAsString(reportScheduler, "server_url", "")
+	ReportingServerPDFEndPoint = valueAsString(reportScheduler, "preview_endpoint", "/preview")
+	ReportingServerMailerEndPoint = valueAsString(reportScheduler, "mail_endpoint", "/mail")
+	ReportingServerExecuteOnceEndPoint = valueAsString(reportScheduler, "execute_endpoint", "/execute")
+	// End
+
 	if err := cfg.readLiveSettings(iniFile); err != nil {
 		return err
 	}
 
 	cfg.LogConfigSources()
 
+	// BMC code
+	ReportSchedulerLicenseDefaultLimit = reportScheduler.Key("licensed_tenant_limit").MustInt(10)
+	ReportSchedulerTrialDefaultLimit = reportScheduler.Key("trial_tenant_limit").MustInt(5)
+	// End
 	return nil
 }
 
@@ -1408,12 +1462,21 @@ func (cfg *Cfg) readRenderingSettings(iniFile *ini.File) error {
 
 	cfg.RendererConcurrentRequestLimit = renderSec.Key("concurrent_render_request_limit").MustInt(30)
 	cfg.ImagesDir = filepath.Join(cfg.DataPath, "png")
+	// BMC code - Start
+	cfg.PDFsDir = filepath.Join(cfg.DataPath, "pdf")
+	cfg.XLSsDir = filepath.Join(cfg.DataPath, "excel")
+	// End
 	cfg.CSVsDir = filepath.Join(cfg.DataPath, "csv")
 
 	return nil
 }
 
 func readAlertingSettings(iniFile *ini.File) error {
+	// BMC code
+	featureflag := iniFile.Section("featureFlag")
+	FeatureFlagEnabled = featureflag.Key("enabled").MustBool(true)
+	FeatureFlagEndpoint = valueAsString(featureflag, "feature_flag_endpoint", "")
+	// End
 	alerting := iniFile.Section("alerting")
 	enabled, err := alerting.Key("enabled").Bool()
 	AlertingEnabled = nil

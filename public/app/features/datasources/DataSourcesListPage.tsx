@@ -1,15 +1,23 @@
+// Libraries
 import React, { PureComponent } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
+// Services & Utils
 import { IconName } from '@grafana/ui';
 import EmptyListCTA from 'app/core/components/EmptyListCTA/EmptyListCTA';
 import Page from 'app/core/components/Page/Page';
 import PageActionBar from 'app/core/components/PageActionBar/PageActionBar';
 import { contextSrv } from 'app/core/core';
+// Components
 import { getNavModel } from 'app/core/selectors/navModel';
 import { StoreState, AccessControlAction } from 'app/types';
 
+import { getFeatureStatus, FEATURE_CONST } from '../dashboard/services/featureFlagSrv';
+import { isGrafanaAdmin } from '../plugins/admin/permissions';
+
 import DataSourcesList from './DataSourcesList';
+// Types
+// Actions
 import { loadDataSources } from './state/actions';
 import { setDataSourcesLayoutMode, setDataSourcesSearchQuery } from './state/reducers';
 import {
@@ -60,7 +68,11 @@ export class DataSourcesListPage extends PureComponent<Props> {
     const { dataSources, dataSourcesCount, navModel, layoutMode, searchQuery, setDataSourcesSearchQuery, hasFetched } =
       this.props;
 
-    const canCreateDataSource = contextSrv.hasPermission(AccessControlAction.DataSourcesCreate);
+    // BMC code - inline change
+    const canCreateDataSource =
+      (contextSrv.hasPermission(AccessControlAction.DataSourcesCreate) &&
+        getFeatureStatus(FEATURE_CONST.DASHBOARDS_SSRF_FEATURE_NAME)) ||
+      isGrafanaAdmin();
 
     const linkButton = {
       href: 'datasources/new',

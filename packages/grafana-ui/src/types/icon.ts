@@ -184,7 +184,19 @@ export const getAvailableIcons = () =>
 
 type BrandIconNames = 'google' | 'microsoft' | 'github' | 'gitlab' | 'okta';
 
-export type IconName = ReturnType<typeof getAvailableIcons>[number] | BrandIconNames;
+// BMC code
+// This will define bmc icon names
+type BMCIconNames =
+  | 'bmc-file_text_clock'
+  | 'bmc-gear'
+  | 'bmc-home'
+  | 'bmc-lock_shield'
+  | 'bmc-plus_adapt'
+  | 'bmc-common_anomaly'
+  | 'bmc-helix-dashboard';
+// End
+
+export type IconName = ReturnType<typeof getAvailableIcons>[number] | BrandIconNames | BMCIconNames;
 
 /** Get the icon for a given field type */
 export function getFieldTypeIcon(field?: Field): IconName {

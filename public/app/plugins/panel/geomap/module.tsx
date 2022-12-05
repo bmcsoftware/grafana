@@ -5,9 +5,9 @@ import { config } from '@grafana/runtime';
 import { commonOptionsBuilder } from '@grafana/ui';
 
 import { GeomapInstanceState, GeomapPanel } from './GeomapPanel';
+import { getLayerEditor } from './editor/LayerEditor';
 import { LayersEditor } from './editor/LayersEditor';
 import { MapViewEditor } from './editor/MapViewEditor';
-import { getLayerEditor } from './editor/layerEditor';
 import { mapPanelChangedHandler, mapMigrationHandler } from './migrations';
 import { defaultView, GeomapPanelOptions, TooltipMode } from './types';
 

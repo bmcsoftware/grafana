@@ -288,6 +288,10 @@ func (hs *HTTPServer) loginUserWithUser(user *models.User, c *models.ReqContext)
 func (hs *HTTPServer) Logout(c *models.ReqContext) {
 	if hs.samlSingleLogoutEnabled() {
 		c.Redirect(hs.Cfg.AppSubURL + "/logout/saml")
+		//BMC Code - start
+		//Remove helix_jwt_token cookie on logout operation
+		cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+		//BMC Code - end
 		return
 	}
 
@@ -297,6 +301,10 @@ func (hs *HTTPServer) Logout(c *models.ReqContext) {
 	}
 
 	cookies.WriteSessionCookie(c, hs.Cfg, "", -1)
+	//BMC Code - start
+	//Remove helix_jwt_token cookie on logout operation
+	cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+	//BMC Code - end
 
 	if setting.SignoutRedirectUrl != "" {
 		c.Redirect(setting.SignoutRedirectUrl)

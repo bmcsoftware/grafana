@@ -44,12 +44,14 @@ func (hs *HTTPServer) getProfileNode(c *models.ReqContext) *dtos.NavLink {
 		Text: "Notification history", Id: "notifications", Url: hs.Cfg.AppSubURL + "/notifications", Icon: "bell",
 	})
 
-	if setting.AddChangePasswordLink() {
-		children = append(children, &dtos.NavLink{
-			Text: "Change password", Id: "change-password", Url: hs.Cfg.AppSubURL + "/profile/password",
-			Icon: "lock",
-		})
-	}
+	// BMC code
+	// if setting.AddChangePasswordLink() {
+	// 	children = append(children, &dtos.NavLink{
+	// 		Text: "Change password", Id: "change-password", Url: hs.Cfg.AppSubURL + "/profile/password",
+	// 		Icon: "lock",
+	// 	})
+	// }
+	// End
 
 	if !setting.DisableSignoutMenu {
 		// add sign out first
@@ -282,15 +284,18 @@ func (hs *HTTPServer) getNavTree(c *models.ReqContext, hasEditPerm bool, prefs *
 		})
 	}
 
-	if hasAccess(ac.ReqOrgAdmin, apiKeyAccessEvaluator) {
-		configNodes = append(configNodes, &dtos.NavLink{
-			Text:        "API keys",
-			Id:          "apikeys",
-			Description: "Create & manage API keys",
-			Icon:        "key-skeleton-alt",
-			Url:         hs.Cfg.AppSubURL + "/org/apikeys",
-		})
-	}
+	// BMC code
+	// if hasAccess(ac.ReqOrgAdmin, apiKeyAccessEvaluator) {
+	// 	configNodes = append(configNodes, &dtos.NavLink{
+	// 		Text:        "API keys",
+	// 		Id:          "apikeys",
+	// 		Description: "Create & manage API keys",
+	// 		Icon:        "key-skeleton-alt",
+	// 		Url:         hs.Cfg.AppSubURL + "/org/apikeys",
+	// 	})
+	// }
+	// End
+
 	// needs both feature flag and migration to be able to show service accounts
 	if enableServiceAccount(hs, c) {
 		configNodes = append(configNodes, &dtos.NavLink{
@@ -437,12 +442,15 @@ func (hs *HTTPServer) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 	})
 
 	if c.IsSignedIn {
-		dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
-			Text: "Snapshots",
-			Id:   "snapshots",
-			Url:  hs.Cfg.AppSubURL + "/dashboard/snapshots",
-			Icon: "camera",
-		})
+		// BMC code - next line
+		if hs.SQLStore.IsFeatureEnabled(c.Req.Context(), c.OrgId, "Snapshot") {
+			dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
+				Text: "Snapshots",
+				Id:   "snapshots",
+				Url:  hs.Cfg.AppSubURL + "/dashboard/snapshots",
+				Icon: "camera",
+			})
+		}
 
 		dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
 			Text: "Library panels",
@@ -451,6 +459,20 @@ func (hs *HTTPServer) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 			Icon: "library-panel",
 		})
 	}
+
+	// BMC code
+	if c.OrgRole == models.ROLE_ADMIN || c.OrgRole == models.ROLE_EDITOR {
+		dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
+			Text:       "Calculated fields",
+			Id:         "calc-fields",
+			Url:        setting.AppSubUrl + "/calculated-fields",
+			Icon:       "table",
+			SubTitle:   "Create and manage calculated fields for ITSM service",
+			SortWeight: dtos.WeightReport,
+			Section:    dtos.NavSectionCore,
+		})
+	}
+	// End
 
 	if hasEditPerm {
 		dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
@@ -466,7 +488,7 @@ func (hs *HTTPServer) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 			})
 		}
 		dashboardChildNavs = append(dashboardChildNavs, &dtos.NavLink{
-			Text: "Import", SubTitle: "Import dashboard from file or Grafana.com", Id: "import", Icon: "plus",
+			Text: "Import", SubTitle: "Import dashboard from file or via dashboard json", Id: "import", Icon: "plus",
 			Url: hs.Cfg.AppSubURL + "/dashboard/import", HideFromTabs: true, ShowIconInNavbar: true,
 		})
 	}
@@ -680,7 +702,7 @@ func (hs *HTTPServer) setIndexViewData(c *models.ReqContext) (*dtos.IndexViewDat
 		AppNameBodyClass:        "app-grafana",
 		FavIcon:                 "public/img/fav32.png",
 		AppleTouchIcon:          "public/img/apple-touch-icon.png",
-		AppTitle:                "Grafana",
+		AppTitle:                "BMC Helix Dashboards",
 		NavTree:                 navTree,
 		Sentry:                  &hs.Cfg.Sentry,
 		Nonce:                   c.RequestNonce,

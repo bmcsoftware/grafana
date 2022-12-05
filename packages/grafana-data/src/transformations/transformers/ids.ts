@@ -32,4 +32,7 @@ export enum DataTransformerID {
   spatial = 'spatial',
   extractFields = 'extractFields',
   groupingToMatrix = 'groupingToMatrix',
+  // BMC code
+  advanceFunctions = 'advanceFunctions',
+  // End
 }

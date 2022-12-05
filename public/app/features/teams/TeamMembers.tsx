@@ -92,9 +92,12 @@ export class TeamMembers extends PureComponent<Props, State> {
           <div className="gf-form gf-form--grow">
             <FilterInput placeholder="Search members" value={searchMemberQuery} onChange={this.onSearchQueryChange} />
           </div>
-          <Button className="pull-right" onClick={this.onToggleAdding} disabled={isAdding || !isTeamAdmin}>
-            Add member
-          </Button>
+          {/* BMC code - next line */}
+          {config.buildInfo.env === 'development' && (
+            <Button className="pull-right" onClick={this.onToggleAdding} disabled={isAdding || !isTeamAdmin}>
+              Add member
+            </Button>
+          )}
         </div>
 
         <SlideDown in={isAdding}>

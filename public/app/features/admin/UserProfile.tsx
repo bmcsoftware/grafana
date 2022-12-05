@@ -122,7 +122,8 @@ export function UserProfile({
           </table>
         </div>
         <div className={styles.buttonRow}>
-          {canDelete && (
+          {/* BMC code - inline change */}
+          {canDelete && config.buildInfo.env === 'development' && (
             <>
               <Button variant="destructive" onClick={showDeleteUserModal(true)} ref={deleteUserRef}>
                 Delete user
