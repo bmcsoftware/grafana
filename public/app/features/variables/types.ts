@@ -12,6 +12,8 @@ import {
 } from '@grafana/data';
 import { TemplateSrv } from '@grafana/runtime';
 
+import { DateTime } from '../../../../packages/grafana-data/src/datetime/moment_wrapper';
+
 import { NEW_VARIABLE_ID } from './constants';
 
 export enum TransactionStatus {
@@ -87,7 +89,12 @@ export interface TextBoxVariableModel extends VariableWithOptions {
   originalQuery: string | null;
 }
 
-export interface ConstantVariableModel extends VariableWithOptions {}
+// BMC code
+export interface DatePickerVariableModel extends VariableWithOptions {
+  originalQuery: TimeRange | null;
+}
+// End
+export interface ConstantVariableModel extends VariableWithOptions { }
 
 export interface VariableWithMultiSupport extends VariableWithOptions {
   multi: boolean;
@@ -188,3 +195,16 @@ export class VariablesTimeRangeProcessDone extends BusEventWithPayload<Variables
 export class VariablesChangedInUrl extends BusEventWithPayload<VariablesChangedEvent> {
   static type = 'variables-changed-in-url';
 }
+
+// BMC code
+export interface RawTimeRange {
+  from: DateTime | string;
+  to: DateTime | string;
+}
+
+export interface TimeRange {
+  from: DateTime;
+  to: DateTime;
+  raw: RawTimeRange;
+}
+// End

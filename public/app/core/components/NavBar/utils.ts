@@ -1,7 +1,7 @@
 import { Location } from 'history';
 
 import { NavModelItem, NavSection } from '@grafana/data';
-import { reportInteraction } from '@grafana/runtime';
+import { config, reportInteraction } from '@grafana/runtime';
 import { getConfig } from 'app/core/config';
 import { contextSrv } from 'app/core/services/context_srv';
 
@@ -22,10 +22,12 @@ export const getForcedLoginUrl = (url: string) => {
   return `${getConfig().appSubUrl}${url.split('?')[0]}?${queryParams.toString()}`;
 };
 
+// BMC code - inline change
 export const enrichConfigItems = (
   items: NavModelItem[],
   location: Location<unknown>,
-  toggleOrgSwitcher: () => void
+  toggleOrgSwitcher: () => void,
+  footerLinkData?: any
 ) => {
   const { isSignedIn, user } = contextSrv;
   const onOpenShortcuts = () => {
@@ -58,7 +60,10 @@ export const enrichConfigItems = (
 
     if (link.id === 'help') {
       link.children = [
-        ...getFooterLinks(),
+        // BMC code
+        // ...getFooterLinks(),
+        ...getFooterLinks(footerLinkData),
+        // End
         {
           id: 'keyboard-shortcuts',
           text: 'Keyboard shortcuts',
@@ -120,7 +125,10 @@ export const getActiveItem = (
   const dashboardLinkMatch = '/dashboards';
 
   for (const link of navTree) {
-    const linkPathname = stripQueryParams(link.url);
+    // BMC code - inline change
+    const linkPathname = stripQueryParams(link.url)
+      .replace(/^\/dashboards$/, '/')
+      .replace(/^\/dashboards/, '');
     if (linkPathname) {
       if (linkPathname === pathname) {
         // exact match
@@ -162,3 +170,14 @@ export const isSearchActive = (location: Location<unknown>) => {
 export function getNavModelItemKey(item: NavModelItem) {
   return item.id ?? item.text;
 }
+
+// BMC code
+export const prepareLogoColor = (isSelected: Boolean) => {
+  const reportApp: any = document.querySelector('a[aria-label="Report Scheduler"] img') || { style: {} };
+  if (config.theme.isDark) {
+    reportApp.style['filter'] = `contrast(0) ${isSelected ? 'brightness(1.8)' : 'brightness(1.2)'}`;
+  } else {
+    reportApp.style['filter'] = `${isSelected ? 'inherit' : 'contrast(0.35)'}`;
+  }
+};
+// End

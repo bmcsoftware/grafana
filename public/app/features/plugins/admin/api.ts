@@ -1,10 +1,13 @@
 import { PluginError, PluginMeta, renderMarkdown } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
+import { getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
 
 import { API_ROOT, GCOM_API_ROOT } from './constants';
 import { isLocalPluginVisible, isRemotePluginVisible } from './helpers';
 import { LocalPlugin, RemotePlugin, CatalogPluginDetails, Version, PluginVersion } from './types';
 
+// BMC code - next line
+const BMC_HELIX_OLD_DATASOURCE = 'bmchelixold';
 export async function getPluginDetails(id: string): Promise<CatalogPluginDetails> {
   const remote = await getRemotePlugin(id);
   const isPublished = Boolean(remote);
@@ -87,7 +90,14 @@ async function getLocalPluginReadme(id: string): Promise<string> {
 export async function getLocalPlugins(): Promise<LocalPlugin[]> {
   const localPlugins: LocalPlugin[] = await getBackendSrv().get(`${API_ROOT}`, { embedded: 0 });
 
-  return localPlugins.filter(isLocalPluginVisible);
+  // BMC code - inline change
+  return localPlugins
+    .filter(isLocalPluginVisible)
+    .filter(
+      (plugin: LocalPlugin) =>
+        plugin.id !== 'bmchelix-ade-datasource-old' ||
+        (plugin.id === 'bmchelix-ade-datasource-old' && getFeatureStatus(BMC_HELIX_OLD_DATASOURCE))
+    );
 }
 
 export async function installPlugin(id: string) {

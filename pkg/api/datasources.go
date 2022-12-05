@@ -286,6 +286,12 @@ func (hs *HTTPServer) UpdateDataSourceByID(c *models.ReqContext) response.Respon
 	if cmd.Id, err = strconv.ParseInt(web.Params(c.Req)[":id"], 10, 64); err != nil {
 		return response.Error(http.StatusBadRequest, "id is invalid", err)
 	}
+	// BMC code
+	// author ateli - Mitigation for SSRF issue - DRJ71-3206
+	if resp := validateSSRF(cmd.Type, cmd.Url); resp != nil {
+		return resp
+	}
+	// End
 	if resp := validateURL(cmd.Type, cmd.Url); resp != nil {
 		return resp
 	}
@@ -648,3 +654,15 @@ func (hs *HTTPServer) filterDatasourcesByQueryPermission(ctx context.Context, us
 
 	return query.Result, nil
 }
+
+// BMC code
+// author ateli - Mitigation for SSRF issue - DRJ71-3206
+func validateSSRF(cmdType string, url string) response.Response {
+	if _, err := datasource.ValidateSSRF(cmdType, url); err != nil {
+		return response.Error(400, err.Error(), err)
+	}
+
+	return nil
+}
+
+// End

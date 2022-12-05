@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { PluginError, PluginErrorCode } from '@grafana/data';
+import { PluginError, PluginErrorCode, unEscapeStringFromRegex } from '@grafana/data';
 
 import { RequestStatus, PluginCatalogStoreState } from '../types';
 
@@ -40,7 +40,7 @@ const findByKeyword = (searchBy: string) =>
         fields.push(plugin.orgName.toLowerCase());
       }
 
-      return fields.some((f) => f.includes(searchBy.toLowerCase()));
+      return fields.some((f) => f.includes(unEscapeStringFromRegex(searchBy).toLowerCase()));
     });
   });
 
@@ -56,13 +56,13 @@ export const find = (searchBy: string, filterBy: string, filterByType: string) =
 export const selectPluginErrors = createSelector(selectAll, (plugins) =>
   plugins
     ? plugins
-        .filter((p) => Boolean(p.error))
-        .map(
-          (p): PluginError => ({
-            pluginId: p.id,
-            errorCode: p!.error as PluginErrorCode,
-          })
-        )
+      .filter((p) => Boolean(p.error))
+      .map(
+        (p): PluginError => ({
+          pluginId: p.id,
+          errorCode: p!.error as PluginErrorCode,
+        })
+      )
     : []
 );
 

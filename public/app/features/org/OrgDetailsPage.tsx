@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Suspense } from 'react';
 import { connect } from 'react-redux';
 
 import { NavModel } from '@grafana/data';
@@ -9,9 +9,17 @@ import { contextSrv } from 'app/core/core';
 import { getNavModel } from 'app/core/selectors/navModel';
 import { AccessControlAction, Organization, StoreState } from 'app/types';
 
+import { isOrgAdmin } from '../plugins/admin/permissions';
+
 import OrgProfile from './OrgProfile';
 import { loadOrganization, updateOrganization } from './state/actions';
 import { setOrganizationName } from './state/reducers';
+
+// BMC code
+const ToggleFeature = React.lazy(() => {
+  return import('../feature-status/ToggleFeature');
+});
+// End
 
 export interface Props {
   navModel: NavModel;
@@ -45,6 +53,13 @@ export class OrgDetailsPage extends PureComponent<Props> {
             <VerticalGroup spacing="lg">
               {canReadOrg && <OrgProfile onSubmit={this.onUpdateOrganization} orgName={organization.name} />}
               {canReadPreferences && <SharedPreferences resourceUri="org" disabled={!canWritePreferences} />}
+              {/* BMC code */}
+              {isOrgAdmin() && (
+                <Suspense fallback={<></>}>
+                  <ToggleFeature />
+                </Suspense>
+              )}
+              {/* End */}
             </VerticalGroup>
           )}
         </Page.Contents>
