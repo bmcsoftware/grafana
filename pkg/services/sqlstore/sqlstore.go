@@ -158,7 +158,15 @@ func (ss *SQLStore) Reset() error {
 		return nil
 	}
 
-	return ss.ensureMainOrgAndAdminUser()
+	// BMC code
+	if err := ss.ensureMainOrgAndAdminUser(); err != nil {
+		return err
+	}
+	if err := ss.ensureGrafanaAdminUserIsAssociatedToAllOrgs(); err != nil {
+		return err
+	}
+	return nil
+	// End
 }
 
 // Quote quotes the value in the used SQL dialect
@@ -189,10 +197,12 @@ func (ss *SQLStore) ensureMainOrgAndAdminUser() error {
 		var stats models.SystemUserCountStats
 		// TODO: Should be able to rename "Count" to "count", for more standard SQL style
 		// Just have to make sure it gets deserialized properly into models.SystemUserCountStats
-		rawSQL := `SELECT COUNT(id) AS Count FROM ` + dialect.Quote("user")
-		if _, err := sess.SQL(rawSQL).Get(&stats); err != nil {
+		// BMC code
+		rawSQL := `SELECT COUNT(id) AS Count FROM ` + dialect.Quote("user") + ` WHERE login = ?`
+		if _, err := sess.SQL(rawSQL, ss.Cfg.AdminUser).Get(&stats); err != nil {
 			return fmt.Errorf("could not determine if admin user exists: %w", err)
 		}
+		// End
 
 		if stats.Count > 0 {
 			return nil
@@ -667,3 +677,32 @@ type DatabaseConfig struct {
 	SkipMigrations              bool
 	MigrationLockAttemptTimeout int
 }
+
+// BMC code
+func (ss *SQLStore) ensureGrafanaAdminUserIsAssociatedToAllOrgs() error {
+	ctx := context.Background()
+	err := ss.WithTransactionalDbSession(ctx, func(sess *DBSession) error {
+		ss.log.Debug("Ensuring admin org is part of all orgs")
+		if !ss.Cfg.DisableInitAdminCreation {
+			query := &models.GetUserByLoginQuery{
+				LoginOrEmail: ss.Cfg.AdminUser,
+			}
+			err := ss.GetUserByLogin(ctx, query)
+			if err != nil {
+				ss.log.Error("Failed to get super admin for organization sync", "error", err)
+				return err
+			}
+			// Add the superuser to all existing organizations
+			ss.log.Info("Adding admin user to all existing organizations", "user_id", query.Result.ID, "user_login", query.Result.Login)
+			if err := ss.addAdminToAllOrgs(ctx, query.Result.ID); err != nil {
+				ss.log.Error("Failed to add admin user to all existing organizations", "error", err)
+				return err
+			}
+			ss.log.Info("Grafana admin sync with orgs is complete", "user", ss.Cfg.AdminUser)
+		}
+		return nil
+	})
+	return err
+}
+
+// End

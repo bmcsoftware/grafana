@@ -22,7 +22,8 @@ export function usePageTitle(navModel?: NavModel, pageNav?: NavModelItem) {
       if (navModel.node !== navModel.main) {
         parts.push(navModel.node.text);
       }
-      parts.push(navModel.main.text);
+      // removed extra level of navigation
+      // parts.push(navModel.main.text);
     }
 
     parts.push(Branding.AppTitle);

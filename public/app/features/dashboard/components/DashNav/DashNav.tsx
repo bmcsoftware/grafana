@@ -14,10 +14,11 @@ import {
   useForceUpdate,
   Tag,
   ToolbarButtonRow,
+  Tooltip,
 } from '@grafana/ui';
 import { AppChromeUpdate } from 'app/core/components/AppChrome/AppChromeUpdate';
 import { NavToolbarSeparator } from 'app/core/components/AppChrome/NavToolbarSeparator';
-import config from 'app/core/config';
+import { config } from 'app/core/config';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useBusEvent } from 'app/core/hooks/useBusEvent';
 import { DashboardCommentsModal } from 'app/features/dashboard/components/DashboardComments/DashboardCommentsModal';
@@ -199,6 +200,34 @@ export const DashNav = React.memo<Props>((props) => {
       );
     }
 
+    // BMC code
+    if (canShare) {
+      const { theme } = config;
+      buttons.push(
+        <div key="button-reports" style={{ display: 'flex' }}>
+          <Tooltip content="Manage scheduled reports">
+            <a
+              onClick={() => {
+                sessionStorage.removeItem('reportFilter');
+                locationService.push({
+                  search: locationService.getSearch().toString(),
+                  pathname: `/a/reports/f/${dashboard.uid}`,
+                });
+              }}
+            >
+              <img
+                style={{
+                  width: '22px',
+                  filter: theme.isDark ? 'brightness(1.2)' : 'brightness(0.5)',
+                }}
+                src="public/img/icon_scheduler.svg"
+              />
+            </a>
+          </Tooltip>
+        </div>
+      );
+    }
+    // End
     addCustomContent(customLeftActions, buttons);
     return buttons;
   };

@@ -17,6 +17,7 @@ export interface LayerEditorOptions {
   basemaps: boolean; // only basemaps
 }
 
+
 export function getLayerEditor(opts: LayerEditorOptions): NestedPanelOptions<MapLayerOptions> {
   return {
     category: opts.category,

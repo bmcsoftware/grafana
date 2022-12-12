@@ -106,4 +106,6 @@ export interface DashboardState {
   initPhase: DashboardInitPhase;
   initError: DashboardInitError | null;
   permissions: DashboardAcl[];
+  // BMC code - next line
+  gainSightUserPreferences?: any;
 }

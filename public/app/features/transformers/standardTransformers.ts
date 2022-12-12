@@ -3,6 +3,7 @@ import { TransformerRegistryItem } from '@grafana/data';
 import { filterByValueTransformRegistryItem } from './FilterByValueTransformer/FilterByValueTransformerEditor';
 import { heatmapTransformRegistryItem } from './calculateHeatmap/HeatmapTransformerEditor';
 import { configFromQueryTransformRegistryItem } from './configFromQuery/ConfigFromQueryTransformerEditor';
+import { advanceFunctionsTransformRegistryItem } from './editors/AdvanceFunctionsTransformerEditor';
 import { calculateFieldTransformRegistryItem } from './editors/CalculateFieldTransformerEditor';
 import { concatenateTransformRegistryItem } from './editors/ConcatenateTransformerEditor';
 import { convertFieldTypeTransformRegistryItem } from './editors/ConvertFieldTypeTransformerEditor';
@@ -55,5 +56,7 @@ export const getStandardTransformers = (): Array<TransformerRegistryItem<any>> =
     groupingToMatrixTransformRegistryItem,
     limitTransformRegistryItem,
     joinByLabelsTransformRegistryItem,
+    // BMC code - next line
+    advanceFunctionsTransformRegistryItem,
   ];
 };

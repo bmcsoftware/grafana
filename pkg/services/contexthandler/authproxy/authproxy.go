@@ -10,8 +10,12 @@ import (
 	"net/mail"
 	"path"
 	"reflect"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
+
+	"github.bmc.com/DSOM-ADE/authz-go"
 
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/remotecache"
@@ -30,6 +34,12 @@ const (
 
 	// CachePrefix is a prefix for the cache key
 	CachePrefix = "auth-proxy-sync-ttl:%s"
+	//author(ateli) - start
+	//role constants to check valid permissions for logged in user
+	reportingViewer = "reporting.dashboards_permissions.viewer"
+	reportingEditor = "reporting.dashboards_permissions.editor"
+	reportingAdmin  = "reporting.dashboards_permissions.admin"
+	//author(ateli) - end
 )
 
 // getLDAPConfig gets LDAP config
@@ -257,13 +267,54 @@ func (auth *AuthProxy) LoginViaLDAP(reqCtx *models.ReqContext) (int64, error) {
 }
 
 // loginViaHeader logs in user from the header only
+var debugLogger = log.New("BMC.LOGGER")
+
 func (auth *AuthProxy) loginViaHeader(reqCtx *models.ReqContext) (int64, error) {
+	debugLogger.Info("loginViaHeader")
 	header := auth.getDecodedHeader(reqCtx, auth.cfg.AuthProxyHeaderName)
+	//author (ateli) - start
+	RSSOUser := reqCtx.Context.Req.Header.Get("X-Webauth-User")
+	RSSOTenant := reqCtx.Context.Req.Header.Get("X-Rsso-Tenant")
+	header = RSSOUser
+
+	debugLogger.Info("loginViaHeader", "RSSOUser", RSSOUser, "RSSOTenant", RSSOTenant)
+
+	if RSSOTenant != "" && RSSOTenant != "dashboards_superuser_tenant" {
+		header = RSSOUser + "@" + RSSOTenant
+	}
+
+	debugLogger.Info("loginViaHeader", "RSSOUser", RSSOUser, "RSSOTenant", RSSOTenant, "header", header)
+
+	encodedJwt := reqCtx.Context.Req.Header.Get("X-Jwt-Token")
+	var decodedJwt *authz.UserInfo
+	var userId int64
+
+	if encodedJwt != "" {
+		debugLogger.Info("loginViaHeader - There is jwt token ", "length", len(encodedJwt))
+		usrObj, err := authz.Authorize(encodedJwt)
+		decodedJwt = usrObj
+		if err != nil {
+			debugLogger.Error("Failed to authorize user", "error", err)
+			fmt.Errorf("500", err.Error())
+		}
+		if decodedJwt != nil {
+			debugLogger.Info("loginViaHeader - decodedJwt", "decodedJwt", decodedJwt.UserID, "Tenant_Id", decodedJwt.Tenant_Id)
+			userId, _ = strconv.ParseInt(decodedJwt.UserID, 10, 64)
+		}
+	}
+	//author (ateli) - end
 	extUser := &models.ExternalUserInfo{
 		AuthModule: login.AuthProxyAuthModule,
 		AuthId:     header,
 	}
 
+	//author (ateli) start
+	if userId != 0 {
+		extUser.UserId = userId
+	}
+
+	debugLogger.Info("loginViaHeader - after if userId", "userId", userId)
+	//author (ateli) end
 	switch auth.cfg.AuthProxyHeaderProperty {
 	case "username":
 		extUser.Login = header
@@ -280,6 +331,7 @@ func (auth *AuthProxy) loginViaHeader(reqCtx *models.ReqContext) (int64, error) 
 	}
 
 	auth.headersIterator(reqCtx, func(field string, header string) {
+		debugLogger.Info("loginViaHeader - headersIterator", "field", field, "header", header)
 		switch field {
 		case "Groups":
 			extUser.Groups = util.SplitString(header)
@@ -301,6 +353,7 @@ func (auth *AuthProxy) loginViaHeader(reqCtx *models.ReqContext) (int64, error) 
 		}
 	})
 
+	debugLogger.Info("loginViaHeader - before upsert", "Email", extUser.Email, "Login", extUser.Login, "AuthId", extUser.AuthId)
 	upsert := &models.UpsertUserCommand{
 		ReqContext:    reqCtx,
 		SignupAllowed: auth.cfg.AuthProxyAutoSignUp,
@@ -316,6 +369,36 @@ func (auth *AuthProxy) loginViaHeader(reqCtx *models.ReqContext) (int64, error) 
 	if err != nil {
 		return 0, err
 	}
+	debugLogger.Info("loginViaHeader - before upsert", "UserID", upsert.Result.ID, "Login", upsert.Result.Login, "AuthId", upsert.Result.OrgID)
+	//author(ateli) - start
+	//Changes for auth proxy auto sign-up feature, Assign user to correct ADE Tenant
+	if encodedJwt != "" {
+		removeUserFromMainOrg := &models.RemoveOrgUserCommand{
+			UserId: upsert.Result.ID,
+			OrgId:  1,
+		}
+		err1 := auth.sqlStore.RemoveOrgUser(reqCtx.Req.Context(), removeUserFromMainOrg)
+		if err1 != nil {
+			auth.logger.Error("Unable to remove user from main org", err1.Error())
+		}
+		debugLogger.Info("loginViaHeader - Removed user from main org", "UserID", upsert.Result.ID)
+		//add use in correct ADE org
+		if decodedJwt != nil {
+			debugLogger.Info("loginViaHeader - Adding org USER")
+			orgId, _ := strconv.ParseInt(decodedJwt.Tenant_Id, 10, 64)
+			addUserInCorrectOrg := &models.AddOrgUserCommand{}
+			addUserInCorrectOrg.LoginOrEmail = decodedJwt.Principal_Id + "@" + RSSOTenant
+			addUserInCorrectOrg.Role = "Viewer"
+			addUserInCorrectOrg.OrgId = orgId
+			addUserInCorrectOrg.UserId = upsert.Result.ID
+			err2 := auth.sqlStore.AddOrgUser(reqCtx.Req.Context(), addUserInCorrectOrg)
+			if err2 != nil {
+				auth.logger.Error("Unable to add user in correct org", err2.Error())
+			}
+			debugLogger.Info("loginViaHeader - UserOrg is done being added")
+		}
+	}
+	//author(ateli) - end
 
 	return upsert.Result.ID, nil
 }
@@ -323,7 +406,7 @@ func (auth *AuthProxy) loginViaHeader(reqCtx *models.ReqContext) (int64, error) 
 // getDecodedHeader gets decoded value of a header with given headerName
 func (auth *AuthProxy) getDecodedHeader(reqCtx *models.ReqContext, headerName string) string {
 	headerValue := reqCtx.Req.Header.Get(headerName)
-
+	auth.logger.Debug("Header name:", "header name", headerName, "header value", headerValue)
 	if auth.cfg.AuthProxyHeadersEncoded {
 		headerValue = util.DecodeQuotedPrintable(headerValue)
 	}
@@ -394,3 +477,35 @@ func coerceProxyAddress(proxyAddr string) (*net.IPNet, error) {
 	}
 	return network, nil
 }
+
+//author(ateli) - Start
+//Method to check if user has valid reporting permission assigned in IMS
+func contains(s []string, searchterm string) bool {
+	i := sort.SearchStrings(s, searchterm)
+	return i < len(s) && strings.ToLower(s[i]) == searchterm
+}
+
+func (auth *AuthProxy) HasValidPermissions(reqCtx *models.ReqContext) error {
+	userID := reqCtx.Context.Req.Header.Get("X-Webauth-User")
+	encodedJwt := reqCtx.Context.Req.Header.Get("X-Jwt-Token")
+	var decodedJwt *authz.UserInfo
+	if encodedJwt != "" {
+		usrObj, err := authz.Authorize(encodedJwt)
+		decodedJwt = usrObj
+		if err != nil {
+			fmt.Errorf("500", err.Error())
+		}
+	}
+	if decodedJwt != nil {
+		sort.Strings(decodedJwt.Permissions)
+		if contains(decodedJwt.Permissions, reportingViewer) || contains(decodedJwt.Permissions, reportingEditor) || contains(decodedJwt.Permissions, reportingAdmin) || contains(decodedJwt.Permissions, string('*')) {
+			return nil
+		}
+	}
+	if userID == auth.cfg.AdminUser {
+		return nil
+	}
+	return newError("To get permission to the Dashboard. Please contact your admin", errors.New("To get permission to the dashboard. Please contact your admin"))
+}
+
+//author(ateli) - End

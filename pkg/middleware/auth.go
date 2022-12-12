@@ -221,3 +221,15 @@ func OrgAdminDashOrFolderAdminOrTeamAdmin(ss sqlstore.Store, ds dashboards.Dashb
 		accessForbidden(c)
 	}
 }
+
+// BMC code
+func IsSnapshotEnabled(ss sqlstore.Store) func(c *models.ReqContext) {
+	return func(c *models.ReqContext) {
+		ok := ss.IsFeatureEnabled(c.Req.Context(), c.OrgID, "Snapshot")
+		if !ok {
+			accessForbidden(c)
+		}
+	}
+}
+
+// End

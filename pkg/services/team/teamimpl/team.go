@@ -17,8 +17,8 @@ func ProvideService(db db.DB, cfg *setting.Cfg) team.Service {
 	return &Service{store: &xormStore{db: db, cfg: cfg}}
 }
 
-func (s *Service) CreateTeam(name, email string, orgID int64) (models.Team, error) {
-	return s.store.Create(name, email, orgID)
+func (s *Service) CreateTeam(name, email string, orgID int64, Id int64) (models.Team, error) {
+	return s.store.Create(name, email, orgID, Id)
 }
 
 func (s *Service) UpdateTeam(ctx context.Context, cmd *models.UpdateTeamCommand) error {

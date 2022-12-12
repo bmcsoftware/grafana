@@ -1,7 +1,7 @@
 import { Location } from 'history';
 
 import { locationUtil, NavModelItem, NavSection } from '@grafana/data';
-import { reportInteraction } from '@grafana/runtime';
+import { config, reportInteraction } from '@grafana/runtime';
 import { getConfig } from 'app/core/config';
 import { contextSrv } from 'app/core/services/context_srv';
 
@@ -23,7 +23,8 @@ export const getForcedLoginUrl = (url: string) => {
   return `${getConfig().appSubUrl}${url.split('?')[0]}?${queryParams.toString()}`;
 };
 
-export const enrichConfigItems = (items: NavModelItem[], location: Location<unknown>) => {
+// BMC code - inline change
+export const enrichConfigItems = (items: NavModelItem[], location: Location<unknown>, footerLinkData?: any) => {
   const { isSignedIn, user } = contextSrv;
   const onOpenShortcuts = () => {
     appEvents.publish(new ShowModalReactEvent({ component: HelpModal }));
@@ -59,7 +60,8 @@ export const enrichConfigItems = (items: NavModelItem[], location: Location<unkn
 
     if (link.id === 'help') {
       link.children = [
-        ...getFooterLinks(),
+        // BMC code - inline change
+        ...getFooterLinks(footerLinkData),
         {
           id: 'keyboard-shortcuts',
           text: 'Keyboard shortcuts',
@@ -134,7 +136,11 @@ export const getActiveItem = (
 
   for (const link of navTree) {
     const linkWithoutParams = stripQueryParams(link.url);
-    const linkPathname = locationUtil.stripBaseFromUrl(linkWithoutParams);
+    // BMC code - inline change
+    const linkPathname = locationUtil
+      .stripBaseFromUrl(linkWithoutParams)
+      .replace(/^\/dashboards$/, '/')
+      .replace(/^\/dashboards/, '');
     if (linkPathname) {
       if (linkPathname === pathname) {
         // exact match
@@ -176,3 +182,13 @@ export const isSearchActive = (location: Location<unknown>) => {
 export function getNavModelItemKey(item: NavModelItem) {
   return item.id ?? item.text;
 }
+// BMC code
+export const prepareLogoColor = (isSelected: Boolean) => {
+  const reportApp: any = document.querySelector('a[aria-label="Report Scheduler"] img') || { style: {} };
+  if (config.theme.isDark) {
+    reportApp.style['filter'] = `contrast(0) ${isSelected ? 'brightness(1.8)' : 'brightness(1.2)'}`;
+  } else {
+    reportApp.style['filter'] = `${isSelected ? 'inherit' : 'contrast(0.35)'}`;
+  }
+};
+// End

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana/pkg/models"
 	ac "github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/sqlstore"
@@ -16,7 +17,7 @@ import (
 )
 
 type store interface {
-	Create(name, email string, orgID int64) (models.Team, error)
+	Create(name, email string, orgID int64, Id int64) (models.Team, error)
 	Update(ctx context.Context, cmd *models.UpdateTeamCommand) error
 	Delete(ctx context.Context, cmd *models.DeleteTeamCommand) error
 	Search(ctx context.Context, query *models.SearchTeamsQuery) error
@@ -86,8 +87,11 @@ func getTeamSelectWithPermissionsSQLBase(db db.DB, filteredUsers []string) strin
 		INNER JOIN team_member ON team.id = team_member.team_id AND team_member.user_id = ? `
 }
 
-func (ss *xormStore) Create(name, email string, orgID int64) (models.Team, error) {
+// BMC code - inline change
+func (ss *xormStore) Create(name, email string, orgID int64, Id int64) (models.Team, error) {
 	team := models.Team{
+		// BMC code - next line
+		Id:      Id,
 		Name:    name,
 		Email:   email,
 		OrgId:   orgID,
@@ -357,6 +361,38 @@ func (ss *xormStore) AddMember(userID, orgID, teamID int64, isExternal bool, per
 		return addTeamMember(sess, orgID, teamID, userID, isExternal, permission)
 	})
 }
+
+// BMC code
+// AddMember adds a user to a team
+func AddMember(ss sqlstore.Store, ctx context.Context, cmd *models.AddTeamMemberCommand) error {
+	log.DefaultLogger.Info("Adding team member", "UserId", cmd.UserId, "Team ", cmd.TeamId)
+	return ss.WithTransactionalDbSession(ctx, func(sess *sqlstore.DBSession) error {
+		if res, err := sess.Query("SELECT 1 from team_member WHERE org_id=? and team_id=? and user_id=?", cmd.OrgId, cmd.TeamId, cmd.UserId); err != nil {
+			return err
+		} else if len(res) == 1 {
+			return models.ErrTeamMemberAlreadyAdded
+		}
+
+		if _, err := teamExists(cmd.OrgId, cmd.TeamId, sess); err != nil {
+			return err
+		}
+
+		entity := models.TeamMember{
+			OrgId:      cmd.OrgId,
+			TeamId:     cmd.TeamId,
+			UserId:     cmd.UserId,
+			External:   cmd.External,
+			Created:    time.Now(),
+			Updated:    time.Now(),
+			Permission: cmd.Permission,
+		}
+
+		_, err := sess.Insert(&entity)
+		return err
+	})
+}
+
+// End
 
 func getTeamMember(sess *sqlstore.DBSession, orgId int64, teamId int64, userId int64) (models.TeamMember, error) {
 	rawSQL := `SELECT * FROM team_member WHERE org_id=? and team_id=? and user_id=?`

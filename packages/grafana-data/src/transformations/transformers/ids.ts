@@ -35,4 +35,7 @@ export enum DataTransformerID {
   extractFields = 'extractFields',
   groupingToMatrix = 'groupingToMatrix',
   limit = 'limit',
+  // BMC code
+  advanceFunctions = 'advanceFunctions',
+  // End
 }

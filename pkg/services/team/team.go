@@ -7,7 +7,8 @@ import (
 )
 
 type Service interface {
-	CreateTeam(name, email string, orgID int64) (models.Team, error)
+	// BMC code - inline change
+	CreateTeam(name, email string, orgID int64, Id int64) (models.Team, error)
 	UpdateTeam(ctx context.Context, cmd *models.UpdateTeamCommand) error
 	DeleteTeam(ctx context.Context, cmd *models.DeleteTeamCommand) error
 	SearchTeams(ctx context.Context, query *models.SearchTeamsQuery) error

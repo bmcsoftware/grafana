@@ -106,49 +106,50 @@ type HTTPServer struct {
 	namedMiddlewares []routing.RegisterNamedMiddleware
 	bus              bus.Bus
 
-	PluginContextProvider        *plugincontext.Provider
-	RouteRegister                routing.RouteRegister
-	RenderService                rendering.Service
-	Cfg                          *setting.Cfg
-	Features                     *featuremgmt.FeatureManager
-	SettingsProvider             setting.Provider
-	HooksService                 *hooks.HooksService
-	navTreeService               navtree.Service
-	CacheService                 *localcache.CacheService
-	DataSourceCache              datasources.CacheService
-	AuthTokenService             models.UserTokenService
-	QuotaService                 quota.Service
-	RemoteCacheService           *remotecache.RemoteCache
-	ProvisioningService          provisioning.ProvisioningService
-	Login                        login.Service
-	License                      models.Licensing
-	AccessControl                accesscontrol.AccessControl
-	DataProxy                    *datasourceproxy.DataSourceProxyService
-	PluginRequestValidator       models.PluginRequestValidator
-	pluginClient                 plugins.Client
-	pluginStore                  plugins.Store
-	pluginInstaller              plugins.Installer
-	pluginDashboardService       plugindashboards.Service
-	pluginStaticRouteResolver    plugins.StaticRouteResolver
-	pluginErrorResolver          plugins.ErrorResolver
-	SearchService                search.Service
-	ShortURLService              shorturls.Service
-	QueryHistoryService          queryhistory.Service
-	CorrelationsService          correlations.Service
-	Live                         *live.GrafanaLive
-	LivePushGateway              *pushhttp.Gateway
-	ThumbService                 thumbs.Service
-	ExportService                export.ExportService
-	StorageService               store.StorageService
-	SearchV2HTTPService          searchV2.SearchHTTPService
-	ContextHandler               *contexthandler.ContextHandler
-	SQLStore                     sqlstore.Store
-	AlertEngine                  *alerting.AlertEngine
-	AlertNG                      *ngalert.AlertNG
-	LibraryPanelService          librarypanels.Service
-	LibraryElementService        libraryelements.Service
-	SocialService                social.Service
-	Listener                     net.Listener
+	PluginContextProvider     *plugincontext.Provider
+	RouteRegister             routing.RouteRegister
+	RenderService             rendering.Service
+	Cfg                       *setting.Cfg
+	Features                  *featuremgmt.FeatureManager
+	SettingsProvider          setting.Provider
+	HooksService              *hooks.HooksService
+	navTreeService            navtree.Service
+	CacheService              *localcache.CacheService
+	DataSourceCache           datasources.CacheService
+	AuthTokenService          models.UserTokenService
+	QuotaService              quota.Service
+	RemoteCacheService        *remotecache.RemoteCache
+	ProvisioningService       provisioning.ProvisioningService
+	Login                     login.Service
+	License                   models.Licensing
+	AccessControl             accesscontrol.AccessControl
+	DataProxy                 *datasourceproxy.DataSourceProxyService
+	PluginRequestValidator    models.PluginRequestValidator
+	pluginClient              plugins.Client
+	pluginStore               plugins.Store
+	pluginInstaller           plugins.Installer
+	pluginDashboardService    plugindashboards.Service
+	pluginStaticRouteResolver plugins.StaticRouteResolver
+	pluginErrorResolver       plugins.ErrorResolver
+	SearchService             search.Service
+	ShortURLService           shorturls.Service
+	QueryHistoryService       queryhistory.Service
+	CorrelationsService       correlations.Service
+	Live                      *live.GrafanaLive
+	LivePushGateway           *pushhttp.Gateway
+	ThumbService              thumbs.Service
+	ExportService             export.ExportService
+	StorageService            store.StorageService
+	SearchV2HTTPService       searchV2.SearchHTTPService
+	ContextHandler            *contexthandler.ContextHandler
+	SQLStore                  sqlstore.Store
+	AlertEngine               *alerting.AlertEngine
+	AlertNG                   *ngalert.AlertNG
+	LibraryPanelService       librarypanels.Service
+	LibraryElementService     libraryelements.Service
+	SocialService             social.Service
+	Listener                  net.Listener
+	// BMC code - inline change
 	EncryptionService            encryption.Internal
 	SecretsService               secrets.Service
 	secretsPluginManager         plugins.SecretsPluginManager
@@ -346,6 +347,11 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	}
 	hs.registerRoutes()
 
+	// BMC code
+	hs.log.Info("Registering Report Scheduler Api's")
+	hs.registerSchedulerRoutes()
+	hs.registerReportSchedulerPlugin()
+	// End
 	// Register access control scope resolver for annotations
 	hs.AccessControl.RegisterScopeAttributeResolver(AnnotationTypeScopeResolver(hs.annotationsRepo))
 
@@ -655,6 +661,11 @@ func (hs *HTTPServer) apiHealthHandler(ctx *web.Context) {
 	if !hs.Cfg.AnonymousHideVersion {
 		data.Set("version", hs.Cfg.BuildVersion)
 		data.Set("commit", hs.Cfg.BuildCommit)
+		// BMC code
+		// author(kmejdi) - Add ade version from env variables
+		version := os.Getenv("RELEASE_VERSION")
+		data.Set("adeVersion", version)
+		// End
 	}
 
 	if !hs.databaseHealthy(ctx.Req.Context()) {
