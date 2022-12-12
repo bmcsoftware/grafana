@@ -302,7 +302,7 @@ export class PanelChrome extends PureComponent<Props, State> {
   onRefresh = () => {
     const { dashboard, panel, isInView, width } = this.props;
 
-    if (!isInView) {
+    if (!isInView && !dashboard.snapshot) {
       this.setState({ refreshWhenInView: true });
       return;
     }

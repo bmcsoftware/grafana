@@ -254,12 +254,14 @@ export function getPanelMenu(
     subMenu.length = 0;
   }
 
+  //BMC Code 
+  /* Made get help option hidden
   if (canEdit && panel.plugin && !panel.plugin.meta.skipDataQuery) {
     subMenu.push({
       text: 'Get help',
       onClick: (e: React.MouseEvent) => onInspectPanel(InspectTab.Help),
     });
-  }
+  }*/
 
   if (subMenu.length) {
     const moreTextTranslation = t({

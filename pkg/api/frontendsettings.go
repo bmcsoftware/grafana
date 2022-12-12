@@ -100,6 +100,8 @@ func (hs *HTTPServer) getFrontendSettingsMap(c *models.ReqContext) (map[string]i
 		"allowOrgCreate":                      (setting.AllowUserOrgCreate && c.IsSignedIn) || c.IsGrafanaAdmin,
 		"authProxyEnabled":                    setting.AuthProxyEnabled,
 		"ldapEnabled":                         hs.Cfg.LDAPEnabled,
+		// BMC code - next line
+		"EnvType":                             setting.EnvType,
 		"jwtHeaderName":                       hs.Cfg.JWTAuthHeaderName,
 		"jwtUrlLogin":                         hs.Cfg.JWTAuthURLLogin,
 		"alertingEnabled":                     setting.AlertingEnabled,
@@ -191,6 +193,9 @@ func (hs *HTTPServer) getFrontendSettingsMap(c *models.ReqContext) (map[string]i
 		"unifiedAlerting": map[string]interface{}{
 			"minInterval": hs.Cfg.UnifiedAlerting.MinInterval.String(),
 		},
+
+		// BMC code - next line
+		"bulkLimit": setting.BulkLimit,
 	}
 
 	if hs.ThumbService != nil {

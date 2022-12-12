@@ -37,6 +37,7 @@ func ProvideService(
 	cfg *setting.Cfg,
 	sqlStore *sqlstore.SQLStore,
 	pluginStore plugifaces.Store,
+	// BMC code - inline change
 	encryptionService encryption.Internal,
 	notificatonService *notifications.NotificationService,
 	dashboardProvisioningService dashboardservice.DashboardProvisioningService,
@@ -103,6 +104,7 @@ func NewProvisioningServiceImpl() *ProvisioningServiceImpl {
 // Used for testing purposes
 func newProvisioningServiceImpl(
 	newDashboardProvisioner dashboards.DashboardProvisionerFactory,
+	// BMC code - inline change
 	provisionNotifiers func(context.Context, string, notifiers.Manager, notifiers.SQLStore, encryption.Internal, *notifications.NotificationService) error,
 	provisionDatasources func(context.Context, string, datasources.Store, datasources.CorrelationsStore, utils.OrgStore) error,
 	provisionPlugins func(context.Context, string, plugins.Store, plugifaces.Store, pluginsettings.Service) error,
@@ -117,16 +119,18 @@ func newProvisioningServiceImpl(
 }
 
 type ProvisioningServiceImpl struct {
-	Cfg                          *setting.Cfg
-	SQLStore                     *sqlstore.SQLStore
-	ac                           accesscontrol.AccessControl
-	pluginStore                  plugifaces.Store
-	EncryptionService            encryption.Internal
-	NotificationService          *notifications.NotificationService
-	log                          log.Logger
-	pollingCtxCancel             context.CancelFunc
-	newDashboardProvisioner      dashboards.DashboardProvisionerFactory
-	dashboardProvisioner         dashboards.DashboardProvisioner
+	Cfg         *setting.Cfg
+	SQLStore    *sqlstore.SQLStore
+	ac          accesscontrol.AccessControl
+	pluginStore plugifaces.Store
+	// BMC code - inline change
+	EncryptionService       encryption.Internal
+	NotificationService     *notifications.NotificationService
+	log                     log.Logger
+	pollingCtxCancel        context.CancelFunc
+	newDashboardProvisioner dashboards.DashboardProvisionerFactory
+	dashboardProvisioner    dashboards.DashboardProvisioner
+	// BMC code - inline change
 	provisionNotifiers           func(context.Context, string, notifiers.Manager, notifiers.SQLStore, encryption.Internal, *notifications.NotificationService) error
 	provisionDatasources         func(context.Context, string, datasources.Store, datasources.CorrelationsStore, utils.OrgStore) error
 	provisionPlugins             func(context.Context, string, plugins.Store, plugifaces.Store, pluginsettings.Service) error
@@ -240,8 +244,10 @@ func (ps *ProvisioningServiceImpl) ProvisionDashboards(ctx context.Context) erro
 	defer ps.mutex.Unlock()
 
 	ps.cancelPolling()
-	dashProvisioner.CleanUpOrphanedDashboards(ctx)
-
+	// BMC code
+	// Start - this cleanup causes our OOB dashboards to be disappeared.
+	// dashProvisioner.CleanUpOrphanedDashboards(ctx)
+	// End
 	err = dashProvisioner.Provision(ctx)
 	if err != nil {
 		// If we fail to provision with the new provisioner, the mutex will unlock and the polling will restart with the

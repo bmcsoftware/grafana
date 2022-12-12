@@ -8,6 +8,7 @@ import { DismissButton, OverlayContainer, useOverlay, useOverlayPosition } from 
 import { useMenuTriggerState } from '@react-stately/menu';
 import { MenuTriggerProps } from '@react-types/menu';
 import React, { ReactElement, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { GrafanaTheme2, NavModelItem } from '@grafana/data';
 import { reportExperimentView } from '@grafana/runtime';
@@ -17,6 +18,7 @@ import { NavBarItemIcon } from './NavBarItemIcon';
 import { getNavMenuPortalContainer } from './NavBarMenuPortalContainer';
 import { NavFeatureHighlight } from './NavFeatureHighlight';
 import { NavBarItemMenuContext, useNavBarContext } from './context';
+import { prepareLogoColor } from './utils';
 
 export interface NavBarItemMenuTriggerProps extends MenuTriggerProps {
   children: ReactElement;
@@ -32,7 +34,7 @@ export function NavBarItemMenuTrigger(props: NavBarItemMenuTriggerProps): ReactE
   const { menuIdOpen, setMenuIdOpen } = useNavBarContext();
   const theme = useTheme2();
   const styles = getStyles(theme, isActive);
-
+  const location = useLocation();
   // Create state based on the incoming props
   const state = useMenuTriggerState({ ...rest });
 
@@ -51,9 +53,13 @@ export function NavBarItemMenuTrigger(props: NavBarItemMenuTriggerProps): ReactE
       if (isHovering) {
         state.open();
         setMenuIdOpen(item.id);
+        // BMC code - next line
+        item.id === 'plugin-page-reports' && prepareLogoColor(true);
       } else {
         state.close();
         setMenuIdOpen(undefined);
+        // BMC code - next line
+        !location.pathname.includes('/a/reports') && prepareLogoColor(false);
       }
     },
   });

@@ -17,6 +17,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/pluginsettings"
 	pref "github.com/grafana/grafana/pkg/services/preference"
+	"github.com/grafana/grafana/pkg/services/sqlstore"
 	"github.com/grafana/grafana/pkg/services/star"
 	"github.com/grafana/grafana/pkg/setting"
 )
@@ -33,9 +34,10 @@ type ServiceImpl struct {
 	accesscontrolService ac.Service
 	kvStore              kvstore.KVStore
 	apiKeyService        apikey.Service
+	SQLStore             sqlstore.Store
 }
 
-func ProvideService(cfg *setting.Cfg, accessControl ac.AccessControl, pluginStore plugins.Store, pluginSettings pluginsettings.Service, starService star.Service, features *featuremgmt.FeatureManager, dashboardService dashboards.DashboardService, accesscontrolService ac.Service, kvStore kvstore.KVStore, apiKeyService apikey.Service) navtree.Service {
+func ProvideService(cfg *setting.Cfg, accessControl ac.AccessControl, pluginStore plugins.Store, pluginSettings pluginsettings.Service, starService star.Service, features *featuremgmt.FeatureManager, dashboardService dashboards.DashboardService, accesscontrolService ac.Service, kvStore kvstore.KVStore, apiKeyService apikey.Service, sqlStore *sqlstore.SQLStore) navtree.Service {
 	return &ServiceImpl{
 		cfg:                  cfg,
 		log:                  log.New("navtree service"),
@@ -48,6 +50,7 @@ func ProvideService(cfg *setting.Cfg, accessControl ac.AccessControl, pluginStor
 		accesscontrolService: accesscontrolService,
 		kvStore:              kvStore,
 		apiKeyService:        apiKeyService,
+		SQLStore:             sqlStore,
 	}
 }
 
@@ -269,12 +272,14 @@ func (s *ServiceImpl) getProfileNode(c *models.ReqContext) *navtree.NavLink {
 		Text: "Notification history", Id: "profile/notifications", Url: s.cfg.AppSubURL + "/profile/notifications", Icon: "bell",
 	})
 
-	if setting.AddChangePasswordLink() {
-		children = append(children, &navtree.NavLink{
-			Text: "Change password", Id: "profile/password", Url: s.cfg.AppSubURL + "/profile/password",
-			Icon: "lock",
-		})
-	}
+	// BMC code
+	// if setting.AddChangePasswordLink() {
+	// 	children = append(children, &navtree.NavLink{
+	// 		Text: "Change password", Id: "profile/password", Url: s.cfg.AppSubURL + "/profile/password",
+	// 		Icon: "lock",
+	// 	})
+	// }
+	// End
 
 	if !setting.DisableSignoutMenu {
 		// add sign out first
@@ -364,13 +369,17 @@ func (s *ServiceImpl) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 	})
 
 	if c.IsSignedIn {
-		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
-			Text:        "Snapshots",
-			Description: "Interactive, publically available, point-in-time representations of dashboards",
-			Id:          "dashboards/snapshots",
-			Url:         s.cfg.AppSubURL + "/dashboard/snapshots",
-			Icon:        "camera",
-		})
+		// BMC code - next line
+		// To be fixed
+		if s.SQLStore.IsFeatureEnabled(c.Req.Context(), c.OrgID, "Snapshot") {
+			dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
+				Text:        "Snapshots",
+				Description: "Interactive, publically available, point-in-time representations of dashboards",
+				Id:          "dashboards/snapshots",
+				Url:         s.cfg.AppSubURL + "/dashboard/snapshots",
+				Icon:        "camera",
+			})
+		}
 
 		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
 			Text:        "Library panels",
@@ -389,6 +398,20 @@ func (s *ServiceImpl) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 			Icon: "apps",
 		})
 	}
+
+	// BMC code
+	if c.OrgRole == org.RoleAdmin || c.OrgRole == org.RoleEditor {
+		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
+			Text:       "Calculated fields",
+			Id:         "calc-fields",
+			Url:        setting.AppSubUrl + "/calculated-fields",
+			Icon:       "table",
+			SubTitle:   "Create and manage calculated fields for ITSM service",
+			SortWeight: navtree.WeightReport,
+			Section:    navtree.NavSectionCore,
+		})
+	}
+	// End
 
 	if hasEditPerm {
 		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
@@ -410,7 +433,7 @@ func (s *ServiceImpl) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 
 		if hasAccess(hasEditPermInAnyFolder, ac.EvalPermission(dashboards.ActionDashboardsCreate)) {
 			dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
-				Text: "Import", SubTitle: "Import dashboard from file or Grafana.com", Id: "dashboards/import", Icon: "plus",
+				Text: "Import", SubTitle: "Import dashboard from file or via dashboard json", Id: "dashboards/import", Icon: "plus",
 				Url: s.cfg.AppSubURL + "/dashboard/import", HideFromTabs: true, ShowIconInNavbar: true,
 			})
 		}

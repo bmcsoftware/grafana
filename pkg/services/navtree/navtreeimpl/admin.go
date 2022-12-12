@@ -77,32 +77,35 @@ func (s *ServiceImpl) setupConfigNodes(c *models.ReqContext) ([]*navtree.NavLink
 		})
 	}
 
-	hideApiKeys, _, _ := s.kvStore.Get(c.Req.Context(), c.OrgID, "serviceaccounts", "hideApiKeys")
-	apiKeys, err := s.apiKeyService.GetAllAPIKeys(c.Req.Context(), c.OrgID)
-	if err != nil {
-		return nil, err
-	}
+	// BMC code
+	// hideApiKeys, _, _ := s.kvStore.Get(c.Req.Context(), c.OrgID, "serviceaccounts", "hideApiKeys")
+	// apiKeys, err := s.apiKeyService.GetAllAPIKeys(c.Req.Context(), c.OrgID)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	apiKeysHidden := hideApiKeys == "1" && len(apiKeys) == 0
-	if hasAccess(ac.ReqOrgAdmin, ac.ApiKeyAccessEvaluator) && !apiKeysHidden {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:        "API keys",
-			Id:          "apikeys",
-			Description: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
-			Icon:        "key-skeleton-alt",
-			Url:         s.cfg.AppSubURL + "/org/apikeys",
-		})
-	}
+	// apiKeysHidden := hideApiKeys == "1" && len(apiKeys) == 0
+	// if hasAccess(ac.ReqOrgAdmin, ac.ApiKeyAccessEvaluator) && !apiKeysHidden {
+	// 	configNodes = append(configNodes, &navtree.NavLink{
+	// 		Text:        "API keys",
+	// 		Id:          "apikeys",
+	// 		Description: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
+	// 		Icon:        "key-skeleton-alt",
+	// 		Url:         s.cfg.AppSubURL + "/org/apikeys",
+	// 	})
+	// }
+	// End
 
-	if enableServiceAccount(s, c) {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:        "Service accounts",
-			Id:          "serviceaccounts",
-			Description: "Use service accounts to run automated workloads in Grafana",
-			Icon:        "gf-service-account",
-			Url:         s.cfg.AppSubURL + "/org/serviceaccounts",
-		})
-	}
+	// if enableServiceAccount(s, c) {
+	// 	configNodes = append(configNodes, &navtree.NavLink{
+	// 		Text:        "Service accounts",
+	// 		Id:          "serviceaccounts",
+	// 		Description: "Use service accounts to run automated workloads in Grafana",
+	// 		Icon:        "gf-service-account",
+	// 		Url:         s.cfg.AppSubURL + "/org/serviceaccounts",
+	// 	})
+	// }
+	// End
 	return configNodes, nil
 }
 

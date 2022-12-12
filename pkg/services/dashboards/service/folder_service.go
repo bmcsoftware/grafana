@@ -13,7 +13,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/guardian"
-	"github.com/grafana/grafana/pkg/services/org"
+	//"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/search"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
@@ -185,8 +185,10 @@ func (f *FolderServiceImpl) CreateFolder(ctx context.Context, user *user.SignedI
 		}
 
 		permissions = append(permissions, []accesscontrol.SetResourcePermissionCommand{
-			{BuiltinRole: string(org.RoleEditor), Permission: models.PERMISSION_EDIT.String()},
-			{BuiltinRole: string(org.RoleViewer), Permission: models.PERMISSION_VIEW.String()},
+			// BMC code Start - Fix for DRJ71-4418 - Changes related to folder and Dashboard permission in 9.x
+			// {BuiltinRole: string(org.RoleEditor), Permission: models.PERMISSION_EDIT.String()},
+			// {BuiltinRole: string(org.RoleViewer), Permission: models.PERMISSION_VIEW.String()},
+			// End
 		}...)
 
 		_, permissionErr = f.permissions.SetPermissions(ctx, orgID, folder.Uid, permissions...)

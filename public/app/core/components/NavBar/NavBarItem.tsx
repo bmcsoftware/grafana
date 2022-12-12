@@ -50,7 +50,7 @@ const NavBarItem = ({ isActive = false, className, reverseMenuDirection = false,
       if (!target && url.startsWith('/')) {
         locationService.push(locationUtil.stripBaseFromUrl(url));
       } else {
-        window.open(url, target);
+        window.open(url, target, 'noreferrer noopener nofollow popup=0');
       }
     }
   };

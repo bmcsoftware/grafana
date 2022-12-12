@@ -11,6 +11,8 @@ const (
 	WeightDashboard
 	WeightExplore
 	WeightAlerting
+	// BMC code - next line
+	WeightReport
 	WeightDataConnections
 	WeightPlugin
 	WeightConfig
