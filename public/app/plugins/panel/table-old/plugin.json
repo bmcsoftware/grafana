@@ -3,7 +3,6 @@
   "name": "Table (old)",
   "id": "table-old",
 
-  "state": "deprecated",
 
   "info": {
     "description": "Table Panel for Grafana",

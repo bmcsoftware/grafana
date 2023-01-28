@@ -27,6 +27,9 @@ func HandleNoCacheHeader(ctx *models.ReqContext) {
 
 func AddDefaultResponseHeaders(cfg *setting.Cfg) web.Handler {
 	return func(c *web.Context) {
+		// BMC code
+		addSecurityHeadersTemp(c, cfg)
+		// End
 		c.Resp.Before(func(w web.ResponseWriter) {
 			// if response has already been written, skip.
 			if w.Written() {
@@ -45,6 +48,30 @@ func AddDefaultResponseHeaders(cfg *setting.Cfg) web.Handler {
 		})
 	}
 }
+// BMC code
+// Adding temporary function to add needed security headers.
+// ToDo: Check how plain grafana is already handling that and make the necessary to make it work that way.
+func addSecurityHeadersTemp(c *web.Context, cfg *setting.Cfg) {
+	if cfg.ContentTypeProtectionHeader {
+		c.Resp.Header().Add("X-Content-Type-Options", "nosniff")
+	}
+
+	if cfg.XSSProtectionHeader {
+		c.Resp.Header().Add("X-XSS-Protection", "1; mode=block")
+	}
+
+	if !strings.HasPrefix(c.Req.URL.Path, "/api/datasources/proxy/") {
+		c.Resp.Header().Add("Cache-Control", "no-cache")
+		c.Resp.Header().Add("Pragma", "no-cache")
+		c.Resp.Header().Add("Expires", "-1")
+	}
+
+	if !cfg.AllowEmbedding {
+		c.Resp.Header().Add("X-Frame-Options", "deny")
+	}
+}
+
+// End
 
 // addSecurityHeaders adds HTTP(S) response headers that enable various security protections in the client's browser.
 func addSecurityHeaders(w web.ResponseWriter, cfg *setting.Cfg) {

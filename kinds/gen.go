@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"cuelang.org/go/cue/errors"
 	"github.com/grafana/codejen"
@@ -57,8 +56,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "could not get working directory: %s", err)
 		os.Exit(1)
 	}
-	grootp := strings.Split(cwd, sep)
-	groot := filepath.Join(sep, filepath.Join(grootp[:len(grootp)-1]...))
+	groot := filepath.Dir(cwd)
 
 	rt := cuectx.GrafanaThemaRuntime()
 	var all []*codegen.DeclForGen

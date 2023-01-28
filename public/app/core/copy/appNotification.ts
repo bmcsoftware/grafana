@@ -27,6 +27,14 @@ const defaultErrorNotification = {
   icon: 'exclamation-triangle',
 };
 
+// BMC code
+const defaultInfoNotification = {
+  title: '',
+  text: '',
+  severity: AppNotificationSeverity.Info,
+  icon: 'exclamation-triangle',
+};
+// Ends
 export const createSuccessNotification = (title: string, text = '', traceId?: string): AppNotification => ({
   ...defaultSuccessNotification,
   title,
@@ -64,6 +72,17 @@ export const createWarningNotification = (title: string, text = '', traceId?: st
   showing: true,
 });
 
+// BMC code
+export const createInfoNotification = (title: string, text = '', component?: React.ReactElement): AppNotification => ({
+  ...defaultInfoNotification,
+  title,
+  text,
+  component,
+  id: uuidv4(),
+  timestamp: Date.now(),
+  showing: true,
+});
+// Ends
 /** Hook for showing toast notifications with varying severity (success, warning error).
  * @example
  * const notifyApp = useAppNotification();
