@@ -153,7 +153,8 @@ func Recovery(cfg *setting.Cfg) web.Middleware {
 
 					if ctx != nil && ctx.IsApiRequest() {
 						resp := make(map[string]interface{})
-						resp["message"] = "Internal Server Error - Check the Grafana server logs for the detailed error message."
+						// BMC code - inline change
+						resp["message"] = "Internal Server Error - Check the BMC Helix Dashboards server logs for the detailed error message."
 
 						if data.ErrorMsg != "" {
 							resp["error"] = fmt.Sprintf("%v - %v", data.Title, data.ErrorMsg)

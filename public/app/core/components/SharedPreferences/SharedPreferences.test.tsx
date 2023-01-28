@@ -84,6 +84,12 @@ const mockPreferences: UserPreferencesDTO = {
     homeTab: '',
   },
   locale: '',
+  // BMC code
+  communityLink: '',
+  docLink: '',
+  supportLink: '',
+  videoLink: '',
+  // End
 };
 
 const mockPrefsPatch = jest.fn();

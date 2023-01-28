@@ -170,6 +170,10 @@ func doBuild(binaryName, pkg string, opts BuildOpts) error {
 		args = append(args, "-tags", strings.Join(opts.buildTags, ","))
 	}
 
+	// BMC code
+	// Uncomment below line to enable debug mode
+	//args = append(args, "-gcflags=all=-N -l")
+	// End
 	if opts.race {
 		args = append(args, "-race")
 	}
@@ -205,6 +209,8 @@ func ldflags(opts BuildOpts) (string, error) {
 	}
 
 	var b bytes.Buffer
+	// BMC code
+	// Comment below line to enable debug mode
 	b.WriteString("-w")
 	b.WriteString(fmt.Sprintf(" -X main.version=%s", opts.version))
 	b.WriteString(fmt.Sprintf(" -X main.commit=%s", getGitSha()))

@@ -102,7 +102,14 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {
   if (isFullscreen) {
     return (
       <FocusScope contain restoreFocus autoFocus>
-        <section className={styles.container} onClick={stopPropagation} ref={ref} {...overlayProps} {...dialogProps}>
+        {/* BMC Code - inline change */}
+        <section
+          className={styles.container + ' override'}
+          onClick={stopPropagation}
+          ref={ref}
+          {...overlayProps}
+          {...dialogProps}
+        >
           <Header {...props} />
           <Body {...props} />
         </section>
