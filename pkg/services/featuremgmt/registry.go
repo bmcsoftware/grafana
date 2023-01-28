@@ -270,8 +270,8 @@ var (
 		},
 		{
 			Name:        "internationalization",
-			Description: "Enables work-in-progress internationalization",
-			State:       FeatureStateAlpha,
+			Description: "Enables internationalization",
+			State:       FeatureStateStable,
 		},
 		{
 			Name:        "topnav",
@@ -298,6 +298,11 @@ var (
 		{
 			Name:        "flameGraph",
 			Description: "Show the flame graph",
+			State:       FeatureStateAlpha,
+		},
+		{
+			Name:        "cloudWatchCrossAccountQuerying",
+			Description: "Use cross-account querying in CloudWatch datasource",
 			State:       FeatureStateAlpha,
 		},
 		{

@@ -214,10 +214,15 @@ func UseOrgFromContextParams(c *models.ReqContext) (int64, error) {
 	orgID, err := strconv.ParseInt(web.Params(c.Req)[":orgId"], 10, 64)
 
 	// Special case of macaron handling invalid params
-	if orgID == 0 || err != nil {
+	// BMC code change: Next line, to accomodate tenant / org 0
+	if err != nil {
 		return 0, models.ErrOrgNotFound
 	}
 
+	// BMC change next block: To support IMS tenant 0
+	if orgID == setting.IMS_Tenant0 {
+		return setting.GF_Tenant0, nil
+	}
 	return orgID, nil
 }
 

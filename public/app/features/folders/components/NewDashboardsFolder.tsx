@@ -5,6 +5,8 @@ import { NavModelItem } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { Button, Input, Form, Field } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import { getNavModel } from 'app/core/selectors/navModel';
+import { StoreState } from 'app/types';
 
 import { validationSrv } from '../../manage-dashboards/services/ValidationSrv';
 import { createNewFolder } from '../state/actions';
@@ -13,7 +15,11 @@ const mapDispatchToProps = {
   createNewFolder,
 };
 
-const connector = connect(null, mapDispatchToProps);
+const mapStateToProps = (state: StoreState) => {
+  return { navModel: getNavModel(state.navIndex, 'dashboards/folder/new', undefined, true) };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 interface OwnProps {}
 

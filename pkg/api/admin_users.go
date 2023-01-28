@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/grafana/grafana/pkg/middleware/cookies"
+	"github.com/grafana/grafana/pkg/setting"
+
 	"golang.org/x/sync/errgroup"
 
 	"github.com/grafana/grafana/pkg/api/dtos"
@@ -46,11 +49,19 @@ func (hs *HTTPServer) AdminCreateUser(c *models.ReqContext) response.Response {
 	form.Login = strings.TrimSpace(form.Login)
 
 	cmd := user.CreateUserCommand{
+		// BMC code
+		// Start Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+		Id: form.Id,
+		// End
 		Login:    form.Login,
 		Email:    form.Email,
 		Password: form.Password,
 		Name:     form.Name,
 		OrgID:    form.OrgId,
+	}
+
+	if cmd.OrgID == setting.IMS_Tenant0 {
+		cmd.OrgID = setting.GF_Tenant0
 	}
 
 	if len(cmd.Login) == 0 {
@@ -71,7 +82,11 @@ func (hs *HTTPServer) AdminCreateUser(c *models.ReqContext) response.Response {
 		}
 
 		if errors.Is(err, user.ErrUserAlreadyExists) {
-			return response.Error(412, fmt.Sprintf("User with email '%s' or username '%s' already exists", form.Email, form.Login), err)
+			// BMC code
+			// Start, Abhishek 05302021, Allow duplicate emails
+			// return Error(412, fmt.Sprintf("User with email '%s' or username '%s' already exists", form.Email, form.Login), err)
+			return response.Error(412, fmt.Sprintf("User with username '%s' already exists", form.Login), err)
+			// End
 		}
 
 		return response.Error(500, "failed to create user", err)
@@ -373,6 +388,10 @@ func (hs *HTTPServer) AdminLogoutUser(c *models.ReqContext) response.Response {
 	if c.UserID == userID {
 		return response.Error(400, "You cannot logout yourself", nil)
 	}
+	//BMC Code - start
+	//Remove helix_jwt_token cookie on logout operation
+	cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+	//BMC Code - end
 
 	return hs.logoutUserFromAllDevicesInternal(c.Req.Context(), userID)
 }

@@ -307,7 +307,8 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
 
           const v = fields[j].values.get(i);
           if (v !== null) {
-            csv = csv + writers[j](v);
+            // BMC Change: Next line
+            csv = csv + writers[j](v).replace(/^"?[=@]/gm, '');
           }
         }
         csv = csv + config.newline;

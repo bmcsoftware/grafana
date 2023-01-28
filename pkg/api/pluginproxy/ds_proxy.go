@@ -164,6 +164,27 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 	req.URL.Host = proxy.targetUrl.Host
 	req.Host = proxy.targetUrl.Host
 
+	// BMC code
+	// change for multiple url configuration in source plugin
+	// Obtain JWT Token value in local variable - Fix for DRJ71_4295
+	HelixJwtToken := req.Header.Get("X-Jwt-Token")
+	if strings.Contains(proxy.proxyPath, "api/arsys") && proxy.ds.JsonData != nil {
+		s, err := proxy.ds.JsonData.Map()
+		if s != nil && len(s) > 0 && err == nil {
+			pUrl := s["platformURL"].(string)
+			if pUrl != "" {
+				parsedUrl, _ := url.Parse(pUrl)
+				req.URL.Scheme = parsedUrl.Scheme
+				req.URL.Host = parsedUrl.Host
+				req.Host = parsedUrl.Host
+				proxy.targetUrl = parsedUrl
+			}
+		} else {
+			logger.Error("Datasource url for converged platfrom is not configured correctly.")
+			return
+		}
+	}
+	// End
 	reqQueryVals := req.URL.Query()
 
 	ctxLogger := logger.FromContext(req.Context())
@@ -215,10 +236,28 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 		req.Header.Set("Authorization", util.GetBasicAuthHeader(proxy.ds.BasicAuthUser,
 			password))
 	}
+	//BMC Code (ateli) - start
+	//Fix for DRJ71_4295 - Removing X-Jwt-Token from headers if request comes for third party domain
 
+	parts := strings.Split(proxy.targetUrl.Host, ".")
+	domain := parts[len(parts)-2] + "." + parts[len(parts)-1]
+	if domain != "bmc.com" || domain != "onbmc.com" {
+		req.Header.Set("X-Jwt-Token", "")
+	}
+	//BMC Code (ateli) - end
 	dsAuth := req.Header.Get("X-DS-Authorization")
 	if len(dsAuth) > 0 {
 		req.Header.Del("X-DS-Authorization")
+		// BMC code
+		// Send the rsso auth proxy token to external API - starts
+		if HelixJwtToken != "" {
+			if strings.Contains(proxy.proxyPath, "api/arsys") {
+				dsAuth = "IMS-JWT " + HelixJwtToken
+			} else {
+				dsAuth = "Bearer " + HelixJwtToken
+			}
+		}
+		// End
 		req.Header.Set("Authorization", dsAuth)
 	}
 

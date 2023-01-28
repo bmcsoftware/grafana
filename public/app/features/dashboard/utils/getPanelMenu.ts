@@ -227,7 +227,9 @@ export function getPanelMenu(
 
   if (panel.options.legend) {
     subMenu.push({
-      text: panel.options.legend.showLegend ? 'Hide legend' : 'Show legend',
+      text: panel.options.legend.showLegend
+        ? t('panel.header-menu.hide-legend', 'Hide legend')
+        : t('panel.header-menu.show-legend', 'Show legend'),
       onClick: onToggleLegend,
       shortcut: 'p l',
     });
@@ -238,12 +240,15 @@ export function getPanelMenu(
     subMenu.length = 0;
   }
 
+  //BMC Code
+  /* Hide get help option
+  // This was made hidden when it was in beta (v9.2.2). We should reconsider this, quite a handy feature.
   if (canEdit && panel.plugin && !panel.plugin.meta.skipDataQuery) {
     subMenu.push({
       text: 'Get help',
       onClick: (e: React.MouseEvent) => onInspectPanel(InspectTab.Help),
     });
-  }
+  }*/
 
   if (subMenu.length) {
     const moreTextTranslation = t('panel.header-menu.more', `More...`);

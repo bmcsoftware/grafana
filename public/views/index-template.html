@@ -27,10 +27,58 @@
     <link rel="stylesheet" href="[[.ContentDeliveryURL]]public/build/<%= htmlWebpackPlugin.files.cssChunks.dark %>" />
     [[ end ]]
 
+<!-- BMC code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    .logo::before,
+    .logo-bmc-helix::before,
+    .logo-helix::before,
+    .logo-bmc::before {
+      content: '';
+      width: inherit;
+      display: inline-block;
+      vertical-align: bottom;
+    }
+
+    .logo-helix {
+      background-image: url(public/img/bmc_helix_light.svg);
+    }
+
+    .logo-helix.logo-light {
+      background-image: url(public/img/bmc_helix_dark.svg);
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="rebranding/custom_dashboard.css?ver=<%= compilation.hash %>" />
+  <link rel="stylesheet" type="text/css"
+    href="[[.ContentDeliveryURL]]public/app/features/gainsight/dist/AdaptAgreement/styles.css">
+  <!-- End -->
+  
     <script nonce="[[.Nonce]]">
       performance.mark('frontend_boot_css_time_seconds');
     </script>
-
+    <!-- BMC Code -->
+    <style>
+      .sso-Container {
+        z-index: 2000 !important;
+      }
+      .sso-ModalButton1 {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 0px 15px;
+        width: 52px !important;
+        background: rgb(56, 113, 220) !important;
+        color: rgb(255, 255, 255) !important;
+        border: 1px solid transparent !important;
+      }
+    </style>
+    <script nonce="[[.Nonce]]" src="/dashboards/_auth/resource/js/idle-timeout.js" type="text/javascript"></script>
+    <!-- END -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="msapplication-TileColor" content="#2b5797" />
@@ -40,7 +88,8 @@
   <body class="theme-[[ .Theme ]] [[.AppNameBodyClass]]">
     <style>
       .preloader {
-        height: 100%;
+      	/* BMC code - inline change */
+      	height: 90vh;
         flex-direction: column;
         display: flex;
         justify-content: center;
@@ -56,30 +105,33 @@
         animation-fill-mode: forwards;
       }
 
-      .preloader__bounce {
-        text-align: center;
-        animation-name: preloader-bounce;
-        animation-duration: 0.9s;
-        animation-iteration-count: infinite;
-      }
+    /* BMC code */
+    .preloader__logo {
+      display: inline-block;
+      width: 200px;
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: contain;
+      /* background-image: url('[[.LoadingLogo]]'); */
+    }
 
-      .preloader__logo {
-        display: inline-block;
-        animation-name: preloader-squash;
-        animation-duration: 0.9s;
-        animation-iteration-count: infinite;
-        width: 60px;
-        height: 60px;
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-image: url('[[.LoadingLogo]]');
-      }
+    .logo {
+      display: inline-block;
+      width: 200px;
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
 
+    /* End */
       .preloader__text {
         margin-top: 16px;
-        font-weight: 500;
-        font-size: 14px;
-        font-family: Sans-serif;
+      /* BMC code */
+      font-weight: 300;
+      font-size: 1.3125rem;
+      text-align: center;
+      font-family: 'Open Sans', 'Roboto', Sans-serif;
+      /* End */
         opacity: 0;
         animation-name: preloader-fade-in;
         animation-duration: 0.9s;
@@ -95,6 +147,16 @@
         color: #d8d9da;
       }
 
+    /* BMC code */
+    .theme-light .preloader__logo {
+      /* background-image: url(public/img/bmc_helix_light.svg); */
+    }
+
+    .theme-dark .preloader__logo {
+      /* background-image: url(public/img/bmc_helix_dark.svg); */
+    }
+
+    /* End */
       @keyframes preloader-fade-in {
         0% {
           opacity: 0;
@@ -103,18 +165,6 @@
         }
         100% {
           opacity: 1;
-        }
-      }
-
-      @keyframes preloader-bounce {
-        from,
-        to {
-          transform: translateY(0px);
-          animation-timing-function: cubic-bezier(0.3, 0, 0.1, 1);
-        }
-        50% {
-          transform: translateY(-50px);
-          animation-timing-function: cubic-bezier(0.9, 0, 0.7, 1);
         }
       }
 
@@ -152,7 +202,7 @@
       }
 
       /* stop logo animation */
-      .preloader--done .preloader__bounce,
+    /* BMC code - inline change */
       .preloader--done .preloader__logo {
         animation-name: none;
         display: none;
@@ -161,7 +211,8 @@
       .preloader--done .preloader__logo,
       .preloader--done .preloader__text {
         display: none;
-        color: #ff5705 !important;
+      /* BMC code - next line */
+      /* color: #ff5705 !important; */
         font-size: 15px;
       }
 
@@ -169,6 +220,47 @@
         display: block;
       }
 
+    /* BMC code */
+    .main_text {
+      margin-top: 40px;
+      font-size: 32px;
+    }
+
+    .sub_text {
+      margin-top: 12px;
+      font-size: 18px;
+    }
+
+    .bmc_links {
+      color: #33a2e5;
+    }
+
+    .bmc_product_container {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      flex: 0 0 auto;
+      flex-flow: row;
+      align-items: center;
+      justify-content: center;
+      -webkit-flex: 0 0 auto;
+      -webkit-flex-flow: row;
+      -webkit-box-pack: center;
+      -webkit-align-items: center;
+      -webkit-box-align: center;
+      -webkit-justify-content: center;
+      -ms-flex: 0 0 auto;
+      -ms-flex-flow: row;
+      -ms-flex-pack: center;
+      -ms-flex-align: center;
+      font-weight: 200;
+      font-size: 1.3125rem;
+      line-height: 1.875rem;
+      font-family: 'Open Sans', 'Roboto', Sans-serif;
+    }
+
+    /* End */
       [ng\:cloak],
       [ng-cloak],
       .ng-cloak {
@@ -176,35 +268,37 @@
       }
     </style>
 
-    <div class="preloader">
-      <div class="preloader__enter">
-        <div class="preloader__bounce">
-          <div class="preloader__logo"></div>
-        </div>
+  <!-- BMC code -->
+  <div class="preloader">
+    <div class="preloader__enter">
+      <div class="bmc_product_container">
+        <div class='logo logo-helix [[if eq .Theme "dark" ]] logo-light [[end]]' style="
+          width: 150px;
+          height: 30px;
+          background-size: contain;
+          background-position: center right;
+          background-repeat: no-repeat;
+        "></div>
+        <div style="padding: 0 10px">Dashboards</div>
       </div>
-      <div class="preloader__text">Loading Grafana</div>
-      <div class="preloader__text preloader__text--fail">
-        <p>
-          <strong>If you're seeing this Grafana has failed to load its application files</strong>
-          <br />
-          <br />
-        </p>
-        <p>
-          1. This could be caused by your reverse proxy settings.<br /><br />
-          2. If you host grafana under subpath make sure your grafana.ini root_url setting includes subpath. If not
-          using a reverse proxy make sure to set serve_from_sub_path to true.<br />
-          <br />
-          3. If you have a local dev build make sure you build frontend using: yarn start, yarn start:hot, or yarn
-          build<br />
-          <br />
-          4. Sometimes restarting grafana-server can help<br />
-          <br />
-          5. Check if you are using a non-supported browser. For more information, refer to the list of
-          <a href="https://grafana.com/docs/grafana/latest/installation/requirements/#supported-web-browsers">
-            supported browsers</a
-          >.
-        </p>
+      <div class="preloader__text" style="font-size: 1.2rem">
+        <i class="fa fa-spinner fa-spin"></i>
+        <span>Loading...</span>
       </div>
+    </div>
+    <div class="text-center preloader__text preloader__text--fail">
+      <div>
+        <img src="public/img/bmc_app_failure_icon.svg" />
+      </div>
+      <div>
+        <h3 class="main_text">Oops... we couldn't load that page.</h3>
+      </div>
+      <div>
+        <span class="sub_text">The application has failed to load. Contact
+          <a class="bmc_links" href="https://www.bmc.com/support" target="_blank">BMC Support</a>.</span>
+      </div>
+    </div>
+    <!-- End -->
       <script nonce="[[.Nonce]]">
         // Check to see if browser is not supported by Grafana
         // Source file in app/core/utils/browser.ts & tests make edits there and copy compiled typescript here
@@ -280,6 +374,12 @@
         window.nonce = '[[.Nonce]]';
       [[end]]
     </script>
+
+    <!-- BMC Code -->
+    <script nonce="[[.Nonce]]">
+      _AUTH_VALIDATION_DOMAIN = "/dashboards";
+    </script>
+    <!-- END -->
 
     [[if .GoogleTagManagerId]]
     <!-- Google Tag Manager -->

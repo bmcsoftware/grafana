@@ -28,7 +28,9 @@ export function saveFolder(folder: FolderState): ThunkResult<void> {
     });
 
     dispatch(notifyApp(createSuccessNotification('Folder saved')));
-    locationService.push(`${res.url}/settings`);
+    // BMC temp change: To be fixed with grafana 9.3.3
+    dispatch(loadFolder(res));
+    locationService.push(locationUtil.stripBaseFromUrl(`${res.url}/settings`));
   };
 }
 
