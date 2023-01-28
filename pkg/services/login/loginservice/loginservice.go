@@ -213,6 +213,7 @@ func (ls *Implementation) SetTeamSyncFunc(teamSyncFunc login.TeamSyncFunc) {
 
 func (ls *Implementation) createUser(extUser *models.ExternalUserInfo) (*user.User, error) {
 	cmd := user.CreateUserCommand{
+		Id:           extUser.UserId,
 		Login:        extUser.Login,
 		Email:        extUser.Email,
 		Name:         extUser.Name,

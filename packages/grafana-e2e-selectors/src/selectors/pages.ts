@@ -236,4 +236,10 @@ export const Pages = {
       trashcanButton: 'public-dashboard-remove-button',
     },
   },
+  // BMC code :
+  Reports: {
+    url: '/reports',
+    reports: (title: string) => `Report search item ${title}`,
+  },
+  // End
 };

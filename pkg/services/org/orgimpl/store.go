@@ -302,6 +302,9 @@ func (ss *sqlStore) Search(ctx context.Context, query *org.SearchOrgsQuery) ([]*
 // CreateWithMember creates an organization with a certain name and a certain user as member.
 func (ss *sqlStore) CreateWithMember(ctx context.Context, cmd *org.CreateOrgCommand) (*org.Org, error) {
 	orga := org.Org{
+		// BMC code - next line
+		// Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+		ID:      cmd.ID,
 		Name:    cmd.Name,
 		Created: time.Now(),
 		Updated: time.Now(),

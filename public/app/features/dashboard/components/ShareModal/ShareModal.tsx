@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { PureComponent, lazy, Suspense } from 'react';
 
 import { reportInteraction } from '@grafana/runtime/src';
-import { Modal, ModalTabsHeader, TabContent } from '@grafana/ui';
+import { LoadingPlaceholder, Modal, ModalTabsHeader, TabContent } from '@grafana/ui';
 import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { t } from 'app/core/internationalization';
 import { SharePublicDashboard } from 'app/features/dashboard/components/ShareModal/SharePublicDashboard/SharePublicDashboard';
+import { getGrafanaFeatureStatus, FEATURE_CONST } from 'app/features/dashboard/services/featureFlagSrv';
 import { DashboardModel, PanelModel } from 'app/features/dashboard/state';
 import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
 
@@ -15,6 +16,34 @@ import { ShareLibraryPanel } from './ShareLibraryPanel';
 import { ShareLink } from './ShareLink';
 import { ShareSnapshot } from './ShareSnapshot';
 import { ShareModalTabModel } from './types';
+// BMC code
+const ExportUtility = lazy(() => import(/* webpackChunkName: "ExportUtility" */ './ExportUtility'));
+
+const renderLoader = () => {
+  return (
+    <div className="preloader">
+      <LoadingPlaceholder text={'Loading...'} />
+    </div>
+  );
+};
+
+export class LazyExportUtility extends PureComponent<Props> {
+  constructor(props: Props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Suspense fallback={renderLoader()}>
+        <ExportUtility {...this.props} />
+      </Suspense>
+    );
+  }
+}
+
+const downloadTab: ShareModalTabModel[] = [{ label: 'Download', value: 'download', component: LazyExportUtility }];
+// End
+// prettier-ignore
 
 const customDashboardTabs: ShareModalTabModel[] = [];
 const customPanelTabs: ShareModalTabModel[] = [];
@@ -42,7 +71,8 @@ function getTabs(props: Props) {
   const linkLabel = t('share-modal.tab-title.link', 'Link');
   const tabs: ShareModalTabModel[] = [{ label: linkLabel, value: 'link', component: ShareLink }];
 
-  if (contextSrv.isSignedIn) {
+  // BMC code - inline change
+  if (contextSrv.isSignedIn && getGrafanaFeatureStatus(FEATURE_CONST.snapshot)) {
     const snapshotLabel = t('share-modal.tab-title.snapshot', 'Snapshot');
     tabs.push({ label: snapshotLabel, value: 'snapshot', component: ShareSnapshot });
   }
@@ -56,10 +86,17 @@ function getTabs(props: Props) {
       tabs.push({ label: libraryPanelLabel, value: 'library_panel', component: ShareLibraryPanel });
     }
     tabs.push(...customPanelTabs);
+    // BMC code
+    if (!panel.isEditing) {
+      tabs.push(...downloadTab);
+    }
+    // End
   } else {
     const exportLabel = t('share-modal.tab-title.export', 'Export');
     tabs.push({ label: exportLabel, value: 'export', component: ShareExport });
     tabs.push(...customDashboardTabs);
+    // BMC code - next line
+    tabs.push(...downloadTab);
   }
 
   if (Boolean(config.featureToggles['publicDashboards'])) {
@@ -78,8 +115,8 @@ interface Props {
   dashboard: DashboardModel;
   panel?: PanelModel;
   activeTab?: string;
-
-  onDismiss(): void;
+  // BMC code - inline change
+  onDismiss?(): void;
 }
 
 interface State {
