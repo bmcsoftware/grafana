@@ -83,7 +83,13 @@ function getMessageFor(
     return 'Data is missing a time field';
   }
 
-  return 'Cannot visualize data';
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 02/13/2023
+  // Updated message on the panel
+
+  return fieldConfig?.defaults.noValue ?? 'No data';
+
+  // End
 }
 
 const getStyles = (theme: GrafanaTheme2) => {

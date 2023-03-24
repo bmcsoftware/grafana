@@ -113,7 +113,14 @@ $panel-header-no-title-zindex: 1;
 
 .panel-info-corner {
   color: $text-muted;
-  cursor: pointer;
+
+  // @Copyright 2022 BMC Software, Inc.
+  // Date - 12/20/2022
+  // Removed cursor pointer from panel info
+
+  // cursor: pointer;
+
+  // END
   position: absolute;
   display: none;
   left: 0;

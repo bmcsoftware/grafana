@@ -18,10 +18,18 @@ import {
 import { AppChromeUpdate } from 'app/core/components/AppChrome/AppChromeUpdate';
 import { NavToolbarSeparator } from 'app/core/components/AppChrome/NavToolbarSeparator';
 import config from 'app/core/config';
-import { useGrafana } from 'app/core/context/GrafanaContext';
+// @Copyright 2022 BMC Software, Inc.
+// Date - 12/20/2022
+// Commented unused import
+// import { useGrafana } from 'app/core/context/GrafanaContext';
+// END
 import { useBusEvent } from 'app/core/hooks/useBusEvent';
 import { DashboardCommentsModal } from 'app/features/dashboard/components/DashboardComments/DashboardCommentsModal';
-import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
+// @Copyright 2022 BMC Software, Inc.
+// Date - 12/20/2022
+// Commented unused import
+// import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
+// END
 import { ShareModal } from 'app/features/dashboard/components/ShareModal';
 import { playlistSrv } from 'app/features/playlist/PlaylistSrv';
 import { updateTimeZoneForSession } from 'app/features/profile/state/reducers';
@@ -75,7 +83,13 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 export const DashNav = React.memo<Props>((props) => {
   const forceUpdate = useForceUpdate();
-  const { chrome } = useGrafana();
+  // @Copyright 2022 BMC Software, Inc.
+  // Date - 12/20/2022
+  // Commented unused code
+
+  // const { chrome } = useGrafana();
+
+  // END
 
   // We don't really care about the event payload here only that it triggeres a re-render of this component
   useBusEvent(props.dashboard.events, DashboardMetaChangedEvent);
@@ -95,13 +109,19 @@ export const DashNav = React.memo<Props>((props) => {
     locationService.partial({ viewPanel: null });
   };
 
-  const onToggleTVMode = () => {
+  // @Copyright 2022 BMC Software, Inc.
+  // Date - 12/20/2022
+  // Commented unused functions
+
+  /* const onToggleTVMode = () => {
     chrome.onToggleKioskMode();
   };
 
   const onOpenSettings = () => {
     locationService.partial({ editview: 'settings' });
-  };
+  }; */
+
+  // END
 
   const onPlaylistPrev = () => {
     playlistSrv.prev();
@@ -238,11 +258,24 @@ export const DashNav = React.memo<Props>((props) => {
   };
 
   const renderRightActions = () => {
-    const { dashboard, onAddPanel, isFullscreen, kioskMode } = props;
+    // @Copyright 2022 BMC Software, Inc.
+    // Date - 12/21/2022
+    // Commented unused import
+
+    // const { dashboard, onAddPanel, isFullscreen, kioskMode } = props;
+
+    // END
+
+    const { dashboard, isFullscreen, kioskMode } = props;
     const { canSave, canEdit, showSettings } = dashboard.meta;
     const { snapshot } = dashboard;
     const snapshotUrl = snapshot && snapshot.originalUrl;
     const buttons: ReactNode[] = [];
+    /*
+    // @Copyright 2022 BMC Software, Inc.
+    // Date - 12/20/2022
+    // Remove tv buttons
+
     const tvButton = config.featureToggles.topnav ? null : (
       <ToolbarButton
         tooltip={t({ id: 'dashboard.toolbar.tv-button', message: 'Cycle view mode' })}
@@ -251,16 +284,29 @@ export const DashNav = React.memo<Props>((props) => {
         key="tv-button"
       />
     );
+    // END*/
 
     if (isPlaylistRunning()) {
       return [renderPlaylistControls(), renderTimeControls()];
     }
 
     if (kioskMode === KioskMode.TV) {
-      return [renderTimeControls(), tvButton];
+      // @Copyright 2022 BMC Software, Inc.
+      // Date - 12/20/2022
+      // Remove tv buttons from Kiosk mode
+
+      // return [renderTimeControls(), tvButton];
+      return [renderTimeControls()];
+
+      //END
     }
 
     if (canEdit && !isFullscreen) {
+      /*
+      // @Copyright 2022 BMC Software, Inc.
+      // Date - 12/20/2022
+      // Remove Add Panel button from dashboard
+
       buttons.push(
         <ToolbarButton
           tooltip={t({ id: 'dashboard.toolbar.add-panel', message: 'Add panel' })}
@@ -269,9 +315,16 @@ export const DashNav = React.memo<Props>((props) => {
           key="button-panel-add"
         />
       );
+
+      //END */
     }
 
     if (canSave && !isFullscreen) {
+      /*
+      // @Copyright 2022 BMC Software, Inc.
+      // Date - 12/20/2022
+      // Remove Save Dashboard Button
+
       buttons.push(
         <ModalsController key="button-save">
           {({ showModal, hideModal }) => (
@@ -288,6 +341,8 @@ export const DashNav = React.memo<Props>((props) => {
           )}
         </ModalsController>
       );
+
+      //END*/
     }
 
     if (snapshotUrl) {
@@ -302,20 +357,33 @@ export const DashNav = React.memo<Props>((props) => {
     }
 
     if (showSettings) {
-      buttons.push(
+      /*
+    // @Copyright 2022 BMC Software, Inc.
+    // Date - 12/20/2022
+    // Remove Save Dashboard Setting button
+
+     buttons.push(
         <ToolbarButton
           tooltip={t({ id: 'dashboard.toolbar.settings', message: 'Dashboard settings' })}
           icon="cog"
-          onClick={onOpenSettings}
+         onClick={onOpenSettings}
           key="button-settings"
         />
       );
+
+      // END*/
     }
 
     addCustomContent(customRightActions, buttons);
 
     buttons.push(renderTimeControls());
-    buttons.push(tvButton);
+    // @Copyright 2022 BMC Software, Inc.
+    // Date - 12/21/2022
+    // Remove tv buttons
+
+    // buttons.push(tvButton);
+
+    // END
     return buttons;
   };
 
