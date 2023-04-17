@@ -20,6 +20,8 @@ type RenderType string
 const (
 	RenderCSV RenderType = "csv"
 	RenderPNG RenderType = "png"
+	// BMC Code: Next line
+	RenderXLS RenderType = "xls"
 )
 
 type TimeoutOpts struct {
@@ -128,4 +130,9 @@ type Service interface {
 	HasCapability(ctx context.Context, capability CapabilityName) (CapabilitySupportRequestResult, error)
 	CreateRenderingSession(ctx context.Context, authOpts AuthOpts, sessionOpts SessionOpts) (Session, error)
 	SanitizeSVG(ctx context.Context, req *SanitizeSVGRequest) (*SanitizeSVGResponse, error)
+	// BMC code
+	CustomRenderPDF(ctx context.Context, opts CustomPDFOpts, session Session) (*RenderResult, error)
+	CustomRenderCSV(ctx context.Context, opts CustomCSVOpts, session Session) (*RenderResult, error)
+	CustomRenderXLS(ctx context.Context, opts CustomXLSOpts, session Session) (*RenderResult, error)
+	// End
 }

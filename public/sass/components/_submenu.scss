@@ -40,7 +40,8 @@
   display: flex;
   align-items: center;
   color: $text-color;
-  height: $input-height;
+  // BMC code - next line
+  min-height: $input-height;
 
   .label-tag {
     margin: 0 5px;

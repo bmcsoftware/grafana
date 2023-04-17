@@ -54,15 +54,7 @@ func doLoadFrameworkCUE(ctx *cue.Context) (cue.Value, error) {
 	var v cue.Value
 	var err error
 
-	absolutePath := prefix
-	if !filepath.IsAbs(absolutePath) {
-		absolutePath, err = filepath.Abs(absolutePath)
-		if err != nil {
-			return v, err
-		}
-	}
-
-	bi, err := tload.InstancesWithThema(grafana.CueSchemaFS, absolutePath)
+	bi, err := tload.InstancesWithThema(grafana.CueSchemaFS, prefix)
 	if err != nil {
 		return v, err
 	}

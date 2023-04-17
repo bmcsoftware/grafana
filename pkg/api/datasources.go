@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/grafana/grafana/pkg/bmc/kafkaproducer"
 	"net/http"
 	"sort"
 	"strconv"
@@ -265,6 +266,31 @@ func (hs *HTTPServer) DeleteDataSourceByUID(c *models.ReqContext) response.Respo
 
 	hs.Live.HandleDatasourceDelete(c.OrgID, ds.Uid)
 
+	//BMC Code - start
+	loginName := c.SignedInUser.Name
+	if len(loginName) == 0 {
+		loginName = c.SignedInUser.Login
+	}
+	data := kafkaproducer.Data{
+		AuditCategory:    "DATASOURCE",
+		ObjectID:         ds.Uid,
+		TenantID:         strconv.FormatInt(c.OrgID, 10),
+		ObjectCategory:   "DATASOURCE",
+		ObjectName:       ds.Name,
+		ObjectType:       ds.Type,
+		ObjectDetails:    "Datasource of type: " + ds.Type,
+		Operation:        c.Context.Req.Method,
+		OperationSubType: "Datasource deleted successfully",
+		OperationType:    "DELETE_DATASOURCE",
+		OperationStatus:  "SUCCESS",
+		ActorUserID:      strconv.FormatInt(c.UserID, 10),
+		ActorLoginID:     loginName,
+		ActivityTime:     kafkaproducer.EventTime(ds.Updated),
+		Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+	}
+	instance := kafkaproducer.GetInstance()
+	instance.SendKafkaEvent(data)
+	//BMC Code - end
 	return response.JSON(http.StatusOK, util.DynMap{
 		"message": "Data source deleted",
 		"id":      ds.Id,
@@ -385,6 +411,32 @@ func (hs *HTTPServer) AddDataSource(c *models.ReqContext) response.Response {
 	}
 
 	if err := hs.DataSourcesService.AddDataSource(c.Req.Context(), &cmd); err != nil {
+		//BMC Code - start
+		loginName := c.SignedInUser.Name
+		if len(loginName) == 0 {
+			loginName = c.SignedInUser.Login
+		}
+		data := kafkaproducer.Data{
+			AuditCategory:    "DATASOURCE",
+			ObjectID:         cmd.Uid,
+			TenantID:         strconv.FormatInt(c.OrgID, 10),
+			ObjectCategory:   "DATASOURCE",
+			ObjectName:       cmd.Result.Name,
+			ObjectType:       cmd.Result.Type,
+			ObjectDetails:    "Datasource of type: " + cmd.Result.Type,
+			Operation:        c.Context.Req.Method,
+			OperationSubType: "Failed to add datasource",
+			OperationType:    "ADD_DATASOURCE",
+			OperationStatus:  "FAILED",
+			ActorUserID:      strconv.FormatInt(c.UserID, 10),
+			ActorLoginID:     loginName,
+			ActivityTime:     kafkaproducer.EventTime(cmd.Result.Created),
+			Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+		}
+		instance := kafkaproducer.GetInstance()
+		instance.SendKafkaEvent(data)
+		//BMC Code - end
+
 		if errors.Is(err, datasources.ErrDataSourceNameExists) || errors.Is(err, datasources.ErrDataSourceUidExists) {
 			return response.Error(409, err.Error(), err)
 		}
@@ -396,7 +448,40 @@ func (hs *HTTPServer) AddDataSource(c *models.ReqContext) response.Response {
 		return response.Error(500, "Failed to add datasource", err)
 	}
 
+	// Clear permission cache for the user who's created the data source, so that new permissions are fetched for their next call
+	// Required for cases when caller wants to immediately interact with the newly created object
+	if !hs.AccessControl.IsDisabled() {
+		hs.accesscontrolService.ClearUserPermissionCache(c.SignedInUser)
+	}
+
 	ds := hs.convertModelToDtos(c.Req.Context(), cmd.Result)
+
+	//BMC Code - start
+	loginName := c.SignedInUser.Name
+	if len(loginName) == 0 {
+		loginName = c.SignedInUser.Login
+	}
+	data := kafkaproducer.Data{
+		AuditCategory:    "DATASOURCE",
+		ObjectID:         cmd.Uid,
+		TenantID:         strconv.FormatInt(c.OrgID, 10),
+		ObjectCategory:   "DATASOURCE",
+		ObjectName:       ds.Name,
+		ObjectType:       ds.Type,
+		ObjectDetails:    "Datasource of type: " + ds.Type,
+		Operation:        c.Context.Req.Method,
+		OperationSubType: "Datasource added successfully",
+		OperationType:    "ADD_DATASOURCE",
+		OperationStatus:  "SUCCESS",
+		ActorUserID:      strconv.FormatInt(c.UserID, 10),
+		ActorLoginID:     loginName,
+		ActivityTime:     kafkaproducer.EventTime(cmd.Result.Created),
+		Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+	}
+	instance := kafkaproducer.GetInstance()
+	instance.SendKafkaEvent(data)
+	//BMC Code - end
+
 	return response.JSON(http.StatusOK, util.DynMap{
 		"message":    "Datasource added",
 		"id":         cmd.Result.Id,
@@ -437,6 +522,14 @@ func (hs *HTTPServer) UpdateDataSourceByID(c *models.ReqContext) response.Respon
 	if cmd.Id, err = strconv.ParseInt(web.Params(c.Req)[":id"], 10, 64); err != nil {
 		return response.Error(http.StatusBadRequest, "id is invalid", err)
 	}
+	// BMC code
+	// author ateli - Mitigation for SSRF issue - DRJ71-3206
+	platformURL, _ := cmd.JsonData.Get("platformURL").String()
+	if resp := validateSSRF(cmd.Type, cmd.Url, platformURL); resp != nil {
+		return resp
+	}
+	// End
+
 	if resp := validateURL(cmd.Type, cmd.Url); resp != nil {
 		return resp
 	}
@@ -477,6 +570,15 @@ func (hs *HTTPServer) UpdateDataSourceByUID(c *models.ReqContext) response.Respo
 	}
 	datasourcesLogger.Debug("Received command to update data source", "url", cmd.Url)
 	cmd.OrgId = c.OrgID
+
+	// BMC code
+	// author ateli - Mitigation for SSRF issue - DRJ71-3206
+	platformURL, _ := cmd.JsonData.Get("platformURL").String()
+	if resp := validateSSRF(cmd.Type, cmd.Url, platformURL); resp != nil {
+		return resp
+	}
+	// End
+
 	if resp := validateURL(cmd.Type, cmd.Url); resp != nil {
 		return resp
 	}
@@ -509,6 +611,32 @@ func (hs *HTTPServer) updateDataSourceByID(c *models.ReqContext, ds *datasources
 		if errors.As(err, &secretsPluginError) {
 			return response.Error(500, "Failed to update datasource: "+err.Error(), err)
 		}
+
+		//BMC Code - start
+		loginName := c.SignedInUser.Name
+		if len(loginName) == 0 {
+			loginName = c.SignedInUser.Login
+		}
+		data := kafkaproducer.Data{
+			AuditCategory:    "DATASOURCE",
+			ObjectID:         cmd.Uid,
+			TenantID:         strconv.FormatInt(c.OrgID, 10),
+			ObjectCategory:   "DATASOURCE",
+			ObjectName:       cmd.Name,
+			ObjectType:       cmd.Type,
+			ObjectDetails:    "Datasource of type: " + cmd.Type,
+			Operation:        c.Context.Req.Method,
+			OperationSubType: "Failed to update datasource",
+			OperationType:    "UPDATE_DATASOURCE",
+			OperationStatus:  "FAILED",
+			ActorUserID:      strconv.FormatInt(c.UserID, 10),
+			ActorLoginID:     loginName,
+			ActivityTime:     kafkaproducer.EventTime(ds.Updated),
+			Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+		}
+		instance := kafkaproducer.GetInstance()
+		instance.SendKafkaEvent(data)
+		//BMC Code - end
 		return response.Error(500, "Failed to update datasource", err)
 	}
 
@@ -527,7 +655,31 @@ func (hs *HTTPServer) updateDataSourceByID(c *models.ReqContext, ds *datasources
 	datasourceDTO := hs.convertModelToDtos(c.Req.Context(), query.Result)
 
 	hs.Live.HandleDatasourceUpdate(c.OrgID, datasourceDTO.UID)
-
+	//BMC Code - start
+	loginName := c.SignedInUser.Name
+	if len(loginName) == 0 {
+		loginName = c.SignedInUser.Login
+	}
+	data := kafkaproducer.Data{
+		AuditCategory:    "DATASOURCE",
+		ObjectID:         datasourceDTO.UID,
+		TenantID:         strconv.FormatInt(c.OrgID, 10),
+		ObjectCategory:   "DATASOURCE",
+		ObjectName:       datasourceDTO.Name,
+		ObjectType:       datasourceDTO.Type,
+		ObjectDetails:    "Datasource of type: " + datasourceDTO.Type,
+		Operation:        c.Context.Req.Method,
+		OperationSubType: "Datasource updated successfully",
+		OperationType:    "UPDATE_DATASOURCE",
+		OperationStatus:  "SUCCESS",
+		ActorUserID:      strconv.FormatInt(c.UserID, 10),
+		ActorLoginID:     loginName,
+		ActivityTime:     kafkaproducer.EventTime(query.Result.Updated),
+		Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+	}
+	instance := kafkaproducer.GetInstance()
+	instance.SendKafkaEvent(data)
+	//BMC Code - end
 	return response.JSON(http.StatusOK, util.DynMap{
 		"message":    "Datasource updated",
 		"id":         cmd.Id,
@@ -882,6 +1034,18 @@ func (hs *HTTPServer) filterDatasourcesByQueryPermission(ctx context.Context, us
 
 	return query.Result, nil
 }
+
+// BMC code
+// author ateli - Mitigation for SSRF issue - DRJ71-3206
+func validateSSRF(cmdType string, url string, platformURL string) response.Response {
+	if _, err := datasource.ValidateSSRF(cmdType, url, platformURL); err != nil {
+		return response.Error(400, err.Error(), err)
+	}
+
+	return nil
+}
+
+// End
 
 // swagger:parameters checkDatasourceHealthByID
 type CheckDatasourceHealthByIDParams struct {

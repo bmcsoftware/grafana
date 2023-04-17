@@ -2,13 +2,15 @@ package api
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/grafana/grafana/pkg/api/dtos"
 	"github.com/grafana/grafana/pkg/api/response"
+	"github.com/grafana/grafana/pkg/bmc/kafkaproducer"
 	"github.com/grafana/grafana/pkg/models"
 	pref "github.com/grafana/grafana/pkg/services/preference"
 	"github.com/grafana/grafana/pkg/web"
+	"net/http"
+	"strconv"
+	"time"
 )
 
 const (
@@ -82,12 +84,17 @@ func (hs *HTTPServer) getPreferencesFor(ctx context.Context, orgID, userID, team
 		}
 	}
 
+	weekStart := ""
+	if preference.WeekStart != nil {
+		weekStart = *preference.WeekStart
+	}
+
 	dto := dtos.Prefs{
 		Theme:            preference.Theme,
 		HomeDashboardID:  preference.HomeDashboardID,
 		HomeDashboardUID: dashboardUID,
 		Timezone:         preference.Timezone,
-		WeekStart:        preference.WeekStart,
+		WeekStart:        weekStart,
 	}
 
 	if preference.JSONData != nil {
@@ -115,10 +122,10 @@ func (hs *HTTPServer) UpdateUserPreferences(c *models.ReqContext) response.Respo
 	if err := web.Bind(c.Req, &dtoCmd); err != nil {
 		return response.Error(http.StatusBadRequest, "bad request data", err)
 	}
-	return hs.updatePreferencesFor(c.Req.Context(), c.OrgID, c.UserID, 0, &dtoCmd)
+	return hs.updatePreferencesFor(c, c.Req.Context(), c.OrgID, c.UserID, 0, &dtoCmd)
 }
 
-func (hs *HTTPServer) updatePreferencesFor(ctx context.Context, orgID, userID, teamId int64, dtoCmd *dtos.UpdatePrefsCmd) response.Response {
+func (hs *HTTPServer) updatePreferencesFor(c *models.ReqContext, ctx context.Context, orgID, userID, teamId int64, dtoCmd *dtos.UpdatePrefsCmd) response.Response {
 	if dtoCmd.Theme != lightTheme && dtoCmd.Theme != darkTheme && dtoCmd.Theme != defaultTheme {
 		return response.Error(400, "Invalid theme", nil)
 	}
@@ -153,9 +160,62 @@ func (hs *HTTPServer) updatePreferencesFor(ctx context.Context, orgID, userID, t
 	}
 
 	if err := hs.preferenceService.Save(ctx, &saveCmd); err != nil {
+		//BMC Code - start
+		if userID == 0 && teamId == 0 {
+			loginName := c.SignedInUser.Name
+			if len(loginName) == 0 {
+				loginName = c.SignedInUser.Login
+			}
+			data := kafkaproducer.Data{
+				AuditCategory:    "PREFERENCES",
+				ObjectID:         "Organization Preferences",
+				TenantID:         strconv.FormatInt(orgID, 10),
+				ObjectCategory:   "Organization Preferences",
+				ObjectName:       "Organization Preferences",
+				ObjectType:       "Organization Preferences",
+				ObjectDetails:    "Change in organization preference",
+				Operation:        c.Context.Req.Method,
+				OperationSubType: "Failed to save organization preferences",
+				OperationType:    "ORG_PREFERENCES",
+				OperationStatus:  "FAILED",
+				ActorUserID:      strconv.FormatInt(c.UserID, 10),
+				ActorLoginID:     loginName,
+				ActivityTime:     kafkaproducer.EventTime(time.Now().UTC()),
+				Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+			}
+			instance := kafkaproducer.GetInstance()
+			instance.SendKafkaEvent(data)
+		}
+		//BMC Code - end
 		return response.Error(500, "Failed to save preferences", err)
 	}
-
+	//BMC Code - start
+	if userID == 0 && teamId == 0 {
+		loginName := c.SignedInUser.Name
+		if len(loginName) == 0 {
+			loginName = c.SignedInUser.Login
+		}
+		data := kafkaproducer.Data{
+			AuditCategory:    "PREFERENCES",
+			ObjectID:         "Organization Preferences",
+			TenantID:         strconv.FormatInt(orgID, 10),
+			ObjectCategory:   "Organization Preferences",
+			ObjectName:       "Organization Preferences",
+			ObjectType:       "Organization Preferences",
+			ObjectDetails:    "Change in organization preference",
+			Operation:        c.Context.Req.Method,
+			OperationSubType: "Organization preference updated successfully",
+			OperationType:    "ORG_PREFERENCES",
+			OperationStatus:  "SUCCESS",
+			ActorUserID:      strconv.FormatInt(c.UserID, 10),
+			ActorLoginID:     loginName,
+			ActivityTime:     kafkaproducer.EventTime(time.Now().UTC()),
+			Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+		}
+		instance := kafkaproducer.GetInstance()
+		instance.SendKafkaEvent(data)
+	}
+	//BMC Code - end
 	return response.Success("Preferences updated")
 }
 
@@ -248,7 +308,7 @@ func (hs *HTTPServer) UpdateOrgPreferences(c *models.ReqContext) response.Respon
 		return response.Error(http.StatusBadRequest, "bad request data", err)
 	}
 
-	return hs.updatePreferencesFor(c.Req.Context(), c.OrgID, 0, 0, &dtoCmd)
+	return hs.updatePreferencesFor(c, c.Req.Context(), c.OrgID, 0, 0, &dtoCmd)
 }
 
 // swagger:route PATCH /org/preferences org_preferences patchOrgPreferences

@@ -77,32 +77,36 @@ func (s *ServiceImpl) getOrgAdminNode(c *models.ReqContext) (*navtree.NavLink, e
 		})
 	}
 
-	hideApiKeys, _, _ := s.kvStore.Get(c.Req.Context(), c.OrgID, "serviceaccounts", "hideApiKeys")
-	apiKeys, err := s.apiKeyService.GetAllAPIKeys(c.Req.Context(), c.OrgID)
-	if err != nil {
-		return nil, err
-	}
+	// BMC code
+	/*
+		hideApiKeys, _, _ := s.kvStore.Get(c.Req.Context(), c.OrgID, "serviceaccounts", "hideApiKeys")
+		apiKeys, err := s.apiKeyService.GetAllAPIKeys(c.Req.Context(), c.OrgID)
+		if err != nil {
+			return nil, err
+		}
 
-	apiKeysHidden := hideApiKeys == "1" && len(apiKeys) == 0
-	if hasAccess(ac.ReqOrgAdmin, ac.ApiKeyAccessEvaluator) && !apiKeysHidden {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "API keys",
-			Id:       "apikeys",
-			SubTitle: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
-			Icon:     "key-skeleton-alt",
-			Url:      s.cfg.AppSubURL + "/org/apikeys",
-		})
-	}
+		apiKeysHidden := hideApiKeys == "1" && len(apiKeys) == 0
+		if hasAccess(ac.ReqOrgAdmin, ac.ApiKeyAccessEvaluator) && !apiKeysHidden {
+			configNodes = append(configNodes, &navtree.NavLink{
+				Text:     "API keys",
+				Id:       "apikeys",
+				SubTitle: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
+				Icon:     "key-skeleton-alt",
+				Url:      s.cfg.AppSubURL + "/org/apikeys",
+			})
+		}
 
-	if enableServiceAccount(s, c) {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "Service accounts",
-			Id:       "serviceaccounts",
-			SubTitle: "Use service accounts to run automated workloads in Grafana",
-			Icon:     "gf-service-account",
-			Url:      s.cfg.AppSubURL + "/org/serviceaccounts",
-		})
-	}
+		if enableServiceAccount(s, c) {
+			configNodes = append(configNodes, &navtree.NavLink{
+				Text:     "Service accounts",
+				Id:       "serviceaccounts",
+				SubTitle: "Use service accounts to run automated workloads in Grafana",
+				Icon:     "gf-service-account",
+				Url:      s.cfg.AppSubURL + "/org/serviceaccounts",
+			})
+		}
+	*/
+	// End
 
 	configNode := &navtree.NavLink{
 		Id:         navtree.NavIDCfg,
@@ -166,16 +170,8 @@ func (s *ServiceImpl) getServerAdminNode(c *models.ReqContext) *navtree.NavLink 
 		Children:   adminNavLinks,
 	}
 
-	if s.cfg.IsFeatureToggleEnabled(featuremgmt.FlagTopnav) {
-		adminNode.SubTitle = "Manage server-wide settings and access to resources such as organizations, users, and licenses"
-	}
-
 	if len(adminNavLinks) > 0 {
-		if s.cfg.IsFeatureToggleEnabled(featuremgmt.FlagTopnav) {
-			adminNode.Url = s.cfg.AppSubURL + "/admin/server"
-		} else {
-			adminNode.Url = adminNavLinks[0].Url
-		}
+		adminNode.Url = adminNavLinks[0].Url
 	}
 
 	return adminNode
