@@ -18,6 +18,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/pluginsettings"
 	pref "github.com/grafana/grafana/pkg/services/preference"
 	"github.com/grafana/grafana/pkg/services/querylibrary"
+	"github.com/grafana/grafana/pkg/services/sqlstore"
 	"github.com/grafana/grafana/pkg/services/star"
 	"github.com/grafana/grafana/pkg/setting"
 )
@@ -35,6 +36,8 @@ type ServiceImpl struct {
 	kvStore              kvstore.KVStore
 	apiKeyService        apikey.Service
 	queryLibraryService  querylibrary.HTTPService
+	// BMC code - next line
+	SQLStore sqlstore.Store
 
 	// Navigation
 	navigationAppConfig     map[string]NavigationAppConfig
@@ -47,7 +50,8 @@ type NavigationAppConfig struct {
 	Text       string
 }
 
-func ProvideService(cfg *setting.Cfg, accessControl ac.AccessControl, pluginStore plugins.Store, pluginSettings pluginsettings.Service, starService star.Service, features *featuremgmt.FeatureManager, dashboardService dashboards.DashboardService, accesscontrolService ac.Service, kvStore kvstore.KVStore, apiKeyService apikey.Service, queryLibraryService querylibrary.HTTPService) navtree.Service {
+// BMC code - inline change
+func ProvideService(cfg *setting.Cfg, accessControl ac.AccessControl, pluginStore plugins.Store, pluginSettings pluginsettings.Service, starService star.Service, features *featuremgmt.FeatureManager, dashboardService dashboards.DashboardService, accesscontrolService ac.Service, kvStore kvstore.KVStore, apiKeyService apikey.Service, queryLibraryService querylibrary.HTTPService, sqlStore *sqlstore.SQLStore) navtree.Service {
 	service := &ServiceImpl{
 		cfg:                  cfg,
 		log:                  log.New("navtree service"),
@@ -61,6 +65,7 @@ func ProvideService(cfg *setting.Cfg, accessControl ac.AccessControl, pluginStor
 		kvStore:              kvStore,
 		apiKeyService:        apiKeyService,
 		queryLibraryService:  queryLibraryService,
+		SQLStore:             sqlStore,
 	}
 
 	service.readNavigationSettings()
@@ -73,9 +78,7 @@ func (s *ServiceImpl) GetNavTree(c *models.ReqContext, hasEditPerm bool, prefs *
 	hasAccess := ac.HasAccess(s.accessControl, c)
 	treeRoot := &navtree.NavTreeRoot{}
 
-	if s.features.IsEnabled(featuremgmt.FlagTopnav) {
-		treeRoot.AddSection(s.getHomeNode(c, prefs))
-	}
+	treeRoot.AddSection(s.getHomeNode(c, prefs))
 
 	if hasAccess(ac.ReqSignedIn, ac.EvalPermission(dashboards.ActionDashboardsRead)) {
 		starredItemsLinks, err := s.buildStarredItemsNavLinks(c)
@@ -224,7 +227,7 @@ func (s *ServiceImpl) getHomeNode(c *models.ReqContext, prefs *pref.Preference) 
 		}
 	}
 
-	return &navtree.NavLink{
+	homeNode := &navtree.NavLink{
 		Text:       "Home",
 		Id:         "home",
 		Url:        homeUrl,
@@ -232,6 +235,10 @@ func (s *ServiceImpl) getHomeNode(c *models.ReqContext, prefs *pref.Preference) 
 		Section:    navtree.NavSectionCore,
 		SortWeight: navtree.WeightHome,
 	}
+	if !s.features.IsEnabled(featuremgmt.FlagTopnav) {
+		homeNode.HideFromMenu = true
+	}
+	return homeNode
 }
 
 func (s *ServiceImpl) addHelpLinks(treeRoot *navtree.NavTreeRoot, c *models.ReqContext) {
@@ -272,12 +279,14 @@ func (s *ServiceImpl) getProfileNode(c *models.ReqContext) *navtree.NavLink {
 		Text: "Notification history", Id: "profile/notifications", Url: s.cfg.AppSubURL + "/profile/notifications", Icon: "bell",
 	})
 
-	if setting.AddChangePasswordLink() {
-		children = append(children, &navtree.NavLink{
-			Text: "Change password", Id: "profile/password", Url: s.cfg.AppSubURL + "/profile/password",
-			Icon: "lock",
-		})
-	}
+	// BMC code
+	// if setting.AddChangePasswordLink() {
+	// 	children = append(children, &navtree.NavLink{
+	// 		Text: "Change password", Id: "profile/password", Url: s.cfg.AppSubURL + "/profile/password",
+	// 		Icon: "lock",
+	// 	})
+	// }
+	// End
 
 	if !setting.DisableSignoutMenu {
 		// add sign out first
@@ -369,13 +378,16 @@ func (s *ServiceImpl) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 	})
 
 	if c.IsSignedIn {
-		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
-			Text:     "Snapshots",
-			SubTitle: "Interactive, publically available, point-in-time representations of dashboards",
-			Id:       "dashboards/snapshots",
-			Url:      s.cfg.AppSubURL + "/dashboard/snapshots",
-			Icon:     "camera",
-		})
+		// BMC code - next line
+		if s.SQLStore.IsFeatureEnabled(c.Req.Context(), c.OrgID, "Snapshot") {
+			dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
+				Text:     "Snapshots",
+				SubTitle: "Interactive, publically available, point-in-time representations of dashboards",
+				Id:       "dashboards/snapshots",
+				Url:      s.cfg.AppSubURL + "/dashboard/snapshots",
+				Icon:     "camera",
+			})
+		}
 
 		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
 			Text:     "Library panels",
@@ -404,6 +416,19 @@ func (s *ServiceImpl) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 		})
 	}
 
+	// BMC code
+	if c.OrgRole == org.RoleAdmin || c.OrgRole == org.RoleEditor {
+		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
+			Text:     "Calculated fields",
+			Id:       "calc-fields",
+			Url:      setting.AppSubUrl + "/calculated-fields",
+			Icon:     "table",
+			SubTitle: "Create and manage calculated fields for ITSM service",
+			Section:  navtree.NavSectionCore,
+		})
+	}
+	// End
+
 	if hasEditPerm && !s.features.IsEnabled(featuremgmt.FlagTopnav) {
 		dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
 			Text: "Divider", Divider: true, Id: "divider", HideFromTabs: true,
@@ -428,7 +453,7 @@ func (s *ServiceImpl) buildDashboardNavLinks(c *models.ReqContext, hasEditPerm b
 
 		if hasAccess(hasEditPermInAnyFolder, ac.EvalPermission(dashboards.ActionDashboardsCreate)) {
 			dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
-				Text: "Import", SubTitle: "Import dashboard from file or Grafana.com", Id: "dashboards/import", Icon: "plus",
+				Text: "Import", SubTitle: "Import dashboard from file or via dashboard json", Id: "dashboards/import", Icon: "plus",
 				Url: s.cfg.AppSubURL + "/dashboard/import", HideFromTabs: true, ShowIconInNavbar: true,
 			})
 		}

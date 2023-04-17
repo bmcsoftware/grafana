@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 
 import { colorManipulator } from '@grafana/data';
 import { useTheme2, styleMixins } from '@grafana/ui';
+import { Icon } from '@grafana/ui/src/components/Icon/Icon';
 
 export interface BrandComponentProps {
   className?: string;
@@ -43,7 +44,8 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 };
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
-  return <img className={className} src="public/img/grafana_icon.svg" alt="Grafana" />;
+  // BMC code - next line
+  return <Icon className={className} name="bmc-home" size="xl" />;
 };
 
 const LoginBoxBackground = () => {
@@ -59,8 +61,10 @@ export class Branding {
   static LoginBackground = LoginBackground;
   static MenuLogo = MenuLogo;
   static LoginBoxBackground = LoginBoxBackground;
-  static AppTitle = 'Grafana';
-  static LoginTitle = 'Welcome to Grafana';
+  // BMC code - inline change
+  static AppTitle = 'BMC Helix Dashboards';
+  static LoginTitle = 'Welcome to BMC Helix Dashboards';
+  // End
   static GetLoginSubTitle = (): null | string => {
     return null;
   };

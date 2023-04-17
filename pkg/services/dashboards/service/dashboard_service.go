@@ -469,8 +469,10 @@ func (dr *DashboardServiceImpl) setDefaultPermissions(ctx context.Context, dto *
 
 		if !inFolder {
 			permissions = append(permissions, []accesscontrol.SetResourcePermissionCommand{
-				{BuiltinRole: string(org.RoleEditor), Permission: models.PERMISSION_EDIT.String()},
-				{BuiltinRole: string(org.RoleViewer), Permission: models.PERMISSION_VIEW.String()},
+				// BMC code Start - Fix for DRJ71-4418 - Changes related to folder and Dashboard permission in 9.x
+				// {BuiltinRole: string(org.RoleEditor), Permission: models.PERMISSION_EDIT.String()},
+				// {BuiltinRole: string(org.RoleViewer), Permission: models.PERMISSION_VIEW.String()},
+				// End
 			}...)
 		}
 

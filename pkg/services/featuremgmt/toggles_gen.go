@@ -196,7 +196,7 @@ const (
 	FlagDataConnectionsConsole = "dataConnectionsConsole"
 
 	// FlagInternationalization
-	// Enables work-in-progress internationalization
+	// Enables internationalization
 	FlagInternationalization = "internationalization"
 
 	// FlagTopnav
@@ -218,6 +218,10 @@ const (
 	// FlagFlameGraph
 	// Show the flame graph
 	FlagFlameGraph = "flameGraph"
+
+	// FlagCloudWatchCrossAccountQuerying
+	// Use cross-account querying in CloudWatch datasource
+	FlagCloudWatchCrossAccountQuerying = "cloudWatchCrossAccountQuerying"
 
 	// FlagRedshiftAsyncQueryDataSupport
 	// Enable async query data support for Redshift
