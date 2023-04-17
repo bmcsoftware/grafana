@@ -54,6 +54,10 @@ type User struct {
 }
 
 type CreateUserCommand struct {
+	// BMC code
+	// Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+	Id int64
+	// End
 	Email            string
 	Login            string
 	Name             string
@@ -213,6 +217,17 @@ type SignedInUser struct {
 	Teams              []int64
 	// Permissions grouped by orgID and actions
 	Permissions map[int64]map[string][]string `json:"-"`
+	// Bmc code - start
+	HasExternalOrg bool
+	IsOrg0User     bool
+	MspOrgs        []string
+	// Bmc code end
+}
+
+type OrgResponseDTO struct {
+	OrgId  int64  `json:"org_id"`
+	Name   string `json:"name"`
+	Source string `json:"source"`
 }
 
 func (u *User) NameOrFallback() string {

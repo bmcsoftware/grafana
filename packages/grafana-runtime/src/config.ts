@@ -46,6 +46,9 @@ export class GrafanaBootConfig implements GrafanaConfig {
   defaultDatasource = ''; // UID
   alertingEnabled = false;
   alertingErrorOrTimeout = '';
+  //BMC code :
+  FeatureFlagEnabled = true;
+  // End
   alertingNoDataOrNullValues = '';
   alertingMinInterval = 1;
   angularSupportEnabled = false;

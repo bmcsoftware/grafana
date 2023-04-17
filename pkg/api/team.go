@@ -33,12 +33,19 @@ func (hs *HTTPServer) CreateTeam(c *models.ReqContext) response.Response {
 		return response.Error(403, "Not allowed to create team.", nil)
 	}
 
-	team, err := hs.teamService.CreateTeam(cmd.Name, cmd.Email, c.OrgID)
+	// BMC code - inline change
+	team, err := hs.teamService.CreateTeam(cmd.Name, cmd.Email, c.OrgID, cmd.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrTeamNameTaken) {
 			return response.Error(409, "Team name taken", err)
 		}
 		return response.Error(500, "Failed to create Team", err)
+	}
+
+	// Clear permission cache for the user who's created the team, so that new permissions are fetched for their next call
+	// Required for cases when caller wants to immediately interact with the newly created object
+	if !hs.AccessControl.IsDisabled() {
+		hs.accesscontrolService.ClearUserPermissionCache(c.SignedInUser)
 	}
 
 	if accessControlEnabled || (c.OrgRole == org.RoleEditor && hs.Cfg.EditorsCanAdmin) {
@@ -299,7 +306,7 @@ func (hs *HTTPServer) UpdateTeamPreferences(c *models.ReqContext) response.Respo
 		}
 	}
 
-	return hs.updatePreferencesFor(c.Req.Context(), orgId, 0, teamId, &dtoCmd)
+	return hs.updatePreferencesFor(c, c.Req.Context(), orgId, 0, teamId, &dtoCmd)
 }
 
 // swagger:parameters updateTeamPreferences

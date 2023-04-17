@@ -4,7 +4,7 @@ import (
 	"github.com/grafana/grafana/pkg/api/dtos"
 	"github.com/grafana/grafana/pkg/models"
 	"github.com/grafana/grafana/pkg/services/hooks"
-	"github.com/grafana/grafana/pkg/services/navtree"
+	// "github.com/grafana/grafana/pkg/services/navtree"
 	"github.com/grafana/grafana/pkg/setting"
 )
 
@@ -55,6 +55,8 @@ func ProvideService(cfg *setting.Cfg, hooksService *hooks.HooksService) *OSSLice
 		HooksService: hooksService,
 	}
 	l.HooksService.AddIndexDataHook(func(indexData *dtos.IndexViewData, req *models.ReqContext) {
+		// BMC code
+		/* BMC - Hide upgrade option for super admin
 		if !req.IsGrafanaAdmin {
 			return
 		}
@@ -66,7 +68,8 @@ func ProvideService(cfg *setting.Cfg, hooksService *hooks.HooksService) *OSSLice
 				Url:  l.LicenseURL(req.IsGrafanaAdmin),
 				Icon: "unlock",
 			})
-		}
+		} */
+		// End
 	})
 
 	return l

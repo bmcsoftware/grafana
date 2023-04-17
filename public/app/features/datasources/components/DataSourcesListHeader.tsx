@@ -3,6 +3,8 @@ import { AnyAction } from 'redux';
 
 import PageActionBar from 'app/core/components/PageActionBar/PageActionBar';
 import { contextSrv } from 'app/core/core';
+import { getFeatureStatus, FEATURE_CONST } from 'app/features/dashboard/services/featureFlagSrv';
+import { isGrafanaAdmin } from 'app/features/plugins/admin/permissions';
 import { AccessControlAction, StoreState, useSelector, useDispatch } from 'app/types';
 
 import { getDataSourcesSearchQuery, setDataSourcesSearchQuery, useDataSourcesRoutes } from '../state';
@@ -11,7 +13,11 @@ export function DataSourcesListHeader() {
   const dispatch = useDispatch();
   const setSearchQuery = useCallback((q: string) => dispatch(setDataSourcesSearchQuery(q)), [dispatch]);
   const searchQuery = useSelector(({ dataSources }: StoreState) => getDataSourcesSearchQuery(dataSources));
-  const canCreateDataSource = contextSrv.hasPermission(AccessControlAction.DataSourcesCreate);
+  // BMC code - inline change
+  const canCreateDataSource =
+    (contextSrv.hasPermission(AccessControlAction.DataSourcesCreate) &&
+      getFeatureStatus(FEATURE_CONST.DASHBOARDS_SSRF_FEATURE_NAME)) ||
+    isGrafanaAdmin();
 
   return (
     <DataSourcesListHeaderView

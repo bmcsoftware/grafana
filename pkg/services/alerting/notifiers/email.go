@@ -95,6 +95,8 @@ func (en *EmailNotifier) Notify(evalContext *alerting.EvalContext) error {
 				"RuleUrl":       ruleURL,
 				"ImageLink":     "",
 				"EmbeddedImage": "",
+				// BMC code - next line
+				"BMCEmbeddedImage": "",
 				"AlertPageUrl":  setting.AppUrl + "alerting",
 				"EvalMatches":   evalContext.EvalMatches,
 			},
@@ -104,6 +106,25 @@ func (en *EmailNotifier) Notify(evalContext *alerting.EvalContext) error {
 			EmbeddedFiles: []string{},
 		},
 	}
+	// BMC code
+	// Get BMC Logo image file.
+	// If exist, ypdate 'BMCEmbeddedImage' and add to 'EmbededFiles'.
+	// If not exist, leave 'BMCEmbeddedImage' empty (BMC logo will not be part of the mail content).
+	path, err := os.Getwd()
+	if err != nil {
+		en.log.Error("Failed to get current dirctory for BMC logo", "error", err)
+	} else {
+		bmcLogoPath := path + "/public/img/bmc_helix_dark.png"
+		if _, err := os.Stat(bmcLogoPath); err != nil {
+			if os.IsNotExist(err) {
+				en.log.Error("BMC logo image file not exist on the provided location: "+bmcLogoPath, "error", err)
+			}
+		} else {
+			cmd.EmbeddedFiles = append(cmd.EmbeddedFiles, bmcLogoPath)
+			cmd.Data["BMCEmbeddedImage"] = "bmc_helix_dark.png"
+		}
+	}
+	// End
 
 	if en.NeedsImage() {
 		if evalContext.ImagePublicURL != "" {

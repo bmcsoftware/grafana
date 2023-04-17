@@ -29,7 +29,7 @@ require (
 	github.com/BurntSushi/toml v1.1.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/VividCortex/mysqlerr v0.0.0-20170204212430-6c6b55f8796f
-	github.com/aws/aws-sdk-go v1.44.109
+	github.com/aws/aws-sdk-go v1.44.146
 	github.com/beevik/etree v1.1.0
 	github.com/benbjohnson/clock v1.3.0
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
@@ -108,7 +108,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.7.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
-	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
+	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20220630143837-2104d58473e0
 	golang.org/x/sync v0.1.0
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858
@@ -230,7 +230,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0
 	go.uber.org/goleak v1.1.12 // indirect
-	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.4.0
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/appengine v1.6.7 // indirect
@@ -248,6 +248,7 @@ require (
 	github.com/blugelabs/bluge v0.1.9
 	github.com/blugelabs/bluge_segment_api v0.2.0
 	github.com/bufbuild/connect-go v1.0.0
+	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/dlmiddlecote/sqlstats v1.0.2
 	github.com/drone/drone-cli v1.6.1
 	github.com/getkin/kin-openapi v0.103.0
@@ -255,6 +256,8 @@ require (
 	github.com/google/go-github/v45 v45.2.0
 	github.com/grafana/codejen v0.0.2
 	github.com/grafana/dskit v0.0.0-20211011144203-3a88ec0b675f
+	github.com/jlaffaye/ftp v0.1.0
+	github.com/pkg/sftp v1.13.5
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kr/pretty v0.3.0
 	github.com/matryer/is v1.4.0
@@ -310,6 +313,7 @@ require (
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/axiomhq/hyperloglog v0.0.0-20191112132149-a4c4c47bc57f // indirect
+	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/blevesearch/go-porterstemmer v1.0.3 // indirect
 	github.com/blevesearch/mmap-go v1.0.4 // indirect
@@ -329,12 +333,14 @@ require (
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/gorilla/css v1.0.0 // indirect
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.3 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
 	github.com/klauspost/compress v1.15.5 // indirect
+	github.com/kr/fs v0.1.0 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/labstack/echo/v4 v4.9.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
@@ -351,6 +357,14 @@ require (
 	go.opentelemetry.io/proto/otlp v0.16.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
+)
+
+// BMC code
+require (
+	github.bmc.com/DSOM-ADE/authz-go v0.0.0-20230106125106-c4cfa9c4e6f0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
+	github.com/microcosm-cc/bluemonday v1.0.18
 )
 
 // Use fork of crewjam/saml with fixes for some issues until changes get merged into upstream

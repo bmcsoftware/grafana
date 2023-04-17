@@ -3,6 +3,7 @@ package loginservice
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/models"
@@ -213,6 +214,7 @@ func (ls *Implementation) SetTeamSyncFunc(teamSyncFunc login.TeamSyncFunc) {
 
 func (ls *Implementation) createUser(extUser *models.ExternalUserInfo) (*user.User, error) {
 	cmd := user.CreateUserCommand{
+		Id:           extUser.UserId,
 		Login:        extUser.Login,
 		Email:        extUser.Email,
 		Name:         extUser.Name,
@@ -228,7 +230,7 @@ func (ls *Implementation) updateUser(ctx context.Context, usr *user.User, extUse
 	}
 
 	needsUpdate := false
-	if extUser.Login != "" && extUser.Login != usr.Login {
+	if extUser.Login != "" && strings.ToLower(extUser.Login) != strings.ToLower(usr.Login) {
 		updateCmd.Login = extUser.Login
 		usr.Login = extUser.Login
 		needsUpdate = true

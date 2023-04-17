@@ -25,6 +25,7 @@ import (
 	"github.com/grafana/grafana/pkg/models"
 	"github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/accesscontrol/acimpl"
+	"github.com/grafana/grafana/pkg/services/accesscontrol/actest"
 	accesscontrolmock "github.com/grafana/grafana/pkg/services/accesscontrol/mock"
 	"github.com/grafana/grafana/pkg/services/accesscontrol/ossaccesscontrol"
 	"github.com/grafana/grafana/pkg/services/annotations/annotationstest"
@@ -211,10 +212,10 @@ func getContextHandler(t *testing.T, cfg *setting.Cfg) *contexthandler.ContextHa
 	renderSvc := &fakeRenderService{}
 	authJWTSvc := models.NewFakeJWTService()
 	tracer := tracing.InitializeTracerForTest()
-	authProxy := authproxy.ProvideAuthProxy(cfg, remoteCacheSvc, loginservice.LoginServiceMock{}, &usertest.FakeUserService{}, sqlStore)
+	authProxy := authproxy.ProvideAuthProxy(cfg, remoteCacheSvc, loginservice.LoginServiceMock{}, &usertest.FakeUserService{}, nil, sqlStore)
 	loginService := &logintest.LoginServiceFake{}
 	authenticator := &logintest.AuthenticatorFake{}
-	ctxHdlr := contexthandler.ProvideService(cfg, userAuthTokenSvc, authJWTSvc, remoteCacheSvc, renderSvc, sqlStore, tracer, authProxy, loginService, nil, authenticator, usertest.NewUserServiceFake(), orgtest.NewOrgServiceFake(), nil, featuremgmt.WithFeatures())
+	ctxHdlr := contexthandler.ProvideService(cfg, userAuthTokenSvc, authJWTSvc, remoteCacheSvc, renderSvc, sqlStore, tracer, authProxy, loginService, nil, authenticator, usertest.NewUserServiceFake(), orgtest.NewOrgServiceFake(), nil, featuremgmt.WithFeatures(), nil, nil, nil)
 
 	return ctxHdlr
 }
@@ -250,15 +251,16 @@ func (s *fakeRenderService) Init() error {
 func setupAccessControlScenarioContext(t *testing.T, cfg *setting.Cfg, url string, permissions []accesscontrol.Permission) (*scenarioContext, *HTTPServer) {
 	store := sqlstore.InitTestDB(t)
 	hs := &HTTPServer{
-		Cfg:                cfg,
-		Live:               newTestLive(t, store),
-		License:            &licensing.OSSLicensingService{},
-		Features:           featuremgmt.WithFeatures(),
-		QuotaService:       quotatest.New(false, nil),
-		RouteRegister:      routing.NewRouteRegister(),
-		AccessControl:      accesscontrolmock.New().WithPermissions(permissions),
-		searchUsersService: searchusers.ProvideUsersService(filters.ProvideOSSSearchUserFilter(), usertest.NewUserServiceFake()),
-		ldapGroups:         ldap.ProvideGroupsService(),
+		Cfg:                  cfg,
+		Live:                 newTestLive(t, store),
+		License:              &licensing.OSSLicensingService{},
+		Features:             featuremgmt.WithFeatures(),
+		QuotaService:         quotatest.New(false, nil),
+		RouteRegister:        routing.NewRouteRegister(),
+		AccessControl:        accesscontrolmock.New().WithPermissions(permissions),
+		searchUsersService:   searchusers.ProvideUsersService(filters.ProvideOSSSearchUserFilter(), usertest.NewUserServiceFake()),
+		ldapGroups:           ldap.ProvideGroupsService(),
+		accesscontrolService: actest.FakeService{},
 	}
 
 	sc := setupScenarioContext(t, url)

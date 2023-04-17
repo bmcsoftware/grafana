@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { Button, ConfirmModal } from '@grafana/ui';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { AccessControlAction, Organization } from 'app/types';
 
@@ -31,16 +32,19 @@ export function AdminOrgsTable({ orgs, onDelete }: Props) {
             <td className="link-td">
               <a href={`admin/orgs/edit/${org.id}`}>{org.name}</a>
             </td>
-            <td className="text-right">
-              <Button
-                variant="destructive"
-                size="sm"
-                icon="times"
-                onClick={() => setDeleteOrg(org)}
-                aria-label="Delete org"
-                disabled={!canDeleteOrgs}
-              />
-            </td>
+            {/* BMC code  - next line */}
+            {config.buildInfo.env === 'development' && (
+              <td className="text-right">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  icon="times"
+                  onClick={() => setDeleteOrg(org)}
+                  aria-label="Delete org"
+                  disabled={!canDeleteOrgs}
+                />
+              </td>
+            )}
           </tr>
         ))}
       </tbody>
