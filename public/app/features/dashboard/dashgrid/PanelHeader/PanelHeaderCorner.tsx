@@ -86,7 +86,15 @@ export class PanelHeaderCorner extends Component<Props> {
 
     return (
       <Tooltip content={content} placement="top-start" theme={theme} interactive>
-        <section className={className} onClick={onClick} aria-label={ariaLabel}>
+        {/*
+        // @Copyright 2022 BMC Software, Inc.
+        // Date - 12/20/2022
+        // Remove click event from panel header
+
+        <section className={className} onClick={onClick} aria-label={ariaLabel}>*/}
+        <section className={className} aria-label={ariaLabel}>
+          {/* // END */}
+
           <i aria-hidden className="fa" />
           <span className="panel-info-corner-inner" />
         </section>

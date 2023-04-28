@@ -210,6 +210,22 @@ func (ss *SQLStore) ensureMainOrgAndAdminUser() error {
 				return fmt.Errorf("failed to create admin user: %s", err)
 			}
 
+			// @Copyright 2022 BMC Software, Inc.
+			// Date - 12/20/2022
+			// Created user with view role
+
+			if _, err := ss.createUser(ctx, sess, user.CreateUserCommand{
+				Login:          "viewer",
+				Email:          "viewer@localhost",
+				Password:       ss.Cfg.AdminPassword,
+				IsAdmin:        false,
+				DefaultOrgRole: "Viewer",
+			}); err != nil {
+				return fmt.Errorf("Failed to create viewer user: %s", err)
+			}
+
+			// END
+
 			ss.log.Info("Created default admin", "user", ss.Cfg.AdminUser)
 			// Why should we return and not create the default org in this case?
 			// Returning here breaks tests using anonymous access

@@ -59,11 +59,15 @@ export const TLSAuthSettings: React.FC<HttpSettingsBaseProps> = ({ dataSourceCon
         )}
       >
         <h6>TLS/SSL Auth Details</h6>
+        {/* // @Copyright 2022 BMC Software, Inc.
+          // Date - 12/20/2022
+          // Updated text from Grafana to Dashboard */}
         <Tooltip
           placement="right-end"
-          content="TLS/SSL Certs are encrypted and stored in the Grafana database."
+          content="TLS/SSL Certs are encrypted and stored in the Dashboard database."
           theme="info"
         >
+          {/* // END */}
           <div className="gf-form-help-icon gf-form-help-icon--right-normal">
             <Icon name="info-circle" size="xs" style={{ marginLeft: '10px' }} />
           </div>

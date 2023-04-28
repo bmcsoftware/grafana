@@ -157,11 +157,21 @@ export function TimeRangePicker(props: TimeRangePickerProps) {
 
 TimeRangePicker.displayName = 'TimeRangePicker';
 
-const ZoomOutTooltip = () => (
+// @Copyright 2022 BMC Software, Inc.
+// Date - 12/20/2022
+// Commented the `ZoomOutTooltip' funtion
+/* const ZoomOutTooltip = () => (
   <>
     Time range zoom out <br /> CTRL+Z
   </>
-);
+); */
+// End
+
+// @Copyright 2022 BMC Software, Inc.
+// Date - 12/20/2022
+// Removed <br/> tag from returned string
+const ZoomOutTooltip = () => <>Time range zoom out</>;
+// End
 
 const TimePickerTooltip = ({ timeRange, timeZone }: { timeRange: TimeRange; timeZone?: TimeZone }) => {
   const styles = useStyles2(getLabelStyles);
