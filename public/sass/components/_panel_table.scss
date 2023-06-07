@@ -5,6 +5,54 @@
     padding-bottom: 4px;
   }
 }
+// BMC code
+body {
+  .table-panel-content {
+    .table-panel-container {
+      .table-panel-table {
+        tbody {
+          tr {
+            border-bottom: $panel-border;
+            &:hover {
+              background-color: $table-bg-accent;
+            }
+            td {
+              border: $panel-border;
+              position: relative;
+              border-bottom: none;
+              &:first-child {
+                border-left-color: transparent;
+              }
+              &:hover {
+                border: $panel-border;
+                border-color: $input-box-shadow-focus;
+                &:before {
+                  background: $input-box-shadow-focus;
+                  content: '';
+                  position: absolute;
+                  height: 100%;
+                  left: 0px;
+                  top: 0;
+                  width: 1px;
+                }
+                &:first-child {
+                  &:before {
+                    background: transparent;
+                  }
+                  border-left-color: transparent;
+                }
+                &:last-child {
+                  border-right-color: transparent;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+// End
 
 .table-panel-scroll {
   overflow: auto;
@@ -101,6 +149,27 @@
       }
     }
   }
+  // BMC code
+  .json-type-content {
+    .json-type {
+      display: flex;
+      span {
+        display: inline-block;
+      }
+      .separator {
+        margin: 0 3px;
+      }
+      .key-field {
+        width: 125px;
+      }
+      .value-field {
+        .json-type {
+          margin-bottom: 3px;
+        }
+      }
+    }
+  }
+  // End
 }
 
 .table-panel-filter-link {

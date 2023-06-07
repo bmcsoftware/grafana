@@ -97,15 +97,17 @@ func (hs *HTTPServer) getFrontendSettingsMap(c *models.ReqContext) (map[string]i
 	secretsManagerPluginEnabled := kvstore.EvaluateRemoteSecretsPlugin(c.Req.Context(), hs.secretsPluginManager, hs.Cfg) == nil
 
 	jsonObj := map[string]interface{}{
-		"defaultDatasource":                   defaultDS,
-		"datasources":                         dataSources,
-		"minRefreshInterval":                  setting.MinRefreshInterval,
-		"panels":                              panels,
-		"appUrl":                              hs.Cfg.AppURL,
-		"appSubUrl":                           hs.Cfg.AppSubURL,
-		"allowOrgCreate":                      (setting.AllowUserOrgCreate && c.IsSignedIn) || c.IsGrafanaAdmin,
-		"authProxyEnabled":                    setting.AuthProxyEnabled,
-		"ldapEnabled":                         hs.Cfg.LDAPEnabled,
+		"defaultDatasource":  defaultDS,
+		"datasources":        dataSources,
+		"minRefreshInterval": setting.MinRefreshInterval,
+		"panels":             panels,
+		"appUrl":             hs.Cfg.AppURL,
+		"appSubUrl":          hs.Cfg.AppSubURL,
+		"allowOrgCreate":     (setting.AllowUserOrgCreate && c.IsSignedIn) || c.IsGrafanaAdmin,
+		"authProxyEnabled":   setting.AuthProxyEnabled,
+		"ldapEnabled":        hs.Cfg.LDAPEnabled,
+		// BMC code - next line
+		"EnvType":                             setting.EnvType,
 		"jwtHeaderName":                       hs.Cfg.JWTAuthHeaderName,
 		"jwtUrlLogin":                         hs.Cfg.JWTAuthURLLogin,
 		"alertingEnabled":                     setting.AlertingEnabled,
@@ -201,6 +203,11 @@ func (hs *HTTPServer) getFrontendSettingsMap(c *models.ReqContext) (map[string]i
 		"oauth":       hs.getEnabledOAuthProviders(),
 		"samlEnabled": hs.samlEnabled(),
 		"samlName":    hs.samlName(),
+
+		// BMC code
+		"bulkLimit":  setting.BulkLimit,
+		"bhdVersion": setting.BHD_Version,
+		// End
 	}
 
 	if hs.ThumbService != nil {

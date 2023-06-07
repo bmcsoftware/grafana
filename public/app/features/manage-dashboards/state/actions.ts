@@ -1,5 +1,5 @@
 import { DataSourceInstanceSettings, locationUtil } from '@grafana/data';
-import { getDataSourceSrv, locationService, getBackendSrv, isFetchError } from '@grafana/runtime';
+import { getDataSourceSrv, locationService, getBackendSrv, isFetchError, config } from '@grafana/runtime';
 import { notifyApp } from 'app/core/actions';
 import { createErrorNotification } from 'app/core/copy/appNotification';
 import { SaveDashboardCommand } from 'app/features/dashboard/components/SaveDashboard/types';
@@ -14,6 +14,7 @@ import { DeleteDashboardResponse } from '../types';
 
 import {
   clearDashboard,
+  dashboardsLoaded,
   fetchDashboard,
   fetchFailed,
   ImportDashboardDTO,
@@ -309,3 +310,47 @@ function executeInOrder(tasks: any[]) {
     return Promise.resolve(acc).then(task);
   }, []);
 }
+
+// BMC Code
+export function fetchDashboards(): ThunkResult<void> {
+  return async (dispatch) => {
+    dispatch(fetchDashboard());
+  };
+}
+
+export function dashboardLoaded(): ThunkResult<void> {
+  return async (dispatch) => {
+    dispatch(dashboardsLoaded());
+  };
+}
+
+export const exportDashboards = async (req: any, callback?: () => void) => {
+  try {
+    const res = await fetch(`${config.appSubUrl}/api/bmc/export-dashboards`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ folderUids: req.folderUids, dashUids: req.dashUids }),
+    });
+
+    if (res.status !== 200) {
+      throw await res.json();
+    }
+
+    let fileName = `Exported dashboards`;
+
+    const blob = await res.blob();
+    const link = document.createElement('a');
+    const href = window.URL.createObjectURL(blob);
+
+    link.setAttribute('href', href);
+    link.setAttribute('target', '_self');
+    link.setAttribute('download', `${fileName}.zip`);
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    callback?.();
+  } catch (error) {
+    throw new Error('Failed to generate report');
+  }
+};

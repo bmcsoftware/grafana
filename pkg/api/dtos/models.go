@@ -47,6 +47,11 @@ type CurrentUser struct {
 	HelpFlags1                 user.HelpFlags1    `json:"helpFlags1"`
 	HasEditPermissionInFolders bool               `json:"hasEditPermissionInFolders"`
 	Permissions                UserPermissionsMap `json:"permissions,omitempty"`
+	// BMC code - for MSP
+	HasExternalOrg bool     `json:"hasExternalOrg"`
+	IsOrg0User     bool     `json:"isOrg0User"`
+	MspOrgs        []string `json:"mspOrgs"`
+	// BMC code end
 }
 
 type UserPermissionsMap map[string]bool

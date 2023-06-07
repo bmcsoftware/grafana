@@ -1,4 +1,5 @@
 import { DataQuery } from '@grafana/data';
+import { Preference } from 'app/core/services/ims_srv';
 import { DashboardModel } from 'app/features/dashboard/state/DashboardModel';
 import { VariableModel } from 'app/features/variables/types';
 
@@ -107,4 +108,6 @@ export interface DashboardState {
   initPhase: DashboardInitPhase;
   initError: DashboardInitError | null;
   permissions: DashboardAcl[];
+  // BMC code - next line
+  gainSightUserPreferences?: Preference[];
 }

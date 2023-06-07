@@ -47,6 +47,11 @@ const dashboardSlice = createSlice({
     addPanel: (state, action: PayloadAction<PanelModel>) => {
       //state.panels[action.payload.id] = { pluginId: action.payload.type };
     },
+    // BMC code
+    updateGainSightUserPreferences: (state, action: PayloadAction<any>) => {
+      state.gainSightUserPreferences = action.payload;
+    },
+    // End
   },
 });
 
@@ -73,6 +78,8 @@ export const {
   dashboardInitServices,
   cleanUpDashboard,
   addPanel,
+  // BMC code - next line
+  updateGainSightUserPreferences,
 } = dashboardSlice.actions;
 
 export const dashboardReducer = dashboardSlice.reducer;
