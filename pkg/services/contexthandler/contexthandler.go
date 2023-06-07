@@ -5,12 +5,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/grafana/grafana/pkg/services/accesscontrol"
+
+	"github.com/grafana/grafana/pkg/services/msp"
+	"github.com/grafana/grafana/pkg/services/team"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.bmc.com/DSOM-ADE/authz-go"
 	"github.com/grafana/grafana/pkg/components/apikeygen"
 	apikeygenprefix "github.com/grafana/grafana/pkg/components/apikeygenprefixed"
 	"github.com/grafana/grafana/pkg/infra/db"
@@ -40,20 +46,30 @@ const (
 	InvalidUsernamePassword = "invalid username or password"
 	/* #nosec */
 	InvalidAPIKey = "invalid API key"
+	// BMC code
+	// Start Abhishek_06292020, roleupdate
+	reportingViewer = "reporting.dashboards_permissions.viewer"
+	reportingEditor = "reporting.dashboards_permissions.editor"
+	reportingAdmin  = "reporting.dashboards_permissions.admin"
+	// End
 )
 
 const ServiceName = "ContextHandler"
 
+// BMC code - inline change
 func ProvideService(cfg *setting.Cfg, tokenService models.UserTokenService, jwtService models.JWTService,
 	remoteCache *remotecache.RemoteCache, renderService rendering.Service, sqlStore db.DB,
 	tracer tracing.Tracer, authProxy *authproxy.AuthProxy, loginService login.Service,
 	apiKeyService apikey.Service, authenticator loginpkg.Authenticator, userService user.Service,
 	orgService org.Service, oauthTokenService oauthtoken.OAuthTokenService, features *featuremgmt.FeatureManager,
-	// before 9.3.0 the quota service used to depend on on the ActiveTokenService
-	// since 9.3.0 after the quota refactoring ActiveTokenService depends on the quota
-	// therefore it's added to avoid cycle dependencies
-	// since it's used only by the middleware for enforcing quota limits.
+// before 9.3.0 the quota service used to depend on on the ActiveTokenService
+// since 9.3.0 after the quota refactoring ActiveTokenService depends on the quota
+// therefore it's added to avoid cycle dependencies
+// since it's used only by the middleware for enforcing quota limits.
 	activeTokenService auth.ActiveTokenService,
+	teamService team.Service,
+// BMC code inline changes
+	teamPermissionService accesscontrol.TeamPermissionsService,
 ) *ContextHandler {
 	return &ContextHandler{
 		Cfg:               cfg,
@@ -71,6 +87,9 @@ func ProvideService(cfg *setting.Cfg, tokenService models.UserTokenService, jwtS
 		orgService:        orgService,
 		oauthTokenService: oauthTokenService,
 		features:          features,
+		// BMC code - inline change
+		teamService:           teamService,
+		teamPermissionService: teamPermissionService,
 	}
 }
 
@@ -91,6 +110,12 @@ type ContextHandler struct {
 	orgService        org.Service
 	oauthTokenService oauthtoken.OAuthTokenService
 	features          *featuremgmt.FeatureManager
+
+	// BMC Code Start - Add teamService + teamPermissionsService
+	teamService           team.Service
+	teamPermissionService accesscontrol.TeamPermissionsService
+	// BMC Code End
+
 	// GetTime returns the current time.
 	// Stubbable by tests.
 	GetTime func() time.Time
@@ -133,10 +158,12 @@ func (h *ContextHandler) Middleware(next http.Handler) http.Handler {
 
 		const headerName = "X-Grafana-Org-Id"
 		orgID := int64(0)
+		isReadFromHeader := false
 		orgIDHeader := reqContext.Req.Header.Get(headerName)
 		if orgIDHeader != "" {
 			id, err := strconv.ParseInt(orgIDHeader, 10, 64)
 			if err == nil {
+				isReadFromHeader = true
 				orgID = id
 			} else {
 				reqContext.Logger.Debug("Received invalid header", "header", headerName, "value", orgIDHeader)
@@ -150,12 +177,38 @@ func (h *ContextHandler) Middleware(next http.Handler) http.Handler {
 		if queryParameters.Has("targetOrgId") {
 			targetOrg, err := strconv.ParseInt(queryParameters.Get("targetOrgId"), 10, 64)
 			if err == nil {
+				isReadFromHeader = true
 				orgID = targetOrg
 			} else {
 				reqContext.Logger.Error("Invalid target organization ID", "error", err)
 			}
 		}
 
+		if isReadFromHeader && orgID == setting.IMS_Tenant0 {
+			orgID = setting.GF_Tenant0
+		}
+
+		// BMC code
+		//If we come here via authProxy, we are authenticated already and jwt token is available
+		encodedJWTToken := reqContext.Context.Req.Header.Get("X-JWT-Token")
+		var decodedToken *authz.UserInfo
+		//jwtTokenEncoded="abc"
+		//var userJwtToken = jwtToken{orgId: -1}
+		if encodedJWTToken != "" {
+			decodedToken, err = authz.Authorize(encodedJWTToken)
+			if decodedToken != nil {
+				orgID, _ = strconv.ParseInt(decodedToken.Tenant_Id, 10, 64)
+				// BMC change next block: To support IMS tenant 0
+				if orgID == setting.IMS_Tenant0 {
+					decodedToken.Tenant_Id = strconv.FormatInt(setting.GF_Tenant0, 10)
+					orgID = setting.GF_Tenant0
+				}
+			}
+			if err != nil {
+				reqContext.Logger.Error("Failed to decode JWT token", "error", err.Error())
+			}
+		}
+		// End
 		// the order in which these are tested are important
 		// look for api key in Authorization header first
 		// then init session and look for userId in session
@@ -172,6 +225,12 @@ func (h *ContextHandler) Middleware(next http.Handler) http.Handler {
 		}
 
 		reqContext.Logger = reqContext.Logger.New("userId", reqContext.UserID, "orgId", reqContext.OrgID, "uname", reqContext.Login)
+		// BMC code
+		//author (ateli) - start
+		//add JWT token in session cookie
+		//Commenting setting up JWT cookie code to fix DRJ71-2317
+		//cookies.WriteCookieCustom(ctx.Resp, "IMS_JWT_Token", encodedJWTToken, 0, nil)
+		// End
 		span.AddEvents(
 			[]string{"uname", "orgId", "userId"},
 			[]tracing.EventValue{
@@ -179,6 +238,22 @@ func (h *ContextHandler) Middleware(next http.Handler) http.Handler {
 				{Num: reqContext.OrgID},
 				{Num: reqContext.UserID}},
 		)
+
+		// BMC code
+		// Start Abhishek_06292020, roleupdate
+		if decodedToken != nil && encodedJWTToken != "" && reqContext.IsSignedIn {
+			updateRole(reqContext, decodedToken)
+		}
+		// End
+
+		// BMC code - Start
+		//check if User belongs to External Org and set the request context
+		if decodedToken != nil {
+			h.checkIfUserFromExternalOrg(reqContext, decodedToken)
+			//Re-sync the user details from IMS
+			h.UpdateTeamMembership(reqContext, reqContext.OrgID, reqContext.UserID, decodedToken.Groups)
+		}
+		//End
 
 		// update last seen every 5min
 		if reqContext.ShouldUpdateLastSeenAt() {
@@ -603,6 +678,19 @@ func (h *ContextHandler) handleError(ctx *models.ReqContext, err error, statusCo
 
 func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext, orgID int64) bool {
 	username := reqContext.Req.Header.Get(h.Cfg.AuthProxyHeaderName)
+	// BMC code
+	//Changes for userID as RSSOUser@RSSO Tenant - required to achieve unique userID's across tenants
+	RSSOUser := reqContext.Req.Header.Get("X-Webauth-User")
+	RSSOTenant := reqContext.Req.Header.Get("X-Rsso-Tenant")
+
+	username = RSSOUser
+
+	//ignore appending tenant if its superuser realm tenant
+	if RSSOTenant != "" && RSSOTenant != "dashboards_superuser_tenant" {
+		username = RSSOUser + "@" + RSSOTenant
+	}
+	reqContext.Req.Header.Set("X-HELIX-AUTH", username)
+	// End
 
 	logger := log.New("auth.proxy")
 
@@ -627,6 +715,21 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 		return true
 	}
 
+	// BMC code
+	//author(ateli) - Permission check for RSSO user. If Reporting permission is not assigned in IMS then return error
+	if setting.Env != setting.Dev {
+		err := h.authProxy.HasValidPermissions(reqContext)
+		if err != nil {
+			logger.Error(
+				"User does not have sufficient privileges to access dashboards",
+				"username", reqContext.Context.Req.Header.Get("X-Webauth-User"),
+				"message", err.Error(),
+			)
+			reqContext.Handle(h.Cfg, 401, "Oops... sorry you dont have access to this Dashboard", err)
+			return true
+		}
+	}
+	// End
 	id, err := logUserIn(reqContext, h.authProxy, username, logger, false)
 	if err != nil {
 		h.handleError(reqContext, err, 407, nil)
@@ -675,6 +778,8 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 	// Add user info to context
 	reqContext.SignedInUser = user
 	reqContext.IsSignedIn = true
+	// BMC code - next line
+	h.CheckIfUserSynced(reqContext)
 
 	// Remember user data in cache
 	if err := h.authProxy.Remember(reqContext, id); err != nil {
@@ -691,6 +796,214 @@ func (h *ContextHandler) initContextWithAuthProxy(reqContext *models.ReqContext,
 
 	return true
 }
+
+// BMC code
+// added UpdateTeamMembership function
+func (h *ContextHandler) UpdateTeamMembership(ctx *models.ReqContext, orgId, userId int64, imsGroups []string) {
+	logger := ctx.Logger.New("userId", userId, "orgId", orgId)
+	logger.Debug("Re-syncing user teams", "user", userId, "org", orgId)
+
+	// combine the list of groups + msp grouporgs
+	groupIds := imsGroups
+	mspOrgsIdsList := msp.GetMspOrgIdsFromCtx(ctx)
+	mspOrgIds := make([]string, len(mspOrgsIdsList))
+	for _, mspOrgId := range mspOrgsIdsList {
+		mspOrgIdStr := strconv.FormatInt(mspOrgId, 10)
+		groupIds = append(groupIds, mspOrgIdStr)
+	}
+	teamIds := append(groupIds, mspOrgIds...)
+	hasNoChanges := h.RemoveFromTeam(ctx, orgId, userId, teamIds)
+	if hasNoChanges {
+		return
+	}
+	//loop to add team membership for teams in jwt
+	for _, teamIdItem := range teamIds {
+		teamId, _ := strconv.ParseInt(teamIdItem, 10, 64)
+
+		cmd := models.AddTeamMemberCommand{
+			UserId:   userId,
+			OrgId:    orgId,
+			TeamId:   teamId,
+			External: false,
+		}
+
+		teamIDString := strconv.FormatInt(teamId, 10)
+
+		if _, err := h.teamPermissionService.SetUserPermission(ctx.Req.Context(), cmd.OrgId, accesscontrol.User{ID: cmd.UserId}, teamIDString, getPermissionName(cmd.Permission)); err != nil {
+			logger.Debug("Failed to add team member", "team", teamId)
+			continue
+		}
+	}
+}
+
+// Abhishek_06202020, Team membership changes
+func (h *ContextHandler) RemoveFromTeam(ctx *models.ReqContext, orgId, userId int64, teamIds []string) bool {
+
+	logger := ctx.Logger.New("userId", userId, "orgId", orgId)
+	//Fetch team list from DB for this user
+	query := &models.SearchTeamsQuery{
+		OrgId:        orgId,
+		UserIdFilter: userId,
+		SignedInUser: ctx.SignedInUser,
+	}
+
+	if err := h.teamService.SearchTeams(ctx.Req.Context(), query); err != nil {
+		logger.Error("Failed to get user teams", "error", err.Error())
+		return false
+	}
+
+	existingTeamIds := make([]int64, len(query.Result.Teams))
+	for _, t := range query.Result.Teams {
+		existingTeamIds = append(existingTeamIds, t.Id)
+	}
+	currentImsTeamIds := make([]int64, len(teamIds))
+	for _, tId := range teamIds {
+		teamId, _ := strconv.ParseInt(tId, 10, 64)
+		currentImsTeamIds = append(currentImsTeamIds, teamId)
+	}
+
+	logger.Debug("Team list from DB", "currentImsTeamIds", currentImsTeamIds, "existingTeamIds", existingTeamIds)
+
+	hasNoChanges := SlicesAreEqual(currentImsTeamIds, existingTeamIds)
+	if hasNoChanges {
+		return true
+	}
+
+	logger.Debug("Team membership has changes")
+	for _, teamId := range existingTeamIds {
+		permsIdStr := strconv.FormatInt(teamId, 10)
+		logger.Debug("Removing user from team", "team", permsIdStr)
+
+		_, err := h.teamPermissionService.SetUserPermission(ctx.Req.Context(), orgId, accesscontrol.User{ID: userId}, permsIdStr, "")
+		if err != nil {
+			logger.Debug("Failed to remove member from Team", "team", permsIdStr)
+			continue
+		}
+		logger.Debug("Successfully removed user from team", "team", permsIdStr)
+	}
+
+	return false
+}
+
+// SlicesAreEqual - compare two string slices
+func SlicesAreEqual(a, b []int64) bool {
+	sort.Slice(a, func(i, j int) bool { return a[i] < a[j] })
+	sort.Slice(b, func(i, j int) bool { return b[i] < b[j] })
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func find(what int64, where []int64) (idx int) {
+	for i, v := range where {
+		if v == what {
+			return i
+		}
+	}
+	return -1
+}
+
+// End Abhishek_06202020, Team membership changes
+
+// Start Abhishek_06292020, roleupdate
+func contains(s []string, searchterm string) bool {
+	i := sort.SearchStrings(s, searchterm)
+	return i < len(s) && strings.ToLower(s[i]) == searchterm
+}
+
+func updateRole(ctx *models.ReqContext, jwtTokenDetails *authz.UserInfo) {
+
+	//assign roles
+	//if jwtTokenDetails.isSuperAdmin {
+	//	ctx.IsGrafanaAdmin = true
+	//	ctx.OrgRole = models.ROLE_ADMIN
+	//	return true
+	//}
+	sort.Strings(jwtTokenDetails.Permissions)
+
+	if contains(jwtTokenDetails.Permissions, reportingViewer) {
+		ctx.OrgRole = org.RoleViewer
+	}
+	if contains(jwtTokenDetails.Permissions, reportingEditor) {
+		ctx.OrgRole = org.RoleEditor
+	}
+	if contains(jwtTokenDetails.Permissions, reportingAdmin) || contains(jwtTokenDetails.Permissions, string('*')) {
+		ctx.OrgRole = org.RoleAdmin
+	}
+}
+
+// End Abhishek_06292020, roleupdate
+
+// Additional check to see if User Id is in sync with IMS
+func (h *ContextHandler) CheckIfUserSynced(rCtx *models.ReqContext) {
+	logger := log.New("auth.proxy")
+	encodedJWTToken := rCtx.Req.Header.Get("X-JWT-Token")
+	if encodedJWTToken == "" {
+		logger.Error("No JWT Token found in request header")
+		return
+	}
+	decodedToken, err := authz.Authorize(encodedJWTToken)
+	if err != nil {
+		logger.Error("Failed to decode JWT Token", "err", err.Error())
+		return
+	}
+
+	ImsUserID, err := strconv.ParseInt(decodedToken.UserID, 10, 64)
+	if err != nil {
+		logger.Error("Failed to parse UserID from decoded JWT Token")
+		return
+	}
+	if decodedToken != nil && ImsUserID != rCtx.UserID {
+		logger.Info("User ID from request is not in sync with IMS - removing user", "UserID", rCtx.UserID)
+		removeUnsyncedUser := user.DeleteUserCommand{
+			UserID: rCtx.UserID,
+		}
+		if err := h.userService.Delete(rCtx.Req.Context(), &removeUnsyncedUser); err != nil {
+			logger.Error("Failed to remove unsynced user", "err", err.Error())
+			logger.Error("User sync is not complete", "UserID", rCtx.UserID)
+			return
+		}
+		logger.Info("User sync complete", "UserID", rCtx.UserID)
+	} else {
+		logger.Info("User ID from request is in sync with IMS", "UserID", rCtx.UserID)
+	}
+}
+
+// BMC function
+func (h *ContextHandler) checkIfUserFromExternalOrg(ctx *models.ReqContext, jwtTokenDetails *authz.UserInfo) {
+	// For testing purpose
+	// msp.MockMspCtx(ctx)
+	// return
+
+	if jwtTokenDetails == nil {
+		return
+	}
+
+	if len(jwtTokenDetails.Organizations) == 0 {
+		ctx.Logger.Debug("User is not associated with external organizations", "TenantID", ctx.OrgID, "UserID", ctx.UserID)
+		ctx.HasExternalOrg = false
+		ctx.IsOrg0User = false
+		ctx.MspOrgs = []string{}
+		return
+	}
+
+	ctx.MspOrgs = append(ctx.MspOrgs, jwtTokenDetails.Organizations...)
+	ctx.IsOrg0User = util.Contains(jwtTokenDetails.Organizations, "0")
+	ctx.HasExternalOrg = true
+
+	ctx.Logger.Debug("User is associated with external organizations",
+		"TenantID", ctx.OrgID, "UserID", ctx.UserID, "HasExternalOrg", ctx.HasExternalOrg,
+		"IsOrg0User", ctx.IsOrg0User, "Orgs", strings.Join(jwtTokenDetails.Organizations, ","),
+	)
+}
+
+// End
 
 type authHTTPHeaderListContextKey struct{}
 
@@ -738,4 +1051,15 @@ func (h *ContextHandler) hasAccessTokenExpired(token *models.UserAuth) bool {
 	}
 
 	return token.OAuthExpiry.Round(0).Add(-oauthtoken.ExpiryDelta).Before(getTime())
+}
+
+// BMC code changes - Duplicated from team_members
+func getPermissionName(permission models.PermissionType) string {
+	permissionName := permission.String()
+	// Team member permission is 0, which maps to an empty string.
+	// However, we want the team permission service to display "Member" for team members. This is a hack to make it work.
+	if permissionName == "" {
+		permissionName = "Member"
+	}
+	return permissionName
 }
