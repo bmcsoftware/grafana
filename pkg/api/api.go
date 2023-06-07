@@ -30,6 +30,7 @@
 package api
 
 import (
+	"github.com/grafana/grafana/pkg/api/bmc"
 	"github.com/grafana/grafana/pkg/api/routing"
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/middleware"
@@ -42,6 +43,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/datasources"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/grafana/grafana/pkg/services/msp"
 	"github.com/grafana/grafana/pkg/services/org"
 	publicdashboardsapi "github.com/grafana/grafana/pkg/services/publicdashboards/api"
 	"github.com/grafana/grafana/pkg/services/serviceaccounts"
@@ -68,8 +70,27 @@ func (hs *HTTPServer) registerRoutes() {
 	authorize := ac.Middleware(hs.AccessControl)
 	authorizeInOrg := ac.AuthorizeInOrgMiddleware(hs.AccessControl, hs.accesscontrolService, hs.userService)
 	quota := middleware.Quota(hs.QuotaService)
+	// BMC code - start
+	isFeatureEnabled := middleware.IsSnapshotEnabled(hs.SQLStore)
+	mspSvc := msp.NewService(hs.SQLStore, hs.teamService, *hs.Cfg, hs.AccessControl)
+	// BMC code - end
 
 	r := hs.RouteRegister
+	// BMC code
+	//author(ateli) - Custom API to refresh expired JWT token from IMS
+	r.Post("/ims/refresh-jwt", routing.Wrap(hs.RefreshJWTToken))
+	//author(ateli) - End
+
+	//author(kmejdi) - Start
+	//Fetch user info from IMS
+	r.Get("/ims/userinfo", reqSignedIn, routing.Wrap(GetImsUserInfo))
+	//Update user preferences
+	r.Post("/ims/users/preferences", reqSignedIn, routing.Wrap(SetImsUserInfo))
+	//author(kmejdi) - End
+
+	//Added two API for getting feature flags
+	r.Get("/tenantfeatures", routing.Wrap(hs.GetTenantFeatures))
+	// End
 
 	// not logged in views
 	r.Get("/logout", hs.Logout)
@@ -193,7 +214,8 @@ func (hs *HTTPServer) registerRoutes() {
 
 	// dashboard snapshots
 	r.Get("/dashboard/snapshot/*", reqNoAuth, hs.Index)
-	r.Get("/dashboard/snapshots/", reqSignedIn, hs.Index)
+	// BMC code - inline change
+	r.Get("/dashboard/snapshots/", reqSignedIn, isFeatureEnabled, hs.Index)
 
 	// api renew session based on cookie
 	r.Get("/api/login/ping", quota(string(auth.QuotaTargetSrv)), routing.Wrap(hs.LoginAPIPing))
@@ -268,7 +290,10 @@ func (hs *HTTPServer) registerRoutes() {
 		// team without requirement of user to be org admin
 		apiRoute.Group("/teams", func(teamsRoute routing.RouteRegister) {
 			teamsRoute.Get("/:teamId", authorize(reqSignedIn, ac.EvalPermission(ac.ActionTeamsRead, ac.ScopeTeamsID)), routing.Wrap(hs.GetTeamByID))
-			teamsRoute.Get("/search", authorize(reqSignedIn, ac.EvalPermission(ac.ActionTeamsRead)), routing.Wrap(hs.SearchTeams))
+			// BMC code - inline change for MSP
+			teamsRoute.Get("/search", authorize(reqSignedIn, ac.EvalPermission(ac.ActionTeamsRead)), routing.WrapWithCondition(mspSvc.SearchTeams, hs.SearchTeams, func(c *models.ReqContext) bool {
+				return c.SignedInUser.HasExternalOrg && !c.SignedInUser.HasRole(org.RoleAdmin)
+			}), reqSignedIn)
 		})
 
 		// org information available to all users.
@@ -315,6 +340,12 @@ func (hs *HTTPServer) registerRoutes() {
 			orgRoute.Get("/preferences", authorize(reqOrgAdmin, ac.EvalPermission(ac.ActionOrgsPreferencesRead)), routing.Wrap(hs.GetOrgPreferences))
 			orgRoute.Put("/preferences", authorize(reqOrgAdmin, ac.EvalPermission(ac.ActionOrgsPreferencesWrite)), routing.Wrap(hs.UpdateOrgPreferences))
 			orgRoute.Patch("/preferences", authorize(reqOrgAdmin, ac.EvalPermission(ac.ActionOrgsPreferencesWrite)), routing.Wrap(hs.PatchOrgPreferences))
+			// BMC code
+			orgRoute.Put("/configuration", reqOrgAdmin, routing.Wrap(hs.AddCustomConfiguration))
+			orgRoute.Delete("/configuration", reqOrgAdmin, routing.Wrap(hs.RefreshCustomConfiguration))
+			// Feature status update service
+			orgRoute.Put("/featurestatus", reqOrgAdmin, routing.Wrap(hs.AddFeatureStatus))
+			// End
 		})
 
 		// current org without requirement of user to be org admin
@@ -331,7 +362,21 @@ func (hs *HTTPServer) registerRoutes() {
 					ac.EvalPermission(dashboards.ActionDashboardsPermissionsWrite),
 				)
 			}
-			orgRoute.Get("/users/lookup", authorize(reqOrgAdminDashOrFolderAdminOrTeamAdmin, lookupEvaluator()), routing.Wrap(hs.GetOrgUsersForCurrentOrgLookup))
+			// BMC Code - Start - Added MSP Wrapper
+			orgRoute.Get("/users/lookup", authorize(reqOrgAdminDashOrFolderAdminOrTeamAdmin, lookupEvaluator()), routing.WrapWithMspCheck(mspSvc.GetOrgUsersForCurrentOrgLookup, hs.GetOrgUsersForCurrentOrgLookup))
+			orgRoute.Get("/configuration", routing.Wrap(hs.GetCustomConfiguration))
+			// Service Management Calculated Field API's
+			// Deprecated: Use /calculatedfield instead.
+			orgRoute.Get("/calculatedfieldootb", routing.Wrap(hs.GetCalculatedField))
+
+			orgRoute.Get("/calculatedfield", routing.Wrap(hs.GetAllCalcFields))
+			orgRoute.Post("/calculatedfield", routing.Wrap(hs.CreateNewCalcFields))
+			orgRoute.Delete("/calculatedfield", routing.Wrap(hs.DeleteCalcFieldsById))
+			orgRoute.Put("/calculatedfield", routing.Wrap(hs.ModifyCalcFieldsById))
+
+			// BMC code: Feature status get service
+			orgRoute.Get("/featurestatus", routing.Wrap(hs.GetFeatureStatus))
+			// End
 		})
 
 		// create new org
@@ -390,10 +435,10 @@ func (hs *HTTPServer) registerRoutes() {
 		})
 
 		pluginIDScope := plugins.ScopeProvider.GetResourceScope(ac.Parameter(":pluginId"))
-		apiRoute.Get("/plugins", routing.Wrap(hs.GetPluginList))
-		apiRoute.Get("/plugins/:pluginId/settings", routing.Wrap(hs.GetPluginSettingByID)) // RBAC check performed in handler for App Plugins
-		apiRoute.Get("/plugins/:pluginId/markdown/:name", routing.Wrap(hs.GetPluginMarkdown))
-		apiRoute.Get("/plugins/:pluginId/health", routing.Wrap(hs.CheckHealth))
+		apiRoute.Get("/plugins", reqEditorRole, routing.Wrap(hs.GetPluginList))
+		apiRoute.Get("/plugins/:pluginId/settings", reqEditorRole, routing.Wrap(hs.GetPluginSettingByID)) // RBAC check performed in handler for App Plugins
+		apiRoute.Get("/plugins/:pluginId/markdown/:name", reqEditorRole, routing.Wrap(hs.GetPluginMarkdown))
+		apiRoute.Get("/plugins/:pluginId/health", reqEditorRole, routing.Wrap(hs.CheckHealth))
 		apiRoute.Any("/plugins/:pluginId/resources", authorize(reqSignedIn, ac.EvalPermission(plugins.ActionAppAccess, pluginIDScope)), hs.CallResource)
 		apiRoute.Any("/plugins/:pluginId/resources/*", authorize(reqSignedIn, ac.EvalPermission(plugins.ActionAppAccess, pluginIDScope)), hs.CallResource)
 		apiRoute.Get("/plugins/errors", routing.Wrap(hs.GetPluginErrorsList))
@@ -499,7 +544,8 @@ func (hs *HTTPServer) registerRoutes() {
 
 		// Dashboard snapshots
 		apiRoute.Group("/dashboard/snapshots", func(dashboardRoute routing.RouteRegister) {
-			dashboardRoute.Get("/", routing.Wrap(hs.SearchDashboardSnapshots))
+			// BMC code - inline change
+			dashboardRoute.Get("/", isFeatureEnabled, routing.Wrap(hs.SearchDashboardSnapshots))
 		})
 
 		// Playlist
@@ -670,8 +716,20 @@ func (hs *HTTPServer) registerRoutes() {
 		adminUserRoute.Post("/:id/revoke-auth-token", authorize(reqGrafanaAdmin, ac.EvalPermission(ac.ActionUsersAuthTokenUpdate, userIDScope)), routing.Wrap(hs.AdminRevokeUserAuthToken))
 	})
 
+	// BMC code
+
+	// rebranding
+	r.Get("/rebranding/custom_dashboard.css", reqSignedIn, routing.Wrap(GetTenantReBranding))
+	r.Get("/render/pdf", reqSignedIn, hs.CustomRenderToPdf)
+	r.Get("/render/csv", reqSignedIn, hs.CustomRenderToCsv)
+	r.Get("/render/xls", reqSignedIn, hs.CustomRenderToXls)
+	r.Get("/render/*", reqSignedIn, hs.CustomRenderToPng)
+	// End
+
+	// BMC code
 	// rendering
-	r.Get("/render/*", reqSignedIn, hs.RenderToPng)
+	// r.Get("/render/*", reqSignedIn, hs.RenderToPng)
+	// End
 
 	// grafana.net proxy
 	r.Any("/api/gnet/*", reqSignedIn, hs.ProxyGnetRequest)
@@ -680,9 +738,16 @@ func (hs *HTTPServer) registerRoutes() {
 	r.Get("/avatar/:hash", hs.AvatarCacheServer.Handler)
 
 	// Snapshots
-	r.Post("/api/snapshots/", reqSnapshotPublicModeOrSignedIn, hs.CreateDashboardSnapshot)
-	r.Get("/api/snapshot/shared-options/", reqSignedIn, GetSharingOptions)
-	r.Get("/api/snapshots/:key", routing.Wrap(hs.GetDashboardSnapshot))
-	r.Get("/api/snapshots-delete/:deleteKey", reqSnapshotPublicModeOrSignedIn, routing.Wrap(hs.DeleteDashboardSnapshotByDeleteKey))
-	r.Delete("/api/snapshots/:key", reqSignedIn, routing.Wrap(hs.DeleteDashboardSnapshot))
+	// BMC code - inline changes
+	r.Post("/api/snapshots/", reqSnapshotPublicModeOrSignedIn, isFeatureEnabled, hs.CreateDashboardSnapshot)
+	r.Get("/api/snapshot/shared-options/", reqSignedIn, isFeatureEnabled, GetSharingOptions)
+	r.Get("/api/snapshots/:key", isFeatureEnabled, routing.Wrap(hs.GetDashboardSnapshot))
+	r.Get("/api/snapshots-delete/:deleteKey", reqSnapshotPublicModeOrSignedIn, isFeatureEnabled, routing.Wrap(hs.DeleteDashboardSnapshotByDeleteKey))
+	r.Delete("/api/snapshots/:key", reqSignedIn, isFeatureEnabled, routing.Wrap(hs.DeleteDashboardSnapshot))
+	// End
+
+	bmcApi := bmc.NewPluginsAPI(r, hs.SQLStore, hs.DashboardService, hs.LibraryElementService)
+	bmcApi.RegisterImportExportBackendPlugin()
+	bmcApi.RegisterCustomPersonalizationBackendPlugin()
+	bmcApi.RegisterMiscellaneousRoutes()
 }

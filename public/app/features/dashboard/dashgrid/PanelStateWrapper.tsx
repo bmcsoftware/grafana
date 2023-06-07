@@ -312,7 +312,8 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
   onRefresh = () => {
     const { dashboard, panel, isInView, width } = this.props;
 
-    if (!isInView) {
+    // BMC code - inline change
+    if (!isInView && !dashboard.snapshot) {
       this.setState({ refreshWhenInView: true });
       return;
     }

@@ -15,12 +15,12 @@ import (
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/folder"
+	"github.com/grafana/grafana/pkg/services/msp"
 	"github.com/grafana/grafana/pkg/services/sqlstore"
 	"github.com/grafana/grafana/pkg/services/sqlstore/migrator"
 	"github.com/grafana/grafana/pkg/util"
 
 	"github.com/grafana/grafana/pkg/services/guardian"
-	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/search"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
@@ -258,11 +258,20 @@ func (s *Service) Create(ctx context.Context, cmd *folder.CreateFolderCommand) (
 			permissions = append(permissions, accesscontrol.SetResourcePermissionCommand{
 				UserID: userID, Permission: models.PERMISSION_ADMIN.String(),
 			})
+			// BMC code - changes for MSP: provide default permissions to org0 team
+			if user.HasExternalOrg {
+				permissions = append(permissions, accesscontrol.SetResourcePermissionCommand{
+					TeamID: msp.GetOrg0TeamID(user.OrgID), Permission: models.PERMISSION_EDIT.String(),
+				})
+			}
+			// BMC code ends
 		}
 
 		permissions = append(permissions, []accesscontrol.SetResourcePermissionCommand{
-			{BuiltinRole: string(org.RoleEditor), Permission: models.PERMISSION_EDIT.String()},
-			{BuiltinRole: string(org.RoleViewer), Permission: models.PERMISSION_VIEW.String()},
+			// BMC code Start - Fix for DRJ71-4418 - Changes related to folder and Dashboard permission in 9.x
+			// {BuiltinRole: string(org.RoleEditor), Permission: models.PERMISSION_EDIT.String()},
+			// {BuiltinRole: string(org.RoleViewer), Permission: models.PERMISSION_VIEW.String()},
+			// End
 		}...)
 
 		_, permissionErr = s.permissions.SetPermissions(ctx, cmd.OrgID, createdFolder.UID, permissions...)

@@ -33,7 +33,8 @@ func (hs *HTTPServer) CreateTeam(c *models.ReqContext) response.Response {
 		return response.Error(403, "Not allowed to create team.", nil)
 	}
 
-	team, err := hs.teamService.CreateTeam(cmd.Name, cmd.Email, c.OrgID)
+	// BMC code - inline change
+	team, err := hs.teamService.CreateTeam(cmd.Name, cmd.Email, c.OrgID, cmd.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrTeamNameTaken) {
 			return response.Error(409, "Team name taken", err)
@@ -305,7 +306,7 @@ func (hs *HTTPServer) UpdateTeamPreferences(c *models.ReqContext) response.Respo
 		}
 	}
 
-	return hs.updatePreferencesFor(c.Req.Context(), orgId, 0, teamId, &dtoCmd)
+	return hs.updatePreferencesFor(c, c.Req.Context(), orgId, 0, teamId, &dtoCmd)
 }
 
 // swagger:parameters updateTeamPreferences

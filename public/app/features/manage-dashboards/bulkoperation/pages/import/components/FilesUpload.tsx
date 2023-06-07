@@ -1,0 +1,82 @@
+import { css, cx } from '@emotion/css';
+import React, { FC, FormEvent, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+import { GrafanaTheme2 } from '@grafana/data';
+import { selectors } from '@grafana/e2e-selectors';
+import { useStyles2, Icon } from '@grafana/ui';
+import { getButtonStyles } from '@grafana/ui/src/components/Button';
+import { getFocusStyles } from '@grafana/ui/src/themes/mixins';
+import { ComponentSize } from '@grafana/ui/src/types/size';
+
+export interface Props {
+  /** Callback function to handle uploaded file  */
+  onFileUpload: (files?: FileList | null) => void;
+  /** Accepted file extensions */
+  accept?: string;
+  /** Overwrite or add to style */
+  className?: string;
+  /** Button size */
+  size?: ComponentSize;
+  /** Show the file name */
+  showFileName?: boolean;
+}
+
+export const FilesUpload: FC<Props> = ({
+  onFileUpload,
+  className,
+  children = 'Upload file',
+  accept = '*',
+  size = 'md',
+}) => {
+  const style = useStyles2(getStyles(size));
+  const id = uuidv4();
+
+  const onChange = useCallback(
+    (event: FormEvent<HTMLInputElement>) => {
+      onFileUpload(event.currentTarget?.files);
+    },
+    [onFileUpload]
+  );
+
+  return (
+    <>
+      <input
+        type="file"
+        id={id}
+        className={style.fileUpload}
+        onChange={onChange}
+        multiple={true}
+        accept={accept}
+        data-testid={selectors.components.FileUpload.inputField}
+      />
+      <label htmlFor={id} className={cx(style.labelWrapper, className)}>
+        <Icon name="upload" className={style.icon} />
+        {children}
+      </label>
+    </>
+  );
+};
+
+const getStyles = (size: ComponentSize) => (theme: GrafanaTheme2) => {
+  const buttonStyles = getButtonStyles({ theme, variant: 'primary', size, iconOnly: false });
+  const focusStyle = getFocusStyles(theme);
+
+  return {
+    fileUpload: css({
+      height: '0.1px',
+      opacity: '0',
+      overflow: 'hidden',
+      position: 'absolute',
+      width: '0.1px',
+      zIndex: -1,
+      '&:focus + label': focusStyle,
+      '&:focus-visible + label': focusStyle,
+    }),
+    labelWrapper: buttonStyles.button,
+    icon: buttonStyles.icon,
+    fileName: css({
+      marginLeft: theme.spacing(0.5),
+    }),
+  };
+};
