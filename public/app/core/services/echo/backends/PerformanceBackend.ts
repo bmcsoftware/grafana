@@ -1,6 +1,12 @@
 import { EchoBackend, EchoEvent, EchoEventType } from '@grafana/runtime';
 
-import { backendSrv } from '../../backend_srv';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/09/2023
+// Commented unsued code
+
+//import { backendSrv } from '../../backend_srv';
+
+// END
 
 export interface PerformanceEventPayload {
   name: string;
@@ -37,9 +43,15 @@ export class PerformanceBackend implements EchoBackend<PerformanceEvent, Perform
       console.log('PerformanceBackend flushing:', this.buffer);
     }
 
-    backendSrv.post('/api/frontend-metrics', {
+    // @Copyright 2022 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Stopped metrics API call
+
+    /* backendSrv.post('/api/frontend-metrics', {
       events: this.buffer,
-    });
+    }); */
+
+    // END
 
     this.buffer = [];
   };

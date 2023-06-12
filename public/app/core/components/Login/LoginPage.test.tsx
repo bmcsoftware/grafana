@@ -37,7 +37,14 @@ describe('Login Page', () => {
   it('renders correctly', () => {
     render(<LoginPage />);
 
-    expect(screen.getByRole('heading', { name: 'Welcome to Grafana' })).toBeInTheDocument();
+    // @Copyright 2022 BMC Software, Inc.
+    // Date - 12/20/2022
+    // Updated text from Grafana to Dashboard
+
+    expect(screen.getByRole('heading', { name: 'Welcome to AMI Dashboard' })).toBeInTheDocument();
+
+    // END
+
     expect(screen.getByRole('textbox', { name: 'Username input field' })).toBeInTheDocument();
     expect(screen.getByLabelText('Password input field')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Login button' })).toBeInTheDocument();

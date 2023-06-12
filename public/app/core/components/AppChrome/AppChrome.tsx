@@ -13,7 +13,11 @@ import { MegaMenu } from '../MegaMenu/MegaMenu';
 import { NavBar } from '../NavBar/NavBar';
 
 import { NavToolbar } from './NavToolbar';
-import { TopSearchBar } from './TopSearchBar';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/12/2023
+// Commented unused imports
+// import { TopSearchBar } from './TopSearchBar';
+// END
 import { TOP_BAR_LEVEL_HEIGHT } from './types';
 
 export interface Props extends PropsWithChildren<{}> {}
@@ -54,7 +58,15 @@ export function AppChrome({ children }: Props) {
     <main className="main-view">
       {!state.chromeless && (
         <div className={cx(styles.topNav)}>
-          {!searchBarHidden && <TopSearchBar />}
+          {/*
+          // @Copyright 2023 BMC Software, Inc.
+          // Date - 06/12/2023
+          // Hide serachbar
+
+          !searchBarHidden && <TopSearchBar />
+
+          // END
+          */}
           <NavToolbar
             searchBarHidden={searchBarHidden}
             sectionNav={state.sectionNav}

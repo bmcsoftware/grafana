@@ -3,15 +3,19 @@ import React from 'react';
 
 import { GrafanaTheme2, NavModelItem } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
-import { Icon, IconButton, ToolbarButton, useStyles2 } from '@grafana/ui';
-import { t } from 'app/core/internationalization';
-import { HOME_NAV_ID } from 'app/core/reducers/navModel';
-import { useSelector } from 'app/types';
+import { useStyles2 } from '@grafana/ui';
 
-import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
-import { buildBreadcrumbs } from '../Breadcrumbs/utils';
-
-import { NavToolbarSeparator } from './NavToolbarSeparator';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/12/2023
+// Commented unused imports
+// import { Icon, ToolbarButton, useStyles2 } from '@grafana/ui';
+// import { t } from 'app/core/internationalization';
+// import { HOME_NAV_ID } from 'app/core/reducers/navModel';
+// import { useSelector } from 'app/types';
+// import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
+// import { buildBreadcrumbs } from '../Breadcrumbs/utils';
+// import { NavToolbarSeparator } from './NavToolbarSeparator';
+// END
 import { TOP_BAR_LEVEL_HEIGHT } from './types';
 
 export interface Props {
@@ -26,19 +30,32 @@ export interface Props {
 
 export function NavToolbar({
   actions,
-  searchBarHidden,
-  sectionNav,
-  pageNav,
-  onToggleMegaMenu,
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/12/2023
+  // Commented unused imports
+  // searchBarHidden,
+  // sectionNav,
+  // pageNav,
+  // onToggleMegaMenu,
+  // END
   onToggleSearchBar,
   onToggleKioskMode,
 }: Props) {
-  const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
   const styles = useStyles2(getStyles);
-  const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/12/2023
+  // Commented unused imports
 
+  // const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
+  // const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+
+  // END
   return (
     <div data-testid={Components.NavToolbar.container} className={styles.pageToolbar}>
+      {/*
+        // @Copyright 2023 BMC Software, Inc.
+        // Date - 06/12/2023
+        // Hide Sidebar menu icon
       <div className={styles.menuButton}>
         <IconButton
           name="bars"
@@ -48,9 +65,20 @@ export function NavToolbar({
           onClick={onToggleMegaMenu}
         />
       </div>
-      <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbs} />
+      // END*/}
+
+      {/*
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/12/2023
+      // Hide Breadcrumbs
+     <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbs} />
+     // END*/}
       <div className={styles.actions}>
         {actions}
+        {/*
+        // @Copyright 2023 BMC Software, Inc.
+        // Date - 06/12/2023
+        // Hide separator, kiosk mode icon and serachbar
         {actions && <NavToolbarSeparator />}
         {searchBarHidden && (
           <ToolbarButton
@@ -59,14 +87,15 @@ export function NavToolbar({
             title={t('navigation.toolbar.enable-kiosk', 'Enable kiosk mode')}
             icon="monitor"
           />
-        )}
-        <ToolbarButton
+        )}*/}
+        {/*  <ToolbarButton
           onClick={onToggleSearchBar}
           narrow
           title={t('navigation.toolbar.toggle-search-bar', 'Toggle top search bar')}
         >
           <Icon name={searchBarHidden ? 'angle-down' : 'angle-up'} size="xl" />
         </ToolbarButton>
+        //END */}
       </div>
     </div>
   );

@@ -139,6 +139,11 @@ class LegendSeriesLabel extends PureComponent<LegendSeriesLabelProps & LegendSer
 
   render() {
     const { label, color, yaxis } = this.props;
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // This is to remove the quote from string
+    const labelWithoutQuote =
+      (label.startsWith('"') && label.endsWith('"') && label.substring(1, label.length - 1)) || label;
     const { onColorChange, onToggleAxis } = this.props;
     const onLabelClick = this.props.onLabelClick ? this.props.onLabelClick : () => {};
 
@@ -153,14 +158,15 @@ class LegendSeriesLabel extends PureComponent<LegendSeriesLabelProps & LegendSer
       <button
         type="button"
         className="graph-legend-alias pointer"
-        title={label}
+        title={labelWithoutQuote}
         key="label"
         onClick={onLabelClick}
         aria-label={selectors.components.Panels.Visualization.Graph.Legend.legendItemAlias(label)}
       >
-        {label}
+        {labelWithoutQuote}
       </button>,
     ];
+    // END
   }
 }
 
