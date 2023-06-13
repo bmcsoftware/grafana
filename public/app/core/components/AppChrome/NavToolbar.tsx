@@ -4,18 +4,19 @@ import React from 'react';
 import { GrafanaTheme2, NavModelItem } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
 import { useStyles2 } from '@grafana/ui';
-
 // @Copyright 2023 BMC Software, Inc.
 // Date - 06/12/2023
 // Commented unused imports
 // import { Icon, ToolbarButton, useStyles2 } from '@grafana/ui';
 // import { t } from 'app/core/internationalization';
-// import { HOME_NAV_ID } from 'app/core/reducers/navModel';
-// import { useSelector } from 'app/types';
-// import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
-// import { buildBreadcrumbs } from '../Breadcrumbs/utils';
 // import { NavToolbarSeparator } from './NavToolbarSeparator';
 // END
+import { HOME_NAV_ID } from 'app/core/reducers/navModel';
+import { useSelector } from 'app/types';
+
+import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
+import { buildBreadcrumbs } from '../Breadcrumbs/utils';
+
 import { TOP_BAR_LEVEL_HEIGHT } from './types';
 
 export interface Props {
@@ -34,22 +35,46 @@ export function NavToolbar({
   // Date - 06/12/2023
   // Commented unused imports
   // searchBarHidden,
-  // sectionNav,
-  // pageNav,
   // onToggleMegaMenu,
+  // onToggleSearchBar,
+  // onToggleKioskMode,
   // END
-  onToggleSearchBar,
-  onToggleKioskMode,
+  sectionNav,
+  pageNav,
 }: Props) {
   const styles = useStyles2(getStyles);
-  // @Copyright 2023 BMC Software, Inc.
-  // Date - 06/12/2023
-  // Commented unused imports
 
-  // const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
-  // const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  /*
+    @Copyright 2023 BMC Software, Inc.
+    Date - 06/12/2023
+    Logic to show breadcrumbs for view panel
+  */
 
+  const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
+  let breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  breadcrumbs = breadcrumbs.slice(Math.max(breadcrumbs.length - 2, 0));
+  breadcrumbs = breadcrumbs.filter(
+    (each) =>
+      each.text.toLowerCase() === 'view panel' ||
+      each.text.toLowerCase().startsWith('playback') ||
+      each.text.toLowerCase().startsWith('realtime')
+  );
+  if (breadcrumbs.length > 1) {
+    breadcrumbs = breadcrumbs.map((each) => {
+      if (each.text.toLowerCase().startsWith('playback') || each.text.toLowerCase().startsWith('realtime')) {
+        return {
+          ...each,
+          text: 'Dashboard',
+        };
+      } else {
+        return each;
+      }
+    });
+  } else {
+    breadcrumbs = [];
+  }
   // END
+
   return (
     <div data-testid={Components.NavToolbar.container} className={styles.pageToolbar}>
       {/*
@@ -66,13 +91,7 @@ export function NavToolbar({
         />
       </div>
       // END*/}
-
-      {/*
-      // @Copyright 2023 BMC Software, Inc.
-      // Date - 06/12/2023
-      // Hide Breadcrumbs
-     <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbs} />
-     // END*/}
+      <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbs} />
       <div className={styles.actions}>
         {actions}
         {/*
