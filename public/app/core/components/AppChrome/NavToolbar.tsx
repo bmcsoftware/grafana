@@ -57,11 +57,16 @@ export function NavToolbar({
     (each) =>
       each.text.toLowerCase() === 'view panel' ||
       each.text.toLowerCase().startsWith('playback') ||
-      each.text.toLowerCase().startsWith('realtime')
+      each.text.toLowerCase().startsWith('realtime') ||
+      each.text.toLowerCase().startsWith('rca')
   );
   if (breadcrumbs.length > 1) {
     breadcrumbs = breadcrumbs.map((each) => {
-      if (each.text.toLowerCase().startsWith('playback') || each.text.toLowerCase().startsWith('realtime')) {
+      if (
+        each.text.toLowerCase().startsWith('playback') ||
+        each.text.toLowerCase().startsWith('realtime') ||
+        each.text.toLowerCase().startsWith('rca')
+      ) {
         return {
           ...each,
           text: 'Dashboard',

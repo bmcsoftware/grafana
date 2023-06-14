@@ -61,7 +61,7 @@ export function AppChrome({ children }: Props) {
           {/*
           // @Copyright 2023 BMC Software, Inc.
           // Date - 06/12/2023
-          // Hide serachbar
+          // Hide searchbar
 
           !searchBarHidden && <TopSearchBar />
 
