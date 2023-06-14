@@ -10,6 +10,7 @@
 - …/public/dashboards -> ‘default.json’
 - …/public/app/plugins/panel/welcome -> ‘Welcome.tsx’
 - …/public/app/features/datasources/state -> ‘buildCategories.ts’
+- …/public/app/features/admin -> LicenseChrome.tsx’
 - …/packages/grafana-ui/src/components/InfoBox -> ‘InfoBox.story.tsx’
 - …/packages/grafana-ui/src/components/DataSourceSettings -> ‘DataSourceHttpSettings.tsx’, ‘TLSAuthSettings.tsx’
 - …/packages/grafana-ui/src/components/DateTimePickers -> ‘TimeRangePicker.tsx’
@@ -45,6 +46,7 @@
 - …/public/app/features/dashboard/components/DashboardLoading -> ‘DashboardLoading.tsx’
 - …/public/app/features/dashboard/dashgrid/PanelHeader -> ‘PanelHeaderCorner.tsx’, ‘PanelHeaderMenu.tsx’, ‘PanelHeaderMenuItem.tsx’
 - …/public/app/features/panel/components -> PanelDataErrorView.tsx’
+- …/public/app/core/components/AppChrome -> 'AppChrome.tsx’, 'NavToolbar.tsx’
 - …/public/app/plugins/panel/graph -> ‘graph.ts’
 
 ### Disabled all the routes except dashboard
