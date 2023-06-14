@@ -34,8 +34,8 @@ export const DashboardLoading = ({ initPhase }: Props) => {
             <Spinner inline={true} /> {initPhase}
           </HorizontalGroup>{' '}
           {/*
-          // @Copyright 2022 BMC Software, Inc.
-          // Date - 12/20/2022
+          // @Copyright 2023 BMC Software, Inc.
+          // Date - 06/14/2023
           // Remove button
 
          <HorizontalGroup align="center" justify="center">

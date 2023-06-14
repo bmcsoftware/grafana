@@ -56,8 +56,8 @@ export function LicenseChrome({ header, editionNotice, subheader, children }: Pr
           }}
         >
           <img
-            // @Copyright 2022 BMC Software, Inc.
-            // Date - 12/20/2022
+            // @Copyright 2023 BMC Software, Inc.
+            // Date - 06/14/2023
             // Replaced with bmc icon
 
             src="public/img/dashboard_icon.svg"

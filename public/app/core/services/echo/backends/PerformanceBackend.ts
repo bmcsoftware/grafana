@@ -43,7 +43,7 @@ export class PerformanceBackend implements EchoBackend<PerformanceEvent, Perform
       console.log('PerformanceBackend flushing:', this.buffer);
     }
 
-    // @Copyright 2022 BMC Software, Inc.
+    // @Copyright 2023 BMC Software, Inc.
     // Date - 06/09/2023
     // Stopped metrics API call
 

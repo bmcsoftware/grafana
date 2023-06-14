@@ -37,8 +37,8 @@ describe('Login Page', () => {
   it('renders correctly', () => {
     render(<LoginPage />);
 
-    // @Copyright 2022 BMC Software, Inc.
-    // Date - 12/20/2022
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/14/2023
     // Updated text from Grafana to Dashboard
 
     expect(screen.getByRole('heading', { name: 'Welcome to AMI Dashboard' })).toBeInTheDocument();

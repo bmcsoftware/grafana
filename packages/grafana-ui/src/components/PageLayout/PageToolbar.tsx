@@ -226,8 +226,8 @@ const getStyles = (theme: GrafanaTheme2) => {
       flex-wrap: nowrap;
       max-width: 70%;
       /*
-      // @Copyright 2022 BMC Software, Inc.
-      // Date - 12/20/2022
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/16/2023
       // Adjusted height for toolbar */
 
       height: 40px;
