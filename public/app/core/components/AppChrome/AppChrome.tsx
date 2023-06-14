@@ -98,7 +98,16 @@ const getStyles = (theme: GrafanaTheme2) => {
     content: css({
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: TOP_BAR_LEVEL_HEIGHT * 2,
+      /*
+        @Copyright 2023 BMC Software, Inc.
+        Date - 06/16/2023
+        Adjusted padding
+      */
+
+      paddingTop: TOP_BAR_LEVEL_HEIGHT * 1,
+
+      /* END */
+
       flexGrow: 1,
       height: '100%',
     }),
