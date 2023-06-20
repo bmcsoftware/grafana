@@ -47,15 +47,16 @@
 - …/public/app/features/dashboard/dashgrid/PanelHeader -> ‘PanelHeaderCorner.tsx’, ‘PanelHeaderMenu.tsx’, ‘PanelHeaderMenuItem.tsx’
 - …/public/app/features/panel/components -> PanelDataErrorView.tsx’
 - …/public/app/core/components/AppChrome -> 'AppChrome.tsx’, 'NavToolbar.tsx’
+- …/public/app/core/services -> `keybindingSrv.ts’
 - …/public/app/plugins/panel/graph -> ‘graph.ts’
+
+### Page layout
+
+- …/packages/grafana-ui/src/components/PageLayout -> `PageToolbar.tsx’
 
 ### Disabled all the routes except dashboard
 
 - …/public/app/routes -> ‘routes.tsx’
-
-### Hide application left navigation
-
-- …/public/app -> ‘AppWrapper.tsx’
 
 # **_Hide/Disable Features from Grafana UI:_**
 
@@ -66,3 +67,11 @@
 ### Add user with viewer role
 
 - …/pkg/services/sqlstore -> ‘sqlstore.go’
+
+### Test Cases
+
+- …/public/app/core/components/Login -> ‘LoginPage.test.tsx’
+
+### API Call
+
+- …/public/app/core/services/echo/backends -> PerformanceBackend.ts’
