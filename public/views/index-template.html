@@ -27,7 +27,7 @@
       // Date - 06/09/2023
       // Allow the dashboard from only Iframe
       if (window.self === window.top && window.location.pathname !== '/dashboard/not-found') {
-          // window.location.href = "/dashboard/not-found";
+          window.location.href = "/dashboard/not-found";
       }
       // End
     </script>
@@ -197,6 +197,12 @@
           <br />
           <br />
         </p>
+        <!--
+          @Copyright 2023 BMC Software, Inc.
+          Date - 06/20/2023
+          Commented text
+        -->
+
         <!-- <p>
           1. This could be caused by your reverse proxy settings.<br /><br />
           2. If you host grafana under subpath make sure your grafana.ini root_url setting includes subpath. If not
@@ -211,6 +217,9 @@
             supported browsers</a
           >.
         </p> -->
+
+        <!--END-->
+
       </div>
       <script nonce="[[.Nonce]]">
         // Check to see if browser is not supported by Grafana
