@@ -226,16 +226,22 @@ const EmptyRecentList = memo(() => {
             recently used intervals will appear here.
           </span>
         </div>
+        {/*
+       // @Copyright 2023 BMC Software, Inc.
+       // Date - 06/09/2023
+       // Commented documentation link
         <div>
-          <a
-            className={styles.link}
-            href="https://grafana.com/docs/grafana/latest/dashboards/time-range-controls"
-            target="_new"
-          >
-            Read the documentation
-          </a>
-          <span> to find out more about how to enter custom time ranges.</span>
-        </div>
+            <a
+              className={styles.link}
+              href="https://grafana.com/docs/grafana/latest/dashboards/time-range-controls"
+              target="_new"
+            >
+              Read the documentation
+            </a>
+            <span> to find out more about how to enter custom time ranges.</span>
+          </div>
+        // End
+        */}
       </Trans>
     </div>
   );

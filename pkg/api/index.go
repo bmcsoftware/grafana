@@ -138,7 +138,12 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 		Sentry:                              &hs.Cfg.Sentry,
 		Nonce:                               c.RequestNonce,
 		ContentDeliveryURL:                  hs.Cfg.GetContentDeliveryURL(hs.License.ContentDeliveryPrefix()),
-		LoadingLogo:                         "public/img/grafana_icon.svg",
+
+		// @Copyright 2023 BMC Software, Inc.
+		// Date - 06/09/2023
+		// Replaced with bmc icon
+		LoadingLogo: "public/img/dashboard_icon.svg",
+		// END
 	}
 
 	if !hs.AccessControl.IsDisabled() {

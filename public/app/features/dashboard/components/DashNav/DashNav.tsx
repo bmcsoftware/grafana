@@ -8,7 +8,11 @@ import { selectors as e2eSelectors } from '@grafana/e2e-selectors/src';
 import { locationService } from '@grafana/runtime';
 import {
   ButtonGroup,
-  ModalsController,
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/12/2023
+  // Commented unused import
+  // ModalsController,
+  // END
   ToolbarButton,
   PageToolbar,
   useForceUpdate,
@@ -20,23 +24,31 @@ import {
 import { AppChromeUpdate } from 'app/core/components/AppChrome/AppChromeUpdate';
 import { NavToolbarSeparator } from 'app/core/components/AppChrome/NavToolbarSeparator';
 import config from 'app/core/config';
-import { useGrafana } from 'app/core/context/GrafanaContext';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/09/2023
+// Commented unused import
+// import { useGrafana } from 'app/core/context/GrafanaContext';
+// END
 import { useAppNotification } from 'app/core/copy/appNotification';
 import { appEvents } from 'app/core/core';
 import { useBusEvent } from 'app/core/hooks/useBusEvent';
 import { t, Trans } from 'app/core/internationalization';
 import { setStarred } from 'app/core/reducers/navBarTree';
-import { AddPanelButton } from 'app/features/dashboard/components/AddPanelButton/AddPanelButton';
-import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
+// import { AddPanelButton } from 'app/features/dashboard/components/AddPanelButton/AddPanelButton';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/09/2023
+// Commented unused import
+// import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
+// END
 import { ShareModal } from 'app/features/dashboard/components/ShareModal';
-import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
+// import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
 import { DashboardModel } from 'app/features/dashboard/state';
 import { playlistSrv } from 'app/features/playlist/PlaylistSrv';
 import { updateTimeZoneForSession } from 'app/features/profile/state/reducers';
 import { KioskMode } from 'app/types';
 import { DashboardMetaChangedEvent, ShowModalReactEvent } from 'app/types/events';
 
-import { DashNavButton } from './DashNavButton';
+// import { DashNavButton } from './DashNavButton';
 import { DashNavTimeControls } from './DashNavTimeControls';
 
 const mapDispatchToProps = {
@@ -80,7 +92,13 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 export const DashNav = React.memo<Props>((props) => {
   const forceUpdate = useForceUpdate();
-  const { chrome } = useGrafana();
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/09/2023
+  // Commented unused code
+
+  // const { chrome } = useGrafana();
+
+  // END
   const { showModal, hideModal } = useContext(ModalsContext);
 
   // We don't really care about the event payload here only that it triggeres a re-render of this component
@@ -125,7 +143,11 @@ export const DashNav = React.memo<Props>((props) => {
     }
   };
 
-  const onStarDashboard = () => {
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/12/2023
+  // Commented unused functions
+
+  /* const onStarDashboard = () => {
     const dashboardSrv = getDashboardSrv();
     const { dashboard, setStarred } = props;
 
@@ -134,19 +156,26 @@ export const DashNav = React.memo<Props>((props) => {
       dashboard.meta.isStarred = newState;
       forceUpdate();
     });
-  };
+  }; */
+
+  // END
 
   const onClose = () => {
     locationService.partial({ viewPanel: null });
   };
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/09/2023
+  // Commented unused functions
 
-  const onToggleTVMode = () => {
+  /* const onToggleTVMode = () => {
     chrome.onToggleKioskMode();
   };
 
   const onOpenSettings = () => {
     locationService.partial({ editview: 'settings' });
-  };
+  }; */
+
+  // END
 
   const onPlaylistPrev = () => {
     playlistSrv.prev();
@@ -194,14 +223,24 @@ export const DashNav = React.memo<Props>((props) => {
 
   const renderLeftActions = () => {
     const { dashboard, kioskMode } = props;
-    const { canStar, canShare, isStarred } = dashboard.meta;
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/12/2023
+    // Commented unused functions
+
+    // const { canShare } = dashboard.meta;
+
+    // END
+
     const buttons: ReactNode[] = [];
 
     if (kioskMode || isPlaylistRunning()) {
       return [];
     }
 
-    if (canStar) {
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/12/2023
+    // Commented unused functions
+    /* if (canStar) {
       let desc = isStarred
         ? t('dashboard.toolbar.unmark-favorite', 'Unmark as favorite')
         : t('dashboard.toolbar.mark-favorite', 'Mark as favorite');
@@ -215,9 +254,9 @@ export const DashNav = React.memo<Props>((props) => {
           key="button-star"
         />
       );
-    }
+    } */
 
-    if (canShare) {
+    /* if (canShare) {
       buttons.push(
         <ModalsController key="button-share">
           {({ showModal, hideModal }) => (
@@ -235,7 +274,9 @@ export const DashNav = React.memo<Props>((props) => {
           )}
         </ModalsController>
       );
-    }
+    } */
+
+    // END
 
     if (dashboard.meta.publicDashboardEnabled) {
       buttons.push(
@@ -282,30 +323,54 @@ export const DashNav = React.memo<Props>((props) => {
   };
 
   const renderRightActions = () => {
-    const { dashboard, onAddPanel, isFullscreen, kioskMode } = props;
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Commented unused import
+
+    // const { dashboard, onAddPanel, isFullscreen, kioskMode } = props;
+
+    // END
+    const { dashboard, isFullscreen, kioskMode } = props;
     const { canSave, canEdit, showSettings } = dashboard.meta;
     const { snapshot } = dashboard;
     const snapshotUrl = snapshot && snapshot.originalUrl;
     const buttons: ReactNode[] = [];
-    const tvButton = config.featureToggles.topnav ? null : (
+
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Remove tv buttons
+
+    /* const tvButton = config.featureToggles.topnav ? null : (
       <ToolbarButton
         tooltip={t('dashboard.toolbar.tv-button', 'Cycle view mode')}
         icon="monitor"
         onClick={onToggleTVMode}
         key="tv-button"
       />
-    );
+    ); */
+
+    //END
 
     if (isPlaylistRunning()) {
       return [renderPlaylistControls(), renderTimeControls()];
     }
 
     if (kioskMode === KioskMode.TV) {
-      return [renderTimeControls(), tvButton];
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/09/2023
+      // Remove tv buttons from Kiosk mode
+
+      // return [renderTimeControls(), tvButton];
+      return [renderTimeControls()];
+
+      //END
     }
 
     if (canEdit && !isFullscreen) {
-      if (config.featureToggles.emptyDashboardPage) {
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/09/2023
+      // Remove Add Panel button from dashboard
+      /* if (config.featureToggles.emptyDashboardPage) {
         buttons.push(<AddPanelButton dashboard={dashboard} key="panel-add-dropdown" />);
       } else {
         buttons.push(
@@ -317,11 +382,15 @@ export const DashNav = React.memo<Props>((props) => {
             key="button-panel-add"
           />
         );
-      }
+      } */
+      //END
     }
 
     if (canSave && !isFullscreen) {
-      buttons.push(
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/09/2023
+      // Remove Add Panel button from dashboard
+      /* buttons.push(
         <ModalsController key="button-save">
           {({ showModal, hideModal }) => (
             <ToolbarButton
@@ -336,7 +405,8 @@ export const DashNav = React.memo<Props>((props) => {
             />
           )}
         </ModalsController>
-      );
+      ); */
+      //END
     }
 
     if (snapshotUrl) {
@@ -351,20 +421,30 @@ export const DashNav = React.memo<Props>((props) => {
     }
 
     if (showSettings) {
-      buttons.push(
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/09/2023
+      // Remove Save Dashboard Setting button
+      /* buttons.push(
         <ToolbarButton
           tooltip={t('dashboard.toolbar.settings', 'Dashboard settings')}
           icon="cog"
           onClick={onOpenSettings}
           key="button-settings"
         />
-      );
+      ); */
+      // END
     }
 
     addCustomContent(customRightActions, buttons);
 
     buttons.push(renderTimeControls());
-    buttons.push(tvButton);
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Remove tv buttons
+
+    // buttons.push(tvButton);
+
+    // END
 
     if (config.featureToggles.scenes) {
       buttons.push(

@@ -3,15 +3,20 @@ import React from 'react';
 
 import { GrafanaTheme2, NavModelItem } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
-import { Icon, IconButton, ToolbarButton, useStyles2 } from '@grafana/ui';
-import { t } from 'app/core/internationalization';
+import { useStyles2 } from '@grafana/ui';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/12/2023
+// Commented unused imports
+// import { Icon, ToolbarButton, useStyles2 } from '@grafana/ui';
+// import { t } from 'app/core/internationalization';
+// import { NavToolbarSeparator } from './NavToolbarSeparator';
+// END
 import { HOME_NAV_ID } from 'app/core/reducers/navModel';
 import { useSelector } from 'app/types';
 
 import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
 import { buildBreadcrumbs } from '../Breadcrumbs/utils';
 
-import { NavToolbarSeparator } from './NavToolbarSeparator';
 import { TOP_BAR_LEVEL_HEIGHT } from './types';
 
 export interface Props {
@@ -26,19 +31,61 @@ export interface Props {
 
 export function NavToolbar({
   actions,
-  searchBarHidden,
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/12/2023
+  // Commented unused imports
+  // searchBarHidden,
+  // onToggleMegaMenu,
+  // onToggleSearchBar,
+  // onToggleKioskMode,
+  // END
   sectionNav,
   pageNav,
-  onToggleMegaMenu,
-  onToggleSearchBar,
-  onToggleKioskMode,
 }: Props) {
-  const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
   const styles = useStyles2(getStyles);
-  const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+
+  /*
+    @Copyright 2023 BMC Software, Inc.
+    Date - 06/12/2023
+    Logic to show breadcrumbs for view panel
+  */
+
+  const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
+  let breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  breadcrumbs = breadcrumbs.slice(Math.max(breadcrumbs.length - 2, 0));
+  breadcrumbs = breadcrumbs.filter(
+    (each) =>
+      each.text.toLowerCase() === 'view panel' ||
+      each.text.toLowerCase().startsWith('playback') ||
+      each.text.toLowerCase().startsWith('realtime') ||
+      each.text.toLowerCase().startsWith('rca')
+  );
+  if (breadcrumbs.length > 1) {
+    breadcrumbs = breadcrumbs.map((each) => {
+      if (
+        each.text.toLowerCase().startsWith('playback') ||
+        each.text.toLowerCase().startsWith('realtime') ||
+        each.text.toLowerCase().startsWith('rca')
+      ) {
+        return {
+          ...each,
+          text: 'Dashboard',
+        };
+      } else {
+        return each;
+      }
+    });
+  } else {
+    breadcrumbs = [];
+  }
+  // END
 
   return (
     <div data-testid={Components.NavToolbar.container} className={styles.pageToolbar}>
+      {/*
+        // @Copyright 2023 BMC Software, Inc.
+        // Date - 06/12/2023
+        // Hide Sidebar menu icon
       <div className={styles.menuButton}>
         <IconButton
           name="bars"
@@ -48,9 +95,14 @@ export function NavToolbar({
           onClick={onToggleMegaMenu}
         />
       </div>
+      // END*/}
       <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbs} />
       <div className={styles.actions}>
         {actions}
+        {/*
+        // @Copyright 2023 BMC Software, Inc.
+        // Date - 06/12/2023
+        // Hide separator, kiosk mode icon and serachbar
         {actions && <NavToolbarSeparator />}
         {searchBarHidden && (
           <ToolbarButton
@@ -59,14 +111,15 @@ export function NavToolbar({
             title={t('navigation.toolbar.enable-kiosk', 'Enable kiosk mode')}
             icon="monitor"
           />
-        )}
-        <ToolbarButton
+        )}*/}
+        {/*  <ToolbarButton
           onClick={onToggleSearchBar}
           narrow
           title={t('navigation.toolbar.toggle-search-bar', 'Toggle top search bar')}
         >
           <Icon name={searchBarHidden ? 'angle-down' : 'angle-up'} size="xl" />
         </ToolbarButton>
+        //END */}
       </div>
     </div>
   );
