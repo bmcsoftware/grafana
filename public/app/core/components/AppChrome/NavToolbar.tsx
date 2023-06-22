@@ -60,7 +60,7 @@ export function NavToolbar({
       each.text.toLowerCase().startsWith('realtime') ||
       each.text.toLowerCase().startsWith('rca')
   );
-  if (breadcrumbs.length > 1) {
+  if (breadcrumbs.length) {
     breadcrumbs = breadcrumbs.map((each) => {
       if (
         each.text.toLowerCase().startsWith('playback') ||
@@ -69,7 +69,7 @@ export function NavToolbar({
       ) {
         return {
           ...each,
-          text: 'Dashboard',
+          text: 'Graph View',
         };
       } else {
         return each;
