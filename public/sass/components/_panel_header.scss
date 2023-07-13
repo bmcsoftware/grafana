@@ -115,7 +115,14 @@ $panel-header-no-title-zindex: 1;
   background: none;
   border: none;
   color: $text-muted;
-  cursor: pointer;
+
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/14/2023
+  // Removed cursor pointer from panel info
+
+  //cursor: pointer;
+
+  // END
   position: absolute;
   display: none;
   left: 0;

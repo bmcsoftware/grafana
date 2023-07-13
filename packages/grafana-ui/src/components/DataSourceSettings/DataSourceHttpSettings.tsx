@@ -46,11 +46,17 @@ const HttpAccessHelp = () => (
       should be the preferred way if nothing else is stated.
     </p>
     <div className="alert-title">Server access mode (Default):</div>
+    {/*
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/08/2023
+      // Updated text from Grafana to Dashboard
+    */}
     <p>
-      All requests will be made from the browser to Grafana backend/server which in turn will forward the requests to
+      All requests will be made from the browser to Dashboard backend/server which in turn will forward the requests to
       the data source and by that circumvent possible Cross-Origin Resource Sharing (CORS) requirements. The URL needs
-      to be accessible from the grafana backend/server if you select this access mode.
+      to be accessible from the dashboard backend/server if you select this access mode.
     </p>
+    {/* // End */}
     <div className="alert-title">Browser access mode:</div>
     <p>
       All requests will be made from the browser directly to the data source and may be subject to Cross-Origin Resource
@@ -95,12 +101,16 @@ export const DataSourceHttpSettings = (props: HttpSettingsProps) => {
       );
       break;
     case 'proxy':
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/08/2023
+      // Updated text from Grafana to Dashboard
       urlTooltip = (
         <>
-          Your access method is <em>Server</em>, this means the URL needs to be accessible from the grafana
+          Your access method is <em>Server</em>, this means the URL needs to be accessible from the dashboard
           backend/server.
         </>
       );
+      // End
       break;
     default:
       urlTooltip = 'Specify a complete HTTP URL (for example http://your_server:8080)';
@@ -173,12 +183,17 @@ export const DataSourceHttpSettings = (props: HttpSettingsProps) => {
           {dataSourceConfig.access === 'proxy' && (
             <div className="gf-form-group">
               <div className="gf-form">
+                {/*
+                // @Copyright 2023 BMC Software, Inc.
+                // Date - 06/08/2023
+                // Updated text from Grafana to Dashboard */}
                 <InlineFormLabel
                   width={13}
-                  tooltip="Grafana proxy deletes forwarded cookies by default. Specify cookies by name that should be forwarded to the data source."
+                  tooltip="Dashboard proxy deletes forwarded cookies by default. Specify cookies by name that should be forwarded to the data source."
                 >
                   Allowed cookies
                 </InlineFormLabel>
+                {/* // End */}
                 <TagsInput
                   tags={dataSourceConfig.jsonData.keepCookies}
                   width={40}

@@ -4,11 +4,22 @@ import React, { ReactNode } from 'react';
 import { GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
-import { Link, ToolbarButtonRow } from '..';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/09/2023
+// Commented unused code
+
+// import { Link, ToolbarButtonRow } from '..';
+
+// END
+import { ToolbarButtonRow } from '..';
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles } from '../../themes/mixins';
 import { IconName } from '../../types';
-import { Icon } from '../Icon/Icon';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/09/2023
+// Commented unused code
+// import { Icon } from '../Icon/Icon';
+// END
 import { IconButton } from '../IconButton/IconButton';
 
 export interface Props {
@@ -37,13 +48,19 @@ export const PageToolbar = React.memo(
   ({
     title,
     section,
-    parent,
-    pageIcon,
-    onGoBack,
     children,
+    onGoBack,
+    pageIcon,
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Commented unused code
+
+    /* parent,
     titleHref,
     parentHref,
-    leftItems,
+    leftItems, */
+
+    // END
     isFullscreen,
     className,
     /** main nav-container aria-label **/
@@ -69,21 +86,33 @@ export const PageToolbar = React.memo(
       className
     );
 
-    const titleEl = (
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Commented unused code
+
+    /*  const titleEl = (
       <>
         <span className={styles.truncateText}>{title}</span>
         {section && <span className={styles.pre}> / {section}</span>}
       </>
-    );
+    ); */
+
+    // End
 
     return (
       <nav className={mainStyle} aria-label={ariaLabel}>
         <div className={styles.leftWrapper}>
-          {pageIcon && !onGoBack && (
+          {/*
+          // @Copyright 2023 BMC Software, Inc.
+          // Date - 06/09/2023
+          // Hide page icon
+          pageIcon && !onGoBack && (
             <div className={styles.pageIcon}>
               <Icon name={pageIcon} size="lg" aria-hidden />
             </div>
-          )}
+          )
+          // END */}
+
           {onGoBack && (
             <div className={styles.pageIcon}>
               <IconButton
@@ -97,7 +126,12 @@ export const PageToolbar = React.memo(
             </div>
           )}
           <nav aria-label="Search links" className={styles.navElement}>
-            {parent && parentHref && (
+            {/*
+            // @Copyright 2023 BMC Software, Inc.
+            // Date - 06/09/2023
+            // Hide the links which are not required
+
+            parent && parentHref && (
               <>
                 <Link
                   aria-label={`Search dashboard in the ${parent} folder`}
@@ -112,9 +146,15 @@ export const PageToolbar = React.memo(
                   </span>
                 )}
               </>
-            )}
+            )
+            //END */}
 
-            {(title || Boolean(leftItems?.length)) && (
+            {/*
+            // @Copyright 2023 BMC Software, Inc.
+            // Date - 06/09/2023
+            // Hide page icon
+
+            (title || Boolean(leftItems?.length)) && (
               <div className={styles.titleWrapper}>
                 {title && (
                   <h1 className={styles.h1Styles}>
@@ -141,7 +181,8 @@ export const PageToolbar = React.memo(
                   </div>
                 ))}
               </div>
-            )}
+            )
+            //END */}
           </nav>
         </div>
         <ToolbarButtonRow alignment={buttonOverflowAlignment}>
@@ -184,6 +225,14 @@ const getStyles = (theme: GrafanaTheme2) => {
       display: flex;
       flex-wrap: nowrap;
       max-width: 70%;
+      /*
+      // @Copyright 2023 BMC Software, Inc.
+      // Date - 06/16/2023
+      // Adjusted height for toolbar */
+
+      height: 40px;
+
+      /* // END */
     `,
     pageIcon: css`
       display: none;

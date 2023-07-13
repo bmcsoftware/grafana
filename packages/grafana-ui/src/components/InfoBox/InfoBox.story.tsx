@@ -35,14 +35,18 @@ const defaultProps: FeatureInfoBoxProps = {
   url: 'http://www.grafana.com',
   featureState: FeatureState.beta,
 
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/09/2023
+  // Updated text from Grafana to Dashboard
   children: (
     <p>
       The database user should only be granted SELECT permissions on the specified database &amp; tables you want to
-      query. Grafana does not validate that queries are safe so queries can contain any SQL statement. For example,
+      query. Dashboard does not validate that queries are safe so queries can contain any SQL statement. For example,
       statements like <code>USE otherdb;</code> and <code>DROP TABLE user;</code> would be executed. To protect against
       this we <strong>Highly</strong> recommend you create a specific MySQL user with restricted permissions.
     </p>
   ),
+  // END
 };
 
 const InfoBoxTemplate: ComponentStory<typeof InfoBox> = (args) => {

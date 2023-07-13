@@ -206,9 +206,15 @@ export class KeybindingSrv {
       appEvents.publish(new ZoomOutEvent({ scale: 2, updateUrl }));
     });
 
-    this.bind('ctrl+z', () => {
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Disable ctrl+z
+
+    /* this.bind('ctrl+z', () => {
       appEvents.publish(new ZoomOutEvent({ scale: 2, updateUrl }));
-    });
+    }); */
+
+    // END
 
     this.bind('t left', () => {
       appEvents.publish(new ShiftTimeEvent({ direction: ShiftTimeEventDirection.Left, updateUrl }));
@@ -351,12 +357,18 @@ export class KeybindingSrv {
       this.chromeService.onToggleKioskMode();
     });
 
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Disable (d a)
+
     //Autofit panels
-    this.bind('d a', () => {
+    /* this.bind('d a', () => {
       // this has to be a full page reload
       const queryParams = this.locationService.getSearchObject();
       const newUrlParam = queryParams.autofitpanels ? '' : '&autofitpanels';
       window.location.href = window.location.href + newUrlParam;
-    });
+    }); */
+
+    // END
   }
 }

@@ -59,11 +59,16 @@ export const TLSAuthSettings = ({ dataSourceConfig, onChange }: HttpSettingsBase
         )}
       >
         <h6>TLS/SSL Auth Details</h6>
+        {/*
+          // @Copyright 2023 BMC Software, Inc.
+          // Date - 06/08/2023
+          // Updated text from Grafana to Dashboard */}
         <Tooltip
           placement="right-end"
-          content="TLS/SSL Certs are encrypted and stored in the Grafana database."
+          content="TLS/SSL Certs are encrypted and stored in the Dashboard database."
           theme="info"
         >
+          {/* // END */}
           <div className="gf-form-help-icon gf-form-help-icon--right-normal">
             <Icon name="info-circle" size="xs" style={{ marginLeft: '10px' }} />
           </div>
