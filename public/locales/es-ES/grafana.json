@@ -1,5 +1,135 @@
 {
   "_comment": "Do not manually edit this file, or update these source phrases in Crowdin. The source of truth for English strings are in the code source",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "",
+      "import": {
+        "import-all-failed": "",
+        "no-import": ""
+      },
+      "import-all": "",
+      "import-failed": "",
+      "import-success": "",
+      "select-datasource": "",
+      "set-parameters": ""
+    },
+    "calc-fields": {
+      "aggregated": "",
+      "clone": "",
+      "confirm-delete": "",
+      "connection-error": "",
+      "delete": "",
+      "details": "",
+      "edit": "",
+      "edit-field": "",
+      "eg": "",
+      "failed": "",
+      "failure": "",
+      "filter-by-type": "",
+      "form-name": "",
+      "is-aggregate": "",
+      "is-aggregate-description": "",
+      "module": "",
+      "module-name": "",
+      "name": "",
+      "name-placeholder": "",
+      "new-field": "",
+      "no-calc-fields": "",
+      "not-found": "",
+      "query-info": "",
+      "query-not-validated": "",
+      "save": "",
+      "search-by-name": "",
+      "select-form": "",
+      "select-module": "",
+      "sort-asc": "",
+      "sort-asc-descripton": "",
+      "sort-dsc": "",
+      "sort-dsc-descripton": "",
+      "sql-query": "",
+      "subtitle": "",
+      "title": "",
+      "unknown-failure": "",
+      "update": "",
+      "validate": "",
+      "validation-success": ""
+    },
+    "common": {
+      "cancel": "",
+      "download": ""
+    },
+    "contact-support": "",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "",
+        "reset-filters": "",
+        "reset-filters-failure": "",
+        "save-filters": "",
+        "save-filters-failure": "",
+        "save-filters-success": ""
+      }
+    },
+    "date-picker": {
+      "description": "",
+      "name": ""
+    },
+    "export": {
+      "generation-failed": "",
+      "grid": "",
+      "landscape": "",
+      "layout": "",
+      "orientation": "",
+      "portrait": "",
+      "reduce-selection": "",
+      "save-as": "",
+      "simple": "",
+      "success": "",
+      "type": "",
+      "view": ""
+    },
+    "manage-dashboards": {
+      "drop-click": "",
+      "import-failed": "",
+      "serialization-failed": "",
+      "upload-json": ""
+    },
+    "org-custom-config": {
+      "community": "",
+      "documentation": "",
+      "invalid-url": "",
+      "support": "",
+      "video": ""
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "",
+        "invalid-url": "",
+        "url": ""
+      },
+      "bmc-welcome": {
+        "communities": "",
+        "community-description": "",
+        "dashboards": "",
+        "documentation": "",
+        "documentation-description": "",
+        "video-description": "",
+        "videos": ""
+      }
+    },
+    "route-error": "",
+    "search": {
+      "comfirm-export": "",
+      "export": "",
+      "export-failed": "",
+      "export-success": ""
+    },
+    "share-modal": {
+      "loading": ""
+    },
+    "toggle-feature": {
+      "manage-features": ""
+    }
+  },
   "clipboard-button": {
     "inline-toast": {
       "success": "Copiado"
@@ -12,15 +142,15 @@
       "light-theme": "Claro"
     },
     "search-box": {
-      "placeholder": ""
+      "placeholder": "Buscar o saltar a..."
     },
     "section": {
       "actions": "Acciones",
       "dashboard-search-results": "Paneles de control",
-      "folder-search-results": "",
+      "folder-search-results": "Carpetas",
       "pages": "Páginas",
       "preferences": "Preferencias",
-      "recent-dashboards": ""
+      "recent-dashboards": "Paneles de control recientes"
     }
   },
   "common": {
@@ -31,21 +161,21 @@
   },
   "dashboard": {
     "add-menu": {
-      "import": "",
-      "paste-panel": "",
-      "row": "",
-      "visualization": ""
+      "import": "Importar de la biblioteca",
+      "paste-panel": "Pegar panel",
+      "row": "Fila",
+      "visualization": "Visualización"
     },
     "empty": {
-      "add-import-body": "",
-      "add-import-button": "",
-      "add-import-header": "",
-      "add-row-body": "",
-      "add-row-button": "",
-      "add-row-header": "",
-      "add-visualization-body": "",
-      "add-visualization-button": "",
-      "add-visualization-header": ""
+      "add-import-body": "Importar las visualizaciones que se compartan con otros paneles de control.",
+      "add-import-button": "Importar el panel de la biblioteca",
+      "add-import-header": "Importar panel",
+      "add-row-body": "Agrupa tus visualizaciones en secciones ampliables.",
+      "add-row-button": "Añadir fila",
+      "add-row-header": "Añadir una fila",
+      "add-visualization-body": "Selecciona una fuente de datos y luego consulta y visualiza tus datos con gráficos, estadísticas y tablas o cree listas, anotaciones y otros widgets.",
+      "add-visualization-button": "Añadir visualización",
+      "add-visualization-header": "Comienza tu nuevo panel de control añadiendo una visualización"
     },
     "inspect": {
       "data-tab": "Datos",
@@ -92,7 +222,6 @@
     },
     "inspect-stats": {
       "data-title": "Estadísticas de origen de datos",
-      "data-traceids": "",
       "processing-time": "Tiempo de procesamiento de datos",
       "queries": "Número de consultas",
       "request-time": "Tiempo total de solicitud",
@@ -100,7 +229,7 @@
       "table-title": "Estadísticas"
     },
     "toolbar": {
-      "add": "",
+      "add": "Añadir",
       "add-panel": "Añadir panel",
       "mark-favorite": "Marcar como favorito",
       "open-original": "Abrir el panel de control original",
@@ -111,6 +240,7 @@
       "save": "Guardar panel de control",
       "settings": "Ajustes del panel de control",
       "share": "Compartir panel o panel de control",
+      "tv-button": "",
       "unmark-favorite": "Deshacer marca como favorito"
     }
   },
@@ -121,16 +251,16 @@
     "preferred": "Conecte su fuente de datos preferida:",
     "sampleData": "O configure un nuevo panel de control con datos de muestra",
     "viewAll": "Ver todo",
-    "welcome": "¡Te damos la bienvenida a los paneles de Grafana!"
+    "welcome": "¡Te damos la bienvenida a los paneles de BMC Helix Dashboards!"
   },
   "folder-picker": {
     "loading": "Cargando carpetas..."
   },
   "grafana-ui": {
     "segment-async": {
-      "error": "",
-      "loading": "",
-      "no-options": ""
+      "error": "No se han podido cargar las opciones",
+      "loading": "Cargando las opciones...",
+      "no-options": "No se ha encontrado ninguna opción"
     }
   },
   "library-panel": {
@@ -143,7 +273,7 @@
       "name": "Nombre del panel de librería"
     },
     "add-widget": {
-      "title": ""
+      "title": "Añadir panel de la biblioteca de paneles"
     }
   },
   "library-panels": {
@@ -186,7 +316,7 @@
       "title": "Reglas de alerta"
     },
     "alerting-receivers": {
-      "subtitle": "",
+      "subtitle": "Elige cómo notificar tus puntos de contacto cuando se dispara una instancia de alerta",
       "title": "Puntos de contacto"
     },
     "alerting-silences": {
@@ -195,18 +325,19 @@
     },
     "alerts-and-incidents": {
       "subtitle": "Aplicaciones de gestión de alertas e incidentes",
-      "title": "Alertas e incidentes"
+      "title": "Alertas e IRM"
     },
     "api-keys": {
-      "subtitle": "Administrar y crear claves de API que se utilizan para interactuar con las API de HTTP de Grafana",
+      "subtitle": "Administrar y crear claves de API que se utilizan para interactuar con las API de HTTP de BMC Helix Dashboards",
       "title": "Claves API"
     },
     "apps": {
-      "subtitle": "Complementos de aplicaciones que amplían la experiencia de Grafana",
+      "subtitle": "Complementos de aplicaciones que amplían la experiencia de BMC Helix Dashboards",
       "title": "Aplicaciones"
     },
     "config": {
-      "title": "Administración"
+      "title": "Administración",
+      "titleBeforeTopnav": ""
     },
     "correlations": {
       "subtitle": "Añadir y configurar correlaciones",
@@ -216,7 +347,7 @@
       "title": "Crear"
     },
     "create-alert": {
-      "title": ""
+      "title": "Crear regla de alerta"
     },
     "create-dashboard": {
       "title": "Panel de control"
@@ -225,7 +356,7 @@
       "title": "Carpeta"
     },
     "create-import": {
-      "title": ""
+      "title": "Importar panel de control"
     },
     "dashboards": {
       "subtitle": "Cree y administre paneles de control para visualizar sus datos",
@@ -239,12 +370,13 @@
       "title": "Explorar"
     },
     "global-orgs": {
-      "subtitle": "Instancias aisladas de Grafana ejecutándose en el mismo servidor",
+      "subtitle": "Instancias aisladas de BMC Helix Dashboards ejecutándose en el mismo servidor",
       "title": "Organizaciones"
     },
     "global-users": {
-      "subtitle": "Gestionar usuarios de Grafana",
-      "title": "Usuarios"
+      "subtitle": "Gestionar usuarios de BMC Helix Dashboards",
+      "title": "Usuarios",
+      "titleBeforeTopnav": ""
     },
     "help": {
       "title": "Ayuda"
@@ -260,12 +392,15 @@
       "subtitle": "Paneles reutilizables que se pueden añadir a varios paneles de control",
       "title": "Paneles de librería"
     },
+    "manage-dashboards": {
+      "title": ""
+    },
     "manage-folder": {
-      "subtitle": ""
+      "subtitle": "Gestionar paneles de control de carpetas y permisos"
     },
     "monitoring": {
       "subtitle": "Aplicaciones de supervisión e infraestructura",
-      "title": "Seguimiento"
+      "title": "Observabilidad"
     },
     "new": {
       "title": "Nuevo"
@@ -278,14 +413,15 @@
     },
     "org-settings": {
       "subtitle": "Gestionar las preferencias en una organización",
-      "title": "Preferencias por defecto"
+      "title": "Preferencias por defecto",
+      "titleBeforeTopnav": ""
     },
     "playlists": {
       "subtitle": "Grupos de paneles de control que se muestran en una secuencia",
       "title": "Listas de reproducción"
     },
     "plugins": {
-      "subtitle": "Amplíe la experiencia de Grafana con los complementos",
+      "subtitle": "Amplíe la experiencia de BMC Helix Dashboards con los complementos",
       "title": "Complementos"
     },
     "profile/notifications": {
@@ -297,26 +433,28 @@
     "profile/settings": {
       "title": "Perfil"
     },
+    "profile/switch-org": "",
     "public": {
-      "title": ""
+      "title": "Paneles de control públicos"
     },
     "scenes": {
       "title": "Escenas"
     },
     "search": {
-      "placeholderCommandPalette": ""
+      "placeholderCommandPalette": "Buscar o saltar a..."
     },
     "search-dashboards": {
       "title": "Buscar paneles de control"
     },
     "server-settings": {
-      "subtitle": "Vea la configuración definida en los ajustes de Grafana",
+      "subtitle": "Vea la configuración definida en los ajustes de BMC Helix Dashboards",
       "title": "Configuración"
     },
     "service-accounts": {
-      "subtitle": "Use cuentas de servicio para ejecutar cargas de trabajo automatizadas en Grafana",
+      "subtitle": "Use cuentas de servicio para ejecutar cargas de trabajo automatizadas en BMC Helix Dashboards",
       "title": "Cuentas de servicios"
     },
+    "sign-in": "",
     "sign-out": {
       "title": "Cerrar sesión"
     },
@@ -355,9 +493,9 @@
       "tv-alert": "Pulse ESC para salir del modo de quiosco"
     },
     "toolbar": {
-      "enable-kiosk": "",
-      "toggle-menu": "",
-      "toggle-search-bar": ""
+      "enable-kiosk": "Activar el modo de quiosco",
+      "toggle-menu": "Activar o desactivar menú",
+      "toggle-search-bar": "Activar o desactivar la barra de búsqueda superior"
     }
   },
   "news": {
@@ -407,12 +545,13 @@
   },
   "search": {
     "actions": {
-      "include-panels": "",
-      "remove-datasource-filter": "",
-      "sort-placeholder": "",
+      "include-panels": "Incluir paneles",
+      "remove-datasource-filter": "Fuente de datos: {{datasource}}",
+      "sort-placeholder": "Ordenar",
       "starred": "Destacado",
-      "view-as-folders": "",
-      "view-as-list": ""
+      "view-as-folders": "Ver por carpetas",
+      "view-as-grid": "",
+      "view-as-list": "Ver como lista"
     },
     "dashboard-actions": {
       "import": "Importar",
@@ -421,26 +560,26 @@
       "new-folder": "Nueva carpeta"
     },
     "folder-view": {
-      "go-to-folder": "",
-      "select-folder": ""
+      "go-to-folder": "Ir a la carpeta",
+      "select-folder": "Seleccionar carpeta"
     },
     "result-kind": {
       "dashboard": "Panel de control",
       "folder": "Carpeta",
-      "panel": ""
+      "panel": "Panel"
     },
     "results-table": {
-      "datasource-header": "",
-      "location-header": "",
+      "datasource-header": "Fuente de datos",
+      "location-header": "Ubicación",
       "name-header": "Nombre",
-      "tags-header": "",
+      "tags-header": "Etiquetas",
       "type-dashboard": "Panel de control",
       "type-folder": "Carpeta",
-      "type-header": ""
+      "type-header": "Tipo"
     },
     "search-input": {
-      "include-panels-placeholder": "",
-      "placeholder": ""
+      "include-panels-placeholder": "Buscar paneles de control y paneles",
+      "placeholder": "Buscar paneles de control"
     }
   },
   "share-modal": {
@@ -450,7 +589,7 @@
     "embed": {
       "copy": "Copiar al portapapeles",
       "html": "Incrustar HTML",
-      "html-description": "El código HTML a continuación se puede pegar e incluir en otra página web. A menos que se active el acceso anónimo, el usuario que vea esa página debe iniciar sesión en Grafana para que el gráfico se cargue.",
+      "html-description": "El código HTML a continuación se puede pegar e incluir en otra página web. A menos que se active el acceso anónimo, el usuario que vea esa página debe iniciar sesión en BMC Helix Dashboards para que el gráfico se cargue.",
       "info": "Genere un HTML para incrustar un iframe con este panel.",
       "time-range": "Intervalo de tiempo actual",
       "time-range-description": "Transforma el intervalo de tiempo relativo actual en un intervalo de tiempo absoluto"
@@ -475,7 +614,6 @@
       "rendered-image": "Enlace directo a la imagen renderizada",
       "save-alert": "El panel de control no se ha guardado",
       "save-dashboard": "Para renderizar una imagen de panel, primero debe guardar el panel de control.",
-      "shorten-url": "Acortar url",
       "time-range-description": "Transforma el intervalo de tiempo relativo actual en un intervalo de tiempo absoluto",
       "time-range-label": "Bloquear el intervalo de tiempo"
     },
@@ -541,9 +679,9 @@
     "title": "Preferencias"
   },
   "tag-filter": {
-    "loading": "",
-    "no-tags": "",
-    "placeholder": ""
+    "loading": "Cargando...",
+    "no-tags": "No se ha encontrado ninguna etiqueta",
+    "placeholder": "Filtrar por etiqueta"
   },
   "time-picker": {
     "absolute": {
@@ -596,7 +734,6 @@
   "user-orgs": {
     "current-org-button": "Actual",
     "name-column": "Nombre",
-    "role-column": "Rol",
     "select-org-button": "Seleccionar organización",
     "title": "Organizaciones"
   },
@@ -621,7 +758,7 @@
   },
   "variable": {
     "adhoc": {
-      "placeholder": ""
+      "placeholder": "Seleccionar valor"
     },
     "dropdown": {
       "placeholder": "Introducir el valor de la variable"

@@ -5,6 +5,7 @@ import { SelectableValue } from '@grafana/data';
 import { Select, DeleteButton } from '@grafana/ui';
 import { TagBadge } from 'app/core/components/TagFilter/TagBadge';
 import { WithFeatureToggle } from 'app/core/components/WithFeatureToggle';
+import { config } from 'app/core/config';
 import { TeamMember, teamsPermissionLevels, TeamPermissionLevel } from 'app/types';
 
 import { updateTeamMember, removeTeamMember } from './state/actions';
@@ -100,12 +101,15 @@ export class TeamMemberRow extends PureComponent<Props> {
         {this.renderPermissions(member)}
         {syncEnabled && this.renderLabels(member.labels)}
         <td className="text-right">
-          <DeleteButton
-            aria-label={`Remove team member ${member.name}`}
-            size="sm"
-            disabled={!signedInUserIsTeamAdmin}
-            onConfirm={() => this.onRemoveMember(member)}
-          />
+          {/* BMC code - next line*/}
+          {config.buildInfo.env === 'development' && (
+            <DeleteButton
+              aria-label={`Remove team member ${member.name}`}
+              size="sm"
+              disabled={!signedInUserIsTeamAdmin}
+              onConfirm={() => this.onRemoveMember(member)}
+            />
+          )}
         </td>
       </tr>
     );

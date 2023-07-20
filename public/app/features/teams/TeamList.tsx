@@ -67,17 +67,20 @@ export const TeamList = ({
     <Page navId="teams">
       <Page.Contents isLoading={!hasFetched}>
         {noTeams ? (
-          <EmptyListCTA
-            title="You haven't created any teams yet."
-            buttonIcon="users-alt"
-            buttonLink="org/teams/new"
-            buttonTitle=" New team"
-            buttonDisabled={!contextSrv.hasPermission(AccessControlAction.ActionTeamsCreate)}
-            proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
-            proTipLink=""
-            proTipLinkTitle=""
-            proTipTarget="_blank"
-          />
+          // BMC code - next line
+          config.buildInfo.env === 'development' && (
+            <EmptyListCTA
+              title="You haven't created any teams yet."
+              buttonIcon="users-alt"
+              buttonLink="org/teams/new"
+              buttonTitle=" New team"
+              buttonDisabled={!contextSrv.hasPermission(AccessControlAction.ActionTeamsCreate)}
+              proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
+              proTipLink=""
+              proTipLinkTitle=""
+              proTipTarget="_blank"
+            />
+          )
         ) : (
           <>
             <div className="page-action-bar">
@@ -85,9 +88,12 @@ export const TeamList = ({
                 <FilterInput placeholder="Search teams" value={query} onChange={changeQuery} />
               </div>
 
-              <LinkButton href={canCreate ? 'org/teams/new' : '#'} disabled={!canCreate}>
-                New Team
-              </LinkButton>
+              {/* BMC code - next line */}
+              {config.buildInfo.env === 'development' && (
+                <LinkButton href={canCreate ? 'org/teams/new' : '#'} disabled={!canCreate}>
+                  New Team
+                </LinkButton>
+              )}
             </div>
 
             <div className="admin-list-table">

@@ -15,6 +15,7 @@ import {
 } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
 import { TagBadge } from 'app/core/components/TagFilter/TagBadge';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 
 import PageLoader from '../../core/components/PageLoader/PageLoader';
@@ -99,7 +100,8 @@ const UserListAdminPageUnConnected = ({
             <FilterComponent key={index} filters={filters} onChange={changeFilter} className={styles.filter} />
           ))}
         </div>
-        {contextSrv.hasPermission(AccessControlAction.UsersCreate) && (
+        {/* BMC Code  */}
+        {contextSrv.hasPermission(AccessControlAction.UsersCreate) && config.buildInfo.env === 'development' && (
           <LinkButton href="admin/users/create" variant="primary">
             New user
           </LinkButton>

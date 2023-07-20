@@ -88,7 +88,7 @@ export class ShareEmbed extends PureComponent<Props, State> {
           label={t('share-modal.embed.html', 'Embed HTML')}
           description={t(
             'share-modal.embed.html-description',
-            'The HTML code below can be pasted and included in another web page. Unless anonymous access is enabled, the user viewing that page need to be signed into Grafana for the graph to load.'
+            'The HTML code below can be pasted and included in another web page. Unless anonymous access is enabled, the user viewing that page need to be signed into BMC Helix Dashboards for the graph to load.'
           )}
         >
           <TextArea

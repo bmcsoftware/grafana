@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { RadioButtonGroup, LinkButton, FilterInput } from '@grafana/ui';
-import config from 'app/core/config';
-import { contextSrv } from 'app/core/core';
-import { AccessControlAction, StoreState } from 'app/types';
+import { FilterInput, LinkButton, RadioButtonGroup } from '@grafana/ui';
+// BMC code: removed AccessControlAction
+//import { contextSrv } from 'app/core/core';
+import { StoreState } from 'app/types';
 
 import { selectTotal } from '../invites/state/selectors';
 
@@ -35,7 +35,8 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 export type Props = ConnectedProps<typeof connector> & OwnProps;
 
 export const UsersActionBarUnconnected = ({
-  canInvite,
+  // BMC code - next line
+  // canInvite,
   externalUserMngLinkName,
   externalUserMngLinkUrl,
   searchQuery,
@@ -48,10 +49,12 @@ export const UsersActionBarUnconnected = ({
     { label: 'Users', value: 'users' },
     { label: `Pending Invites (${pendingInvitesCount})`, value: 'invites' },
   ];
-  const canAddToOrg: boolean = contextSrv.hasAccess(AccessControlAction.OrgUsersAdd, canInvite);
+  // BMC code - start
+  // const canAddToOrg: boolean = contextSrv.hasAccess(AccessControlAction.OrgUsersAdd, canInvite);
+  
   // backend rejects invitations if the login form is disabled
-  const showInviteButton: boolean = canAddToOrg && !config.disableLoginForm;
-
+  // const showInviteButton: boolean = canAddToOrg && !config.disableLoginForm;
+  // BMC code - end
   return (
     <div className="page-action-bar" data-testid="users-action-bar">
       <div className="gf-form gf-form--grow">
@@ -66,7 +69,8 @@ export const UsersActionBarUnconnected = ({
           <RadioButtonGroup value={showInvites ? 'invites' : 'users'} options={options} onChange={onShowInvites} />
         </div>
       )}
-      {showInviteButton && <LinkButton href="org/users/invite">Invite</LinkButton>}
+      {/* // BMC code - next line */}
+      {/* {showInviteButton && <LinkButton href="org/users/invite">Invite</LinkButton>} */}
       {externalUserMngLinkUrl && (
         <LinkButton href={externalUserMngLinkUrl} target="_blank" rel="noopener">
           {externalUserMngLinkName}

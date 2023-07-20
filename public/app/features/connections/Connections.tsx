@@ -5,6 +5,9 @@ import { NavLandingPage } from 'app/core/components/AppChrome/NavLandingPage';
 import { DataSourcesRoutesContext } from 'app/features/datasources/state';
 import { StoreState, useSelector } from 'app/types';
 
+import { FEATURE_CONST, getFeatureStatus } from '../dashboard/services/featureFlagSrv';
+import { isGrafanaAdmin } from '../plugins/admin/permissions';
+
 import { ROUTES } from './constants';
 import {
   ConnectDataPage,
@@ -35,11 +38,19 @@ export default function Connections() {
     >
       <Switch>
         {/* Redirect to "Connect data" by default */}
-        <Route exact sensitive path={ROUTES.Base} component={() => <Redirect to={ROUTES.ConnectData} />} />
+        <Route
+          exact
+          sensitive
+          path={ROUTES.Base}
+          // BMC Change Inline: Redirect to your connection page for non super admin
+          component={() => <Redirect to={isGrafanaAdmin() ? ROUTES.ConnectData : ROUTES.YourConnections} />}
+        />
         <Route exact sensitive path={ROUTES.YourConnections} component={YourConnectionsPage} />
         <Route exact sensitive path={ROUTES.DataSources} component={DataSourcesListPage} />
         <Route exact sensitive path={ROUTES.DataSourcesDetails} component={DataSourceDetailsPage} />
-        <Route exact sensitive path={ROUTES.DataSourcesNew} component={NewDataSourcePage} />
+        {getFeatureStatus(FEATURE_CONST.DASHBOARDS_SSRF_FEATURE_NAME) || isGrafanaAdmin() ? (
+          <Route exact sensitive path={ROUTES.DataSourcesNew} component={NewDataSourcePage} />
+        ) : null}
         <Route exact sensitive path={ROUTES.DataSourcesEdit} component={EditDataSourcePage} />
         <Route exact sensitive path={ROUTES.DataSourcesDashboards} component={DataSourceDashboardsPage} />
 

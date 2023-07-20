@@ -1,5 +1,135 @@
 {
   "_comment": "Do not manually edit this file, or update these source phrases in Crowdin. The source of truth for English strings are in the code source",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "No data sources of type {{pluginName}} found",
+      "import": {
+        "import-all-failed": "Import all dashboard failed",
+        "no-import": "No Dashboards Imported"
+      },
+      "import-all": "Import all",
+      "import-failed": "Failed to import the following dashboards",
+      "import-success": "All dashboards are successfully imported",
+      "select-datasource": "Select a {{pluginName}} data source",
+      "set-parameters": "set required parameters for the selected dashboards"
+    },
+    "calc-fields": {
+      "aggregated": "Aggregated",
+      "clone": "Clone",
+      "confirm-delete": "Do you want to delete the selected calculated field(s)",
+      "connection-error": "Connectivity to BMC Helix ITSM is not configured.",
+      "delete": "Delete",
+      "details": "Calculated field details",
+      "edit": "Edit",
+      "edit-field": "Edit Calculated Field",
+      "eg": "Eg",
+      "failed": "Failed to get calculated fields",
+      "failure": "Failure",
+      "filter-by-type": "Filter by type (Default All)",
+      "form-name": "Form name",
+      "is-aggregate": "Is aggregate",
+      "is-aggregate-description": "Enable this option if your query includes aggregation functions.",
+      "module": "Module",
+      "module-name": "Module name",
+      "name": "Name",
+      "name-placeholder": "Enter the name of the calculated field",
+      "new-field": "New Calculated Field",
+      "no-calc-fields": "You haven't created any calculated fields yet.",
+      "not-found": "No calculated fields matching your query were found.",
+      "query-info": "Query must be a single column query",
+      "query-not-validated": "Query not validated",
+      "save": "Save",
+      "search-by-name": "Search calculated fields by name",
+      "select-form": "Select form",
+      "select-module": "Select module",
+      "sort-asc": "Alphabetically (A-Z)",
+      "sort-asc-descripton": "Sort results in an alphabetically ascending order",
+      "sort-dsc": "Alphabetically (Z-A)",
+      "sort-dsc-descripton": "Sort results in an alphabetically descending order",
+      "sql-query": "SQL query",
+      "subtitle": "Create and manage calculated fields for ITSM service",
+      "title": "Calculated fields",
+      "unknown-failure": "Unknown failure",
+      "update": "Update",
+      "validate": "Validate",
+      "validation-success": "Query Validated Successfully"
+    },
+    "common": {
+      "cancel": "Cancel",
+      "download": "Download"
+    },
+    "contact-support": "<0>Take a snapshot of the error details given below, and send it to</0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Manage scheduled reports",
+        "reset-filters": "Reset filters",
+        "reset-filters-failure": "Failed to reset filter values.",
+        "save-filters": "Save filters",
+        "save-filters-failure": "Failed to save filter values.",
+        "save-filters-success": "Saved filter values successfully."
+      }
+    },
+    "date-picker": {
+      "description": "Define a date range variable, where users can select any date range",
+      "name": "Date Range"
+    },
+    "export": {
+      "generation-failed": "Failed to generate report, try again later",
+      "grid": "Grid",
+      "landscape": "Landscape",
+      "layout": "Layout",
+      "orientation": "Orientation",
+      "portrait": "Portrait",
+      "reduce-selection": "Please reduce selected variable values for {{variableQuery}} and try again later",
+      "save-as": "Save the {{target}} as {{type}}",
+      "simple": "Simple",
+      "success": "Successfully generated report",
+      "type": "Type",
+      "view": "View"
+    },
+    "manage-dashboards": {
+      "drop-click": "Drag and drop here or click to browse",
+      "import-failed": "Import failed",
+      "serialization-failed": "JSON -> JS Serialization failed",
+      "upload-json": "Upload dashboard JSON file(s)"
+    },
+    "org-custom-config": {
+      "community": "Community",
+      "documentation": "Documentation",
+      "invalid-url": "Invalid URL!",
+      "support": "Support",
+      "video": "Video"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Enter embeded video",
+        "invalid-url": "Not a valid URL",
+        "url": "Video URL"
+      },
+      "bmc-welcome": {
+        "communities": "Communities",
+        "community-description": "Community description",
+        "dashboards": "Dashboards",
+        "documentation": "Documentation",
+        "documentation-description": "Documentation description",
+        "video-description": "Video description",
+        "videos": "Videos"
+      }
+    },
+    "route-error": "Oops... some unexpected error has occurred.",
+    "search": {
+      "comfirm-export": "Do you want to export the {{dashCount}} selected dashboard(s)?",
+      "export": "Export",
+      "export-failed": "Export failed",
+      "export-success": "Exported successfully"
+    },
+    "share-modal": {
+      "loading": "Loading"
+    },
+    "toggle-feature": {
+      "manage-features": "Manage dashboard features"
+    }
+  },
   "clipboard-button": {
     "inline-toast": {
       "success": "Copied"
@@ -92,7 +222,6 @@
     },
     "inspect-stats": {
       "data-title": "Data source stats",
-      "data-traceids": "Trace IDs",
       "processing-time": "Data processing time",
       "queries": "Number of queries",
       "request-time": "Total request time",
@@ -111,6 +240,7 @@
       "save": "Save dashboard",
       "settings": "Dashboard settings",
       "share": "Share dashboard or panel",
+      "tv-button": "Cycle view mode",
       "unmark-favorite": "Unmark as favorite"
     }
   },
@@ -121,7 +251,7 @@
     "preferred": "Connect your preferred data source:",
     "sampleData": "Or set up a new dashboard with sample data",
     "viewAll": "View all",
-    "welcome": "Welcome to Grafana dashboards!"
+    "welcome": "Welcome to BMC Helix Dashboards!"
   },
   "folder-picker": {
     "loading": "Loading folders..."
@@ -198,15 +328,16 @@
       "title": "Alerts & IRM"
     },
     "api-keys": {
-      "subtitle": "Manage and create API keys that are used to interact with Grafana HTTP APIs",
+      "subtitle": "Manage and create API keys that are used to interact with BMC Helix Dashboards HTTP APIs",
       "title": "API keys"
     },
     "apps": {
-      "subtitle": "App plugins that extend the Grafana experience",
+      "subtitle": "App plugins that extend the BMC Helix Dashboards experience",
       "title": "Apps"
     },
     "config": {
-      "title": "Administration"
+      "title": "Administration",
+      "titleBeforeTopnav": "Configuration"
     },
     "correlations": {
       "subtitle": "Add and configure correlations",
@@ -239,12 +370,13 @@
       "title": "Explore"
     },
     "global-orgs": {
-      "subtitle": "Isolated instances of Grafana running on the same server",
+      "subtitle": "Isolated instances of BMC Helix Dashboards running on the same server",
       "title": "Organizations"
     },
     "global-users": {
-      "subtitle": "Manage users in Grafana",
-      "title": "Users"
+      "subtitle": "Manage users in BMC Helix Dashboards",
+      "title": "Users",
+      "titleBeforeTopnav": "Users"
     },
     "help": {
       "title": "Help"
@@ -259,6 +391,9 @@
     "library-panels": {
       "subtitle": "Reusable panels that can be added to multiple dashboards",
       "title": "Library panels"
+    },
+    "manage-dashboards": {
+      "title": "Browse"
     },
     "manage-folder": {
       "subtitle": "Manage folder dashboards and permissions"
@@ -278,14 +413,15 @@
     },
     "org-settings": {
       "subtitle": "Manage preferences across an organization",
-      "title": "Default preferences"
+      "title": "Default preferences",
+      "titleBeforeTopnav": "Preferences"
     },
     "playlists": {
       "subtitle": "Groups of dashboards that are displayed in a sequence",
       "title": "Playlists"
     },
     "plugins": {
-      "subtitle": "Extend the Grafana experience with plugins",
+      "subtitle": "Extend the BMC Helix Dashboards experience with plugins",
       "title": "Plugins"
     },
     "profile/notifications": {
@@ -297,6 +433,7 @@
     "profile/settings": {
       "title": "Profile"
     },
+    "profile/switch-org": "Switch organization",
     "public": {
       "title": "Public dashboards"
     },
@@ -310,13 +447,14 @@
       "title": "Search dashboards"
     },
     "server-settings": {
-      "subtitle": "View the settings defined in your Grafana config",
+      "subtitle": "View the settings defined in your BMC Helix Dashboards config",
       "title": "Settings"
     },
     "service-accounts": {
-      "subtitle": "Use service accounts to run automated workloads in Grafana",
+      "subtitle": "Use service accounts to run automated workloads in BMC Helix Dashboards",
       "title": "Service accounts"
     },
+    "sign-in": "Sign in",
     "sign-out": {
       "title": "Sign out"
     },
@@ -412,6 +550,7 @@
       "sort-placeholder": "Sort",
       "starred": "Starred",
       "view-as-folders": "View by folders",
+      "view-as-grid": "Grid view",
       "view-as-list": "View as list"
     },
     "dashboard-actions": {
@@ -450,7 +589,7 @@
     "embed": {
       "copy": "Copy to clipboard",
       "html": "Embed HTML",
-      "html-description": "The HTML code below can be pasted and included in another web page. Unless anonymous access is enabled, the user viewing that page need to be signed into Grafana for the graph to load.",
+      "html-description": "The HTML code below can be pasted and included in another web page. Unless anonymous access is enabled, the user viewing that page need to be signed into BMC Helix Dashboards for the graph to load.",
       "info": "Generate HTML for embedding an iframe with this panel.",
       "time-range": "Current time range",
       "time-range-description": "Transforms the current relative time range to an absolute time range"
@@ -475,7 +614,6 @@
       "rendered-image": "Direct link rendered image",
       "save-alert": "Dashboard is not saved",
       "save-dashboard": "To render a panel image, you must save the dashboard first.",
-      "shorten-url": "Shorten URL",
       "time-range-description": "Transforms the current relative time range to an absolute time range",
       "time-range-label": "Lock time range"
     },
@@ -596,7 +734,6 @@
   "user-orgs": {
     "current-org-button": "Current",
     "name-column": "Name",
-    "role-column": "Role",
     "select-org-button": "Select organisation",
     "title": "Organizations"
   },

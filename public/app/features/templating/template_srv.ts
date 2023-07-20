@@ -1,28 +1,28 @@
 import { escape, isString, property } from 'lodash';
 
 import {
-  deprecationWarning,
-  ScopedVars,
-  TimeRange,
   AdHocVariableFilter,
   AdHocVariableModel,
-  TypedVariableModel,
   ScopedVar,
+  ScopedVars,
+  TimeRange,
+  TypedVariableModel,
+  deprecationWarning,
 } from '@grafana/data';
 import {
-  getDataSourceSrv,
-  setTemplateSrv,
   TemplateSrv as BaseTemplateSrv,
   VariableInterpolation,
+  getDataSourceSrv,
+  setTemplateSrv,
 } from '@grafana/runtime';
-import { sceneGraph, VariableCustomFormatterFn } from '@grafana/scenes';
+import { VariableCustomFormatterFn, sceneGraph } from '@grafana/scenes';
 import { VariableFormatID } from '@grafana/schema';
 
 import { variableAdapters } from '../variables/adapters';
 import { ALL_VARIABLE_TEXT, ALL_VARIABLE_VALUE } from '../variables/constants';
 import { isAdHoc } from '../variables/guard';
-import { getFilteredVariables, getVariables, getVariableWithName } from '../variables/state/selectors';
-import { variableRegex } from '../variables/utils';
+import { getFilteredVariables, getVariableWithName, getVariables } from '../variables/state/selectors';
+import { dateRangeExtract, variableRegex } from '../variables/utils';
 
 import { formatVariableValue } from './formatVariableValue';
 import { macroRegistry } from './macroRegistry';
@@ -231,11 +231,14 @@ export class TemplateSrv implements BaseTemplateSrv {
     return value;
   }
 
+  // BMC changes - update function definition, emptyValue & customAllValue parameters added
   replace(
     target?: string,
     scopedVars?: ScopedVars,
     format?: string | Function | undefined,
-    interpolations?: VariableInterpolation[]
+    interpolations?: VariableInterpolation[],
+    emptyValue?: string,
+    customAllValue?: boolean
   ): string {
     if (scopedVars && scopedVars.__sceneObject) {
       return sceneGraph.interpolate(
@@ -253,7 +256,15 @@ export class TemplateSrv implements BaseTemplateSrv {
     this.regex.lastIndex = 0;
 
     return this._replaceWithVariableRegex(target, format, (match, variableName, fieldPath, fmt) => {
-      const value = this._evaluateVariableExpression(match, variableName, fieldPath, fmt, scopedVars);
+      const value = this._evaluateVariableExpression(
+        match,
+        variableName,
+        fieldPath,
+        fmt,
+        scopedVars,
+        emptyValue,
+        customAllValue
+      );
 
       // If we get passed this interpolations map we will also record all the expressions that were replaced
       if (interpolations) {
@@ -264,12 +275,15 @@ export class TemplateSrv implements BaseTemplateSrv {
     });
   }
 
+  // BMC changes - update function definition, emptyValue parameter added
   private _evaluateVariableExpression(
     match: string,
     variableName: string,
     fieldPath: string,
     format: string | VariableCustomFormatterFn | undefined,
-    scopedVars: ScopedVars | undefined
+    scopedVars: ScopedVars | undefined,
+    emptyValue?: string,
+    customAllValue?: boolean
   ) {
     const variable = this.getVariableAtIndex(variableName);
     const scopedVar = scopedVars?.[variableName];
@@ -279,7 +293,8 @@ export class TemplateSrv implements BaseTemplateSrv {
       const text = this.getVariableText(scopedVar, value);
 
       if (value !== null && value !== undefined) {
-        return formatVariableValue(value, format, variable, text);
+        // BMC changes - add emptyValue as a parameter
+        return formatVariableValue(value, format, variable, text, emptyValue, customAllValue);
       }
     }
 
@@ -295,12 +310,14 @@ export class TemplateSrv implements BaseTemplateSrv {
       const value = variableAdapters.get(variable.type).getValueForUrl(variable);
       const text = isAdHoc(variable) ? variable.id : variable.current.text;
 
-      return formatVariableValue(value, format, variable, text);
+      // BMC changes - add emptyValue as a parameter
+      return formatVariableValue(value, format, variable, text, emptyValue, customAllValue);
     }
 
     const systemValue = this.grafanaVariables.get(variable.current.value);
     if (systemValue) {
-      return formatVariableValue(systemValue, format, variable);
+      // BMC changes - add emptyValue as a parameter
+      return formatVariableValue(systemValue, format, variable, undefined, emptyValue, customAllValue);
     }
 
     let value = variable.current.value;
@@ -311,18 +328,32 @@ export class TemplateSrv implements BaseTemplateSrv {
       text = ALL_VARIABLE_TEXT;
       // skip formatting of custom all values unless format set to text or percentencode
       if (variable.allValue && format !== VariableFormatID.Text && format !== VariableFormatID.PercentEncode) {
-        return this.replace(value);
+        // BMC changes - add emptyValue as a parameter
+        return this.replace(value, undefined, undefined, undefined, emptyValue, customAllValue);
       }
     }
 
     if (fieldPath) {
       const fieldValue = this.getVariableValue({ value, text }, fieldPath);
       if (fieldValue !== null && fieldValue !== undefined) {
-        return formatVariableValue(fieldValue, format, variable, text);
+        return formatVariableValue(fieldValue, format, variable, text, emptyValue, customAllValue);
       }
     }
-
-    return formatVariableValue(value, format, variable, text);
+    // BMC code
+    if (variable.type === 'datepicker' && (format === 'from' || format === 'to')) {
+      const dateTimeVal = dateRangeExtract(value);
+      switch (format) {
+        case 'from':
+          return dateTimeVal[0] ?? match;
+        case 'to':
+          return dateTimeVal[1] ?? match;
+        default:
+          return match;
+      }
+    }
+    // End
+    // BMC changes - add emptyValue as a parameter
+    return formatVariableValue(value, format, variable, text, emptyValue, customAllValue);
   }
 
   /**

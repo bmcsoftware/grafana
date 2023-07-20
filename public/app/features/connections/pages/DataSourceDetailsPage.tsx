@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { Alert, Badge } from '@grafana/ui';
 import { PluginDetailsPage } from 'app/features/plugins/admin/components/PluginDetailsPage';
+import { isGrafanaAdmin } from 'app/features/plugins/admin/permissions';
 import { StoreState, useSelector, AppNotificationSeverity } from 'app/types';
 
 import { ROUTES } from '../constants';
@@ -12,7 +13,12 @@ export function DataSourceDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navIndex = useSelector((state: StoreState) => state.navIndex);
   const isConnectDataPageOverriden = Boolean(navIndex[overrideNavId]);
-  const navId = isConnectDataPageOverriden ? overrideNavId : 'connections-connect-data'; // The nav id changes (gets a prefix) if it is overriden by a plugin
+  // BMC Change Inline: nav id to your connection for non super admin
+  const navId = isConnectDataPageOverriden
+    ? overrideNavId
+    : isGrafanaAdmin()
+    ? 'connections-connect-data'
+    : 'connections-your-connections'; // The nav id changes (gets a prefix) if it is overriden by a plugin
 
   return (
     <PluginDetailsPage

@@ -310,7 +310,32 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
 
           const v = fields[j].values.get(i);
           if (v !== null) {
-            csv = csv + writers[j](v);
+            // BMC Change: Avoid csv injection
+            // and a regression fix for #DRJ71-5603
+            // and fix for special characters in date format
+            let str = writers[j](v);
+            str = str.replace(" ", ' ');
+            str = str.replace("\u202F", ' ');
+
+            if (str.startsWith('=')) {
+              csv += str.replace('=', ' =');
+              continue;
+            }
+            if (str.startsWith('"=')) {
+              csv += str.replace('"=', '" =');
+              continue;
+            }
+
+            if (str.startsWith('"@')) {
+              csv += str.replace('"@', '" @');
+              continue;
+            }
+            if (str.startsWith('@')) {
+              csv += str.replace('@', ' @');
+              continue;
+            }
+            // BMC Change: end
+            csv += str;
           }
         }
         csv = csv + config.newline;

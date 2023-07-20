@@ -24,10 +24,12 @@ export const SaveProvisionedDashboardForm = ({ dashboard, onCancel }: SaveDashbo
   return (
     <>
       <Stack direction="column" gap={2}>
+        {/* BMC code - inline change */}
         <div>
-          This dashboard cannot be saved from the Grafana UI because it has been provisioned from another source. Copy
+          This dashboard cannot be saved from the BMC Helix Dashboards because it has been provisioned from another source. Copy
           the JSON or save it to a file below, then you can update your dashboard in the provisioning source.
-          <br />
+          {/* BMC code - comment below block */}
+          {/* <br />
           <i>
             See{' '}
             <a
@@ -39,7 +41,7 @@ export const SaveProvisionedDashboardForm = ({ dashboard, onCancel }: SaveDashbo
               documentation
             </a>{' '}
             for more information about provisioning.
-          </i>
+          </i> */}
           <br /> <br />
           <strong>File path: </strong> {dashboard.meta.provisionedExternalId}
         </div>

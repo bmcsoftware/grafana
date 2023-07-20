@@ -67,6 +67,9 @@ func (ss *SQLStore) createUser(ctx context.Context, sess *DBSession, args user.C
 
 	// create user
 	usr = user.User{
+		// BMC Code  Create user with same id as IMS UserId
+		ID: args.Id,
+		// End - Create user with same id as IMS UserId
 		Email:      args.Email,
 		Login:      args.Login,
 		IsAdmin:    args.IsAdmin,

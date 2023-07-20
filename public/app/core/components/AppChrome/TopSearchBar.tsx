@@ -1,16 +1,16 @@
 import { css } from '@emotion/css';
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 import { GrafanaTheme2, locationUtil, textUtil } from '@grafana/data';
 import { Dropdown, ToolbarButton, useStyles2 } from '@grafana/ui';
 import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/core';
-import { useSelector } from 'app/types';
+import { StoreState, useSelector } from 'app/types';
 
 import { Branding } from '../Branding/Branding';
 
-import { NewsContainer } from './News/NewsContainer';
 import { OrganizationSwitcher } from './Organization/OrganizationSwitcher';
 import { QuickAdd } from './QuickAdd/QuickAdd';
 import { SignInLink } from './TopBar/SignInLink';
@@ -19,7 +19,16 @@ import { TopSearchBarSection } from './TopBar/TopSearchBarSection';
 import { TopSearchBarCommandPaletteTrigger } from './TopSearchBarCommandPaletteTrigger';
 import { TOP_BAR_LEVEL_HEIGHT } from './types';
 
-export const TopSearchBar = React.memo(function TopSearchBar() {
+// BMC code start
+const connector = connect((state: StoreState) => {
+  return { configurableLinks: state.dashboard.configurableLinks };
+}, {});
+
+type Props = ConnectedProps<typeof connector>;
+// BMC code start
+
+// BMC code next line: create unconnected component
+const TopSearchBarUnconnected: React.FC<Props> = React.memo(function TopSearchBar({ configurableLinks }) {
   const styles = useStyles2(getStyles);
   const navIndex = useSelector((state) => state.navIndex);
   const location = useLocation();
@@ -48,11 +57,16 @@ export const TopSearchBar = React.memo(function TopSearchBar() {
       <TopSearchBarSection align="right">
         <QuickAdd />
         {helpNode && (
-          <Dropdown overlay={() => <TopNavBarMenu node={helpNode} />} placement="bottom-end">
+          <Dropdown
+            // BMC code next line
+            overlay={() => <TopNavBarMenu node={helpNode} customConfig={configurableLinks} />}
+            placement="bottom-end"
+          >
             <ToolbarButton iconOnly icon="question-circle" aria-label="Help" />
           </Dropdown>
         )}
-        <NewsContainer className={styles.newsButton} />
+        {/* BMC code - next line. Hide News feeds */}
+        {/* <NewsContainer className={styles.newsButton} /> */}
         {!contextSrv.user.isSignedIn && <SignInLink />}
         {profileNode && (
           <Dropdown overlay={() => <TopNavBarMenu node={profileNode} />} placement="bottom-end">
@@ -68,6 +82,9 @@ export const TopSearchBar = React.memo(function TopSearchBar() {
     </div>
   );
 });
+
+// BMC code next line: Create redux connected component
+export const TopSearchBar = connector(TopSearchBarUnconnected);
 
 const getStyles = (theme: GrafanaTheme2) => ({
   layout: css({
