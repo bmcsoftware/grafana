@@ -4,6 +4,7 @@ import { PanelPlugin } from '@grafana/data';
 import { AngularComponent } from '@grafana/runtime';
 import { Dashboard, defaultDashboard } from '@grafana/schema';
 import { processAclItems } from 'app/core/utils/acl';
+import { CustomConfiguration } from 'app/features/org/state/configuration';
 import { DashboardAclDTO, DashboardInitError, DashboardInitPhase, DashboardState } from 'app/types';
 
 import { DashboardModel } from './DashboardModel';
@@ -54,6 +55,14 @@ const dashboardSlice = createSlice({
     addPanel: (state, action: PayloadAction<PanelModel>) => {
       //state.panels[action.payload.id] = { pluginId: action.payload.type };
     },
+    // BMC code
+    updateGainSightUserPreferences: (state, action: PayloadAction<any>) => {
+      state.gainSightUserPreferences = action.payload;
+    },
+    updateConfigurableLinks: (state, action: PayloadAction<CustomConfiguration>) => {
+      state.configurableLinks = action.payload;
+    },
+    // End
     setInitialDatasource: (state, action: PayloadAction<string | undefined>) => {
       state.initialDatasource = action.payload;
     },
@@ -83,6 +92,10 @@ export const {
   dashboardInitServices,
   cleanUpDashboard,
   addPanel,
+  // BMC code start
+  updateGainSightUserPreferences,
+  updateConfigurableLinks,
+  // BMC code end
   setInitialDatasource,
 } = dashboardSlice.actions;
 

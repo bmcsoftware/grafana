@@ -104,6 +104,8 @@ func (s *Service) Create(ctx context.Context, cmd *user.CreateUserCommand) (*use
 
 	// create user
 	usr := &user.User{
+		// BMC Changes - Add user id to create payload.
+		ID:               cmd.Id,
 		Email:            cmd.Email,
 		Name:             cmd.Name,
 		Login:            cmd.Login,

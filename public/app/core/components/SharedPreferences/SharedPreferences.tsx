@@ -19,9 +19,13 @@ import {
   FeatureBadge,
 } from '@grafana/ui';
 import { DashboardPicker } from 'app/core/components/Select/DashboardPicker';
-import { t, Trans } from 'app/core/internationalization';
+import { contextSrv } from 'app/core/core';
+import { Trans, t } from 'app/core/internationalization';
 import { LANGUAGES } from 'app/core/internationalization/constants';
 import { PreferencesService } from 'app/core/services/PreferencesService';
+import { getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
+import { OrgCustomConfiguration } from 'app/features/org/OrgCustomConfiguration';
+import { FEATURE_FLAG_CONFIGURABLE_LINK, customConfigSrv } from 'app/features/org/state/configuration';
 
 export interface Props {
   resourceUri: string;
@@ -30,7 +34,17 @@ export interface Props {
   onConfirm?: () => Promise<boolean>;
 }
 
-export type State = UserPreferencesDTO;
+// BMC code
+export interface BMCUserPreferencesDTO extends UserPreferencesDTO {
+  docLink?: string;
+  supportLink?: string;
+  communityLink?: string;
+  videoLink?: string;
+}
+// end
+
+// BMC code - inline change
+export type State = BMCUserPreferencesDTO;
 
 function getLanguageOptions(): Array<SelectableValue<string>> {
   const languageOptions = LANGUAGES.map((v) => ({
@@ -65,6 +79,12 @@ export class SharedPreferences extends PureComponent<Props, State> {
       weekStart: '',
       language: '',
       queryHistory: { homeTab: '' },
+      // BMC code
+      docLink: '',
+      supportLink: '',
+      communityLink: '',
+      videoLink: '',
+      // End
     };
 
     this.themeOptions = [
@@ -78,6 +98,8 @@ export class SharedPreferences extends PureComponent<Props, State> {
   async componentDidMount() {
     const prefs = await this.service.load();
 
+    // BMC code - next line
+    let config = await customConfigSrv.getCustomConfiguration();
     this.setState({
       homeDashboardUID: prefs.homeDashboardUID,
       theme: prefs.theme,
@@ -85,6 +107,12 @@ export class SharedPreferences extends PureComponent<Props, State> {
       weekStart: prefs.weekStart,
       language: prefs.language,
       queryHistory: prefs.queryHistory,
+      // BMC code
+      communityLink: config.communityLink,
+      docLink: config.docLink,
+      supportLink: config.supportLink,
+      videoLink: config.videoLink,
+      // End
     });
   }
 
@@ -92,8 +120,31 @@ export class SharedPreferences extends PureComponent<Props, State> {
     const confirmationResult = this.props.onConfirm ? await this.props.onConfirm() : true;
 
     if (confirmationResult) {
-      const { homeDashboardUID, theme, timezone, weekStart, language, queryHistory } = this.state;
-      await this.service.update({ homeDashboardUID, theme, timezone, weekStart, language, queryHistory });
+      //BMC Code inline comment
+      const {
+        homeDashboardUID,
+        theme,
+        timezone,
+        weekStart,
+        language,
+        queryHistory,
+        communityLink,
+        docLink,
+        supportLink,
+        videoLink,
+      } = this.state;
+      await this.service.update({
+        homeDashboardUID,
+        theme,
+        timezone,
+        weekStart,
+        language,
+        queryHistory,
+        communityLink,
+        docLink,
+        supportLink,
+        videoLink,
+      });
       window.location.reload();
     }
   };
@@ -126,6 +177,42 @@ export class SharedPreferences extends PureComponent<Props, State> {
     });
   };
 
+  // BMC code
+  onDocLinkChange = (event: any) => {
+    this.setState({ docLink: event.target.value });
+  };
+
+  onCommunityLinkChange = (event: any) => {
+    this.setState({ communityLink: event.target.value });
+  };
+
+  onSupportLinkChange = (event: any) => {
+    this.setState({ supportLink: event.target.value });
+  };
+
+  onVideoLinkChange = (event: any) => {
+    this.setState({ videoLink: event.target.value });
+  };
+
+  onSubmitConfiguration = async () => {
+    if (this.props.resourceUri !== 'org') {
+      return;
+    }
+    const config = this.state;
+    await customConfigSrv.setCustomConfiguration({
+      docLink: config.docLink ?? '',
+      supportLink: config.supportLink ?? '',
+      communityLink: config.communityLink ?? '',
+      videoLink: config.videoLink ?? '',
+    });
+  };
+
+  onSubmitFormCustom = async () => {
+    await this.onSubmitForm();
+    await this.onSubmitConfiguration();
+    window.location.reload();
+  };
+  // End
   render() {
     const { theme, timezone, weekStart, homeDashboardUID, language } = this.state;
     const { disabled } = this.props;
@@ -137,8 +224,10 @@ export class SharedPreferences extends PureComponent<Props, State> {
     }
 
     return (
-      <Form onSubmit={this.onSubmitForm}>
-        {() => {
+      // BMC code - inline change
+      <Form onSubmit={this.onSubmitFormCustom}>
+        {/* BMC code - inline change */}
+        {(form) => {
           return (
             <FieldSet label={<Trans i18nKey="shared-preferences.title">Preferences</Trans>} disabled={disabled}>
               <Field label={t('shared-preferences.fields.theme-label', 'UI Theme')}>
@@ -214,15 +303,33 @@ export class SharedPreferences extends PureComponent<Props, State> {
                 </Field>
               ) : null}
 
-              <div className="gf-form-button-row">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  data-testid={selectors.components.UserProfile.preferencesSaveButton}
-                >
-                  <Trans i18nKey="common.save">Save</Trans>
-                </Button>
-              </div>
+              {/* BMC code */}
+              {this.props.resourceUri === 'org' && getFeatureStatus(FEATURE_FLAG_CONFIGURABLE_LINK) && (
+                <OrgCustomConfiguration
+                  onDocLinkChange={this.onDocLinkChange}
+                  onCommunityLinkChange={this.onCommunityLinkChange}
+                  onSupportLinkChange={this.onSupportLinkChange}
+                  onVideoLinkChange={this.onVideoLinkChange}
+                  communityLink={this.state.communityLink ?? ''}
+                  docLink={this.state.docLink ?? ''}
+                  supportLink={this.state.supportLink ?? ''}
+                  videoLink={this.state.videoLink ?? ''}
+                  {...form}
+                />
+              )}
+
+              {(!contextSrv.isGrafanaAdmin || this.props.resourceUri === 'org') && (
+                <div className="gf-form-button-row">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    data-testid={selectors.components.UserProfile.preferencesSaveButton}
+                  >
+                    <Trans i18nKey="common.save">Save</Trans>
+                  </Button>
+                </div>
+              )}
+              {/* End */}
             </FieldSet>
           );
         }}

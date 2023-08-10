@@ -1,0 +1,138 @@
+{
+  "_comment": "Do not manually edit this file, or update these source phrases in Crowdin. The source of truth for English strings are in the code source",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "No data sources of type {{pluginName}} found",
+      "import": {
+        "import-all-failed": "Import all dashboard failed",
+        "no-import": "No Dashboards Imported"
+      },
+      "import-all": "Import all",
+      "import-failed": "Failed to import the following dashboards",
+      "import-success": "All dashboards are successfully imported",
+      "select-datasource": "Select a {{pluginName}} data source",
+      "set-parameters": "set required parameters for the selected dashboards"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Aggregated",
+      "all": "All",
+      "clone": "Clone",
+      "confirm-delete": "Do you want to delete the selected calculated field(s)",
+      "connection-error": "Connectivity to BMC Helix ITSM is not configured.",
+      "custom": "Custom",
+      "delete": "Delete",
+      "details": "Calculated field details",
+      "edit": "Edit",
+      "edit-field": "Edit Calculated Field",
+      "eg": "Eg",
+      "failed": "Failed to get calculated fields",
+      "failure": "Failure",
+      "filter-by-type": "Filter by type (Default All)",
+      "form-name": "Form name",
+      "is-aggregate": "Is aggregate",
+      "is-aggregate-description": "Enable this option if your query includes aggregation functions.",
+      "module": "Module",
+      "module-name": "Module name",
+      "name": "Name",
+      "name-placeholder": "Enter the name of the calculated field",
+      "new-field": "New Calculated Field",
+      "no-calc-fields": "You haven't created any calculated fields yet.",
+      "not-found": "No calculated fields matching your query were found.",
+      "ootb": "Out-of-the-box",
+      "query-info": "Query must be a single column query",
+      "query-not-validated": "Query not validated",
+      "save": "Save",
+      "search-by-name": "Search calculated fields by name",
+      "select-form": "Select form",
+      "select-module": "Select module",
+      "sort-asc": "Alphabetically (A-Z)",
+      "sort-asc-descripton": "Sort results in an alphabetically ascending order",
+      "sort-dsc": "Alphabetically (Z-A)",
+      "sort-dsc-descripton": "Sort results in an alphabetically descending order",
+      "sort-placeholder": "Sort (Default {{label}})",
+      "sql-query": "SQL query",
+      "subtitle": "Create and manage calculated fields for ITSM service",
+      "title": "Calculated fields",
+      "unknown-failure": "Unknown failure",
+      "update": "Update",
+      "validate": "Validate",
+      "validation-success": "Query Validated Successfully"
+    },
+    "common": {
+      "cancel": "Cancel",
+      "download": "Download"
+    },
+    "contact-support": "<0>Take a snapshot of the error details given below, and send it to</0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Manage scheduled reports",
+        "reset-filters": "Reset filters",
+        "reset-filters-failure": "Failed to reset filter values.",
+        "save-filters": "Save filters",
+        "save-filters-failure": "Failed to save filter values.",
+        "save-filters-success": "Saved filter values successfully."
+      }
+    },
+    "date-picker": {
+      "description": "Define a date range variable, where users can select any date range",
+      "name": "Date Range"
+    },
+    "export": {
+      "generation-failed": "Failed to generate report, try again later",
+      "grid": "Grid",
+      "landscape": "Landscape",
+      "layout": "Layout",
+      "orientation": "Orientation",
+      "portrait": "Portrait",
+      "reduce-selection": "Please reduce selected variable values for {{variableQuery}} and try again later",
+      "save-as": "Save the {{target}} as {{type}}",
+      "simple": "Simple",
+      "success": "Successfully generated report",
+      "type": "Type",
+      "view": "View"
+    },
+    "manage-dashboards": {
+      "drop-click": "Drag and drop here or click to browse",
+      "import-failed": "Import failed",
+      "serialization-failed": "JSON -> JS Serialization failed",
+      "upload-json": "Upload dashboard JSON file(s)"
+    },
+    "org-custom-config": {
+      "community": "Community",
+      "documentation": "Documentation",
+      "invalid-url": "Invalid URL!",
+      "support": "Support",
+      "video": "Video"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Enter embeded video",
+        "invalid-url": "Not a valid URL",
+        "url": "Video URL"
+      },
+      "bmc-welcome": {
+        "communities": "Communities",
+        "community-description": "Community description",
+        "dashboards": "Dashboards",
+        "documentation": "Documentation",
+        "documentation-description": "Documentation description",
+        "video-description": "Video description",
+        "videos": "Videos"
+      }
+    },
+    "route-error": "Oops... some unexpected error has occurred.",
+    "search": {
+      "comfirm-export": "Do you want to export the {{dashCount}} selected dashboard(s)?",
+      "export": "Export",
+      "export-failed": "Export failed",
+      "export-success": "Exported successfully"
+    },
+    "share-modal": {
+      "loading": "Loading"
+    },
+    "toggle-feature": {
+      "manage-features": "Manage dashboard features"
+    }
+  }
+}

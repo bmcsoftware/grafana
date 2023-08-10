@@ -57,7 +57,15 @@ export function NavBarMenuItem({
           {linkContent}
         </Link>
       ) : (
-        <a href={url} target={target} className={elStyle} onClick={onClick} tabIndex={!isMobile ? -1 : 0}>
+        // BMC code - inline change
+        <a
+          href={url}
+          target={target}
+          className={elStyle}
+          onClick={onClick}
+          tabIndex={!isMobile ? -1 : 0}
+          rel="nofollow noopener noreferrer"
+        >
           {linkContent}
         </a>
       );

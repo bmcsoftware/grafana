@@ -3,7 +3,6 @@ package loginservice
 import (
 	"context"
 	"errors"
-
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/login"
@@ -81,6 +80,8 @@ func (ls *Implementation) UpsertUser(ctx context.Context, cmd *login.UpsertUserC
 		}
 
 		createdUser, errCreateUser := ls.userService.Create(ctx, &user.CreateUserCommand{
+			// BMC Change - Add user id to query
+			Id:           extUser.UserId,
 			Login:        extUser.Login,
 			Email:        extUser.Email,
 			Name:         extUser.Name,
@@ -220,11 +221,13 @@ func (ls *Implementation) updateUser(ctx context.Context, usr *user.User, extUse
 	}
 
 	needsUpdate := false
-	if extUser.Login != "" && extUser.Login != usr.Login {
-		updateCmd.Login = extUser.Login
-		usr.Login = extUser.Login
-		needsUpdate = true
-	}
+	// Bmc Code Start -  Since Portal does not allow Login update, Dashboards will follow the same
+	//if extUser.Login != "" && strings.ToLower(extUser.Login) != strings.ToLower(usr.Login) {
+	//	updateCmd.Login = extUser.Login
+	//	usr.Login = extUser.Login
+	//	needsUpdate = true
+	//}
+	// Bmc code end
 
 	if extUser.Email != "" && extUser.Email != usr.Email {
 		updateCmd.Email = extUser.Email

@@ -1,0 +1,138 @@
+{
+  "_comment": "No edite este archivo manualmente ni actualice estas frases de la fuente en Crowdin. La fuente única de la verdad para las cadenas en inglés están en el código fuente.",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "No se han encontrado fuentes de datos del tipo {{pluginName}}.",
+      "import": {
+        "import-all-failed": "Error al importar todos los paneles",
+        "no-import": "No se ha importado ningún panel."
+      },
+      "import-all": "Importar todo",
+      "import-failed": "Error al importar los siguientes paneles",
+      "import-success": "Todos los paneles se han importado correctamente.",
+      "select-datasource": "Seleccione una fuente de datos de {{pluginName}}",
+      "set-parameters": "Establecer los parámetros requeridos para los paneles seleccionados"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Agregado",
+      "all": "Todo",
+      "clone": "Clonar",
+      "confirm-delete": "¿Desea eliminar los campos calculados seleccionados?",
+      "connection-error": "La conexión a BMC Helix ITSM no está configurada.",
+      "custom": "Personalizado",
+      "delete": "Eliminar",
+      "details": "Detalles del campo calculado",
+      "edit": "Editar",
+      "edit-field": "Editar campo calculado",
+      "eg": "Ej.",
+      "failed": "Error al obtener los campos calculados",
+      "failure": "Fallo",
+      "filter-by-type": "Filtrar por tipo (Predeterminado: Todo)",
+      "form-name": "Nombre de formulario",
+      "is-aggregate": "Está agregado",
+      "is-aggregate-description": "Habilite esta opción si su consulta incluye funciones de agregación.",
+      "module": "Módulo",
+      "module-name": "Nombre de módulo",
+      "name": "Nombre",
+      "name-placeholder": "Introduzca el nombre del campo calculado",
+      "new-field": "Nuevo campo calculado",
+      "no-calc-fields": "Aún no ha creado ningún campo calculado.",
+      "not-found": "No se ha encontrado ningún campo calculado que coincida con su consulta.",
+      "ootb": "Preconfigurado",
+      "query-info": "La consulta debe ser de una sola columna.",
+      "query-not-validated": "Consulta no validada",
+      "save": "Guardar",
+      "search-by-name": "Buscar campos calculados por nombre",
+      "select-form": "Seleccionar formulario",
+      "select-module": "Seleccionar módulo",
+      "sort-asc": "Alfabéticamente (A-Z)",
+      "sort-asc-descripton": "Ordenar los resultados en orden alfabético ascendente",
+      "sort-dsc": "Alfabéticamente (Z-A)",
+      "sort-dsc-descripton": "Ordenar los resultados en orden alfabético descendente",
+      "sort-placeholder": "Predeterminado ({{label}} predeterminado)",
+      "sql-query": "Consulta SQL",
+      "subtitle": "Crea y gestiona campos calculados para el servicio ITSM",
+      "title": "Campos calculados",
+      "unknown-failure": "Fallo desconocido",
+      "update": "Actualizar",
+      "validate": "Validar",
+      "validation-success": "La consulta se ha validado correctamente"
+    },
+    "common": {
+      "cancel": "Cancelar",
+      "download": "Descargar"
+    },
+    "contact-support": "<0>Haga una instantánea de los detalles del error que se muestran a continuación y envíela a equipo de </0><1>soporte de BMC.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Gestionar informes programados",
+        "reset-filters": "Restablecer filtros",
+        "reset-filters-failure": "Error al restablecer los valores de los filtros.",
+        "save-filters": "Guardar filtros",
+        "save-filters-failure": "Error al guardar los valores de los filtros.",
+        "save-filters-success": "Valores de los filtros guardados correctamente."
+      }
+    },
+    "date-picker": {
+      "description": "Defina una variable para un rango de fechas, en la que los usuarios puedan seleccionar cualquier rango.",
+      "name": "Rango de fechas"
+    },
+    "export": {
+      "generation-failed": "Error al generar el informe; inténtelo de nuevo más tarde.",
+      "grid": "Malla",
+      "landscape": "Horizontal",
+      "layout": "Diseño",
+      "orientation": "Orientación",
+      "portrait": "Vertical",
+      "reduce-selection": "Reduzca los valores de la variable seleccionada en {{variableQuery}} e inténtelo de nuevo más tarde.",
+      "save-as": "Guardar {{target}} como {{type}}",
+      "simple": "Simple",
+      "success": "Informe generado correctamente",
+      "type": "Tipo",
+      "view": "Ver"
+    },
+    "manage-dashboards": {
+      "drop-click": "Arrastre y coloque aquí o haga clic para examinar.",
+      "import-failed": "Error de importación",
+      "serialization-failed": "JSON -> Error en la serialización de JS",
+      "upload-json": "Cargar archivo(s) JSON del panel"
+    },
+    "org-custom-config": {
+      "community": "Comunidad",
+      "documentation": "Documentación",
+      "invalid-url": "URL no válida",
+      "support": "Soporte",
+      "video": "Vídeo"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Introducir vídeo incrustado",
+        "invalid-url": "No es una URL válida",
+        "url": "URL del vídeo"
+      },
+      "bmc-welcome": {
+        "communities": "Comunidades",
+        "community-description": "Descripción de la comunidad",
+        "dashboards": "Paneles",
+        "documentation": "Documentación",
+        "documentation-description": "Descripción de la documentación",
+        "video-description": "Descripción del vídeo",
+        "videos": "Vídeos"
+      }
+    },
+    "route-error": "Se ha producido un error inesperado.",
+    "search": {
+      "comfirm-export": "¿Desea exportar los paneles seleccionados ({{dashCount}})?",
+      "export": "Exportar",
+      "export-failed": "Error de importación",
+      "export-success": "Exportación realizada correctamente"
+    },
+    "share-modal": {
+      "loading": "Cargando"
+    },
+    "toggle-feature": {
+      "manage-features": "Gestionar funciones del panel"
+    }
+  }
+}

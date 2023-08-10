@@ -47,7 +47,8 @@ const NavBarItem = ({ isActive = false, className, reverseMenuDirection = false,
       if (!target && url.startsWith('/')) {
         locationService.push(locationUtil.stripBaseFromUrl(url));
       } else {
-        window.open(url, target);
+        // BMC code - inline change
+        window.open(url, target, 'noreferrer noopener nofollow popup=0');
       }
     }
   };

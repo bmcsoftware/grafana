@@ -78,6 +78,13 @@ func (s *ServiceImpl) processAppPlugin(plugin plugins.PluginDTO, c *contextmodel
 		PluginID:   plugin.ID,
 	}
 
+	// BMC Code: to set icon instead of img for Report plugin
+	if plugin.ID == "reports" {
+		appLink.Img = ""
+		appLink.Icon = "bmc-reports"
+	}
+	// BMC Code: End
+
 	if topNavEnabled {
 		appLink.Url = s.cfg.AppSubURL + "/a/" + plugin.ID
 	} else {
@@ -208,7 +215,7 @@ func (s *ServiceImpl) addPluginToSection(c *contextmodel.ReqContext, treeRoot *n
 			treeRoot.AddSection(&navtree.NavLink{
 				Text:       "Apps",
 				Icon:       "layer-group",
-				SubTitle:   "App plugins that extend the Grafana experience",
+				SubTitle:   "App plugins that extend the BMC Helix Dashboards experience",
 				Id:         navtree.NavIDApps,
 				Children:   []*navtree.NavLink{appLink},
 				Section:    navtree.NavSectionCore,
@@ -277,6 +284,8 @@ func (s *ServiceImpl) readNavigationSettings() {
 		"grafana-cloud-link-app":           {SectionID: navtree.NavIDCfg},
 		"grafana-easystart-app":            {SectionID: navtree.NavIDRoot, SortWeight: navtree.WeightApps + 1, Text: "Connections", Icon: "adjust-circle"},
 		"k6-app":                           {SectionID: navtree.NavIDRoot, SortWeight: navtree.WeightAlertsAndIncidents + 1, Text: "Performance testing", Icon: "k6"},
+		// BMC Code Next line: To add reports plugin on root
+		"reports": {SectionID: navtree.NavIDRoot},
 	}
 
 	s.navigationAppPathConfig = map[string]NavigationAppConfig{

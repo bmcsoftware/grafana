@@ -46,8 +46,16 @@ export const Permissions = ({
   const [items, setItems] = useState<ResourcePermission[]>([]);
   const [desc, setDesc] = useState(INITIAL_DESCRIPTION);
 
+  // BMC Change: Below function inline
   const fetchItems = useCallback(() => {
-    return getPermissions(resource, resourceId).then((r) => setItems(r));
+    return getPermissions(resource, resourceId).then((r) => {
+      if (resource === 'teams' && r.length > 1000) {
+        const trimmedList = r.slice(0, 1000);
+        setItems(trimmedList);
+      } else {
+        setItems(r);
+      }
+    });
   }, [resource, resourceId]);
 
   useEffect(() => {

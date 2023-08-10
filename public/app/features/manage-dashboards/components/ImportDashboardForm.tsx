@@ -35,6 +35,9 @@ interface Props extends Pick<FormAPI<ImportDashboardDTO>, 'register' | 'errors' 
   onCancel: () => void;
   onUidReset: () => void;
   onSubmit: FormsOnSubmit<ImportDashboardDTO>;
+  // BMC Code: Next line
+  isMultiple?: boolean;
+  inputsToPersist?: any[];
 }
 
 export const ImportDashboardForm = ({
@@ -49,6 +52,9 @@ export const ImportDashboardForm = ({
   onCancel,
   onSubmit,
   watch,
+    // BMC Code: Next 2 line
+    isMultiple,
+    inputsToPersist,
 }: Props) => {
   const [isSubmitted, setSubmitted] = useState(false);
   const watchDataSources = watch('dataSources');
@@ -68,7 +74,8 @@ export const ImportDashboardForm = ({
 
   return (
     <>
-      <Legend>Options</Legend>
+      {/* BMC Code: Next line */}
+      {!isMultiple ? <Legend>Options</Legend> : null}
       <Field label="Name" invalid={!!errors.title} error={errors.title && errors.title.message}>
         <Input
           {...register('title', {
@@ -115,6 +122,10 @@ export const ImportDashboardForm = ({
           }
           const dataSourceOption = `dataSources[${index}]`;
           const current = watchDataSources ?? [];
+          // BMC Code : Next block
+          const currDs = inputsToPersist?.find((item: any) => {
+            return item.pluginId === input.pluginId && item.type === input.type;
+          });
           return (
             <Field
               label={input.label}
@@ -130,7 +141,8 @@ export const ImportDashboardForm = ({
                     noDefault={true}
                     placeholder={input.info}
                     pluginId={input.pluginId}
-                    current={current[index]?.uid}
+                    // BMC Code: Inline
+                    current={current[index]?.uid ?? currDs?.value}
                   />
                 )}
                 control={control}
@@ -142,6 +154,12 @@ export const ImportDashboardForm = ({
       {inputs.constants &&
         inputs.constants.map((input: DashboardInput, index) => {
           const constantIndex = `constants[${index}]`;
+          // BMC Code : Next block
+          const currConst =
+            isMultiple &&
+            inputsToPersist?.find((item: any) => {
+              return item.name === input.name && item.type === input.type;
+            });
           return (
             <Field
               label={input.label}
@@ -149,7 +167,11 @@ export const ImportDashboardForm = ({
               invalid={errors.constants && !!errors.constants[index]}
               key={constantIndex}
             >
-              <Input {...register(constantIndex as any, { required: true })} defaultValue={input.value} />
+              <Input
+                {...register(constantIndex as any, { required: true })}
+                // BMC Code: Inline
+                defaultValue={currConst?.value ?? input.value}
+              />
             </Field>
           );
         })}
@@ -174,10 +196,11 @@ export const ImportDashboardForm = ({
             setSubmitted(true);
           }}
         >
-          {getButtonText(errors)}
+          {getButtonText(errors, isMultiple)}
         </Button>
         <Button type="reset" variant="secondary" onClick={onCancel}>
-          Cancel
+          {/* BMC Code: Next line */}
+          {isMultiple ? 'Delete' : 'Cancel'}
         </Button>
       </HorizontalGroup>
     </>
@@ -188,6 +211,9 @@ function getButtonVariant(errors: FormFieldErrors<ImportDashboardDTO>) {
   return errors && (errors.title || errors.uid) ? 'destructive' : 'primary';
 }
 
-function getButtonText(errors: FormFieldErrors<ImportDashboardDTO>) {
-  return errors && (errors.title || errors.uid) ? 'Import (Overwrite)' : 'Import';
+// BMC Code: Inline function
+function getButtonText(errors: FormFieldErrors<ImportDashboardDTO>, isMultiple?: boolean) {
+  return errors && (errors.title || errors.uid)
+    ? `${!isMultiple ? 'Import' : 'Save'} (Overwrite)`
+    : `${!isMultiple ? 'Import' : 'Save'}`;
 }

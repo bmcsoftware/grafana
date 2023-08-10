@@ -47,6 +47,8 @@ import * as alertListPanel from 'app/plugins/panel/alertlist/module';
 import * as annoListPanel from 'app/plugins/panel/annolist/module';
 import * as barChartPanel from 'app/plugins/panel/barchart/module';
 import * as barGaugePanel from 'app/plugins/panel/bargauge/module';
+import * as bmcVideoPanel from 'app/plugins/panel/bmcvideo/module';
+import * as bmcwelcomeBanner from 'app/plugins/panel/bmcwelcome/module';
 import * as candlestickPanel from 'app/plugins/panel/candlestick/module';
 import * as dashListPanel from 'app/plugins/panel/dashlist/module';
 import * as debugPanel from 'app/plugins/panel/debug/module';
@@ -133,6 +135,10 @@ const builtInPlugins: any = {
   'app/plugins/panel/logs/module': logsPanel,
   'app/plugins/panel/traces/module': tracesPanel,
   'app/plugins/panel/welcome/module': welcomeBanner,
+  // BMC code
+  'app/plugins/panel/bmcwelcome/module': bmcwelcomeBanner,
+  'app/plugins/panel/bmcvideo/module': bmcVideoPanel,
+  // End
   'app/plugins/panel/nodeGraph/module': nodeGraph,
   'app/plugins/panel/histogram/module': histogramPanel,
   'app/plugins/panel/alertGroups/module': alertGroupsPanel,

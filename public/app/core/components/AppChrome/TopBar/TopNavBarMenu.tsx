@@ -5,17 +5,19 @@ import { useLocation } from 'react-router-dom';
 
 import { GrafanaTheme2, NavModelItem } from '@grafana/data';
 import { Menu, MenuItem, useStyles2 } from '@grafana/ui';
+import { CustomConfiguration } from 'app/features/org/state/configuration';
 
 import { enrichConfigItems, enrichWithInteractionTracking } from '../../NavBar/utils';
 
 export interface TopNavBarMenuProps {
   node: NavModelItem;
+  customConfig?: CustomConfiguration;
 }
 
-export function TopNavBarMenu({ node: nodePlain }: TopNavBarMenuProps) {
+export function TopNavBarMenu({ node: nodePlain, customConfig }: TopNavBarMenuProps) {
   const styles = useStyles2(getStyles);
   const location = useLocation();
-  const enriched = enrichConfigItems([cloneDeep(nodePlain)], location);
+  const enriched = enrichConfigItems([cloneDeep(nodePlain)], location, customConfig);
   const node = enrichWithInteractionTracking(enriched[0], false);
 
   if (!node) {

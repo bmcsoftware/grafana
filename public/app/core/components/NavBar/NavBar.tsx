@@ -9,6 +9,7 @@ import { GrafanaTheme2, locationUtil, NavModelItem, NavSection, textUtil } from 
 import { config, locationSearchToObject, locationService, reportInteraction } from '@grafana/runtime';
 import { useTheme2, CustomScrollbar, IconButton } from '@grafana/ui';
 import { getKioskMode } from 'app/core/navigation/kiosk';
+import { customConfigSrv } from 'app/features/org/state/configuration';
 import { useSelector } from 'app/types';
 
 import NavBarItem from './NavBarItem';
@@ -25,6 +26,7 @@ import {
   isMatchOrChildMatch,
   isSearchActive,
   SEARCH_ITEM_ID,
+  prepareLogoColor,
 } from './utils';
 
 const onOpenSearch = () => {
@@ -74,9 +76,29 @@ export const NavBar = React.memo(() => {
   const pluginItems = navTree
     .filter((item) => item.section === NavSection.Plugin)
     .map((item) => enrichWithInteractionTracking(item, menuOpen));
+  // BMC code
+  const [footerLinkData, setFooterLinkData] = useState<any>();
+  const [BHDVersion, SetBHDVersion] = useState<string | undefined>(undefined);
+
+  React.useEffect(() => {
+    const isSelected = location.pathname.includes('/a/reports');
+    prepareLogoColor(isSelected);
+  }, [location.pathname]);
+
+  React.useEffect(() => {
+    customConfigSrv.getCustomConfiguration().then((data) => {
+      setFooterLinkData(data);
+    });
+    customConfigSrv.getDashboardsHealth().then((data) => {
+      SetBHDVersion(data.adeVersion);
+    });
+  }, []);
+  // End
   const configItems = enrichConfigItems(
     navTree.filter((item) => item.section === NavSection.Config),
-    location
+    location,
+    // BMC code - next line
+    footerLinkData
   ).map((item) => enrichWithInteractionTracking(item, menuOpen));
 
   const activeItem = isSearchActive(location) ? searchItem : getActiveItem(navTree, location.pathname);
@@ -152,7 +174,10 @@ export const NavBar = React.memo(() => {
                     key={`${link.id}-${index}`}
                     isActive={isMatchOrChildMatch(link, activeItem)}
                     reverseMenuDirection
-                    link={link}
+                    // BMC code
+                    // link={link}
+                    link={{ ...link, subTitle: link.id === 'help' && BHDVersion ? `v. ${BHDVersion}` : undefined }}
+                    // End
                     className={cx({ [styles.verticalSpacer]: index === 0 })}
                   />
                 ))}

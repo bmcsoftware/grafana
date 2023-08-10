@@ -62,6 +62,11 @@ function addExtractedFields(frame: DataFrame, options: ExtractFieldsOptions): Da
         obj = {}; // empty
       }
     }
+    // BMC change starts: Null and Empty check
+    if (obj === null || obj === undefined) {
+      continue;
+    }
+    // BMC change ends
 
     if (options.format === FieldExtractorID.JSON && options.jsonPaths && options.jsonPaths?.length > 0) {
       const newObj: { [k: string]: unknown } = {};

@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { DataSourcePluginMeta } from '@grafana/data';
-import { config } from '@grafana/runtime';
-import { LinkButton } from '@grafana/ui';
+// import { LinkButton } from '@grafana/ui';
+// import { config } from '@grafana/runtime';
 import { DataSourcePluginCategory } from 'app/types';
 
-import { ROUTES } from '../../connections/constants';
+// import { ROUTES } from '../../connections/constants';
 
 import { DataSourceTypeCardList } from './DataSourceTypeCardList';
 
@@ -18,9 +18,10 @@ export type Props = {
 };
 
 export function DataSourceCategories({ categories, onClickDataSourceType }: Props) {
-  const moreDataSourcesLink = config.featureToggles.dataConnectionsConsole
-    ? `${ROUTES.ConnectData}?cat=data-source`
-    : '/plugins?filterBy=all&filterByType=datasource&utm_source=grafana_add_ds';
+  // BMC Code: Commented next line.
+  // const moreDataSourcesLink = config.featureToggles.dataConnectionsConsole
+  //   ? `${ROUTES.ConnectData}?cat=data-source`
+  //   : '/plugins?filterBy=all&filterByType=datasource&utm_source=grafana_add_ds';
 
   return (
     <>
@@ -34,12 +35,17 @@ export function DataSourceCategories({ categories, onClickDataSourceType }: Prop
         </div>
       ))}
 
-      {/* Find more */}
-      <div className="add-data-source-more">
+      {/* 
+        // BMC code 
+        // Hide this option
+        // Find more
+        <div className="add-data-source-more">
         <LinkButton variant="secondary" href={moreDataSourcesLink} target="_self" rel="noopener">
           Find more data source plugins
         </LinkButton>
-      </div>
+        </div>
+        // End 
+      */}
     </>
   );
 }
