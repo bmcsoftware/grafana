@@ -32,6 +32,8 @@ type Preference struct {
 	Created         time.Time           `db:"created"`
 	Updated         time.Time           `db:"updated"`
 	JSONData        *PreferenceJSONData `xorm:"json_data" db:"json_data"`
+	// BMC code -next line: for localization, auto set locale header of ITSM
+	IsLanguageSet   bool                `xorm:"-"`
 }
 
 func (p Preference) Cookies(typ string) bool {

@@ -1,5 +1,6 @@
 import { LoadingState } from './data';
 import { DataSourceRef } from './query';
+import { TimeRange } from './time';
 
 export type VariableType = TypedVariableModel['type'];
 
@@ -20,7 +21,8 @@ export type TypedVariableModel =
   | CustomVariableModel
   | UserVariableModel
   | OrgVariableModel
-  | DashboardVariableModel;
+  | DashboardVariableModel
+  | DatePickerVariableModel;
 
 export enum VariableRefresh {
   never, // removed from the UI
@@ -158,3 +160,11 @@ export interface BaseVariableModel {
   error: any | null;
   description: string | null;
 }
+
+// BMC code
+export interface DatePickerVariableModel extends VariableWithOptions {
+  type: 'datepicker';
+  originalQuery: TimeRange | null;
+}
+
+// End

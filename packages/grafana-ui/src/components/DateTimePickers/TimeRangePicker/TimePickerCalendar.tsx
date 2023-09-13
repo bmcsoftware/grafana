@@ -65,6 +65,10 @@ export interface TimePickerCalendarProps {
   isReversed?: boolean;
 }
 
+// BMC Code: Next function
+// Reverted this change from old grafana version to support DRJ71-7631
+const stopPropagation = (event: React.MouseEvent<HTMLDivElement>) => event.stopPropagation();
+
 function TimePickerCalendar(props: TimePickerCalendarProps) {
   const theme = useTheme2();
   const { modalBackdrop } = getModalStyles(theme);
@@ -93,7 +97,14 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {
   if (isFullscreen) {
     return (
       <FocusScope contain restoreFocus autoFocus>
-        <section className={styles.container} ref={ref} {...overlayProps} {...dialogProps}>
+        {/* BMC Code Inline: Reverted this change from old grafana version to support DRJ71-7631 */}
+        <section
+          className={styles.container + ' override'}
+          onClick={stopPropagation}
+          ref={ref}
+          {...overlayProps}
+          {...dialogProps}
+        >
           <Header {...props} />
           <Body {...props} />
         </section>
@@ -105,7 +116,8 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {
     <OverlayContainer>
       <div className={modalBackdrop} />
       <FocusScope contain autoFocus restoreFocus>
-        <section className={styles.modal} ref={ref} {...overlayProps} {...dialogProps}>
+        {/* BMC Code Inline: Reverted this change from old grafana version to support DRJ71-7631 */}
+        <section className={styles.modal} onClick={stopPropagation} ref={ref} {...overlayProps} {...dialogProps}>
           <div className={styles.content} aria-label={selectors.components.TimePicker.calendar.label}>
             <Header {...props} />
             <Body {...props} />

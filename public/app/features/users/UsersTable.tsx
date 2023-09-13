@@ -48,9 +48,11 @@ export const UsersTable = ({ users, orgId, onRoleChange, onRemoveUser }: Props) 
             <th>Email</th>
             <th>Name</th>
             <th>Seen</th>
-            <th>Role</th>
+            {/* BMC code - inline change */}
+            {config.buildInfo.env === 'development' && <th>Role</th>}
             <th style={{ width: '34px' }} />
-            <th>Origin</th>
+            {/* BMC code - inline change */}
+            {config.buildInfo.env === 'development' && <th>Origin</th>}
             <th></th>
           </tr>
         </thead>
@@ -83,49 +85,52 @@ export const UsersTable = ({ users, orgId, onRoleChange, onRemoveUser }: Props) 
                   </span>
                 </td>
                 <td className="width-1">{user.lastSeenAtAge}</td>
+                {/* BMC code - next line */}
+                {config.buildInfo.env === 'development' && (
+                  <>
+                    <td className="width-8">
+                      {contextSrv.licensedAccessControlEnabled() ? (
+                        <UserRolePicker
+                          userId={user.userId}
+                          orgId={orgId}
+                          roleOptions={roleOptions}
+                          basicRole={user.role}
+                          onBasicRoleChange={(newRole) => onRoleChange(newRole, user)}
+                          basicRoleDisabled={basicRoleDisabled}
+                        />
+                      ) : (
+                        <OrgRolePicker
+                          aria-label="Role"
+                          value={user.role}
+                          disabled={basicRoleDisabled}
+                          onChange={(newRole) => onRoleChange(newRole, user)}
+                        />
+                      )}
+                    </td>
 
-                <td className="width-8">
-                  {contextSrv.licensedAccessControlEnabled() ? (
-                    <UserRolePicker
-                      userId={user.userId}
-                      orgId={orgId}
-                      roleOptions={roleOptions}
-                      basicRole={user.role}
-                      onBasicRoleChange={(newRole) => onRoleChange(newRole, user)}
-                      basicRoleDisabled={basicRoleDisabled}
-                    />
-                  ) : (
-                    <OrgRolePicker
-                      aria-label="Role"
-                      value={user.role}
-                      disabled={basicRoleDisabled}
-                      onChange={(newRole) => onRoleChange(newRole, user)}
-                    />
-                  )}
-                </td>
+                    <td className="width-1 text-center">
+                      {user.isDisabled && <span className="label label-tag label-tag--gray">Disabled</span>}
+                    </td>
 
-                <td className="width-1 text-center">
-                  {user.isDisabled && <span className="label label-tag label-tag--gray">Disabled</span>}
-                </td>
-
-                <td className="width-1">
-                  {Array.isArray(user.authLabels) && user.authLabels.length > 0 && (
-                    <TagBadge label={user.authLabels[0]} removeIcon={false} count={0} />
-                  )}
-                </td>
-
-                {contextSrv.hasPermissionInMetadata(AccessControlAction.OrgUsersRemove, user) && (
-                  <td className="text-right">
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => {
-                        setUserToRemove(user);
-                      }}
-                      icon="times"
-                      aria-label="Delete user"
-                    />
-                  </td>
+                    <td className="width-1">
+                      {Array.isArray(user.authLabels) && user.authLabels.length > 0 && (
+                        <TagBadge label={user.authLabels[0]} removeIcon={false} count={0} />
+                      )}
+                    </td>
+                    {contextSrv.hasPermissionInMetadata(AccessControlAction.OrgUsersRemove, user) && (
+                      <td className="text-right">
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            setUserToRemove(user);
+                          }}
+                          icon="times"
+                          aria-label="Delete user"
+                        />
+                      </td>
+                    )}
+                  </>
                 )}
               </tr>
             );
