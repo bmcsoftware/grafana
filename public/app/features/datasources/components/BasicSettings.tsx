@@ -19,12 +19,13 @@ export function BasicSettings({
   isDefault,
   onDefaultChange,
   onNameChange,
-  alertingSupported,
   disabled,
 }: Props) {
   return (
-    <>
-      <AlertingEnabled enabled={alertingSupported} />
+<>
+      {/* BMC Code 
+      Helix dashboard is not using alerting feature of grafana so we don't need this label
+      {<AlertingEnabled enabled={alertingSupported} />} */}
 
       <div className="gf-form-group" aria-label="Datasource settings page basic settings">
         <div className="gf-form-inline">

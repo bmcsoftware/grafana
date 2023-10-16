@@ -277,4 +277,10 @@ export const Pages = {
       url: '/admin/users',
     },
   },
+    // BMC code :
+    Reports: {
+      url: '/reports',
+      reports: (title: string) => `Report search item ${title}`,
+    },
+    // End
 };
