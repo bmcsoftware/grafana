@@ -76,7 +76,8 @@ export const TimePickerContentWithScreenSize = (props: PropsWithScreenSize) => {
   };
 
   return (
-    <div id="TimePickerContent" className={cx(styles.container, className)}>
+    // BMC Code - inline change
+    <div id="TimePickerContent" className={cx(styles.container, className) + ' override'}>
       <div className={styles.body}>
         {(!isFullscreen || !hideQuickRanges) && (
           <div className={styles.rightSide}>

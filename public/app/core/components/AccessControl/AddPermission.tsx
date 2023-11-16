@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
+import { config } from '@grafana/runtime/src/config';
 import { Button, Form, HorizontalGroup, Select } from '@grafana/ui';
 import { CloseButton } from 'app/core/components/CloseButton/CloseButton';
 import { TeamPicker } from 'app/core/components/Select/TeamPicker';
@@ -31,7 +32,10 @@ export const AddPermission = ({ title = 'Add Permission For', permissions, assig
     if (assignments.teams) {
       options.push({ value: PermissionTarget.Team, label: 'Team' });
     }
-    if (assignments.builtInRoles) {
+    // BMC code - changes related to MSP
+    const user = config.bootData.user as any;
+    if (assignments.builtInRoles && !user.hasExternalOrg && !user.isOrg0User) {
+      // BMC code - end
       options.push({ value: PermissionTarget.BuiltInRole, label: 'Role' });
     }
     return options;

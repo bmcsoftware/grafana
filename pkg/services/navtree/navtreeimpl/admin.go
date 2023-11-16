@@ -60,13 +60,16 @@ func (s *ServiceImpl) getOrgAdminNode(c *contextmodel.ReqContext) (*navtree.NavL
 
 	// FIXME: while we don't have a permissions for listing plugins the legacy check has to stay as a default
 	if pluginaccesscontrol.ReqCanAdminPlugins(s.cfg)(c) || hasAccess(pluginaccesscontrol.ReqCanAdminPlugins(s.cfg), pluginaccesscontrol.AdminAccessEvaluator) {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "Plugins",
-			Id:       "plugins",
-			SubTitle: "Extend the Grafana experience with plugins",
-			Icon:     "plug",
-			Url:      s.cfg.AppSubURL + "/plugins",
-		})
+		// BMC Change: Add this nav node for grafana admin only
+		if ac.ReqGrafanaAdmin(c) {
+			configNodes = append(configNodes, &navtree.NavLink{
+				Text:     "Plugins",
+				Id:       "plugins",
+				SubTitle: "Extend the BMC Helix Dashboards experience with plugins",
+				Icon:     "plug",
+				Url:      s.cfg.AppSubURL + "/plugins",
+			})
+		}
 	}
 
 	if hasAccess(ac.ReqOrgAdmin, ac.OrgPreferencesAccessEvaluator) {
@@ -79,29 +82,33 @@ func (s *ServiceImpl) getOrgAdminNode(c *contextmodel.ReqContext) (*navtree.NavL
 		})
 	}
 
-	disabled, err := s.apiKeyService.IsDisabled(c.Req.Context(), c.OrgID)
-	if err != nil {
-		return nil, err
-	}
-	if hasAccess(ac.ReqOrgAdmin, ac.ApiKeyAccessEvaluator) && !disabled {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "API keys",
-			Id:       "apikeys",
-			SubTitle: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
-			Icon:     "key-skeleton-alt",
-			Url:      s.cfg.AppSubURL + "/org/apikeys",
-		})
-	}
+	// BMC code
+	/*
+		disabled, err := s.apiKeyService.IsDisabled(c.Req.Context(), c.OrgID)
+		if err != nil {
+			return nil, err
+		}
+		if hasAccess(ac.ReqOrgAdmin, ac.ApiKeyAccessEvaluator) && !disabled {
+			configNodes = append(configNodes, &navtree.NavLink{
+				Text:     "API keys",
+				Id:       "apikeys",
+				SubTitle: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
+				Icon:     "key-skeleton-alt",
+				Url:      s.cfg.AppSubURL + "/org/apikeys",
+			})
+		}
 
-	if enableServiceAccount(s, c) {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "Service accounts",
-			Id:       "serviceaccounts",
-			SubTitle: "Use service accounts to run automated workloads in Grafana",
-			Icon:     "gf-service-account",
-			Url:      s.cfg.AppSubURL + "/org/serviceaccounts",
-		})
-	}
+			if enableServiceAccount(s, c) {
+				configNodes = append(configNodes, &navtree.NavLink{
+					Text:     "Service accounts",
+					Id:       "serviceaccounts",
+					SubTitle: "Use service accounts to run automated workloads in Grafana",
+					Icon:     "gf-service-account",
+					Url:      s.cfg.AppSubURL + "/org/serviceaccounts",
+				})
+			}
+	*/
+	// End
 
 	configNode := &navtree.NavLink{
 		Id:         navtree.NavIDCfg,
@@ -125,26 +132,26 @@ func (s *ServiceImpl) getServerAdminNode(c *contextmodel.ReqContext) *navtree.Na
 	if s.features.IsEnabled(featuremgmt.FlagTopnav) {
 		if hasAccess(ac.ReqSignedIn, ac.EvalAny(ac.EvalPermission(ac.ActionOrgUsersRead), ac.EvalPermission(ac.ActionUsersRead, ac.ScopeGlobalUsersAll))) {
 			adminNavLinks = append(adminNavLinks, &navtree.NavLink{
-				Text: "Users", SubTitle: "Manage users in Grafana", Id: "global-users", Url: s.cfg.AppSubURL + "/admin/users", Icon: "user",
+				Text: "Users", SubTitle: "Manage users in BMC Helix Dashboards", Id: "global-users", Url: s.cfg.AppSubURL + "/admin/users", Icon: "user",
 			})
 		}
 	} else {
 		if hasAccess(ac.ReqGrafanaAdmin, ac.EvalPermission(ac.ActionUsersRead, ac.ScopeGlobalUsersAll)) {
 			adminNavLinks = append(adminNavLinks, &navtree.NavLink{
-				Text: "Users", SubTitle: "Manage and create users across the whole Grafana server", Id: "global-users", Url: s.cfg.AppSubURL + "/admin/users", Icon: "user",
+				Text: "Users", SubTitle: "Manage and create users across the whole BMC Helix Dashboards server", Id: "global-users", Url: s.cfg.AppSubURL + "/admin/users", Icon: "user",
 			})
 		}
 	}
 
 	if hasGlobalAccess(ac.ReqGrafanaAdmin, orgsAccessEvaluator) {
 		adminNavLinks = append(adminNavLinks, &navtree.NavLink{
-			Text: "Organizations", SubTitle: "Isolated instances of Grafana running on the same server", Id: "global-orgs", Url: s.cfg.AppSubURL + "/admin/orgs", Icon: "building",
+			Text: "Organizations", SubTitle: "Isolated instances of BMC Helix Dashboards running on the same server", Id: "global-orgs", Url: s.cfg.AppSubURL + "/admin/orgs", Icon: "building",
 		})
 	}
 
 	if hasAccess(ac.ReqGrafanaAdmin, ac.EvalPermission(ac.ActionSettingsRead)) {
 		adminNavLinks = append(adminNavLinks, &navtree.NavLink{
-			Text: "Settings", SubTitle: "View the settings defined in your Grafana config", Id: "server-settings", Url: s.cfg.AppSubURL + "/admin/settings", Icon: "sliders-v-alt",
+			Text: "Settings", SubTitle: "View the settings defined in your BMC Helix Dashboards config", Id: "server-settings", Url: s.cfg.AppSubURL + "/admin/settings", Icon: "sliders-v-alt",
 		})
 	}
 

@@ -42,8 +42,6 @@ export const filterByValueTransformer: DataTransformerInfo<FilterByValueTransfor
 
   operator: (options, ctx) => (source) => {
     const filters = options.filters;
-    const matchAll = options.match === FilterByValueMatch.all;
-    const include = options.type === FilterByValueType.include;
 
     if (!Array.isArray(filters) || filters.length === 0) {
       return source.pipe(noopTransformer.operator({}, ctx));
@@ -51,85 +49,94 @@ export const filterByValueTransformer: DataTransformerInfo<FilterByValueTransfor
 
     return source.pipe(
       map((data) => {
-        if (!Array.isArray(data) || data.length === 0) {
-          return data;
-        }
-
-        const rows = new Set<number>();
-
-        for (const frame of data) {
-          const fieldIndexByName = groupFieldIndexByName(frame, data);
-          const matchers = createFilterValueMatchers(filters, fieldIndexByName);
-
-          for (let index = 0; index < frame.length; index++) {
-            if (rows.has(index)) {
-              continue;
-            }
-
-            let matching = true;
-
-            for (const matcher of matchers) {
-              const match = matcher(index, frame, data);
-
-              if (!matchAll && match) {
-                matching = true;
-                break;
-              }
-
-              if (matchAll && !match) {
-                matching = false;
-                break;
-              }
-
-              matching = match;
-            }
-
-            if (matching) {
-              rows.add(index);
-            }
-          }
-        }
-
-        const processed: DataFrame[] = [];
-        const frameLength = include ? rows.size : data[0].length - rows.size;
-
-        for (const frame of data) {
-          const fields: Field[] = [];
-
-          for (const field of frame.fields) {
-            const buffer = [];
-
-            for (let index = 0; index < frame.length; index++) {
-              if (include && rows.has(index)) {
-                buffer.push(field.values.get(index));
-                continue;
-              }
-
-              if (!include && !rows.has(index)) {
-                buffer.push(field.values.get(index));
-                continue;
-              }
-            }
-
-            // We keep field config, but clean the state as it's being recalculated when the field overrides are applied
-            fields.push({
-              ...field,
-              values: new ArrayVector(buffer),
-              state: {},
-            });
-          }
-
-          processed.push({
-            ...frame,
-            fields: fields,
-            length: frameLength,
-          });
-        }
-
-        return processed;
+        // BMC code - moved logic to separate function in order to export for top N rank
+        return filterDataByValues(data, options);
       })
     );
   },
+};
+
+export const filterDataByValues = (data: DataFrame[], options: FilterByValueTransformerOptions): DataFrame[] => {
+  const filters = options.filters;
+  const matchAll = options.match === FilterByValueMatch.all;
+  const include = options.type === FilterByValueType.include;
+
+  if (!Array.isArray(data) || data.length === 0) {
+    return data;
+  }
+
+  const rows = new Set<number>();
+
+  for (const frame of data) {
+    const fieldIndexByName = groupFieldIndexByName(frame, data);
+    const matchers = createFilterValueMatchers(filters, fieldIndexByName);
+
+    for (let index = 0; index < frame.length; index++) {
+      if (rows.has(index)) {
+        continue;
+      }
+
+      let matching = true;
+
+      for (const matcher of matchers) {
+        const match = matcher(index, frame, data);
+
+        if (!matchAll && match) {
+          matching = true;
+          break;
+        }
+
+        if (matchAll && !match) {
+          matching = false;
+          break;
+        }
+
+        matching = match;
+      }
+
+      if (matching) {
+        rows.add(index);
+      }
+    }
+  }
+
+  const processed: DataFrame[] = [];
+  const frameLength = include ? rows.size : data[0].length - rows.size;
+
+  for (const frame of data) {
+    const fields: Field[] = [];
+
+    for (const field of frame.fields) {
+      const buffer = [];
+
+      for (let index = 0; index < frame.length; index++) {
+        if (include && rows.has(index)) {
+          buffer.push(field.values.get(index));
+          continue;
+        }
+
+        if (!include && !rows.has(index)) {
+          buffer.push(field.values.get(index));
+          continue;
+        }
+      }
+
+      // We keep field config, but clean the state as it's being recalculated when the field overrides are applied
+      fields.push({
+        ...field,
+        values: new ArrayVector(buffer),
+        state: {},
+      });
+    }
+
+    processed.push({
+      ...frame,
+      fields: fields,
+      length: frameLength,
+    });
+  }
+
+  return processed;
 };
 
 const createFilterValueMatchers = (
