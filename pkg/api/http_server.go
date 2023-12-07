@@ -61,6 +61,8 @@ import (
 	"github.com/grafana/grafana/pkg/services/live/pushhttp"
 	"github.com/grafana/grafana/pkg/services/login"
 	loginAttempt "github.com/grafana/grafana/pkg/services/loginattempt"
+
+	// BMC Change: Next line for metadata story
 	"github.com/grafana/grafana/pkg/services/navtree"
 	"github.com/grafana/grafana/pkg/services/ngalert"
 	"github.com/grafana/grafana/pkg/services/notifications"
@@ -77,6 +79,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/queryhistory"
 	"github.com/grafana/grafana/pkg/services/quota"
 	"github.com/grafana/grafana/pkg/services/rendering"
+	"github.com/grafana/grafana/pkg/services/rmsmetadata"
 	"github.com/grafana/grafana/pkg/services/search"
 	"github.com/grafana/grafana/pkg/services/searchV2"
 	"github.com/grafana/grafana/pkg/services/searchusers"
@@ -210,6 +213,9 @@ type HTTPServer struct {
 	statsService           stats.Service
 	authnService           authn.Service
 	starApi                *starApi.API
+	// BMC Change: Next line for metadata story
+	rmsMetadataService rmsmetadata.Service
+	sqlStore           *sqlstore.SQLStore
 }
 
 type ServerOptions struct {
@@ -253,6 +259,8 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	annotationRepo annotations.Repository, tagService tag.Service, searchv2HTTPService searchV2.SearchHTTPService, oauthTokenService oauthtoken.OAuthTokenService,
 	statsService stats.Service, authnService authn.Service, pluginsCDNService *pluginscdn.Service,
 	starApi *starApi.API,
+	// BMC Change: Next line for metadata story
+	rmsMetadataService rmsmetadata.Service,
 ) (*HTTPServer, error) {
 	web.Env = cfg.Env
 	m := web.New()
@@ -358,12 +366,21 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 		authnService:                 authnService,
 		pluginsCDNService:            pluginsCDNService,
 		starApi:                      starApi,
+		// BMC Change: Next line for metadata story
+		rmsMetadataService: rmsMetadataService,
+		sqlStore:           sqlStore,
 	}
 	if hs.Listener != nil {
 		hs.log.Debug("Using provided listener")
 	}
 	hs.registerRoutes()
 
+	// BMC code
+	hs.log.Info("Registering Report Scheduler Api's")
+	hs.registerSchedulerRoutes()
+	hs.registerReportSchedulerPlugin()
+	hs.registerRMSMetadataRoutes()
+	// End
 	// Register access control scope resolver for annotations
 	hs.AccessControl.RegisterScopeAttributeResolver(AnnotationTypeScopeResolver(hs.annotationsRepo))
 
@@ -687,6 +704,11 @@ func (hs *HTTPServer) apiHealthHandler(ctx *web.Context) {
 	if !hs.Cfg.AnonymousHideVersion {
 		data.Set("version", hs.Cfg.BuildVersion)
 		data.Set("commit", hs.Cfg.BuildCommit)
+		// BMC code
+		// author(kmejdi) - Add ade version from env variables
+		version := os.Getenv("RELEASE_VERSION")
+		data.Set("adeVersion", version)
+		// End
 	}
 
 	if !hs.databaseHealthy(ctx.Req.Context()) {

@@ -217,6 +217,17 @@ export const availableIconsIndex = {
   'wrap-text': true,
   rss: true,
   x: true,
+  // BMC code
+  'bmc-file_text_clock': true,
+  'bmc-gear': true,
+  'bmc-home': true,
+  'bmc-lock_shield': true,
+  'bmc-plus_adapt': true,
+  'bmc-common_anomaly': true,
+  'bmc-helix-dashboard': true,
+  'bmc-save-filter': true,
+  'bmc-reports': true,
+  // End
 };
 
 export type IconName = keyof typeof availableIconsIndex;

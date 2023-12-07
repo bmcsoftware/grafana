@@ -707,6 +707,10 @@ func (d *dashboardStore) deleteDashboard(cmd *dashboards.DeleteDashboardCommand,
 		"DELETE FROM dashboard_version WHERE dashboard_id = ?",
 		"DELETE FROM annotation WHERE dashboard_id = ?",
 		"DELETE FROM dashboard_provisioning WHERE dashboard_id = ?",
+		// BMC code
+		"DELETE from report_scheduler where id = (select report_scheduler_id from report_data where dashboard_id = ?)",
+		"DELETE FROM report_data WHERE dashboard_id = ?",
+		// End
 		"DELETE FROM dashboard_acl WHERE dashboard_id = ?",
 	}
 
