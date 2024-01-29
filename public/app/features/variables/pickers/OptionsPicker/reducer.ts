@@ -205,7 +205,7 @@ const optionsPickerSlice = createSlice({
         return text.toLowerCase().indexOf(searchQuery) !== -1;
       });
 
-      state.highlightIndex = 0;
+      state.highlightIndex = -1;
 
       return applyStateChanges(state, updateDefaultSelection, updateOptions);
     },

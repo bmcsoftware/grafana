@@ -72,7 +72,8 @@ export async function getSearchResultActions(searchQuery: string): Promise<Comma
           ? t('command-palette.section.dashboard-search-results', 'Dashboards')
           : t('command-palette.section.folder-search-results', 'Folders'),
       priority: SEARCH_RESULTS_PRORITY,
-      url: locationUtil.stripBaseFromUrl(url),
+      // BMC Change inline
+      url: kind === 'folder' ? url : locationUtil.stripBaseFromUrl(url),
       subtitle: data.view.dataFrame.meta?.custom?.locationInfo[location]?.name,
     };
   });
