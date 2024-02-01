@@ -37,4 +37,8 @@ export enum DataTransformerID {
   limit = 'limit',
   partitionByValues = 'partitionByValues',
   timeSeriesTable = 'timeSeriesTable',
+  // BMC code
+  advanceFunctions = 'advanceFunctions',
+  sanitizeFunctions = 'sanitizeFunctions',
+  // End
 }

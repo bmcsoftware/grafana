@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/grafana/grafana/pkg/bmc/kafkaproducer"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 
 	"github.com/grafana/grafana/pkg/api/datasource"
@@ -175,6 +177,11 @@ func (hs *HTTPServer) DeleteDataSourceById(c *contextmodel.ReqContext) response.
 		return response.Error(403, "Cannot delete read-only data source", nil)
 	}
 
+	// BMC Code - Disable deletion for non super admin users
+	if (ds.Type == "bmchelix-ade-datasource" || ds.Type == "json-datasource") && !c.IsGrafanaAdmin {
+		return response.Error(403, "You do not have enough permission to delete datasource", nil)
+	}
+
 	cmd := &datasources.DeleteDataSourceCommand{ID: id, OrgID: c.OrgID, Name: ds.Name}
 
 	err = hs.DataSourcesService.DeleteDataSource(c.Req.Context(), cmd)
@@ -254,6 +261,11 @@ func (hs *HTTPServer) DeleteDataSourceByUID(c *contextmodel.ReqContext) response
 		return response.Error(403, "Cannot delete read-only data source", nil)
 	}
 
+	// BMC Code - Disable deletion for non super admin users
+	if (ds.Type == "bmchelix-ade-datasource" || ds.Type == "json-datasource") && !c.IsGrafanaAdmin {
+		return response.Error(403, "You do not have enough permission to delete datasource", nil)
+	}
+
 	cmd := &datasources.DeleteDataSourceCommand{UID: uid, OrgID: c.OrgID, Name: ds.Name}
 
 	err = hs.DataSourcesService.DeleteDataSource(c.Req.Context(), cmd)
@@ -266,6 +278,30 @@ func (hs *HTTPServer) DeleteDataSourceByUID(c *contextmodel.ReqContext) response
 
 	hs.Live.HandleDatasourceDelete(c.OrgID, ds.UID)
 
+	//BMC Code - start
+	loginName := c.SignedInUser.Name
+	if len(loginName) == 0 {
+		loginName = c.SignedInUser.Login
+	}
+	data := kafkaproducer.Data{
+		AuditCategory:    "DATASOURCE",
+		ObjectID:         ds.UID,
+		TenantID:         strconv.FormatInt(c.OrgID, 10),
+		ObjectCategory:   "DATASOURCE",
+		ObjectName:       ds.Name,
+		ObjectType:       ds.Type,
+		ObjectDetails:    "Datasource of type: " + ds.Type,
+		Operation:        c.Context.Req.Method,
+		OperationSubType: "Datasource deleted successfully",
+		OperationType:    "DELETE_DATASOURCE",
+		OperationStatus:  "SUCCESS",
+		ActorUserID:      strconv.FormatInt(c.UserID, 10),
+		ActorLoginID:     loginName,
+		Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+	}
+	instance := kafkaproducer.GetInstance()
+	instance.SendKafkaEvent(data)
+	//BMC Code - end
 	return response.JSON(http.StatusOK, util.DynMap{
 		"message": "Data source deleted",
 		"id":      ds.ID,
@@ -303,6 +339,11 @@ func (hs *HTTPServer) DeleteDataSourceByName(c *contextmodel.ReqContext) respons
 
 	if dataSource.ReadOnly {
 		return response.Error(403, "Cannot delete read-only data source", nil)
+	}
+
+	// BMC Code - Disable deletion for non super admin users
+	if (dataSource.Type == "bmchelix-ade-datasource" || dataSource.Type == "json-datasource") && !c.IsGrafanaAdmin {
+		return response.Error(403, "You do not have enough permission to delete datasource", nil)
 	}
 
 	cmd := &datasources.DeleteDataSourceCommand{Name: name, OrgID: c.OrgID}
@@ -388,6 +429,31 @@ func (hs *HTTPServer) AddDataSource(c *contextmodel.ReqContext) response.Respons
 
 	dataSource, err := hs.DataSourcesService.AddDataSource(c.Req.Context(), &cmd)
 	if err != nil {
+		//BMC Code - start
+		loginName := c.SignedInUser.Name
+		if len(loginName) == 0 {
+			loginName = c.SignedInUser.Login
+		}
+		data := kafkaproducer.Data{
+			AuditCategory:    "DATASOURCE",
+			ObjectID:         cmd.UID,
+			TenantID:         strconv.FormatInt(c.OrgID, 10),
+			ObjectCategory:   "DATASOURCE",
+			ObjectName:       cmd.Name,
+			ObjectType:       cmd.Type,
+			ObjectDetails:    "Datasource of type: " + cmd.Type,
+			Operation:        c.Context.Req.Method,
+			OperationSubType: "Failed to add datasource error: " + err.Error(),
+			OperationType:    "ADD_DATASOURCE",
+			OperationStatus:  "FAILED",
+			ActorUserID:      strconv.FormatInt(c.UserID, 10),
+			ActorLoginID:     loginName,
+			Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+		}
+		instance := kafkaproducer.GetInstance()
+		instance.SendKafkaEvent(data)
+		//BMC Code - end
+
 		if errors.Is(err, datasources.ErrDataSourceNameExists) || errors.Is(err, datasources.ErrDataSourceUidExists) {
 			return response.Error(409, err.Error(), err)
 		}
@@ -406,6 +472,37 @@ func (hs *HTTPServer) AddDataSource(c *contextmodel.ReqContext) response.Respons
 	}
 
 	ds := hs.convertModelToDtos(c.Req.Context(), dataSource)
+
+	//BMC Code - start
+	newValue := ds
+	newValue.SecureJsonFields = nil
+	loginName := c.SignedInUser.Name
+	if len(loginName) == 0 {
+		loginName = c.SignedInUser.Login
+	}
+	data := kafkaproducer.Data{
+		AuditCategory:    "DATASOURCE",
+		ObjectID:         cmd.UID,
+		TenantID:         strconv.FormatInt(c.OrgID, 10),
+		ObjectCategory:   "DATASOURCE",
+		ObjectName:       ds.Name,
+		ObjectType:       ds.Type,
+		ObjectDetails:    "Datasource of type: " + ds.Type,
+		Operation:        c.Context.Req.Method,
+		OperationSubType: "Datasource added successfully",
+		OperationType:    "ADD_DATASOURCE",
+		OperationStatus:  "SUCCESS",
+		ActorUserID:      strconv.FormatInt(c.UserID, 10),
+		ActorLoginID:     loginName,
+		Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+		ChangeValues: &kafkaproducer.ChangeValues{
+			NewValue: simplejson.NewFromAny(newValue),
+		},
+	}
+	instance := kafkaproducer.GetInstance()
+	instance.SendKafkaEvent(data)
+	//BMC Code - end
+
 	return response.JSON(http.StatusOK, util.DynMap{
 		"message":    "Datasource added",
 		"id":         dataSource.ID,
@@ -446,6 +543,14 @@ func (hs *HTTPServer) UpdateDataSourceByID(c *contextmodel.ReqContext) response.
 	if cmd.ID, err = strconv.ParseInt(web.Params(c.Req)[":id"], 10, 64); err != nil {
 		return response.Error(http.StatusBadRequest, "id is invalid", err)
 	}
+	// BMC code
+	// author ateli - Mitigation for SSRF issue - DRJ71-3206
+	platformURL, _ := cmd.JsonData.Get("platformURL").String()
+	if resp := validateSSRF(cmd.Type, cmd.URL, platformURL, cmd.OrgID); resp != nil {
+		return resp
+	}
+	// End
+
 	if resp := validateURL(cmd.Type, cmd.URL); resp != nil {
 		return resp
 	}
@@ -460,6 +565,12 @@ func (hs *HTTPServer) UpdateDataSourceByID(c *contextmodel.ReqContext) response.
 		}
 		return response.Error(500, "Failed to update datasource", err)
 	}
+
+	// BMC Code - Disable deletion for non super admin users
+	if (ds.Type == "bmchelix-ade-datasource" || ds.Type == "json-datasource") && !c.IsGrafanaAdmin {
+		return response.Error(403, "You do not have enough permission to update datasource", nil)
+	}
+
 	return hs.updateDataSourceByID(c, ds, cmd)
 }
 
@@ -486,6 +597,15 @@ func (hs *HTTPServer) UpdateDataSourceByUID(c *contextmodel.ReqContext) response
 	}
 	datasourcesLogger.Debug("Received command to update data source", "url", cmd.URL)
 	cmd.OrgID = c.OrgID
+
+	// BMC code
+	// author ateli - Mitigation for SSRF issue - DRJ71-3206
+	platformURL, _ := cmd.JsonData.Get("platformURL").String()
+	if resp := validateSSRF(cmd.Type, cmd.URL, platformURL, cmd.OrgID); resp != nil {
+		return resp
+	}
+	// End
+
 	if resp := validateURL(cmd.Type, cmd.URL); resp != nil {
 		return resp
 	}
@@ -505,6 +625,16 @@ func (hs *HTTPServer) UpdateDataSourceByUID(c *contextmodel.ReqContext) response
 }
 
 func (hs *HTTPServer) updateDataSourceByID(c *contextmodel.ReqContext, ds *datasources.DataSource, cmd datasources.UpdateDataSourceCommand) response.Response {
+	//BMC Code - start
+	preValue, errPreValue := hs.getRawDataSourceByUID(c.Req.Context(), cmd.UID, cmd.OrgID)
+	if errPreValue != nil {
+		datasourcesLogger.Error("Failed to get previous values", errPreValue.Error())
+	}
+	if preValue != nil {
+		preValue.SecureJsonData = nil
+	}
+	//End
+
 	if ds.ReadOnly {
 		return response.Error(403, "Cannot update read-only data source", nil)
 	}
@@ -518,6 +648,31 @@ func (hs *HTTPServer) updateDataSourceByID(c *contextmodel.ReqContext, ds *datas
 		if errors.As(err, &secretsPluginError) {
 			return response.Error(500, "Failed to update datasource: "+err.Error(), err)
 		}
+
+		//BMC Code - start
+		loginName := c.SignedInUser.Name
+		if len(loginName) == 0 {
+			loginName = c.SignedInUser.Login
+		}
+		data := kafkaproducer.Data{
+			AuditCategory:    "DATASOURCE",
+			ObjectID:         cmd.UID,
+			TenantID:         strconv.FormatInt(c.OrgID, 10),
+			ObjectCategory:   "DATASOURCE",
+			ObjectName:       cmd.Name,
+			ObjectType:       cmd.Type,
+			ObjectDetails:    "Datasource of type: " + cmd.Type,
+			Operation:        c.Context.Req.Method,
+			OperationSubType: "Failed to update datasource error : " + err.Error(),
+			OperationType:    "UPDATE_DATASOURCE",
+			OperationStatus:  "FAILED",
+			ActorUserID:      strconv.FormatInt(c.UserID, 10),
+			ActorLoginID:     loginName,
+			Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+		}
+		instance := kafkaproducer.GetInstance()
+		instance.SendKafkaEvent(data)
+		//BMC Code - end
 		return response.Error(500, "Failed to update datasource", err)
 	}
 
@@ -537,7 +692,42 @@ func (hs *HTTPServer) updateDataSourceByID(c *contextmodel.ReqContext, ds *datas
 	datasourceDTO := hs.convertModelToDtos(c.Req.Context(), dataSource)
 
 	hs.Live.HandleDatasourceUpdate(c.OrgID, datasourceDTO.UID)
+	//BMC Code - start
+	newValue, errNewValue := hs.getRawDataSourceByUID(c.Req.Context(), cmd.UID, cmd.OrgID)
+	if errNewValue != nil {
+		datasourcesLogger.Error("Failed to get updated values", errNewValue.Error())
+	}
+	if newValue != nil {
+		newValue.SecureJsonData = nil
+	}
 
+	loginName := c.SignedInUser.Name
+	if len(loginName) == 0 {
+		loginName = c.SignedInUser.Login
+	}
+	data := kafkaproducer.Data{
+		AuditCategory:    "DATASOURCE",
+		ObjectID:         datasourceDTO.UID,
+		TenantID:         strconv.FormatInt(c.OrgID, 10),
+		ObjectName:       datasourceDTO.Name,
+		ObjectType:       datasourceDTO.Type,
+		ObjectCategory:   "DATASOURCE",
+		ObjectDetails:    "Datasource of type: " + datasourceDTO.Type,
+		Operation:        c.Context.Req.Method,
+		OperationType:    "UPDATE_DATASOURCE",
+		OperationSubType: "Datasource updated successfully",
+		OperationStatus:  "SUCCESS",
+		ActorUserID:      strconv.FormatInt(c.UserID, 10),
+		ActorLoginID:     loginName,
+		Source:           kafkaproducer.LookUpIp(c.Req.Header.Get("Origin")),
+		ChangeValues: &kafkaproducer.ChangeValues{
+			PreviousValue: simplejson.NewFromAny(preValue),
+			NewValue:      simplejson.NewFromAny(newValue),
+		},
+	}
+	instance := kafkaproducer.GetInstance()
+	instance.SendKafkaEvent(data)
+	//BMC Code - end
 	return response.JSON(http.StatusOK, util.DynMap{
 		"message":    "Datasource updated",
 		"id":         cmd.ID,
@@ -880,6 +1070,18 @@ func (hs *HTTPServer) filterDatasourcesByQueryPermission(ctx context.Context, us
 
 	return dataSources, nil
 }
+
+// BMC code
+// author ateli - Mitigation for SSRF issue - DRJ71-3206
+func validateSSRF(cmdType string, url string, platformURL string, orgId int64) response.Response {
+	if _, err := datasource.ValidateSSRF(cmdType, url, platformURL, orgId); err != nil {
+		return response.Error(400, err.Error(), err)
+	}
+
+	return nil
+}
+
+// End
 
 // swagger:parameters checkDatasourceHealthByID
 type CheckDatasourceHealthByIDParams struct {

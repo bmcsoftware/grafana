@@ -1,5 +1,140 @@
 {
   "_comment": "Do not manually edit this file. Translations must be made in Crowdin which will sync them back into this file",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "Keine Datenquellen des Typs {{pluginName}} gefunden",
+      "import": {
+        "import-all-failed": "Import aller Dashboards fehlgeschlagen",
+        "no-import": "Keine Dashboards importiert"
+      },
+      "import-all": "Alle importieren",
+      "import-failed": "Folgende Dashboards konnten nicht importiert werden",
+      "import-success": "Alle Dashboards erfolgreich importiert",
+      "select-datasource": "Eine {{pluginName}} Datenquelle auswählen",
+      "set-parameters": "erforderlichen Parameter für die ausgewählten Dashboards festlegen"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Aggregiert",
+      "all": "Alle",
+      "clone": "Klonen",
+      "confirm-delete": "Möchten Sie das/die ausgewählte/-n berechnete/-n Feld/-er löschen",
+      "connection-error": "Verbindung mit BMC Helix ITSM nicht konfiguriert",
+      "custom": "Benutzerdefiniert",
+      "delete": "Löschen",
+      "details": "Details zu berechneten Feldern",
+      "edit": "Bearbeiten",
+      "edit-field": "Berechnetes Feld bearbeiten",
+      "eg": "Z. B.",
+      "failed": "Abrufen berechneter Felder fehlgeschlagen",
+      "failure": "Fehler",
+      "filter-by-type": "Nach Typ filtern (Standardwert: Alle)",
+      "form-name": "Formularname",
+      "is-aggregate": "Ist aggregiert",
+      "is-aggregate-description": "Aktivieren Sie diese Option, wenn Ihre Abfrage Funktionen zur Aggregation enthält.",
+      "module": "Modul",
+      "module-name": "Modulname",
+      "name": "Name",
+      "name-placeholder": "Geben Sie den Namen des berechneten Felds ein",
+      "new-field": "Neues berechnetes Feld",
+      "no-calc-fields": "Sie haben noch keine berechneten Felder erstellt.",
+      "not-found": "Es wurden keine berechneten Felder gefunden, die mit Ihrer Abfrage übereinstimmen.",
+      "ootb": "Standardmäßig",
+      "query-info": "Die Abfrage muss einspaltig sein",
+      "query-not-validated": "Abfrage nicht validiert",
+      "save": "Speichern",
+      "search-by-name": "Berechnete Felder nach Namen suchen",
+      "select-form": "Formular auswählen",
+      "select-module": "Modul auswählen",
+      "sort-asc": "Alphabetisch (A–Z)",
+      "sort-asc-descripton": "Ergebnisse in alphabetisch aufsteigender Reihenfolge sortieren",
+      "sort-dsc": "Alphabetisch (Z–A)",
+      "sort-dsc-descripton": "Ergebnisse in alphabetisch absteigender Reihenfolge sortieren",
+      "sort-placeholder": "Sortierung (Standard {{label}})",
+      "sql-query": "SQL-Abfrage",
+      "subtitle": "Berechnete Felder für ITSM-Service erstellen und verwalten",
+      "title": "Berechnete Felder",
+      "unknown-failure": "Unbekannter Fehler",
+      "update": "Aktualisieren",
+      "validate": "Validieren",
+      "validation-success": "Abfrage erfolgreich validiert"
+    },
+    "common": {
+      "cancel": "Abbrechen",
+      "download": "Herunterladen"
+    },
+    "contact-support": "<0>Erstellen Sie einen Snapshot der unten angegebenen Fehlerdetails und senden Sie ihn an den</0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Geplante Berichte verwalten",
+        "reset-filters": "Filter zurücksetzen",
+        "reset-filters-failure": "Filterwerte konnten nicht zurückgesetzt werden.",
+        "save-filters": "Gespeicherte Filter",
+        "save-filters-failure": "Filterwerte konnten nicht gespeichert werden.",
+        "save-filters-success": "Filterwerte erfolgreich gespeichert."
+      }
+    },
+    "date-picker": {
+      "description": "Eine Datumsbereichvariable definieren, mit der Benutzer einen beliebigen Datumsbereich auswählen können",
+      "name": "Datumsbereich"
+    },
+    "export": {
+      "generation-failed": "Bericht konnte nicht erstellt werden, versuchen Sie es später erneut",
+      "grid": "Raster",
+      "landscape": "Querformat",
+      "layout": "Layout",
+      "orientation": "Ausrichtung",
+      "portrait": "Hochformat",
+      "reduce-selection": "Reduzieren Sie die ausgewählten Variablenwerte für {{variableQuery}} und versuchen Sie es später erneut",
+      "save-as": "{{target}} als {{type}} speichern",
+      "simple": "Einfach",
+      "success": "Bericht erfolgreich erstellt",
+      "type": "Typ",
+      "view": "Anzeigen"
+    },
+    "manage-dashboards": {
+      "drop-click": "Hier per Drag-and-Drop ablegen oder zum Durchsuchen klicken",
+      "import-failed": "Import fehlgeschlagen",
+      "serialization-failed": "JSON -> JS-Serialisierung fehlgeschlagen",
+      "upload-json": "Dashboard-JSON-Datei(en) hochladen"
+    },
+    "org-custom-config": {
+      "community": "Community",
+      "documentation": "Dokumentation",
+      "invalid-url": "URL ungültig!",
+      "support": "Support",
+      "video": "Video"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Eingebettetes Video eingeben",
+        "invalid-url": "Keine gültige URL",
+        "url": "Video-URL"
+      },
+      "bmc-welcome": {
+        "communities": "Communitys",
+        "community-description": "Community-Beschreibung",
+        "dashboards": "Dashboards",
+        "documentation": "Dokumentation",
+        "documentation-description": "Beschreibung der Dokumentation",
+        "video-description": "Videobeschreibung",
+        "videos": "Videos"
+      }
+    },
+    "route-error": "Hoppla … Ein unerwarteter Fehler ist aufgetreten.",
+    "search": {
+      "comfirm-export": "Möchten Sie das/die {{dashCount}} ausgewählte/-n Dashboard/-s exportieren?",
+      "export": "Exportieren",
+      "export-failed": "Export fehlgeschlagen",
+      "export-success": "Erfolgreich exportiert"
+    },
+    "share-modal": {
+      "loading": "Ladevorgang"
+    },
+    "toggle-feature": {
+      "manage-features": "Dashboard-Funktionen verwalten"
+    }
+  },
   "clipboard-button": {
     "inline-toast": {
       "success": "Kopiert"
@@ -12,12 +147,12 @@
       "light-theme": "Hell"
     },
     "search-box": {
-      "placeholder": ""
+      "placeholder": "Suche oder springe zu ..."
     },
     "section": {
       "actions": "Aktionen",
       "dashboard-search-results": "Dashboards",
-      "folder-search-results": "",
+      "folder-search-results": "Ordner",
       "pages": "Seiten",
       "preferences": "Einstellungen",
       "recent-dashboards": "Kürzliche Dashboards"
@@ -31,21 +166,21 @@
   },
   "dashboard": {
     "add-menu": {
-      "import": "",
-      "paste-panel": "",
-      "row": "",
-      "visualization": ""
+      "import": "Aus Bibliothek importieren",
+      "paste-panel": "Panel einfügen",
+      "row": "Zeile",
+      "visualization": "Visualisierung"
     },
     "empty": {
-      "add-import-body": "",
-      "add-import-button": "",
-      "add-import-header": "",
-      "add-row-body": "",
-      "add-row-button": "",
-      "add-row-header": "",
-      "add-visualization-body": "",
-      "add-visualization-button": "",
-      "add-visualization-header": ""
+      "add-import-body": "Visualisierungen importieren, die mit anderen Dashboards geteilt werden.",
+      "add-import-button": "Bibliotheks-Panel importieren",
+      "add-import-header": "Panel importieren",
+      "add-row-body": "Gruppieren Sie Ihre Visualisierungen in erweiterbare Abschnitte.",
+      "add-row-button": "Zeile hinzufügen",
+      "add-row-header": "Eine Zeile hinzufügen",
+      "add-visualization-body": "Wählen Sie eine Datenquelle aus und visualisieren und fragen Sie dann Ihre Daten mit Diagrammen, Statistiken und Tabellen ab oder erstellen Sie Listen, Markierungen und andere Widgets.",
+      "add-visualization-button": "Visualisierung hinzufügen",
+      "add-visualization-header": "Starten Sie Ihr neues Dashboard, indem Sie eine Visualisierung hinzufügen"
     },
     "inspect": {
       "data-tab": "Daten",
@@ -92,7 +227,6 @@
     },
     "inspect-stats": {
       "data-title": "Statistiken zu Datenquellen",
-      "data-traceids": "",
       "processing-time": "Datenverarbeitungszeit",
       "queries": "Anzahl der Abfragen",
       "request-time": "Gesamte Anfragezeit",
@@ -100,7 +234,7 @@
       "table-title": "Statistiken"
     },
     "toolbar": {
-      "add": "",
+      "add": "Hinzufügen",
       "add-panel": "Panel hinzufügen",
       "mark-favorite": "Als Favorit markieren",
       "open-original": "Original-Dashboard öffnen",
@@ -111,6 +245,7 @@
       "save": "Dashboard speichern",
       "settings": "Dashboard-Einstellungen",
       "share": "Dashboard oder Panel teilen",
+      "tv-button": "",
       "unmark-favorite": "Markierung als Favorit entfernen"
     }
   },
@@ -121,16 +256,16 @@
     "preferred": "Verbinden Sie Ihre bevorzugte Datenquelle:",
     "sampleData": "Oder erstellen Sie ein neues Dashboard mit Beispieldaten",
     "viewAll": "Alle anzeigen",
-    "welcome": "Willkommen bei Grafana Dashboards!"
+    "welcome": "Willkommen bei BMC Helix Dashboards Dashboards!"
   },
   "folder-picker": {
     "loading": "Ordner werden geladen …"
   },
   "grafana-ui": {
     "segment-async": {
-      "error": "",
-      "loading": "",
-      "no-options": ""
+      "error": "Fehler beim Laden der Optionen",
+      "loading": "Optionen werden geladen ...",
+      "no-options": "Keine Optionen gefunden"
     }
   },
   "library-panel": {
@@ -143,7 +278,7 @@
       "name": "Name des Bibliotheks-Panels"
     },
     "add-widget": {
-      "title": ""
+      "title": "Panel aus Panel-Bibliothek hinzufügen"
     }
   },
   "library-panels": {
@@ -186,7 +321,7 @@
       "title": "Warnregeln"
     },
     "alerting-receivers": {
-      "subtitle": "",
+      "subtitle": "Wählen Sie, wie Ihre Kontaktpunkte benachrichtigen werden, wenn eine Warninstanz auslöst",
       "title": "Kontaktpunkte"
     },
     "alerting-silences": {
@@ -195,18 +330,19 @@
     },
     "alerts-and-incidents": {
       "subtitle": "Warn- und Vorfallmanagement-Apps",
-      "title": "Warnungen & Vorfälle"
+      "title": "Warnungen und IRM"
     },
     "api-keys": {
-      "subtitle": "Verwalte und erstelle API-Schlüssel, die für die Interaktion mit HTTP-APIs von Grafana verwendet werden",
+      "subtitle": "Verwalte und erstelle API-Schlüssel, die für die Interaktion mit HTTP-APIs von BMC Helix Dashboards verwendet werden",
       "title": "API-Schlüssel"
     },
     "apps": {
-      "subtitle": "App-Plug-ins, die das Grafana-Erlebnis erweitern",
+      "subtitle": "App-Plug-ins, die das BMC Helix Dashboards-Erlebnis erweitern",
       "title": "Apps"
     },
     "config": {
-      "title": "Verwaltung"
+      "title": "Verwaltung",
+      "titleBeforeTopnav": ""
     },
     "correlations": {
       "subtitle": "Füge Korrelationen hinzu und konfiguriere sie",
@@ -216,7 +352,7 @@
       "title": "Erstellen"
     },
     "create-alert": {
-      "title": ""
+      "title": "Alarmregel erstellen"
     },
     "create-dashboard": {
       "title": "Dashboard"
@@ -225,7 +361,7 @@
       "title": "Ordner"
     },
     "create-import": {
-      "title": ""
+      "title": "Dashboard importieren"
     },
     "dashboards": {
       "subtitle": "Erstelle und verwalte Dashboards, um deine Daten zu visualisieren",
@@ -239,12 +375,13 @@
       "title": "Entdecken"
     },
     "global-orgs": {
-      "subtitle": "Isolierte Instanzen von Grafana auf dem gleichen Server",
+      "subtitle": "Isolierte Instanzen von BMC Helix Dashboards auf dem gleichen Server",
       "title": "Organisationen"
     },
     "global-users": {
-      "subtitle": "Benutzer in Grafana verwalten",
-      "title": "Benutzer"
+      "subtitle": "Benutzer in BMC Helix Dashboards verwalten",
+      "title": "Benutzer",
+      "titleBeforeTopnav": ""
     },
     "help": {
       "title": "Hilfe"
@@ -260,12 +397,15 @@
       "subtitle": "Wiederverwendbare Panels, die zu mehreren Dashboards hinzugefügt werden können",
       "title": "Bibliotheks-Panels"
     },
+    "manage-dashboards": {
+      "title": ""
+    },
     "manage-folder": {
-      "subtitle": ""
+      "subtitle": "Ordner-Dashboards und Berechtigungen verwalten"
     },
     "monitoring": {
       "subtitle": "Überwachungs- und Infrastruktur-Apps",
-      "title": "Überwachung"
+      "title": "Beobachtbarkeit"
     },
     "new": {
       "title": "Neu"
@@ -278,14 +418,15 @@
     },
     "org-settings": {
       "subtitle": "Verwalte Einstellungen in der gesamten Organisation",
-      "title": "Standardeinstellungen"
+      "title": "Standardeinstellungen",
+      "titleBeforeTopnav": ""
     },
     "playlists": {
       "subtitle": "Gruppen von Dashboards, die in einer bestimmten Reihenfolge angezeigt werden",
       "title": "Playlisten"
     },
     "plugins": {
-      "subtitle": "Erweitere das Grafana-Erlebnis mit Plug-ins",
+      "subtitle": "Erweitere das BMC Helix Dashboards-Erlebnis mit Plug-ins",
       "title": "Plug-ins"
     },
     "profile/notifications": {
@@ -297,26 +438,28 @@
     "profile/settings": {
       "title": "Profil"
     },
+    "profile/switch-org": "",
     "public": {
-      "title": ""
+      "title": "Öffentliche Dashboards"
     },
     "scenes": {
       "title": "Szenen"
     },
     "search": {
-      "placeholderCommandPalette": ""
+      "placeholderCommandPalette": "Suche oder springe zu ..."
     },
     "search-dashboards": {
       "title": "Dashboards durchsuchen"
     },
     "server-settings": {
-      "subtitle": "Zeige die in deiner Grafana-Konfiguration festgelegten Einstellungen an",
+      "subtitle": "Zeige die in deiner BMC Helix Dashboards-Konfiguration festgelegten Einstellungen an",
       "title": "Einstellungen"
     },
     "service-accounts": {
-      "subtitle": "Verwende Servicekonten, um automatisierte Arbeitsabläufe in Grafana auszuführen",
+      "subtitle": "Verwende Servicekonten, um automatisierte Arbeitsabläufe in BMC Helix Dashboards auszuführen",
       "title": "Servicekonten"
     },
+    "sign-in": "",
     "sign-out": {
       "title": "Abmelden"
     },
@@ -355,9 +498,9 @@
       "tv-alert": "Drücke ESC, um den Kiosk-Modus zu verlassen"
     },
     "toolbar": {
-      "enable-kiosk": "",
-      "toggle-menu": "",
-      "toggle-search-bar": ""
+      "enable-kiosk": "Kiosk-Modus aktivieren",
+      "toggle-menu": "Menü umschalten",
+      "toggle-search-bar": "Obere Suchleiste umschalten"
     }
   },
   "news": {
@@ -407,12 +550,13 @@
   },
   "search": {
     "actions": {
-      "include-panels": "",
-      "remove-datasource-filter": "",
-      "sort-placeholder": "",
+      "include-panels": "Panels einschließen",
+      "remove-datasource-filter": "Datenquelle: {{datasource}}",
+      "sort-placeholder": "Sortieren",
       "starred": "Hervorgehoben",
-      "view-as-folders": "",
-      "view-as-list": ""
+      "view-as-folders": "Nach Ordnern anzeigen",
+      "view-as-grid": "",
+      "view-as-list": "Als Liste anzeigen"
     },
     "dashboard-actions": {
       "import": "Importieren",
@@ -421,26 +565,26 @@
       "new-folder": "Neuer Ordner"
     },
     "folder-view": {
-      "go-to-folder": "",
-      "select-folder": ""
+      "go-to-folder": "Zum Ordner",
+      "select-folder": "Ordner auswählen"
     },
     "result-kind": {
       "dashboard": "Dashboard",
       "folder": "Ordner",
-      "panel": ""
+      "panel": "Panel"
     },
     "results-table": {
-      "datasource-header": "",
-      "location-header": "",
+      "datasource-header": "Datenquelle",
+      "location-header": "Standort",
       "name-header": "Name",
-      "tags-header": "",
+      "tags-header": "Tags",
       "type-dashboard": "Dashboard",
       "type-folder": "Ordner",
-      "type-header": ""
+      "type-header": "Typ"
     },
     "search-input": {
-      "include-panels-placeholder": "",
-      "placeholder": ""
+      "include-panels-placeholder": "Nach Dashboards und Panels suchen",
+      "placeholder": "Nach Dashboards suchen"
     }
   },
   "share-modal": {
@@ -450,7 +594,7 @@
     "embed": {
       "copy": "In die Zwischenablage kopieren",
       "html": "HTML einbetten",
-      "html-description": "Der folgende HTML-Code kann kopiert und in eine Website eingefügt werden. Wenn der anonyme Zugriff nicht aktiviert ist, muss der Benutzer, der diese Seite aufruft, bei Grafana angemeldet sein, damit das Diagramm geladen wird.",
+      "html-description": "Der folgende HTML-Code kann kopiert und in eine Website eingefügt werden. Wenn der anonyme Zugriff nicht aktiviert ist, muss der Benutzer, der diese Seite aufruft, bei BMC Helix Dashboards angemeldet sein, damit das Diagramm geladen wird.",
       "info": "Erstelle einen HTML-Code zum Einbetten eines Inlineframes in dieses Panel.",
       "time-range": "Aktueller Zeitbereich",
       "time-range-description": "Wandelt den aktuellen relativen Zeitbereich in einen absoluten Zeitbereich um"
@@ -475,7 +619,6 @@
       "rendered-image": "Direktlink zum gerenderten Bild",
       "save-alert": "Dashboard nicht gespeichert",
       "save-dashboard": "Um ein Panel-Bild zu rendern, muss zuerst das Dashboard gespeichert werden.",
-      "shorten-url": "URL kürzen",
       "time-range-description": "Wandelt den aktuellen relativen Zeitbereich in einen absoluten Zeitbereich um",
       "time-range-label": "Zeitbereich sperren"
     },
@@ -541,9 +684,9 @@
     "title": "Einstellungen"
   },
   "tag-filter": {
-    "loading": "",
-    "no-tags": "",
-    "placeholder": ""
+    "loading": "Wird geladen ...",
+    "no-tags": "Keine Tags gefunden",
+    "placeholder": "Nach Tag filtern"
   },
   "time-picker": {
     "absolute": {
@@ -596,7 +739,6 @@
   "user-orgs": {
     "current-org-button": "Aktuell",
     "name-column": "Name",
-    "role-column": "Rolle",
     "select-org-button": "Organisation auswählen",
     "title": "Organisationen"
   },
@@ -621,7 +763,7 @@
   },
   "variable": {
     "adhoc": {
-      "placeholder": ""
+      "placeholder": "Wert auswählen"
     },
     "dropdown": {
       "placeholder": "Variablenwert eingeben"
