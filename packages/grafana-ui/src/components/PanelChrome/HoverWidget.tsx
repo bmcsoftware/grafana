@@ -51,7 +51,8 @@ export function HoverWidget({ menu, title, dragClass, children, offset = -32, on
           <Icon name="expand-arrows" className={styles.draggableIcon} />
         </div>
       )}
-      {!title && <h6 className={cx(styles.untitled, styles.draggable, dragClass)}>Untitled</h6>}
+      {/* BMC Code: Commented next line */}
+      {/* {!title && <h6 className={cx(styles.untitled, styles.draggable, dragClass)}>Untitled</h6>} */}
       {children}
       {menu && (
         <PanelMenu

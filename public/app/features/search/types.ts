@@ -50,6 +50,8 @@ export interface DashboardSearchItem {
   folderUrl?: string;
 }
 
+export type DashboardViewItemKind = 'folder' | 'dashboard' | 'panel';
+
 /**
  * Type used in the folder view components
  */
