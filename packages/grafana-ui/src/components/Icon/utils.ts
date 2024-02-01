@@ -11,6 +11,12 @@ const alwaysMonoIcons: IconName[] = [
 ];
 
 export function getIconSubDir(name: IconName, type: string): string {
+  // BMC code
+  // Icons with bmc- name will lead to the custom bmc folder
+  if (name?.startsWith('bmc-')) {
+    return 'bmc/adapt';
+  }
+  // End
   if (name?.startsWith('gf-')) {
     return 'custom';
   } else if (alwaysMonoIcons.includes(name)) {
