@@ -27,11 +27,13 @@ export const LANGUAGES: LanguageDefinitions[] = [
     loader: () => Promise.resolve({}),
   },
 
-  {
-    code: FRENCH_FRANCE,
-    name: 'Français',
-    loader: () => import('../../../locales/fr-FR/grafana.json'),
-  },
+  // BMC code - keeping only German language support in 23.3.00
+
+  // {
+  //   code: FRENCH_FRANCE,
+  //   name: 'Français',
+  //   loader: () => import('../../../locales/fr-FR/grafana.json'),
+  // },
 
   {
     code: SPANISH_SPAIN,
@@ -45,11 +47,11 @@ export const LANGUAGES: LanguageDefinitions[] = [
     loader: () => import('../../../locales/de-DE/grafana.json'),
   },
 
-  {
-    code: CHINESE_SIMPLIFIED,
-    name: '中文（简体）',
-    loader: () => import('../../../locales/zh-Hans/grafana.json'),
-  },
+  // {
+  //   code: CHINESE_SIMPLIFIED,
+  //   name: '中文（简体）',
+  //   loader: () => import('../../../locales/zh-Hans/grafana.json'),
+  // },
 ];
 
 if (process.env.NODE_ENV === 'development') {

@@ -1,17 +1,18 @@
-import 'symbol-observable';
 import 'core-js';
 import 'regenerator-runtime/runtime';
+import 'symbol-observable';
 
-import 'whatwg-fetch'; // fetch polyfill needed for PhantomJs rendering
-import './polyfills/old-mediaquerylist'; // Safari < 14 does not have mql.addEventListener()
 import 'file-saver';
 import 'jquery';
+import 'whatwg-fetch'; // fetch polyfill needed for PhantomJs rendering
+import './polyfills/old-mediaquerylist'; // Safari < 14 does not have mql.addEventListener()
 
 import 'app/features/all';
 
 import _ from 'lodash'; // eslint-disable-line lodash/import-scope
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Store } from 'redux';
 
 import {
   locationUtil,
@@ -43,7 +44,9 @@ import { setPluginPage } from '@grafana/runtime/src/components/PluginPage';
 import { getScrollbarWidth } from '@grafana/ui';
 import config from 'app/core/config';
 import { arrayMove } from 'app/core/utils/arrayMove';
+import { isGrafanaAdmin } from 'app/features/plugins/admin/permissions';
 import { getStandardTransformers } from 'app/features/transformers/standardTransformers';
+import { StoreState } from 'app/types';
 
 import getDefaultMonacoLanguages from '../lib/monaco-languages';
 
@@ -67,9 +70,13 @@ import { GAEchoBackend } from './core/services/echo/backends/analytics/GABackend
 import { RudderstackBackend } from './core/services/echo/backends/analytics/RudderstackBackend';
 import { GrafanaJavascriptAgentBackend } from './core/services/echo/backends/grafana-javascript-agent/GrafanaJavascriptAgentBackend';
 import { SentryEchoBackend } from './core/services/echo/backends/sentry/SentryBackend';
+import { getGainsightData } from './core/services/ims_srv';
 import { KeybindingSrv } from './core/services/keybindingSrv';
 import { initDevFeatures } from './dev';
 import { getTimeSrv } from './features/dashboard/services/TimeSrv';
+import { getFeatureStatus, loadFeatures, loadGrafanaFeatures } from './features/dashboard/services/featureFlagSrv';
+import { updateConfigurableLinks, updateGainSightUserPreferences } from './features/dashboard/state/reducers';
+import { customConfigSrv, CustomConfiguration } from './features/org/state/configuration';
 import { PanelDataErrorView } from './features/panel/components/PanelDataErrorView';
 import { PanelRenderer } from './features/panel/components/PanelRenderer';
 import { DatasourceSrv } from './features/plugins/datasource_srv';
@@ -85,6 +92,7 @@ import { createAdHocVariableAdapter } from './features/variables/adhoc/adapter';
 import { createConstantVariableAdapter } from './features/variables/constant/adapter';
 import { createCustomVariableAdapter } from './features/variables/custom/adapter';
 import { createDataSourceVariableAdapter } from './features/variables/datasource/adapter';
+import { createDatePickerVariableAdapter } from './features/variables/datepicker/adapter';
 import { getVariablesUrlParams } from './features/variables/getAllVariableValuesForUrl';
 import { createIntervalVariableAdapter } from './features/variables/interval/adapter';
 import { setVariableQueryRunner, VariableQueryRunner } from './features/variables/query/VariableQueryRunner';
@@ -92,6 +100,7 @@ import { createQueryVariableAdapter } from './features/variables/query/adapter';
 import { createSystemVariableAdapter } from './features/variables/system/adapter';
 import { createTextBoxVariableAdapter } from './features/variables/textbox/adapter';
 import { configureStore } from './store/configureStore';
+import { TenantFeatureDTO } from './types/features';
 
 // add move to lodash for backward compatabilty with plugins
 // @ts-ignore
@@ -136,7 +145,10 @@ export class GrafanaApp {
 
       // Important that extension reducers are initialized before store
       addExtensionReducers();
-      configureStore();
+      // BMC code
+      // configureStore();
+      const store: Store<StoreState> = configureStore();
+      // End
       initExtensions();
 
       standardEditorsRegistry.setInit(getAllOptionEditors);
@@ -151,6 +163,8 @@ export class GrafanaApp {
         createIntervalVariableAdapter(),
         createAdHocVariableAdapter(),
         createSystemVariableAdapter(),
+        // BMC code - next line
+        createDatePickerVariableAdapter(),
       ]);
       monacoLanguageRegistry.setInit(getDefaultMonacoLanguages);
 
@@ -208,6 +222,22 @@ export class GrafanaApp {
         keybindings: keybindingsService,
         config,
       };
+
+      // BMC code
+      // Uncomment below code snippet to enable feature flag
+      let tenantFeatureDTO = null;
+      if (!isGrafanaAdmin()) {
+        tenantFeatureDTO = await fetchTenantFeatures();
+      }
+      await loadConfigurableLinks(store);
+      loadFeatures(tenantFeatureDTO);
+      // Suppress the error
+      if (getFeatureStatus('gainsight')) {
+        await loadGainSightScript(store).catch((e: any) => {
+          return true;
+        });
+      }
+      // End
 
       ReactDOM.render(
         React.createElement(AppWrapper, {
@@ -340,4 +370,82 @@ function reportMetricPerformanceMark(metricName: string, prefix = '', suffix = '
   }
 }
 
+// BMC code
+
+// Uncomment below code snippet to enable feature flag
+async function fetchTenantFeatures(): Promise<TenantFeatureDTO[] | null> {
+  const response = await Promise.all([
+    backendSrv.get('/tenantfeatures'),
+    loadGrafanaFeatures().catch((e) => {
+      console.log(e);
+    }),
+  ]);
+  return response[0];
+}
+
+// <!-- BMC code - Gainsight PX Tag-->
+const loadGainSightScript = async (store: Store<StoreState>): Promise<any> => {
+  // Get GS-Tag from IMS userinfo endpoint
+  let { gsTag, canShareUserPII, preferences, tenantDomainName } = await getGainsightData();
+  await store.dispatch(updateGainSightUserPreferences(preferences));
+
+  if (!gsTag) {
+    return;
+  }
+
+  const user = contextSrv.user;
+  const userDetails: any = {};
+  const accountDetails: any = {};
+
+  // user opts-in
+  if (canShareUserPII) {
+    userDetails.id = user.id;
+    accountDetails.name = user.orgName;
+    accountDetails.id = user.orgId;
+    accountDetails.website = tenantDomainName;
+  }
+  // user opts-out
+  else {
+    userDetails.id = user.id;
+    accountDetails.id = user.orgId;
+  }
+
+  const url = 'https://documents.bmc.com/products/docs/gainsight/main/aptrinsic.js';
+  const param = gsTag;
+  const i = 'aptrinsic';
+  (window as any)[i] =
+    (window as any)[i] ||
+    function () {
+      ((window as any)[i].q = (window as any)[i].q || []).push(arguments);
+    };
+  (window as any)[i].p = param;
+  (window as any)[i].c = {
+    cssFileEndpoint: 'https://documents.bmc.com/products/docs/gainsight/main/style.css',
+    widgetFileEndpoint: 'https://documents.bmc.com/products/docs/gainsight/main/aptrinsic-widget.js',
+  };
+  const node = document.createElement('script');
+  node.async = true;
+  node.src = url + '?a=' + param;
+  const script = document.getElementsByTagName('script')[0];
+  const bhdVersion = (config.bootData.settings as any).bhdVersion;
+  node.onload = (_: any) => {
+    console.log('Gainsight is loaded');
+    (window as any)[i]('identify', userDetails, accountDetails);
+    (window as any)[i]('set', 'globalContext', { application: 'dashboards' });
+    // setting version in global context for IDD
+    (window as any)[i]('set', 'globalContext', { version: bhdVersion });
+  };
+  node.onerror = (error: any) => {
+    console.error('An error occurred while loading GainSight script; reason: ', error);
+  };
+  script?.parentNode?.insertBefore(node, script);
+};
+
+const loadConfigurableLinks = async (store: Store<StoreState>): Promise<CustomConfiguration> => {
+  const cLs = await customConfigSrv.getCustomConfiguration();
+  store.dispatch(updateConfigurableLinks(cLs));
+  return cLs;
+};
+// <!-- BMC code - Gainsight PX Tag-->
+// End
 export default new GrafanaApp();

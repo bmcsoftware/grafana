@@ -4,6 +4,8 @@ import { SelectableValue } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import PageActionBar from 'app/core/components/PageActionBar/PageActionBar';
 import { contextSrv } from 'app/core/core';
+import { getFeatureStatus, FEATURE_CONST } from 'app/features/dashboard/services/featureFlagSrv';
+import { isGrafanaAdmin } from 'app/features/plugins/admin/permissions';
 import { StoreState, useSelector, useDispatch, AccessControlAction } from 'app/types';
 
 import {
@@ -32,7 +34,11 @@ export function DataSourcesListHeader() {
 
   // TODO remove this logic adding the link button once topnav is live
   // instead use the actions in DataSourcesListPage
-  const canCreateDataSource = contextSrv.hasPermission(AccessControlAction.DataSourcesCreate);
+// BMC code - inline change
+const canCreateDataSource =
+(contextSrv.hasPermission(AccessControlAction.DataSourcesCreate) &&
+  getFeatureStatus(FEATURE_CONST.DASHBOARDS_SSRF_FEATURE_NAME)) ||
+  isGrafanaAdmin();
   const dataSourcesRoutes = useDataSourcesRoutes();
   const isTopnav = config.featureToggles.topnav;
   const linkButton =
