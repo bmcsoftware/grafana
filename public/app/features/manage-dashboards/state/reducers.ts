@@ -60,6 +60,8 @@ export interface ImportDashboardState {
   source: DashboardSource;
   inputs: DashboardInputs;
   state: LoadingState;
+  // BMC code - next line
+  multiple?: boolean;
 }
 
 export const initialImportDashboardState: ImportDashboardState = {
@@ -68,6 +70,8 @@ export const initialImportDashboardState: ImportDashboardState = {
   source: DashboardSource.Json,
   inputs: {} as DashboardInputs,
   state: LoadingState.NotStarted,
+  // BMC code - next line
+  multiple: false,
 };
 
 const importDashboardSlice = createSlice({
@@ -95,6 +99,8 @@ const importDashboardSlice = createSlice({
     clearDashboard: (state: Draft<ImportDashboardState>) => {
       state.dashboard = {};
       state.state = LoadingState.NotStarted;
+      // BMC code - next line
+      state.multiple = false;
     },
     setInputs: (state: Draft<ImportDashboardState>, action: PayloadAction<any[]>) => {
       state.inputs = {
@@ -113,6 +119,11 @@ const importDashboardSlice = createSlice({
     fetchDashboard: (state: Draft<ImportDashboardState>) => {
       state.state = LoadingState.Loading;
     },
+    // BMC Code: Next method
+    dashboardsLoaded: (state: Draft<ImportDashboardState>) => {
+      state.state = LoadingState.Done;
+      state.multiple = true;
+    },
   },
 });
 
@@ -124,6 +135,8 @@ export const {
   setLibraryPanelInputs,
   fetchFailed,
   fetchDashboard,
+  // BMC Code: Next line
+  dashboardsLoaded,
 } = importDashboardSlice.actions;
 
 export const importDashboardReducer = importDashboardSlice.reducer;

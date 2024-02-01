@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { DataSourcePluginMeta } from '@grafana/data';
-import { LinkButton } from '@grafana/ui';
+// import { LinkButton } from '@grafana/ui';
 import { DataSourcePluginCategory } from 'app/types';
 
 import { DataSourceTypeCardList } from './DataSourceTypeCardList';
@@ -27,17 +27,22 @@ export function DataSourceCategories({ categories, onClickDataSourceType }: Prop
         </div>
       ))}
 
-      {/* Find more */}
-      <div className="add-data-source-more">
-        <LinkButton
-          variant="secondary"
-          href="https://grafana.com/plugins?type=datasource&utm_source=grafana_add_ds"
-          target="_blank"
-          rel="noopener"
-        >
-          Find more data source plugins on grafana.com
-        </LinkButton>
-      </div>
+      {/* 
+        // BMC code 
+        // Hide this option
+        // Find more
+        <div className="add-data-source-more">
+          <LinkButton
+            variant="secondary"
+            href="https://grafana.com/plugins?type=datasource&utm_source=grafana_add_ds"
+            target="_blank"
+            rel="noopener"
+          >
+            Find more data source plugins on grafana.com
+          </LinkButton>
+        </div>
+        // End 
+      */}
     </>
   );
 }

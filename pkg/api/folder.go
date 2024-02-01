@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/grafana/grafana/pkg/api/apierrors"
 	"github.com/grafana/grafana/pkg/api/dtos"
@@ -133,6 +134,36 @@ func (hs *HTTPServer) CreateFolder(c *models.ReqContext) response.Response {
 	if !hs.AccessControl.IsDisabled() {
 		hs.accesscontrolService.ClearUserPermissionCache(c.SignedInUser)
 	}
+
+	// BMC code
+	// author(ateli) - Changes to make folder private by default, Fix for DRJ71-743
+	var items []*models.DashboardACL
+	items = append(items, &models.DashboardACL{
+		OrgID:       c.OrgID,
+		DashboardID: folder.ID,
+		UserID:      c.UserID,
+		TeamID:      0,
+		Role:        nil,
+		Permission:  models.PermissionType(4),
+		Created:     time.Now(),
+		Updated:     time.Now(),
+	})
+
+	if err := hs.DashboardService.UpdateDashboardACL(c.Req.Context(), folder.ID, items); err != nil {
+		if errors.Is(err, models.ErrDashboardACLInfoMissing) {
+			err = models.ErrFolderACLInfoMissing
+		}
+		if errors.Is(err, models.ErrDashboardPermissionDashboardEmpty) {
+			err = models.ErrFolderPermissionFolderEmpty
+		}
+
+		if errors.Is(err, models.ErrFolderACLInfoMissing) || errors.Is(err, models.ErrFolderPermissionFolderEmpty) {
+			return response.Error(409, err.Error(), err)
+		}
+
+		return response.Error(500, "Failed to create permission", err)
+	}
+	// End
 
 	g := guardian.New(c.Req.Context(), folder.ID, c.OrgID, c.SignedInUser)
 	// TODO set ParentUID if nested folders are enabled

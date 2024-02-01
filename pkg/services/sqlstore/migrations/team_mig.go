@@ -60,4 +60,9 @@ func addTeamMigrations(mg *Migrator) {
 	mg.AddMigration("Add column permission to team_member table", NewAddColumnMigration(teamMemberV1, &Column{
 		Name: "permission", Type: DB_SmallInt, Nullable: true,
 	}))
+	// BMC code
+	// Abhishek, 07122020, alter id column to bigint
+	mg.AddMigration("alter team.id to bigint", NewRawSQLMigration("").
+	Postgres("ALTER TABLE public.team ALTER COLUMN id TYPE int8;"))
+	// End
 }

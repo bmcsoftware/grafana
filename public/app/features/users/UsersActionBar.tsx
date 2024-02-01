@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 import { RadioButtonGroup, LinkButton, FilterInput } from '@grafana/ui';
-import { contextSrv } from 'app/core/core';
-import { AccessControlAction, StoreState } from 'app/types';
+// import { contextSrv } from 'app/core/core';
+// BMC code: removed AccessControlAction
+import { StoreState } from 'app/types';
 
 import { selectTotal } from '../invites/state/selectors';
 
@@ -24,7 +25,8 @@ export interface Props {
 export class UsersActionBar extends PureComponent<Props> {
   render() {
     const {
-      canInvite,
+      // BMC code - next line
+      // canInvite,
       externalUserMngLinkName,
       externalUserMngLinkUrl,
       searchQuery,
@@ -37,7 +39,8 @@ export class UsersActionBar extends PureComponent<Props> {
       { label: 'Users', value: 'users' },
       { label: `Pending Invites (${pendingInvitesCount})`, value: 'invites' },
     ];
-    const canAddToOrg: boolean = contextSrv.hasAccess(AccessControlAction.OrgUsersAdd, canInvite);
+    // BMC code - next line
+    // const canAddToOrg: boolean = contextSrv.hasAccess(AccessControlAction.OrgUsersAdd, canInvite);
 
     return (
       <div className="page-action-bar" data-testid="users-action-bar">
@@ -53,7 +56,8 @@ export class UsersActionBar extends PureComponent<Props> {
             <RadioButtonGroup value={showInvites ? 'invites' : 'users'} options={options} onChange={onShowInvites} />
           </div>
         )}
-        {canAddToOrg && <LinkButton href="org/users/invite">Invite</LinkButton>}
+        {/* BMC code - next line */}
+        {/* {canAddToOrg && <LinkButton href="org/users/invite">Invite</LinkButton>} */}
         {externalUserMngLinkUrl && (
           <LinkButton href={externalUserMngLinkUrl} target="_blank" rel="noopener">
             {externalUserMngLinkName}

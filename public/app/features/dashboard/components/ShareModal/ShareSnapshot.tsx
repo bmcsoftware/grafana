@@ -10,6 +10,7 @@ import { DashboardModel, PanelModel } from 'app/features/dashboard/state';
 import { VariableRefresh } from '../../../variables/types';
 
 import { ShareModalTabProps } from './types';
+import { updateURLOrigin } from './utils';
 
 const snapshotApiUrl = '/api/snapshots';
 
@@ -112,6 +113,10 @@ export class ShareSnapshot extends PureComponent<Props, State> {
 
     try {
       const results: { deleteUrl: string; url: string } = await getBackendSrv().post(snapshotApiUrl, cmdData);
+      // BMC code
+      results.deleteUrl = updateURLOrigin(results.deleteUrl);
+      results.url = updateURLOrigin(results.url);
+      // End
       this.setState({
         deleteUrl: results.deleteUrl,
         snapshotUrl: results.url,

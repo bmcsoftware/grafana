@@ -36,7 +36,10 @@ func addUserMigrations(mg *Migrator) {
 	mg.AddMigration("create user table", NewAddTableMigration(userV1))
 	// add indices
 	mg.AddMigration("add unique index user.login", NewAddIndexMigration(userV1, userV1.Indices[0]))
-	mg.AddMigration("add unique index user.email", NewAddIndexMigration(userV1, userV1.Indices[1]))
+	// BMC code
+	// Abhishek, 08232020, disable unique index on email column
+	// mg.AddMigration("add unique index user.email", NewAddIndexMigration(userV1, userV1.Indices[1]))
+	// End
 
 	// ---------------------
 	// account -> org changes
@@ -69,7 +72,10 @@ func addUserMigrations(mg *Migrator) {
 		},
 		Indices: []*Index{
 			{Cols: []string{"login"}, Type: UniqueIndex},
-			{Cols: []string{"email"}, Type: UniqueIndex},
+			// BMC code
+			// Abhishek, 08232020, disable unique index on email column
+			// {Cols: []string{"email"}, Type: UniqueIndex},
+			// End
 		},
 	}
 
@@ -126,6 +132,11 @@ func addUserMigrations(mg *Migrator) {
 	mg.AddMigration("Add index user.login/user.email", NewAddIndexMigration(userV2, &Index{
 		Cols: []string{"login", "email"},
 	}))
+	// BMC code
+	// Start Abhishek, 07122020, alter id column to bigint
+	mg.AddMigration("alter user.id to bigint", NewRawSQLMigration("").
+	Postgres("ALTER TABLE public.user ALTER COLUMN id TYPE int8;"))
+	// End
 
 	//Service accounts are lightweight users with restricted permissions.  They support API keys
 	//and provisioning and tasks like alarms and reports.

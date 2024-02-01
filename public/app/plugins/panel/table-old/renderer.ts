@@ -17,6 +17,8 @@ import {
 import { getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 
 import { ColumnOptionsCtrl } from './column_options';
+import { TablePanelCtrl } from './module';
+import { RenderJSON } from './render_json';
 import { ColumnRender, TableRenderModel, ColumnStyle } from './types';
 
 export class TableRenderer {
@@ -25,6 +27,8 @@ export class TableRenderer {
 
   constructor(
     private panel: { styles: ColumnStyle[]; pageSize: number },
+    // BMC code - next line
+    private ctrl: TablePanelCtrl,
     private table: TableRenderModel,
     private timeZone: TimeZone,
     private sanitize: (v: any) => any,
@@ -206,6 +210,13 @@ export class TableRenderer {
       };
     }
 
+    // BMC code
+    if (column.style.type === 'jsonformat') {
+      return (v: any): any => {
+        return RenderJSON(v, this.timeZone, this.ctrl);
+      };
+    }
+    // End
     return (value: any) => {
       return this.defaultCellFormatter(value, column.style);
     };
