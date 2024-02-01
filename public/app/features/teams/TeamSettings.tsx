@@ -6,6 +6,7 @@ import { TeamRolePicker } from 'app/core/components/RolePicker/TeamRolePicker';
 import { updateTeamRoles } from 'app/core/components/RolePicker/api';
 import { useRoleOptions } from 'app/core/components/RolePicker/hooks';
 import { SharedPreferences } from 'app/core/components/SharedPreferences/SharedPreferences';
+import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction, Role, Team } from 'app/types';
 
@@ -47,9 +48,10 @@ export const TeamSettings: FC<Props> = ({ team, updateTeam }) => {
       >
         {({ register, errors }) => (
           <FieldSet label="Team details">
+            {/* BMC code - inline change */}
             <Field
               label="Name"
-              disabled={!canWriteTeamSettings}
+              disabled={config.buildInfo.env !== 'development'}
               required
               invalid={!!errors.name}
               error="Name is required"
@@ -62,7 +64,7 @@ export const TeamSettings: FC<Props> = ({ team, updateTeam }) => {
                 <TeamRolePicker
                   teamId={team.id}
                   roleOptions={roleOptions}
-                  disabled={false}
+                  disabled={config.buildInfo.env !== 'development'}
                   apply={true}
                   onApplyRoles={setPendingRoles}
                   pendingRoles={pendingRoles}
@@ -71,16 +73,20 @@ export const TeamSettings: FC<Props> = ({ team, updateTeam }) => {
               </Field>
             )}
 
+            {/* BMC code - inline change */}
             <Field
               label="Email"
               description="This is optional and is primarily used to set the team profile avatar (via gravatar service)."
-              disabled={!canWriteTeamSettings}
+              disabled={config.buildInfo.env !== 'development'}
             >
               <Input {...register('email')} placeholder="team@email.com" type="email" id="email-input" />
             </Field>
-            <Button type="submit" disabled={!canWriteTeamSettings}>
-              Update
-            </Button>
+            {/* BMC code - inline change */}
+            {config.buildInfo.env === 'development' ? (
+              <Button type="submit" disabled={!canWriteTeamSettings}>
+                Update
+              </Button>
+            ) : null}
           </FieldSet>
         )}
       </Form>

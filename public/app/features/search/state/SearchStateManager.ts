@@ -43,12 +43,17 @@ export class SearchStateManager extends StateManagerBase<SearchState> {
 
   initStateFromUrl(folderUid?: string) {
     const stateFromUrl = parseRouteParams(locationService.getSearchObject());
-
-    stateManager.setState({
+    // BMC Changes: Start
+    const newState: Partial<SearchState> = {
       ...stateFromUrl,
       folderUid: folderUid,
       eventTrackingNamespace: folderUid ? 'manage_dashboards' : 'dashboard_search',
-    });
+    };
+    if (stateManager.state.query === 'folder:current' && !stateFromUrl.query) {
+      newState.query = '';
+    }
+    stateManager.setState(newState);
+    // BMC Changes: End
 
     this.doSearch();
   }

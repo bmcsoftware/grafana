@@ -48,7 +48,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-stack/stack v1.8.1
 	github.com/gobwas/glob v0.2.3
-	github.com/gofrs/uuid v4.3.0+incompatible
+	github.com/gofrs/uuid v4.3.0+incompatible // indirect
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/mock v1.6.0
 	github.com/golang/snappy v0.0.4
@@ -72,7 +72,7 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/lib/pq v1.10.4
-	github.com/linkedin/goavro/v2 v2.10.0
+	github.com/linkedin/goavro/v2 v2.11.1
 	github.com/m3db/prometheus_remote_client_golang v0.4.4
 	github.com/magefile/mage v1.13.0
 	github.com/mattn/go-isatty v0.0.14
@@ -108,7 +108,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.7.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
-	golang.org/x/net v0.1.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20220630143837-2104d58473e0
 	golang.org/x/sync v0.1.0
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858
@@ -142,7 +142,7 @@ require (
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
 	github.com/andybalholm/brotli v1.0.4
 	github.com/apache/arrow/go/arrow v0.0.0-20211112161151-bc219186db40 // indirect
-	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/centrifugal/protocol v0.8.10 // indirect
@@ -169,7 +169,7 @@ require (
 	github.com/go-openapi/validate v0.22.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/status v1.1.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -230,8 +230,8 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0
 	go.uber.org/goleak v1.1.12 // indirect
-	golang.org/x/sys v0.1.0 // indirect
-	golang.org/x/text v0.4.0
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220708155623-50e5f4832e73
@@ -248,6 +248,7 @@ require (
 	github.com/blugelabs/bluge v0.1.9
 	github.com/blugelabs/bluge_segment_api v0.2.0
 	github.com/bufbuild/connect-go v1.0.0
+	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/dlmiddlecote/sqlstats v1.0.2
 	github.com/drone/drone-cli v1.6.1
 	github.com/getkin/kin-openapi v0.103.0
@@ -255,10 +256,11 @@ require (
 	github.com/google/go-github/v45 v45.2.0
 	github.com/grafana/codejen v0.0.2
 	github.com/grafana/dskit v0.0.0-20211011144203-3a88ec0b675f
+	github.com/jlaffaye/ftp v0.1.0
 	github.com/jmoiron/sqlx v1.3.5
-	github.com/kr/pretty v0.3.0
 	github.com/matryer/is v1.4.0
 	github.com/parca-dev/parca v0.12.1
+	github.com/pkg/sftp v1.13.5
 	github.com/urfave/cli v1.22.9
 	go.etcd.io/etcd/api/v3 v3.5.4
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.32.0
@@ -293,7 +295,6 @@ require (
 	github.com/mattn/go-ieproxy v0.0.3 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/segmentio/asm v1.1.4 // indirect
 	go.starlark.net v0.0.0-20221020143700-22309ac47eac // indirect
@@ -310,6 +311,7 @@ require (
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/axiomhq/hyperloglog v0.0.0-20191112132149-a4c4c47bc57f // indirect
+	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/blevesearch/go-porterstemmer v1.0.3 // indirect
 	github.com/blevesearch/mmap-go v1.0.4 // indirect
@@ -330,11 +332,13 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/go-github v17.0.0+incompatible
+	github.com/gorilla/css v1.0.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.3 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
 	github.com/klauspost/compress v1.15.5 // indirect
+	github.com/kr/fs v0.1.0 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/labstack/echo/v4 v4.9.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
@@ -351,6 +355,13 @@ require (
 	go.opentelemetry.io/proto/otlp v0.16.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
+)
+
+// BMC code
+require (
+	github.bmc.com/DSOM-ADE/authz-go v0.0.0-20230413015142-018935eb5499
+	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
+	github.com/microcosm-cc/bluemonday v1.0.18
 )
 
 // Use fork of crewjam/saml with fixes for some issues until changes get merged into upstream

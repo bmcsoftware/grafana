@@ -16,22 +16,31 @@ const MainOrgName = "Main Org."
 
 func isOrgNameTaken(name string, existingId int64, sess *DBSession) (bool, error) {
 	// check if org name is taken
-	var org models.Org
-	exists, err := sess.Where("name=?", name).Get(&org)
+	// BMC code
+	// return always 'false' to allow different tenant with the same name (https://jira.bmc.com/browse/DRJ71-730)
+	// var org models.Org
+	// exists, err := sess.Where("name=?", name).Get(&org)
 
-	if err != nil {
-		return false, nil
-	}
+	// if err != nil {
+	// 	return false, nil
+	// }
 
-	if exists && existingId != org.Id {
-		return true, nil
-	}
+	// if exists && existingId != org.Id {
+	// 	return true, nil
+	// }
+	// End
 
 	return false, nil
 }
 
-func (ss *SQLStore) createOrg(ctx context.Context, name string, userID int64, engine *xorm.Engine) (models.Org, error) {
+// BMC code
+// Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+// func (ss *SQLStore) createOrg(ctx context.Context, name string, userID int64, engine *xorm.Engine) (models.Org, error) {
+func (ss *SQLStore) createOrg(ctx context.Context, ID int64, name string, userID int64, engine *xorm.Engine) (models.Org, error) {
 	orga := models.Org{
+		// Abhishek_06082020, Extended Create Org API to additionally accept Orgid as optional input parameter
+		Id:      ID,
+// End
 		Name:    name,
 		Created: time.Now(),
 		Updated: time.Now(),
@@ -73,11 +82,17 @@ func (ss *SQLStore) createOrg(ctx context.Context, name string, userID int64, en
 
 // CreateOrgWithMember creates an organization with a certain name and a certain user as member.
 func (ss *SQLStore) CreateOrgWithMember(name string, userID int64) (models.Org, error) {
-	return ss.createOrg(context.Background(), name, userID, ss.engine)
+	// BMC code
+	// Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+	return ss.createOrg(context.Background(), 0, name, userID, ss.engine)
+	// End
 }
 
 func (ss *SQLStore) CreateOrg(ctx context.Context, cmd *models.CreateOrgCommand) error {
-	org, err := ss.createOrg(ctx, cmd.Name, cmd.UserId, ss.engine)
+	// BMC code
+	// Abhishek_04292021, changes to support tenantid as org id with 7.5.4 upgrade.
+	org, err := ss.createOrg(ctx, cmd.Id, cmd.Name, cmd.UserId, ss.engine)
+	// End
 	if err != nil {
 		return err
 	}

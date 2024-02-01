@@ -93,8 +93,15 @@ export const dataSourceAclLevels = [
 export const dashboardAclTargets: AclTargetInfo[] = [
   { value: AclTarget.Team, label: 'Team' },
   { value: AclTarget.User, label: 'User' },
+  // BMC code
+  /*
+    author(ateli) - start
+    UI chages to hide Role based permission assigment, Only User Team is permissible options.  
   { value: AclTarget.Viewer, label: 'Everyone With Viewer Role' },
   { value: AclTarget.Editor, label: 'Everyone With Editor Role' },
+    author(ateli) - end
+  */
+  // End
 ];
 
 export const dashboardPermissionLevels: DashboardPermissionInfo[] = [

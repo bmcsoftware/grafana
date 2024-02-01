@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useContext, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
-import { locationUtil, textUtil } from '@grafana/data';
+import { AppEvents, locationUtil, textUtil } from '@grafana/data';
 import { selectors as e2eSelectors } from '@grafana/e2e-selectors/src';
 import { locationService } from '@grafana/runtime';
 import {
@@ -14,11 +14,14 @@ import {
   Tag,
   ToolbarButtonRow,
   ModalsContext,
+  Tooltip,
+  ButtonSelect,
 } from '@grafana/ui';
 import { AppChromeUpdate } from 'app/core/components/AppChrome/AppChromeUpdate';
 import { NavToolbarSeparator } from 'app/core/components/AppChrome/NavToolbarSeparator';
-import config from 'app/core/config';
+import { config } from 'app/core/config';
 import { useGrafana } from 'app/core/context/GrafanaContext';
+import { appEvents } from 'app/core/core';
 import { useBusEvent } from 'app/core/hooks/useBusEvent';
 import { t, Trans } from 'app/core/internationalization';
 import { DashboardCommentsModal } from 'app/features/dashboard/components/DashboardComments/DashboardCommentsModal';
@@ -221,6 +224,35 @@ export const DashNav = React.memo<Props>((props) => {
       );
     }
 
+    // BMC code
+    if (canShare) {
+      const { theme } = config;
+      buttons.push(
+        <div key="button-reports" style={{ display: 'flex' }}>
+          <Tooltip content="Manage scheduled reports">
+            <div
+              onClick={() => {
+                sessionStorage.removeItem('reportFilter');
+                locationService.push({
+                  search: locationService.getSearch().toString(),
+                  pathname: `/a/reports/f/${dashboard.uid}`,
+                });
+              }}
+            >
+              <img
+                alt=""
+                style={{
+                  width: '22px',
+                  filter: theme.isDark ? 'brightness(1.2)' : 'brightness(0.5)',
+                }}
+                src="public/img/icon_scheduler.svg"
+              />
+            </div>
+          </Tooltip>
+        </div>
+      );
+    }
+    // End
     addCustomContent(customLeftActions, buttons);
     return buttons;
   };
@@ -259,12 +291,55 @@ export const DashNav = React.memo<Props>((props) => {
     );
   };
 
-  const renderRightActions = () => {
+  // BMC code - name change to start with capital letter
+  const RenderRightActions = () => {
     const { dashboard, onAddPanel, isFullscreen, kioskMode } = props;
     const { canSave, canEdit, showSettings } = dashboard.meta;
     const { snapshot } = dashboard;
     const snapshotUrl = snapshot && snapshot.originalUrl;
     const buttons: ReactNode[] = [];
+    // BMC code - for dashboard personalization
+    const [isLoadingPersonalization, setIsLoadingPersonalization] = React.useState(false);
+    const onSaveFilters = () => {
+      setIsLoadingPersonalization(true);
+      const dashboardSrv = getDashboardSrv();
+      const currentVariableValues = dashboard.getVariables();
+      const currentTimeRangeValues = dashboard.time;
+      dashboardSrv
+        .savePersonalizedFilters({
+          uid: dashboard.uid,
+          list: currentVariableValues ?? [],
+          time: currentTimeRangeValues,
+        })
+        .then(() => {
+          appEvents.emit(AppEvents.alertSuccess, ['Saved filter values successfully.']);
+        })
+        .catch((err) => {
+          appEvents.emit(AppEvents.alertError, ['Failed to save filter values.']);
+        })
+        .finally(() => {
+          setIsLoadingPersonalization(false);
+        });
+    };
+
+    const onResetFilters = () => {
+      setIsLoadingPersonalization(true);
+      const dashboardSrv = getDashboardSrv();
+      dashboardSrv
+        .resetPersonalizedFilters(dashboard.uid)
+        .then(() => {
+          // BMC code - reload the dashboard to reset the variables
+          window.location.href = window.location.href.split("?")[0];
+        })
+        .catch((err) => {
+          appEvents.emit(AppEvents.alertError, ['Failed to reset filter values.']);
+        })
+        .finally(() => {
+          setIsLoadingPersonalization(false);
+        });
+    };
+    // BMC code - end
+
     const tvButton = config.featureToggles.topnav ? null : (
       <ToolbarButton
         tooltip={t('dashboard.toolbar.tv-button', 'Cycle view mode')}
@@ -311,6 +386,29 @@ export const DashNav = React.memo<Props>((props) => {
         </ModalsController>
       );
     }
+
+    // BMC code - for dashboard personalization
+    // Checking UID to hide save filters on Home dash
+    if (dashboard.uid && !isFullscreen) {
+      buttons.push(
+        <ButtonGroup>
+          <ToolbarButton
+            icon={isLoadingPersonalization ? 'fa fa-spinner' : 'bmc-save-filter'}
+            tooltip={t('dashboard.toolbar.save-filters', 'Save filters')}
+            disabled={!(dashboard.hasVariableValuesChanged() || dashboard.hasTimeChanged())}
+            onClick={onSaveFilters}
+            key="button-save-adfiltersd"
+          />
+          <ButtonSelect
+            value={undefined}
+            options={[{ label: 'Reset filters', value: 'Reset filters' }]}
+            title={t('dashboard.toolbar.reset-filters', 'Reset filters')}
+            onChange={onResetFilters}
+          />
+        </ButtonGroup>
+      );
+    }
+    // End
 
     if (snapshotUrl) {
       buttons.push(
@@ -359,7 +457,7 @@ export const DashNav = React.memo<Props>((props) => {
           <>
             {renderLeftActions()}
             <NavToolbarSeparator leftActionsSeparator />
-            <ToolbarButtonRow alignment="right">{renderRightActions()}</ToolbarButtonRow>
+            <ToolbarButtonRow alignment="right">{RenderRightActions()}</ToolbarButtonRow>
           </>
         }
       />
@@ -376,7 +474,7 @@ export const DashNav = React.memo<Props>((props) => {
       onGoBack={onGoBack}
       leftItems={renderLeftActions()}
     >
-      {renderRightActions()}
+      {RenderRightActions()}
     </PageToolbar>
   );
 });

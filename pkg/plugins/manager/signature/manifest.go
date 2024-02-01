@@ -96,7 +96,39 @@ func readPluginManifest(body []byte) (*pluginManifest, error) {
 	return &manifest, nil
 }
 
+// BMC code
+func isBMCPlugin(pluginID string) bool {
+	bmcPlugins := []string{
+		"bmchelix-ade-datasource",
+		"bmc-ade-bar",
+		"bmc-ade-cross-tab",
+		"agenty-flowcharting-panel",
+		"grafana-piechart-panel",
+		"bmc-ade-combination-chart",
+		"snuids-trafficlights-panel",
+		"bmc-record-details",
+		"bmc-csv-datasource",
+		"bmc-ade-risk-mitigation-panel",
+		"bmc-ade-forecast-plugin",
+		"json-datasource",
+		"reports",
+	}
+	for _, id := range bmcPlugins {
+		if id == pluginID {
+			return true
+		}
+	}
+	return false
+}
 func Calculate(mlog log.Logger, plugin *plugins.Plugin) (plugins.Signature, error) {
+	// BMC code
+	// workaround to mark BMC plugins as 'Signed'.
+	if isBMCPlugin(plugin.ID) {
+		return plugins.Signature{
+			Status: plugins.SignatureValid,
+		}, nil
+	}
+	// End
 	if plugin.IsCorePlugin() {
 		return plugins.Signature{
 			Status: plugins.SignatureInternal,

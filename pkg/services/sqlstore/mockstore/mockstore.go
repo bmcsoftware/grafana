@@ -2,9 +2,10 @@ package mockstore
 
 import (
 	"context"
-
+	"github.com/grafana/grafana/pkg/bmc"
 	"xorm.io/core"
 
+	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/models"
 	"github.com/grafana/grafana/pkg/services/sqlstore"
 	"github.com/grafana/grafana/pkg/services/sqlstore/migrator"
@@ -82,8 +83,11 @@ func (m *SQLStoreMock) GetSignedInUser(ctx context.Context, query *models.GetSig
 	return m.ExpectedError
 }
 
-func (m *SQLStoreMock) CreateTeam(name string, email string, orgID int64) (models.Team, error) {
+// BMC code - inline change
+func (m *SQLStoreMock) CreateTeam(name string, email string, orgID int64, Id int64) (models.Team, error) {
 	return models.Team{
+		// BMC code - next line
+		Id:    Id,
 		Name:  name,
 		Email: email,
 		OrgId: orgID,
@@ -193,3 +197,93 @@ func (m *SQLStoreMock) SetAlertNotificationStateToPendingCommand(ctx context.Con
 func (m SQLStoreMock) SetAlertState(ctx context.Context, cmd *models.SetAlertStateCommand) error {
 	return m.ExpectedError
 }
+
+// BMC Code - BEGIN
+func (m *SQLStoreMock) GetAllReports(ctx context.Context, query *bmc.GetAllReports) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetReportByID(ctx context.Context, query *bmc.GetReportByID) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetReportJobQueue(ctx context.Context, query *bmc.GetReportJobQueue) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetAllRS(ctx context.Context, query *models.GetAll) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetRSById(ctx context.Context, query *models.GetById) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetRSByIds(ctc context.Context, query *models.GetByIds) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetRSByDashIds(ctx context.Context, query *models.GetByDashIds) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) InsertRS(ctx context.Context, query *models.InsertRS) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) UpdateRS(ctx context.Context, query *models.UpdateRS) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) DeleteRS(ctx context.Context, query *models.DeleteRS) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) DeleteRSByDashIds(ctx context.Context, query *models.DeleteRSByDashIds) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) InsertRSJobQueue(ctx context.Context, query *models.InsertRSJobQueue) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) UpdateRSJobQueue(ctx context.Context, query *models.UpdateRSJobQueue) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) InsertRSJobStatus(ctx context.Context, query *models.InsertRSJobStatus) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) EnableRS(ctx context.Context, query *models.EnableRS) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) DisableRS(ctx context.Context, query *models.DisableRS) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) ExecuteRS(dashboardService dashboards.DashboardService, ctx context.Context, query *models.GetJobById) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) RemoveOrDisableOrgSchedules(ctx context.Context, cmd *models.RemoveOrDisableOrgSchedules) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetReportOrg(ctx context.Context, query *models.GetReportTenantDetails) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) CreateOrUpdateReportOrg(ctx context.Context, query *models.CreateOrUpdateReportTenantDetails) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) DeleteReportOrg(ctx context.Context, query *models.DeleteReportTenantDetails) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) CountReportsByTenant(ctx context.Context, query *models.GetCountReportByTenant) error {
+	return m.ExpectedError
+}
+
+func (m *SQLStoreMock) GetReportSettings(ctx context.Context, query *models.GetReportBranding) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) SetReportSettings(ctx context.Context, query *models.SetReportBranding) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) DeleteReportSettings(ctx context.Context, query *models.DeleteReportBranding) error {
+	return m.ExpectedError
+}
+
+func (m *SQLStoreMock) GetReportListJobQueue(ctx context.Context, query *models.GetReportListJobQueue) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetRSJobQueueByJobId(ctx context.Context, query *models.GetRSJobQueueByJobId) error {
+	return m.ExpectedError
+}
+func (m *SQLStoreMock) GetJobQueuesByReportId(ctx context.Context, query *models.GetRSJobQueues) error {
+	return m.ExpectedError
+}
+
+// BMC Code - END
