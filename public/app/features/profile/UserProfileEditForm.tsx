@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { selectors } from '@grafana/e2e-selectors';
-import { Button, Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
-import config from 'app/core/config';
+// import { selectors } from '@grafana/e2e-selectors';
+// import { Button, Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
+import { Field, FieldSet, Form, Icon, Input, Tooltip } from '@grafana/ui';
+// import config from 'app/core/config';
 import { t, Trans } from 'app/core/internationalization';
 import { UserDTO } from 'app/types';
 
@@ -14,7 +15,8 @@ export interface Props {
   updateProfile: (payload: ProfileUpdateFields) => void;
 }
 
-const { disableLoginForm } = config;
+// BMC code - inline change
+const disableLoginForm = true;
 
 export const UserProfileEditForm = ({ user, isSavingUser, updateProfile }: Props) => {
   const onSubmitProfileUpdate = (data: ProfileUpdateFields) => {
@@ -72,6 +74,8 @@ export const UserProfileEditForm = ({ user, isSavingUser, updateProfile }: Props
               />
             </Field>
 
+            {/* 
+              // BMC code
             <div className="gf-form-button-row">
               <Button
                 variant="primary"
@@ -82,6 +86,8 @@ export const UserProfileEditForm = ({ user, isSavingUser, updateProfile }: Props
                 <Trans i18nKey="common.save">Save</Trans>
               </Button>
             </div>
+              // End
+            */}
           </FieldSet>
         );
       }}
