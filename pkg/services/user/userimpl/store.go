@@ -182,19 +182,7 @@ func (ss *sqlStore) GetByLogin(ctx context.Context, query *user.GetUserByLoginQu
 		var has bool
 		var err error
 
-		// Since username can be an email address, attempt login with email address
-		// first if the login field has the "@" symbol.
-		if strings.Contains(query.LoginOrEmail, "@") {
-			where = "email=?"
-			if ss.cfg.CaseInsensitiveLogin {
-				where = "LOWER(email)=LOWER(?)"
-			}
-			has, err = sess.Where(ss.notServiceAccountFilter()).Where(where, query.LoginOrEmail).Get(usr)
-			if err != nil {
-				return err
-			}
-		}
-
+		// Bmc Code Start -  Reversed the order to get user, first by Login and then by email
 		// Look for the login field instead of email
 		if !has {
 			where = "login=?"
@@ -203,6 +191,24 @@ func (ss *sqlStore) GetByLogin(ctx context.Context, query *user.GetUserByLoginQu
 			}
 			has, err = sess.Where(ss.notServiceAccountFilter()).Where(where, query.LoginOrEmail).Get(usr)
 		}
+
+		// Since username can be an email address, attempt login with email address
+		// first if the login field has the "@" symbol.
+		if !has {
+			if strings.Contains(query.LoginOrEmail, "@") {
+				where = "email=?"
+				if ss.cfg.CaseInsensitiveLogin {
+					where = "LOWER(email)=LOWER(?)"
+				}
+				has, err = sess.Where(ss.notServiceAccountFilter()).Where(where, query.LoginOrEmail).Get(usr)
+
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		// Bmc code end
 
 		if err != nil {
 			return err

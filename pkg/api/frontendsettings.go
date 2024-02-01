@@ -221,6 +221,11 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 			MaxIdleConns:    hs.Cfg.SqlDatasourceMaxIdleConnsDefault,
 			ConnMaxLifetime: hs.Cfg.SqlDatasourceMaxConnLifetimeDefault,
 		},
+		// BMC code
+		EnvType:    setting.EnvType,
+		BulkLimit:  setting.BulkLimit,
+		BhdVersion: setting.BHD_Version,
+		// End
 	}
 
 	if hs.Cfg.UnifiedAlerting.Enabled != nil {

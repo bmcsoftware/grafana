@@ -1,0 +1,170 @@
+{
+  "bmc": {
+    "advanced-functions": {
+      "acc-percent": "Akkumulierter Prozentsatz",
+      "acc-percent-description": "Gibt den akkumulierten Prozentsatz der Summe des ausgewählten Felds zurück",
+      "acc-total": "Akkumulierte Summe",
+      "acc-total-description": "Gibt die laufende akkumulierte Summe des ausgewählten Felds zurück",
+      "against-field-name": "Im Vergleich zu Feldname",
+      "delta-from-last": "Delta aus den letzten N",
+      "delta-from-last-description": "Berechnen der Änderung zwischen der aktuellen Zeile und der Zeile minus N",
+      "description": "Transformieren Sie Ergebnisse durch nachbearbeitende Berechnungen der ursprünglichen Abfrageergebnisse. Zum Beispiel „Akkumulierte Summe“, „Prozentsatz im Vergleich zu Höchstwert“ usw.",
+      "field-name": "Feldname",
+      "func-name": "Funktionsname",
+      "no": "Nein",
+      "out-of-bound": "Perzentilwert überschreitet Grenze",
+      "percent-against-column": "Prozentsatz im Vergleich zu Spalte",
+      "percent-against-column-description": "Gibt den Prozentsatz des gewählten Felds im Vergleich zu einem Wert in einer anderen Berichtsspalte wieder.",
+      "percent-against-initial": "Prozentsatz im Vergleich zu ursprünglichem Wert",
+      "percent-against-initial-description": "Gibt den laufenden Prozentsatz auf Basis des ursprünglichen Werts in der Spalte zurück",
+      "percent-against-max": "Prozentsatz im Vergleich zu Höchstwert",
+      "percent-against-max-description": "Gibt den Prozentsatz des ausgewählten Felds gemäß dem Höchstwert zurück",
+      "percent-change-against-column": "Prozentsatz der Änderung im Vergleich zu Spalte",
+      "percent-change-against-column-description": "Gibt den Prozentsatz der Änderung des gewählten Felds im Vergleich zu einem Wert in einer anderen Berichtsspalte wieder.",
+      "percent-total": "Prozentsatz gegen Gesamtwert",
+      "percent-total-description": "Gibt den Prozentsatz des Gesamtwerts des ausgewählten Felds zurück.",
+      "percentage": "Prozentsatz",
+      "percentile": "Perzentil",
+      "percentile-description": "Vergleichswert einer bestimmten Relevanz und der Relevanzwerte des Rests einer Gruppe (Perzentilwert zwischen 1 und 99 auswählen)",
+      "percentile-value": "Perzentilwert",
+      "percentile-value-placeholder": "Perzentilwert",
+      "prev-row": "Vorherige Zeile",
+      "yes": "Ja"
+    },
+    "bulk-operations": {
+      "datsource-not-found": "Keine Datenquellen des Typs {{pluginName}} gefunden",
+      "import": {
+        "import-all-failed": "Import aller Dashboards fehlgeschlagen",
+        "no-import": "Keine Dashboards importiert"
+      },
+      "import-all": "Alle importieren",
+      "import-failed": "Folgende Dashboards konnten nicht importiert werden",
+      "import-success": "Alle Dashboards erfolgreich importiert",
+      "select-datasource": "Eine {{pluginName}} Datenquelle auswählen",
+      "set-parameters": "erforderlichen Parameter für die ausgewählten Dashboards festlegen",
+      "specify-constant": "Eine String-Konstante angeben"
+    },
+    "calc-fields": {
+      "aggregated": "Aggregiert",
+      "clone": "Klonen",
+      "confirm-delete": "Möchten Sie das/die ausgewählte/-n berechnete/-n Feld/-er löschen",
+      "connection-error": "Verbindung mit BMC Helix ITSM nicht konfiguriert",
+      "delete": "Löschen",
+      "details": "Details zu berechneten Feldern",
+      "edit": "Bearbeiten",
+      "edit-field": "Berechnetes Feld bearbeiten",
+      "eg": "Z. B.",
+      "failed": "Abrufen berechneter Felder fehlgeschlagen",
+      "failure": "Fehler",
+      "filter-by-type": "Nach Typ filtern (Standardwert: Alle)",
+      "form-name": "Formularname",
+      "is-aggregate": "Ist aggregiert",
+      "is-aggregate-description": "Aktivieren Sie diese Option, wenn Ihre Abfrage Funktionen zur Aggregation enthält.",
+      "module": "Modul",
+      "module-name": "Modulname",
+      "name": "Name",
+      "name-placeholder": "Geben Sie den Namen des berechneten Felds ein",
+      "new-field": "Neues berechnetes Feld",
+      "no-calc-fields": "Sie haben noch keine berechneten Felder erstellt.",
+      "not-found": "Es wurden keine berechneten Felder gefunden, die mit Ihrer Abfrage übereinstimmen.",
+      "query-info": "Die Abfrage muss einspaltig sein",
+      "query-not-validated": "Abfrage nicht validiert",
+      "save": "Speichern",
+      "search-by-name": "Berechnete Felder nach Namen suchen",
+      "select-form": "Formular auswählen",
+      "select-module": "Modul auswählen",
+      "sort-asc": "Alphabetisch (A–Z)",
+      "sort-asc-descripton": "Ergebnisse in alphabetisch aufsteigender Reihenfolge sortieren",
+      "sort-dsc": "Alphabetisch (Z–A)",
+      "sort-dsc-descripton": "Ergebnisse in alphabetisch absteigender Reihenfolge sortieren",
+      "sql-query": "SQL-Abfrage",
+      "subtitle": "Berechnete Felder für ITSM-Service erstellen und verwalten",
+      "title": "Berechnete Felder",
+      "unknown-failure": "Unbekannter Fehler",
+      "update": "Aktualisieren",
+      "validate": "Validieren",
+      "validation-success": "Abfrage erfolgreich validiert"
+    },
+    "common": {
+      "cancel": "Abbrechen",
+      "download": "Herunterladen"
+    },
+    "contact-support": "<0>Erstellen Sie einen Snapshot der unten angegebenen Fehlerdetails und senden Sie ihn an den</0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Geplante Berichte verwalten",
+        "reset-filters": "Filter zurücksetzen",
+        "reset-filters-failure": "Filterwerte konnten nicht zurückgesetzt werden.",
+        "save-filters": "Gespeicherte Filter",
+        "save-filters-failure": "Filterwerte konnten nicht gespeichert werden.",
+        "save-filters-success": "Filterwerte erfolgreich gespeichert."
+      }
+    },
+    "date-picker": {
+      "description": "Eine Datumsbereichvariable definieren, mit der Benutzer einen beliebigen Datumsbereich auswählen können",
+      "name": "Datumsbereich"
+    },
+    "export": {
+      "generation-failed": "Bericht konnte nicht erstellt werden, versuchen Sie es später erneut",
+      "grid": "Raster",
+      "landscape": "Querformat",
+      "layout": "Layout",
+      "orientation": "Ausrichtung",
+      "portrait": "Hochformat",
+      "preview": "Vorschau",
+      "reduce-selection": "Reduzieren Sie die ausgewählten Variablenwerte für {{variableQuery}} und versuchen Sie es später erneut",
+      "save-as": "{{target}} als {{type}} speichern",
+      "simple": "Einfach",
+      "success": "Bericht erfolgreich erstellt",
+      "type": "Typ",
+      "view": "Anzeigen"
+    },
+    "format-registry": {
+      "base64": "Wert in base64-Kodierung konvertieren",
+      "single-quote": "BMC Apostroph",
+      "single-quote-description": "Werte von BMC Apostroph"
+    },
+    "manage-dashboards": {
+      "drop-click": "Hier per Drag-and-Drop ablegen oder zum Durchsuchen klicken",
+      "import-failed": "Import fehlgeschlagen",
+      "serialization-failed": "JSON -> JS-Serialisierung fehlgeschlagen",
+      "upload-json": "Dashboard-JSON-Datei(en) hochladen"
+    },
+    "org-custom-config": {
+      "community": "Community",
+      "documentation": "Dokumentation",
+      "invalid-url": "URL ungültig!",
+      "support": "Support",
+      "video": "Video"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Eingebettetes Video eingeben",
+        "invalid-url": "Keine gültige URL",
+        "url": "Video-URL"
+      },
+      "bmc-welcome": {
+        "communities": "Communitys",
+        "community-description": "Community-Beschreibung",
+        "dashboards": "Dashboards",
+        "documentation": "Dokumentation",
+        "documentation-description": "Beschreibung der Dokumentation",
+        "video-description": "Videobeschreibung",
+        "videos": "Videos"
+      }
+    },
+    "route-error": "Hoppla … Ein unerwarteter Fehler ist aufgetreten.",
+    "search": {
+      "comfirm-export": "Möchten Sie das/die {{dashCount}} ausgewählte/-n Dashboard/-s exportieren?",
+      "export": "Exportieren",
+      "export-failed": "Export fehlgeschlagen",
+      "export-success": "Erfolgreich exportiert"
+    },
+    "share-modal": {
+      "loading": "Ladevorgang"
+    },
+    "toggle-feature": {
+      "manage-features": "Dashboard-Funktionen verwalten"
+    }
+  }
+}

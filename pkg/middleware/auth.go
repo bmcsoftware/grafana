@@ -17,6 +17,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/folder"
 	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/pluginsintegration/pluginaccesscontrol"
+	"github.com/grafana/grafana/pkg/services/sqlstore"
 	"github.com/grafana/grafana/pkg/services/team"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/web"
@@ -248,3 +249,15 @@ func OrgAdminDashOrFolderAdminOrTeamAdmin(ss db.DB, ds dashboards.DashboardServi
 		accessForbidden(c)
 	}
 }
+
+// BMC code
+func IsSnapshotEnabled(ss sqlstore.SQLStore) func(c *contextmodel.ReqContext) {
+	return func(c *contextmodel.ReqContext) {
+		ok := ss.IsFeatureEnabled(c.Req.Context(), c.OrgID, "Snapshot")
+		if !ok {
+			accessForbidden(c)
+		}
+	}
+}
+
+// End
