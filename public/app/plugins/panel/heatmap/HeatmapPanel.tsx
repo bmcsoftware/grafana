@@ -1,4 +1,5 @@
 import { css } from '@emotion/css';
+import { cloneDeep as _cloneDeep } from 'lodash';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { DataFrame, DataFrameType, Field, getLinksSupplier, GrafanaTheme2, PanelProps, TimeRange } from '@grafana/data';
@@ -39,6 +40,15 @@ export const HeatmapPanel = ({
   onChangeTimeRange,
   replaceVariables,
 }: HeatmapPanelProps) => {
+  // BMC Code: Start
+  const clonnedOption = useMemo(() => {
+     const clonned = _cloneDeep(options);
+     if (clonned.calculation?.yBuckets?.scale?.log) {
+       clonned.calculation.yBuckets.scale.log = +clonned.calculation.yBuckets.scale.log === 2 ? 2 : 10;
+     }
+     return clonned;
+   }, [options]);
+  // BMC Code: End
   const theme = useTheme2();
   const styles = useStyles2(getStyles);
   const { sync } = usePanelContext();
@@ -56,11 +66,13 @@ export const HeatmapPanel = ({
 
   const info = useMemo(() => {
     try {
-      return prepareHeatmapData(data, options, theme, getFieldLinksSupplier);
+      //BMC Code inline change options => clonnedOption
+      return prepareHeatmapData(data, clonnedOption, theme, getFieldLinksSupplier);
     } catch (ex) {
       return { warning: `${ex}` };
     }
-  }, [data, options, theme, getFieldLinksSupplier]);
+    //BMC Code inline change options => clonnedOption
+  }, [data, clonnedOption, theme, getFieldLinksSupplier]);
 
   const facets = useMemo(() => {
     let exemplarsXFacet: number[] = []; // "Time" field

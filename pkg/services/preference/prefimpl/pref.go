@@ -63,6 +63,7 @@ func (s *Service) GetWithDefaults(ctx context.Context, query *pref.GetPreference
 		if p.JSONData != nil {
 			if p.JSONData.Language != "" {
 				res.JSONData.Language = p.JSONData.Language
+				res.IsLanguageSet = true
 			}
 
 			if p.JSONData.QueryHistory.HomeTab != "" {

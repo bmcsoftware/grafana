@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { ConfirmButton, RadioButtonGroup, Icon } from '@grafana/ui';
+import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { AccessControlAction } from 'app/types';
 
@@ -60,7 +61,8 @@ export function UserPermissions({ isGrafanaAdmin, onGrafanaAdminChange }: Props)
                   </td>
                 )}
                 <td>
-                  {canChangePermissions && (
+                  {/* BMC code - inline change */}
+                  {config.buildInfo.env === 'development' && canChangePermissions && (
                     <ConfirmButton
                       onClick={onChangeClick}
                       onConfirm={handleGrafanaAdminChange}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { Button, HorizontalGroup, IconButton, useStyles2 } from '@grafana/ui';
+import { Trans } from 'app/core/internationalization';
 import { contextSrv } from 'app/core/services/context_srv';
 import { FolderDTO } from 'app/types';
 
@@ -9,6 +10,8 @@ import { OnMoveOrDeleleSelectedItems } from '../../types';
 
 import { getStyles } from './ActionRow';
 import { ConfirmDeleteModal } from './ConfirmDeleteModal';
+// BMC Change: Next line
+import { ConfirmExportModal } from './ConfirmExportModal';
 import { MoveToFolderModal } from './MoveToFolderModal';
 
 type Props = {
@@ -32,6 +35,8 @@ export function ManageActions({ items, folder, onChange, clearSelection }: Props
   const canDelete = hasEditPermissionInFolders && !includesGeneralFolder;
   const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // BMC Code: Next block
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   const onMove = () => {
     setIsMoveModalOpen(true);
@@ -49,6 +54,20 @@ export function ManageActions({ items, folder, onChange, clearSelection }: Props
           <Button disabled={!canMove} onClick={onMove} icon="exchange-alt" variant="secondary">
             Move
           </Button>
+          {/* BMC code */}
+          {0 < Array.from(items.get('dashboard') ?? []).length ? (
+            <Button
+              icon={'import'}
+              variant="secondary"
+              disabled={!canMove}
+              onClick={() => {
+                setIsExportModalOpen(true);
+              }}
+            >
+              <Trans i18nKey="bmc.search.export">Export</Trans>
+            </Button>
+          ) : null}
+          {/* End */}
           <Button disabled={!canDelete} onClick={onDelete} icon="trash-alt" variant="destructive">
             Delete
           </Button>
@@ -62,6 +81,14 @@ export function ManageActions({ items, folder, onChange, clearSelection }: Props
       {isMoveModalOpen && (
         <MoveToFolderModal onMoveItems={onChange} results={items} onDismiss={() => setIsMoveModalOpen(false)} />
       )}
+      {/* BMC code */}
+      <ConfirmExportModal
+        onExportDone={onChange}
+        results={items}
+        isOpen={isExportModalOpen}
+        onDismiss={() => setIsExportModalOpen(false)}
+      />
+      {/* End */}
     </div>
   );
 }

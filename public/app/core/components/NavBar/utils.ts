@@ -16,7 +16,8 @@ export const NAV_MENU_PORTAL_CONTAINER_ID = 'navbar-menu-portal-container';
 
 export const getNavMenuPortalContainer = () => document.getElementById(NAV_MENU_PORTAL_CONTAINER_ID) ?? document.body;
 
-export const enrichConfigItems = (items: NavModelItem[], location: Location<unknown>) => {
+// BMC code - inline change
+export const enrichConfigItems = (items: NavModelItem[], location: Location<unknown>, footerLinkData?: any) => {
   const { isSignedIn, user } = contextSrv;
   const onOpenShortcuts = () => {
     appEvents.publish(new ShowModalReactEvent({ component: HelpModal }));
@@ -53,8 +54,9 @@ export const enrichConfigItems = (items: NavModelItem[], location: Location<unkn
     if (link.id === 'help') {
       link.children = [
         ...menuItems,
-        ...getFooterLinks(),
-        ...getEditionAndUpdateLinks(),
+        // BMC code - Update footer data and Hide "open source" item from Help menu
+        ...getFooterLinks(footerLinkData),
+        // ...getEditionAndUpdateLinks(),
         {
           id: 'keyboard-shortcuts',
           text: t('nav.help/keyboard-shortcuts', 'Keyboard shortcuts'),
@@ -129,7 +131,11 @@ export const getActiveItem = (
 
   for (const link of navTree) {
     const linkWithoutParams = stripQueryParams(link.url);
-    const linkPathname = locationUtil.stripBaseFromUrl(linkWithoutParams);
+    // BMC code - inline change
+    const linkPathname = locationUtil
+      .stripBaseFromUrl(linkWithoutParams)
+      .replace(/^\/dashboards$/, '/')
+      .replace(/^\/dashboards/, '');
     if (linkPathname && link.id !== 'starred') {
       if (linkPathname === pathname) {
         // exact match
@@ -171,6 +177,16 @@ export const isSearchActive = (location: Location<unknown>) => {
 export function getNavModelItemKey(item: NavModelItem) {
   return item.id ?? item.text;
 }
+// BMC code
+export const prepareLogoColor = (isSelected: Boolean) => {
+  const reportApp: any = document.querySelector('a[aria-label="Report Scheduler"] img') || { style: {} };
+  if (config.theme.isDark) {
+    reportApp.style['filter'] = `contrast(0) ${isSelected ? 'brightness(1.8)' : 'brightness(1.2)'}`;
+  } else {
+    reportApp.style['filter'] = `${isSelected ? 'inherit' : 'contrast(0.35)'}`;
+  }
+};
+// End
 
 export function getEditionAndUpdateLinks(): NavModelItem[] {
   const { buildInfo, licenseInfo } = config;

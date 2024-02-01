@@ -28,5 +28,7 @@
         "url": "https://github.com/grafana/tempo"
       }
     ]
-  }
+  },
+
+  "state": "alpha"
 }

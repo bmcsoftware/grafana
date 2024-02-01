@@ -49,6 +49,14 @@ type CurrentUser struct {
 	HasEditPermissionInFolders bool               `json:"hasEditPermissionInFolders"`
 	Permissions                UserPermissionsMap `json:"permissions,omitempty"`
 	Analytics                  AnalyticsSettings  `json:"analytics"`
+	// BMC code
+	// for MSP
+	HasExternalOrg bool     `json:"hasExternalOrg"`
+	IsOrg0User     bool     `json:"isOrg0User"`
+	MspOrgs        []string `json:"mspOrgs"`
+	// for msp end
+	IsLanguageSet bool `json:"isLanguageSet"`
+	// BMC code end
 }
 
 type AnalyticsSettings struct {
