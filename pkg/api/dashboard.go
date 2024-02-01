@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/grafana/grafana/pkg/api/bmc"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/grafana/grafana/pkg/api/apierrors"
 	"github.com/grafana/grafana/pkg/api/dtos"
@@ -237,6 +239,11 @@ func (hs *HTTPServer) GetDashboard(c *models.ReqContext) response.Response {
 	}
 
 	c.TimeRequest(metrics.MApiDashboardGet)
+
+	// BMC Changes - Will check for user dash personalization and apply it if found
+	bmc.SetupCustomPersonalization(hs.SQLStore, c.Req.Context(), &dto, c.OrgID, c.UserID, uid)
+	// BMC Changes - End
+
 	return response.JSON(http.StatusOK, dto)
 }
 
@@ -449,6 +456,30 @@ func (hs *HTTPServer) postDashboard(c *models.ReqContext, cmd models.SaveDashboa
 	}
 
 	dashboard, err := hs.DashboardService.SaveDashboard(alerting.WithUAEnabled(ctx, hs.Cfg.UnifiedAlerting.IsEnabled()), dashItem, allowUiUpdate)
+	// BMC code
+	// author(ateli) - Start
+	// Remove default dashboard permission. Update Dashboard ACL to make it private by default
+	if newDashboard {
+
+		var items []*models.DashboardACL
+		items = append(items, &models.DashboardACL{
+			OrgID:       c.OrgID,
+			DashboardID: dashboard.Id,
+			UserID:      c.UserID,
+			Permission:  models.PermissionType(4),
+			Created:     time.Now(),
+			Updated:     time.Now(),
+		})
+
+		if err := hs.DashboardService.UpdateDashboardACL(c.Req.Context(), dashboard.Id, items); err != nil {
+			if errors.Is(err, models.ErrDashboardACLInfoMissing) ||
+				errors.Is(err, models.ErrDashboardPermissionDashboardEmpty) {
+				return response.Error(409, err.Error(), err)
+			}
+			return response.Error(500, "Failed to create permission", err)
+		}
+	}
+	// End
 
 	if hs.Live != nil {
 		// Tell everyone listening that the dashboard changed
@@ -536,7 +567,8 @@ func (hs *HTTPServer) GetHomeDashboard(c *models.ReqContext) response.Response {
 
 	filePath := hs.Cfg.DefaultHomeDashboardPath
 	if filePath == "" {
-		filePath = filepath.Join(hs.Cfg.StaticRootPath, "dashboards/home.json")
+		// BMC code - inline change
+		filePath = filepath.Join(hs.Cfg.StaticRootPath, "dashboards/bmc_home.json")
 	}
 
 	// It's safe to ignore gosec warning G304 since the variable part of the file path comes from a configuration
@@ -562,7 +594,10 @@ func (hs *HTTPServer) GetHomeDashboard(c *models.ReqContext) response.Response {
 		return response.Error(500, "Failed to load home dashboard", err)
 	}
 
-	hs.addGettingStartedPanelToHomeDashboard(c, dash.Dashboard)
+	// BMC code
+	// Hide getting started panel on home page
+	// hs.addGettingStartedPanelToHomeDashboard(c, dash.Dashboard)
+	// End
 
 	return response.JSON(http.StatusOK, &dash)
 }

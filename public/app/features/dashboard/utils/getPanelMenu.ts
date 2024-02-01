@@ -240,12 +240,15 @@ export function getPanelMenu(
     subMenu.length = 0;
   }
 
+  //BMC Code
+  /* Hide get help option
+  // This was made hidden when it was in beta (v9.2.2). We should reconsider this, quite a handy feature.
   if (canEdit && panel.plugin && !panel.plugin.meta.skipDataQuery) {
     subMenu.push({
       text: 'Get help',
       onClick: (e: React.MouseEvent) => onInspectPanel(InspectTab.Help),
     });
-  }
+  }*/
 
   if (subMenu.length) {
     const moreTextTranslation = t('panel.header-menu.more', `More...`);

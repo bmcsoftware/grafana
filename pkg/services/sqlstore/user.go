@@ -71,6 +71,9 @@ func (ss *SQLStore) createUser(ctx context.Context, sess *DBSession, args user.C
 
 	// create user
 	usr = user.User{
+		// author (ateli) start - Create user with same id as IMS UserId
+		ID: args.Id,
+		// author (ateli) end - Create user with same id as IMS UserId
 		Email:            args.Email,
 		Name:             args.Name,
 		Login:            args.Login,

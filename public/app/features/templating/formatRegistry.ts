@@ -33,6 +33,8 @@ export enum FormatRegistryID {
   glob = 'glob',
   text = 'text',
   queryParam = 'queryparam',
+  // BMC code - next line
+  base64 = 'base64',
 }
 
 export const formatRegistry = new Registry<FormatRegistryItem>(() => {
@@ -63,6 +65,19 @@ export const formatRegistry = new Registry<FormatRegistryItem>(() => {
       description: 'Keep value as is',
       formatter: ({ value }) => value,
     },
+    // BMC code
+    {
+      id: FormatRegistryID.base64,
+      name: 'base64',
+      description: 'Convert the value in base64 encoding',
+      formatter: ({ value }) => {
+        if (typeof value === 'string') {
+          return btoa(value);
+        }
+        return value;
+      },
+    },
+    // End
     {
       id: FormatRegistryID.regex,
       name: 'Regex',
@@ -156,12 +171,13 @@ export const formatRegistry = new Registry<FormatRegistryItem>(() => {
       name: 'Single quote',
       description: 'Single quoted values',
       formatter: ({ value }) => {
-        // escape single quotes with backslash
-        const regExp = new RegExp(`'`, 'g');
-        if (isArray(value)) {
-          return map(value, (v: string) => `'${replace(v, regExp, `\\'`)}'`).join(',');
+        // BMC Code: Change start
+        // escape single and double quotes with backslash
+        if (isArray(value) && value.length) {
+          return map(value, (v: string) => `'${v.replace(/['"]/g, '\\$&')}'`).join(',');
         }
-        return `'${replace(value, regExp, `\\'`)}'`;
+        return `'${value.replace(/['"]/g, '\\$&')}'`;
+        // End
       },
     },
     {
