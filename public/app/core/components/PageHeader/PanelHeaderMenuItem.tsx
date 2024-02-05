@@ -37,12 +37,16 @@ export const PanelHeaderMenuItem = (props: Props & PanelMenuItem) => {
               {props.text}
               {isSubMenu && <Icon name="angle-right" className={styles.shortcutIconClassName} />}
             </span>
-
+            {/*
+            // @Copyright 2023 BMC Software, Inc.
+            // Date - 09/25/2023
+            // Remove menu icon
             {props.shortcut && (
               <span className="dropdown-menu-item-shortcut">
                 <Icon name="keyboard" className={styles.menuIconClassName} /> {props.shortcut}
-              </span>
-            )}
+              </span> */
+              // END
+            }
           </a>
           {props.children}
         </li>

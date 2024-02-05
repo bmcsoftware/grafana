@@ -7,9 +7,17 @@ import { selectors } from '@grafana/e2e-selectors';
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles } from '../../themes/mixins';
 import { IconName } from '../../types';
-import { Icon } from '../Icon/Icon';
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2024
+// Commented unused code
+// import { Icon } from '../Icon/Icon';
+// End
 import { IconButton } from '../IconButton/IconButton';
-import { Link } from '../Link/Link';
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2024
+// Commented unused code
+// import { Link } from '../Link/Link';
+// End
 import { ToolbarButtonRow } from '../ToolbarButton/ToolbarButtonRow';
 
 export interface Props {
@@ -69,22 +77,29 @@ export const PageToolbar = React.memo(
       },
       className
     );
-
-    const titleEl = (
+    // @Copyright 2024 BMC Software, Inc.
+    // Date - 02/02/2024
+    // Commented unused code
+    /* const titleEl = (
       <>
         <span className={styles.truncateText}>{title}</span>
         {section && <span className={styles.pre}> / {section}</span>}
       </>
-    );
-
+    ); */
+    // End
     return (
       <nav className={mainStyle} aria-label={ariaLabel}>
         <div className={styles.leftWrapper}>
-          {pageIcon && !onGoBack && (
+          {/*
+          // @Copyright 2024 BMC Software, Inc.
+          // Date - 02/02/2024
+          // Hide page icon
+          pageIcon && !onGoBack && (
             <div className={styles.pageIcon}>
               <Icon name={pageIcon} size="lg" aria-hidden />
             </div>
-          )}
+          )
+          */}
           {onGoBack && (
             <div className={styles.pageIcon}>
               <IconButton
@@ -98,7 +113,11 @@ export const PageToolbar = React.memo(
             </div>
           )}
           <nav aria-label="Search links" className={styles.navElement}>
-            {parent && parentHref && (
+            {/*
+            // @Copyright 2024 BMC Software, Inc.
+            // Date - 02/02/2024
+            // Hide the links which are not required
+            parent && parentHref && (
               <>
                 <Link
                   aria-label={`Search dashboard in the ${parent} folder`}
@@ -143,6 +162,7 @@ export const PageToolbar = React.memo(
                 ))}
               </div>
             )}
+            //END */}
           </nav>
         </div>
         <ToolbarButtonRow alignment={buttonOverflowAlignment}>
@@ -185,6 +205,11 @@ const getStyles = (theme: GrafanaTheme2) => {
       display: 'flex',
       flexWrap: 'nowrap',
       maxWidth: '70%',
+      // @Copyright 2024 BMC Software, Inc.
+      // Date - 02/02/2024
+      // Adjusted height for toolbar */
+      height: '40px',
+      // END
     }),
     pageIcon: css({
       display: 'none',
