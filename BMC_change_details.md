@@ -5,7 +5,7 @@
 #### Theme, Logo, and App name
 
 - …/public/img -> ‘apple-touch-icon.png’, ‘fav32.png’, ‘grafana_com_auth_icon.svg’, ‘grafana_mask_icon_white.svg’, ‘grafana_mask_icon.svg’, ‘grafana_icon.svg’
-- …/public/views -> ‘index-template.html’
+- …/public/views -> ‘index.html’
 - …/public/app/core/components/Branding -> ‘Branding.tsx’
 - …/public/dashboards -> ‘default.json’
 - …/public/app/plugins/panel/welcome -> ‘Welcome.tsx’
@@ -20,13 +20,13 @@
 
 #### Error Pages
 
-- …/public/views -> 'index-template.html'
+- …/public/views -> 'index.html'
 - …/public/app/core/navigations -> 'GrafanaRouteError.tsx'
 - …/public/app/core/components/PageNotFound -> 'EntityNotFound.tsx'
 
 #### Error Pages
 
-- …/public/views -> 'index-template.html'
+- …/public/views -> 'index.html'
 - …/public/app/core/navigations -> 'GrafanaRouteError.tsx'
 
 # **_Welcome/Landing page:_**

@@ -11,7 +11,7 @@ export interface BrandComponentProps {
 
 export const LoginLogo: FC<BrandComponentProps & { logo?: string }> = ({ className, logo }) => {
   // @Copyright 2024 BMC Software, Inc.
-  // Date - 02/02/2023
+  // Date - 02/02/2024
   // Replaced with bmc icon
   return <img className={className} src={`${logo ? logo : 'public/img/dashboard_icon.svg'}`} alt="Dashboard" />;
   // END

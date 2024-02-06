@@ -215,7 +215,7 @@ function getGrafanaCloudPhantomPlugin(): DataSourcePluginMeta {
     baseUrl: '',
     info: {
       description: 'Hosted Graphite, Prometheus, and Loki',
-      // @Copyright 2023 BMC Software, Inc.
+      // @Copyright 2024 BMC Software, Inc.
       // Date - 02/02/2024
       // Replaced with bmc icon
       logos: { small: 'public/img/dashboard_icon.svg', large: 'asd' },

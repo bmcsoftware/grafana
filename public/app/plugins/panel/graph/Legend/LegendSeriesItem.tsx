@@ -140,7 +140,7 @@ class LegendSeriesLabel extends PureComponent<LegendSeriesLabelProps & LegendSer
   render() {
     const { label, color, yaxis } = this.props;
     // @Copyright 2024 BMC Software, Inc.
-    // Date - 05/02/2024
+    // Date - 02/02/2024
     // This is to remove the quote from string
     const labelWithoutQuote =
       (label.startsWith('"') && label.endsWith('"') && label.substring(1, label.length - 1)) || label;

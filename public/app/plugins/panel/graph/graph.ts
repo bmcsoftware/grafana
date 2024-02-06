@@ -239,7 +239,7 @@ class GraphElement {
     return () => {
       // Fixed context menu items
       // @Copyright 2024 BMC Software, Inc.
-      // Date - 05/02/2024
+      // Date - 02/02/2024
       // Remove Add annotation context menu
       const items: MenuItemsGroup[] = [];
       /* const items: MenuItemsGroup[] = this.dashboard.canAddAnnotations()

@@ -1,6 +1,6 @@
 /*
  # @Copyright 2024 BMC Software, Inc.
- # Date - 05/02/2024
+ # Date - 02/02/2024
  # Commented unused imports
 */
 // import React from 'react';
@@ -32,7 +32,7 @@ import { RouteDescriptor } from '../core/navigation/types';
 export const extraRoutes: RouteDescriptor[] = [];
 
 // @Copyright 2024 BMC Software, Inc.
-// Date - 05/02/2024
+// Date - 02/02/2024
 // Removed/commented all the routes which are not required
 export function getAppRoutes(): RouteDescriptor[] {
   return [
