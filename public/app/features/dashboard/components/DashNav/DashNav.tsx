@@ -8,7 +8,7 @@ import { selectors as e2eSelectors } from '@grafana/e2e-selectors/src';
 import { locationService } from '@grafana/runtime';
 import {
   ButtonGroup,
-  ModalsController,
+  // ModalsController,
   ToolbarButton,
   useForceUpdate,
   Tag,
@@ -23,9 +23,14 @@ import { appEvents } from 'app/core/core';
 import { useBusEvent } from 'app/core/hooks/useBusEvent';
 import { t, Trans } from 'app/core/internationalization';
 import { setStarred } from 'app/core/reducers/navBarTree';
-import AddPanelButton from 'app/features/dashboard/components/AddPanelButton/AddPanelButton';
-import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
-import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2024
+// Commented unused import
+// import AddPanelButton from 'app/features/dashboard/components/AddPanelButton/AddPanelButton';
+// import { SaveDashboardDrawer } from 'app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer';
+// import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
+// import { ShareButton } from './ShareButton';
+// END
 import { DashboardModel } from 'app/features/dashboard/state';
 import { DashboardInteractions } from 'app/features/dashboard-scene/utils/interactions';
 import { playlistSrv } from 'app/features/playlist/PlaylistSrv';
@@ -35,7 +40,6 @@ import { DashboardMetaChangedEvent, ShowModalReactEvent } from 'app/types/events
 
 import { DashNavButton } from './DashNavButton';
 import { DashNavTimeControls } from './DashNavTimeControls';
-import { ShareButton } from './ShareButton';
 
 const mapDispatchToProps = {
   setStarred,
@@ -121,8 +125,10 @@ export const DashNav = React.memo<Props>((props) => {
       notifyApp.error('Invalid URL', err instanceof Error ? err.message : undefined);
     }
   };
-
-  const onStarDashboard = () => {
+  // @Copyright 2024 BMC Software, Inc.
+  // Date - 02/02/2024
+  // Commented unused functions
+  /* const onStarDashboard = () => {
     DashboardInteractions.toolbarFavoritesClick();
     const dashboardSrv = getDashboardSrv();
     const { dashboard, setStarred } = props;
@@ -137,8 +143,8 @@ export const DashNav = React.memo<Props>((props) => {
   const onOpenSettings = () => {
     DashboardInteractions.toolbarSettingsClick();
     locationService.partial({ editview: 'settings' });
-  };
-
+  }; */
+  // END
   const onPlaylistPrev = () => {
     playlistSrv.prev();
   };
@@ -166,14 +172,20 @@ export const DashNav = React.memo<Props>((props) => {
 
   const renderLeftActions = () => {
     const { dashboard, kioskMode } = props;
-    const { canStar, canShare, isStarred } = dashboard.meta;
+    // @Copyright 2024 BMC Software, Inc.
+    // Date - 02/02/2024
+    // Commented unused functions
+    // const { canStar, canShare, isStarred } = dashboard.meta;
+    // END
     const buttons: ReactNode[] = [];
 
     if (kioskMode || isPlaylistRunning()) {
       return [];
     }
-
-    if (canStar) {
+    // @Copyright 2024 BMC Software, Inc.
+    // Date - 02/02/2024
+    // Commented unused functions
+    /* if (canStar) {
       let desc = isStarred
         ? t('dashboard.toolbar.unmark-favorite', 'Unmark as favorite')
         : t('dashboard.toolbar.mark-favorite', 'Mark as favorite');
@@ -192,7 +204,8 @@ export const DashNav = React.memo<Props>((props) => {
     if (canShare) {
       buttons.push(<ShareButton key="button-share" dashboard={dashboard} />);
     }
-
+    */
+    // END
     if (dashboard.meta.publicDashboardEnabled) {
       buttons.push(
         <Tag key="public-dashboard" name="Public" colorIndex={5} data-testid={selectors.publicDashboardTag}></Tag>
@@ -258,7 +271,12 @@ export const DashNav = React.memo<Props>((props) => {
   };
 
   const renderRightActions = () => {
-    const { dashboard, onAddPanel, isFullscreen, kioskMode } = props;
+    const { dashboard, isFullscreen, kioskMode } = props;
+    // @Copyright 2024 BMC Software, Inc.
+    // Date - 02/02/2024
+    // Commented out unused code
+    // const { onAddPanel } = props;
+    // End
     const { canSave, canEdit, showSettings } = dashboard.meta;
     const { snapshot } = dashboard;
     const snapshotUrl = snapshot && snapshot.originalUrl;
@@ -273,7 +291,10 @@ export const DashNav = React.memo<Props>((props) => {
     }
 
     if (canEdit && !isFullscreen) {
-      if (config.featureToggles.emptyDashboardPage) {
+      // @Copyright 2024 BMC Software, Inc.
+      // Date - 02/02/2024
+      // Remove Add Panel button from dashboard
+      /* if (config.featureToggles.emptyDashboardPage) {
         buttons.push(
           <AddPanelButton
             dashboard={dashboard}
@@ -291,10 +312,15 @@ export const DashNav = React.memo<Props>((props) => {
             key="button-panel-add"
           />
         );
-      }
+      } */
+      // End
     }
 
     if (canSave && !isFullscreen) {
+      // @Copyright 2024 BMC Software, Inc.
+      // Date - 02/02/2024
+      // Remove Add Panel button from dashboard
+      /*
       buttons.push(
         <ModalsController key="button-save">
           {({ showModal, hideModal }) => (
@@ -311,7 +337,8 @@ export const DashNav = React.memo<Props>((props) => {
             />
           )}
         </ModalsController>
-      );
+      ); */
+      // END
     }
 
     if (snapshotUrl) {
@@ -326,14 +353,18 @@ export const DashNav = React.memo<Props>((props) => {
     }
 
     if (showSettings) {
-      buttons.push(
+      // @Copyright 2024 BMC Software, Inc.
+      // Date - 02/02/2024
+      // Remove Save Dashboard Setting button
+      /* buttons.push(
         <ToolbarButton
           tooltip={t('dashboard.toolbar.settings', 'Dashboard settings')}
           icon="cog"
           onClick={onOpenSettings}
           key="button-settings"
         />
-      );
+      ); */
+      // END
     }
 
     addCustomContent(customRightActions, buttons);

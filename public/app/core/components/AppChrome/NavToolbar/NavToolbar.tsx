@@ -3,18 +3,22 @@ import React, { useState } from 'react';
 
 import { GrafanaTheme2, NavModelItem } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
-import { Icon, IconButton, ToolbarButton, useStyles2, useTheme2 } from '@grafana/ui';
+import { useStyles2, useTheme2 } from '@grafana/ui';
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2024
+// Commented unused imports
+// import { Icon, IconButton, ToolbarButton, useStyles2, useTheme2 } from '@grafana/ui';
+// import { t } from 'app/core/internationalization';
+// import { NavToolbarSeparator } from './NavToolbarSeparator';
+// END
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useMediaQueryChange } from 'app/core/hooks/useMediaQueryChange';
-import { t } from 'app/core/internationalization';
 import { HOME_NAV_ID } from 'app/core/reducers/navModel';
 import { useSelector } from 'app/types';
 
 import { Breadcrumbs } from '../../Breadcrumbs/Breadcrumbs';
 import { buildBreadcrumbs } from '../../Breadcrumbs/utils';
 import { TOP_BAR_LEVEL_HEIGHT } from '../types';
-
-import { NavToolbarSeparator } from './NavToolbarSeparator';
 
 export const TOGGLE_BUTTON_ID = 'mega-menu-toggle';
 
@@ -30,19 +34,55 @@ export interface Props {
 
 export function NavToolbar({
   actions,
-  searchBarHidden,
+  // @Copyright 2024 BMC Software, Inc.
+  // Date - 02/02/2024
+  // Commented unused imports
+  // searchBarHidden,
+  // onToggleMegaMenu,
+  // onToggleSearchBar,
+  // onToggleKioskMode,
+  // End
   sectionNav,
   pageNav,
-  onToggleMegaMenu,
-  onToggleSearchBar,
-  onToggleKioskMode,
 }: Props) {
+  /*
+    @Copyright 2024 BMC Software, Inc.
+    Date - 02/02/2024
+    Logic to show breadcrumbs for view panel
+  */
   const { chrome } = useGrafana();
   const state = chrome.useState();
   const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
   const theme = useTheme2();
   const styles = useStyles2(getStyles);
-  const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  let breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  breadcrumbs = breadcrumbs.slice(Math.max(breadcrumbs.length - 2, 0));
+  breadcrumbs = breadcrumbs.filter(
+    (each) =>
+      each.text.toLowerCase() === 'view panel' ||
+      each.text.toLowerCase().startsWith('playback ') ||
+      each.text.toLowerCase().startsWith('realtime ') ||
+      each.text.toLowerCase().startsWith('rca ')
+  );
+  if (breadcrumbs.length) {
+    breadcrumbs = breadcrumbs.map((each) => {
+      if (
+        each.text.toLowerCase().startsWith('playback ') ||
+        each.text.toLowerCase().startsWith('realtime ') ||
+        each.text.toLowerCase().startsWith('rca ')
+      ) {
+        return {
+          ...each,
+          text: 'Graph View',
+        };
+      } else {
+        return each;
+      }
+    });
+  } else {
+    breadcrumbs = [];
+  }
+  // END
 
   const dockMenuBreakpoint = theme.breakpoints.values.xl;
   const [isTooSmallForDockedMenu, setIsTooSmallForDockedMenu] = useState(
@@ -58,6 +98,10 @@ export function NavToolbar({
 
   return (
     <div data-testid={Components.NavToolbar.container} className={styles.pageToolbar}>
+      {/*
+        // @Copyright 2024 BMC Software, Inc.
+        // Date - 02/02/2024
+        // Hide Sidebar menu icon
       <div className={styles.menuButton}>
         <IconButton
           id={TOGGLE_BUTTON_ID}
@@ -73,9 +117,14 @@ export function NavToolbar({
           data-testid={Components.NavBar.Toggle.button}
         />
       </div>
+      // END*/}
       <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
       <div className={styles.actions}>
         {actions}
+        {/*
+        // @Copyright 2024 BMC Software, Inc.
+        // Date - 02/02/2024
+        // Hide separator, kiosk mode icon and serachbar
         {actions && <NavToolbarSeparator />}
         {searchBarHidden && (
           <ToolbarButton
@@ -92,6 +141,7 @@ export function NavToolbar({
         >
           <Icon name={searchBarHidden ? 'angle-down' : 'angle-up'} size="xl" />
         </ToolbarButton>
+        //END */}
       </div>
     </div>
   );

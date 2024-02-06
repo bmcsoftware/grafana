@@ -99,7 +99,12 @@
 }
 
 .gicon-branding {
-  background-image: url('../img/grafana_icon.svg');
+  // @Copyright 2024 BMC Software, Inc.
+  // Date - 02/02/2024
+  // Updated icon
+  // background-image: url('../img/grafana_icon.svg');
+  background-image: url('../img/dashboard_icon.svg');
+  // END
 }
 
 .gicon-cog {

@@ -13,7 +13,11 @@ export interface Props {
 
 export function PanelHeaderMenu({ items }: Props) {
   const renderItems = (items: PanelMenuItem[]) => {
-    return items.map((item) => {
+    // @Copyright 2024 BMC Software, Inc.
+    // Date - 02/02/2024
+    // Show only view option for panel menu
+    const filteredItems = items.filter((item) => item.text === 'View');
+    return filteredItems.map((item) => {
       switch (item.type) {
         case 'divider':
           return <Menu.Divider key={item.text} />;
