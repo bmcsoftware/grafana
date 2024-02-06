@@ -80,4 +80,5 @@ debug.test
 **/packaging/**/*.deb
 **/packaging/**/*.tar.gz
 
-**/packaging/docker/custom/ubuntu.Dockerfile
+**/packaging/docker/custom/Dockerfile
+**/public/app/plugins/datasource/loki/result_transformer.ts
