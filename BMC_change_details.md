@@ -52,10 +52,10 @@
 - …/public/app/features/dashboard/dashgrid/PanelHeader -> ‘PanelHeaderCorner.tsx’, ‘PanelHeaderMenu.tsx’, ‘PanelHeaderMenuItem.tsx’
 - …/public/app/features/panel/components -> PanelDataErrorView.tsx’
 - …/public/app/core/components/AppChrome -> 'AppChrome.tsx’, 'NavToolbar.tsx’
-- …/public/app/core/services -> `keybindingSrv.ts’
+- …/public/app/core/services -> 'keybindingSrv.ts'
 - …/public/app/plugins/panel/graph -> ‘graph.ts’
 ### Page layout
-- …/packages/grafana-ui/src/components/PageLayout -> `PageToolbar.tsx’
+- …/packages/grafana-ui/src/components/PageLayout -> 'PageToolbar.tsx’
 
 ### Disabled all the routes except dashboard
 
