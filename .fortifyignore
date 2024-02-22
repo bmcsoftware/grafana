@@ -73,6 +73,7 @@ Makefile.local
 **/pkg/cmd/grafana-server/debug/**/*
 **/pkg/extensions/**/*
 **/pkg/extensions/main.go
+**/pkg/services/provisioning/datasources/testdata/**/*
 **/public/app/extensions/**/*
 debug.test
 **/examples/*/dist/**/*
@@ -81,4 +82,7 @@ debug.test
 **/packaging/**/*.tar.gz
 
 **/packaging/docker/custom/Dockerfile
+**/packaging/docker/ubuntu.Dockerfile
+
 **/public/app/plugins/datasource/loki/result_transformer.ts
+.drone.yml
