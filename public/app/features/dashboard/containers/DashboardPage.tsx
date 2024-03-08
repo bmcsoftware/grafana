@@ -539,7 +539,7 @@ function updateStatePageNavFromProps(props: Props, state: State): State {
       ...pageNav,
       parentItem: {
         text: folderTitle,
-        url: `/dashboards/f/${dashboard.meta.folderUid}`,
+        url: `/dashboards/dashboards/f/${dashboard.meta.folderUid}`,
       },
     };
   }
