@@ -4,6 +4,7 @@ import useAsyncFn from 'react-use/lib/useAsyncFn';
 import { getBackendSrv, isFetchError } from '@grafana/runtime';
 import { LinkButton } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction } from 'app/types';
 
@@ -35,9 +36,12 @@ export default function AdminListOrgsPages() {
         <>
           <div className="page-action-bar">
             <div className="page-action-bar__spacer" />
-            <LinkButton icon="plus" href="org/new" disabled={!canCreateOrg}>
-              New org
-            </LinkButton>
+            {/* BMC code - next line */}
+            {config.buildInfo.env === 'development' && (
+              <LinkButton icon="plus" href="org/new" disabled={!canCreateOrg}>
+                New org
+              </LinkButton>
+            )}
           </div>
           {state.error && getErrorMessage(state.error)}
           {state.loading && 'Fetching organizations'}
