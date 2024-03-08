@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/grafana/grafana/pkg/api/apierrors"
 	"github.com/grafana/grafana/pkg/api/dtos"
@@ -16,7 +17,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/folder"
 	"github.com/grafana/grafana/pkg/services/guardian"
 	"github.com/grafana/grafana/pkg/services/libraryelements/model"
-	"github.com/grafana/grafana/pkg/services/org"
+	"github.com/grafana/grafana/pkg/services/msp"
 	"github.com/grafana/grafana/pkg/services/search"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/web"
@@ -166,11 +167,40 @@ func (hs *HTTPServer) CreateFolder(c *contextmodel.ReqContext) response.Response
 		hs.accesscontrolService.ClearUserPermissionCache(c.SignedInUser)
 	}
 
+	// BMC code
+	// author(ateli) - Changes to make folder private by default, Fix for DRJ71-743
+	var items []*dashboards.DashboardACL
+	items = append(items, &dashboards.DashboardACL{
+		OrgID:       c.OrgID,
+		DashboardID: folder.ID,
+		UserID:      c.UserID,
+		TeamID:      0,
+		Role:        nil,
+		Permission:  dashboards.PermissionType(4),
+		Created:     time.Now(),
+		Updated:     time.Now(),
+	})
+
+	if err := hs.DashboardService.UpdateDashboardACL(c.Req.Context(), folder.ID, items); err != nil {
+		if errors.Is(err, dashboards.ErrDashboardACLInfoMissing) {
+			err = dashboards.ErrFolderACLInfoMissing
+		}
+		if errors.Is(err, dashboards.ErrDashboardPermissionDashboardEmpty) {
+			err = dashboards.ErrFolderPermissionFolderEmpty
+		}
+
+		if errors.Is(err, dashboards.ErrFolderACLInfoMissing) || errors.Is(err, dashboards.ErrFolderPermissionFolderEmpty) {
+			return response.Error(409, err.Error(), err)
+		}
+
+		return response.Error(500, "Failed to create permission", err)
+	}
+	// End
+
 	g, err := guardian.NewByUID(c.Req.Context(), folder.UID, c.OrgID, c.SignedInUser)
 	if err != nil {
 		return response.Err(err)
 	}
-
 	// TODO set ParentUID if nested folders are enabled
 	return response.JSON(http.StatusOK, hs.newToFolderDto(c, g, folder))
 }
@@ -184,12 +214,21 @@ func (hs *HTTPServer) setDefaultFolderPermissions(ctx context.Context, orgID int
 			permissions = append(permissions, accesscontrol.SetResourcePermissionCommand{
 				UserID: user.UserID, Permission: dashboards.PERMISSION_ADMIN.String(),
 			})
+			// BMC code - changes for MSP: provide default permissions to org0 team
+			if user.HasExternalOrg {
+				permissions = append(permissions, accesscontrol.SetResourcePermissionCommand{
+					TeamID: msp.GetOrg0TeamID(user.OrgID), Permission: dashboards.PERMISSION_EDIT.String(),
+				})
+			}
+			// BMC code ends
 		}
 
 		if !isNested || !hs.Features.IsEnabled(featuremgmt.FlagNestedFolders) {
 			permissions = append(permissions, []accesscontrol.SetResourcePermissionCommand{
-				{BuiltinRole: string(org.RoleEditor), Permission: dashboards.PERMISSION_EDIT.String()},
-				{BuiltinRole: string(org.RoleViewer), Permission: dashboards.PERMISSION_VIEW.String()},
+				// BMC code Start - Fix for DRJ71-4418 - Changes related to folder and Dashboard permission in 9.x
+				// {BuiltinRole: string(org.RoleEditor), Permission: dashboards.PERMISSION_EDIT.String()},
+				// {BuiltinRole: string(org.RoleViewer), Permission: dashboards.PERMISSION_VIEW.String()},
+				// End
 			}...)
 		}
 
@@ -299,8 +338,9 @@ func (hs *HTTPServer) DeleteFolder(c *contextmodel.ReqContext) response.Response
 	if err != nil {
 		return apierrors.ToFolderErrorResponse(err)
 	}
-
-	return response.JSON(http.StatusOK, "")
+	// BMC Change: Inline
+	// Defect fix for DRJ71-5724, Deleting folder gives error "Unexpected end of JSON input" on UI
+	return response.JSON(http.StatusOK, struct{}{})
 }
 
 func (hs *HTTPServer) newToFolderDto(c *contextmodel.ReqContext, g guardian.DashboardGuardian, folder *folder.Folder) dtos.Folder {

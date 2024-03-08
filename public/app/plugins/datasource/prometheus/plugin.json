@@ -95,5 +95,7 @@
         "url": "https://prometheus.io/"
       }
     ]
-  }
+  },
+
+  "state": "alpha"
 }

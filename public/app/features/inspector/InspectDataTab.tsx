@@ -249,7 +249,9 @@ export class InspectDataTab extends PureComponent<Props, State> {
             onDataFrameChange={this.onDataFrameChange}
             toggleDownloadForExcel={this.toggleDownloadForExcel}
           />
+          {/* BMC code - inline change */}
           <Button
+            id={'custom-csv-selector-download-csv'}
             variant="primary"
             onClick={() => {
               if (hasLogs) {

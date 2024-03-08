@@ -28,6 +28,12 @@ const (
 	DS_ES_OPEN_DISTRO = "grafana-es-open-distro-datasource"
 	DS_ES_OPENSEARCH  = "grafana-opensearch-datasource"
 	DS_AZURE_MONITOR  = "grafana-azure-monitor-datasource"
+
+	// BMC code
+	DS_BMC_HELIX = "bmchelix-ade-datasource"
+	DS_BMC_JSON  = "json-datasource"
+	DS_BMC_CSV   = "bmc-csv-datasource"
+	// End
 )
 
 type DsAccess string

@@ -35,7 +35,7 @@ func (hs *HTTPServer) CreateTeam(c *contextmodel.ReqContext) response.Response {
 		return response.Error(403, "Not allowed to create team.", nil)
 	}
 
-	t, err := hs.teamService.CreateTeam(cmd.Name, cmd.Email, c.OrgID)
+	t, err := hs.teamService.CreateTeam(cmd.Name, cmd.Email, c.OrgID, cmd.Id)
 	if err != nil {
 		if errors.Is(err, team.ErrTeamNameTaken) {
 			return response.Error(409, "Team name taken", err)
@@ -309,7 +309,7 @@ func (hs *HTTPServer) UpdateTeamPreferences(c *contextmodel.ReqContext) response
 		}
 	}
 
-	return hs.updatePreferencesFor(c.Req.Context(), orgId, 0, teamId, &dtoCmd)
+	return hs.updatePreferencesFor(c, c.Req.Context(), orgId, 0, teamId, &dtoCmd)
 }
 
 // swagger:parameters updateTeamPreferences

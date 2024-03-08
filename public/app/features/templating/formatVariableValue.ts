@@ -1,17 +1,48 @@
-import { formatRegistry } from '@grafana/scenes';
+// import { formatRegistry } from '@grafana/scenes';
 import { VariableFormatID } from '@grafana/schema';
 
+import { ALL_VARIABLE_TEXT, NONE_VARIABLE_TEXT } from '../variables/constants';
 import { isAdHoc } from '../variables/guard';
 
 import { getVariableWrapper } from './LegacyVariableWrapper';
+import { formatRegistry } from './bmcFormatRegistry';
 
-export function formatVariableValue(value: any, format?: any, variable?: any, text?: string): string {
+// BMC code - inline change
+// to update function definition, emptyValue & customAllValue parameters
+export function formatVariableValue(
+  value: any,
+  format?: any,
+  variable?: any,
+  text?: string,
+  emptyValue?: string,
+  customAllValue?: boolean
+): string {
   // for some scopedVars there is no variable
   variable = variable || {};
 
   if (value === null || value === undefined) {
     return '';
   }
+  // BMC Code Change Start
+  if (
+    emptyValue &&
+    (variable.current.text?.[0] === ALL_VARIABLE_TEXT || variable.current.text === ALL_VARIABLE_TEXT) &&
+    customAllValue === true
+  ) {
+    return emptyValue;
+  }
+
+  if (
+    value.length === 0 &&
+    emptyValue &&
+    (variable.current.text?.[0] === NONE_VARIABLE_TEXT ||
+      variable.current.text === NONE_VARIABLE_TEXT ||
+      ((variable.current.text?.[0] === ALL_VARIABLE_TEXT || variable.current.text === ALL_VARIABLE_TEXT) &&
+        !variable.allValue))
+  ) {
+    return emptyValue;
+  }
+  // BMC Code Change End
 
   if (isAdHoc(variable) && format !== VariableFormatID.QueryParam) {
     return '';
@@ -49,3 +80,29 @@ export function formatVariableValue(value: any, format?: any, variable?: any, te
   const formatVariable = getVariableWrapper(variable, value, text ?? value);
   return formatItem.formatter(value, args, formatVariable);
 }
+
+// BMC Change Start
+export function containsSingleQuote(target: string, variableMatch: string, varMap: { [key: string]: number }) {
+  const regex = new RegExp(`\\${variableMatch}`, 'g');
+  const indices = [];
+  let match;
+  let matchedIndex: number;
+  while ((match = regex.exec(target)) !== null) {
+    indices.push(match.index);
+  }
+  if (varMap[variableMatch]) {
+    matchedIndex = varMap[variableMatch];
+  } else {
+    matchedIndex = indices[0];
+  }
+  varMap[variableMatch] = 1;
+  if (
+    matchedIndex > 0 &&
+    target.charAt(matchedIndex - 1) === "'" &&
+    target.charAt(matchedIndex + variableMatch.length) === "'"
+  ) {
+    return true;
+  }
+  return false;
+}
+// BMC Change End

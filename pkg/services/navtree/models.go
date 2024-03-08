@@ -17,6 +17,8 @@ const (
 	WeightDashboard
 	WeightExplore
 	WeightAlerting
+	// BMC code - next line
+	WeightReport
 	WeightDataConnections
 	WeightPlugin
 	WeightConfig
@@ -40,6 +42,9 @@ const (
 	NavIDDashboardsBrowse   = "dashboards/browse"
 	NavIDCfg                = "cfg" // NavIDCfg is the id for org configuration navigation node
 	NavIDAdmin              = "admin"
+	NavIDAdminGeneral       = "admin/general"
+	NavIDAdminPlugins       = "admin/plugins"
+	NavIDAdminAccess        = "admin/access"
 	NavIDAlertsAndIncidents = "alerts-and-incidents"
 	NavIDAlerting           = "alerting"
 	NavIDAlertingLegacy     = "alerting-legacy"
@@ -186,6 +191,7 @@ func ApplyAdminIA(root *NavTreeRoot) {
 			adminNodeLinks = append(adminNodeLinks, globalUsers)
 		}
 		adminNodeLinks = AppendIfNotNil(adminNodeLinks, root.FindById("teams"))
+		adminNodeLinks = AppendIfNotNil(adminNodeLinks, root.FindById("roles"))
 		adminNodeLinks = AppendIfNotNil(adminNodeLinks, root.FindById("serviceaccounts"))
 		adminNodeLinks = AppendIfNotNil(adminNodeLinks, root.FindById("apikeys"))
 		if orgSettings := root.FindById("org-settings"); orgSettings != nil {

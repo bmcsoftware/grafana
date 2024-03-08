@@ -7,7 +7,8 @@ import (
 )
 
 type Service interface {
-	CreateTeam(name, email string, orgID int64) (Team, error)
+	// BMC code - inline change
+	CreateTeam(name, email string, orgID int64, Id int64) (Team, error)
 	UpdateTeam(ctx context.Context, cmd *UpdateTeamCommand) error
 	DeleteTeam(ctx context.Context, cmd *DeleteTeamCommand) error
 	SearchTeams(ctx context.Context, query *SearchTeamsQuery) (SearchTeamQueryResult, error)
@@ -20,4 +21,6 @@ type Service interface {
 	GetUserTeamMemberships(ctx context.Context, orgID, userID int64, external bool) ([]*TeamMemberDTO, error)
 	GetTeamMembers(ctx context.Context, query *GetTeamMembersQuery) ([]*TeamMemberDTO, error)
 	IsAdminOfTeams(ctx context.Context, query *IsAdminOfTeamsQuery) (bool, error)
+	// BMC code - next line
+	CustomAddTeamMember(ctx context.Context, cmd *AddTeamMemberCommand) error
 }

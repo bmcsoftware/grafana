@@ -45,11 +45,11 @@ export const LANGUAGES: LanguageDefinitions[] = [
     loader: () => import('../../../locales/de-DE/grafana.json'),
   },
 
-  {
-    code: CHINESE_SIMPLIFIED,
-    name: '中文（简体）',
-    loader: () => import('../../../locales/zh-Hans/grafana.json'),
-  },
+  // {
+  //   code: CHINESE_SIMPLIFIED,
+  //   name: '中文（简体）',
+  //   loader: () => import('../../../locales/zh-Hans/grafana.json'),
+  // },
 ];
 
 if (process.env.NODE_ENV === 'development') {
