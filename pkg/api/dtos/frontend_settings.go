@@ -234,4 +234,12 @@ type FrontendSettingsDTO struct {
 	// Enterprise
 	Licensing     *FrontendSettingsLicensingDTO     `json:"licensing,omitempty"`
 	Whitelabeling *FrontendSettingsWhitelabelingDTO `json:"whitelabeling,omitempty"`
+
+	// BMC Change - start
+	EnvType                  string   `json:"EnvType"`
+	BhdVersion               string   `json:"bhdVersion"`
+	BulkLimit                int      `json:"bulkLimit"`
+	EmailAttachmentSizeLimit int      `json:"emailAttachmentSizeLimit"`
+	CSVDelimiter             []string `json:"csvDelimiters"`
+	// BMC Change - end
 }

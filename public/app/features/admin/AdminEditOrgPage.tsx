@@ -5,6 +5,7 @@ import { NavModelItem, UrlQueryValue } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 import { Form, Field, Input, Button, Legend, Alert, VerticalGroup, HorizontalGroup, Pagination } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { GrafanaRouteComponentProps } from 'app/core/navigation/types';
 import { accessControlQueryParam } from 'app/core/utils/accessControl';
@@ -106,12 +107,17 @@ const AdminEditOrgPage = ({ match }: Props) => {
             >
               {({ register, errors }) => (
                 <>
-                  <Field label="Name" invalid={!!errors.orgName} error="Name is required" disabled={!canWriteOrg}>
+                  {/* BMC code - inline change */}
+                  <Field
+                    label="Name"
+                    invalid={!!errors.orgName}
+                    error="Name is required"
+                    disabled={config.buildInfo.env !== 'development' || !canWriteOrg}
+                  >
                     <Input {...register('orgName', { required: true })} id="org-name-input" />
                   </Field>
-                  <Button type="submit" disabled={!canWriteOrg}>
-                    Update
-                  </Button>
+                  {/* BMC code - inline change */}
+                  <Button disabled={config.buildInfo.env !== 'development' || !canWriteOrg}>Update</Button>
                 </>
               )}
             </Form>

@@ -104,3 +104,30 @@
     width: 100%;
   }
 }
+// BMC code
+/*
+ * BMC page error layout
+ */
+.bmc_error_container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.bmc_error_main_text {
+  margin-top: 40px;
+  font-size: 32px;
+}
+
+.bmc_error_sub_text {
+  margin-top: 12px;
+  font-size: 18px;
+}
+
+.bmc_error_links {
+  color: #33a2e5;
+}
+// End

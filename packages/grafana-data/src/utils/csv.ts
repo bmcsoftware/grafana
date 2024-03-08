@@ -251,6 +251,13 @@ function getHeaderLine(key: string, fields: Field[], config: CSVConfig): string 
 }
 
 function getLocaleDelimiter(): string {
+  // BMC Code: Start
+  const urlParams = new URLSearchParams(window.location.search);
+  const delimiter = urlParams.get('csvDelimiter');
+  if (delimiter && ((window as any).grafanaBootData.settings.csvDelimiters ?? []).includes(delimiter)) {
+    return delimiter;
+  }
+  // BMC Code: end
   const arr = ['x', 'y'];
   if (arr.toLocaleString) {
     return arr.toLocaleString().charAt(1);
@@ -272,6 +279,11 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
     useExcelHeader: false,
   });
   let csv = config.useExcelHeader ? `sep=${config.delimiter}${config.newline}` : '';
+
+  // BMC Code: Start
+  const urlParams = new URLSearchParams(window.location.search);
+  const enableOverrides = urlParams.get('enableOverrides');
+  // BMC Code: end
 
   for (const series of data) {
     const { fields } = series;
@@ -310,7 +322,44 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
 
           const v = fields[j].values.get(i);
           if (v !== null) {
-            csv = csv + writers[j](v);
+            // BMC Change: start
+            // Add data link
+            // ToDo: Add check for excel download
+            if (enableOverrides === 'true' && fields[j].config?.links?.length !== 0) {
+              const link = fields[j].getLinks?.({ valueRowIndex: i });
+
+              const length = link?.length ?? 0;
+              if (length > 0) {
+                csv += writers[j](`=HYPERLINK("${link![length - 1].href}", "${v}")`);
+                continue;
+              }
+            }
+            // Avoid csv injection
+            // and a regression fix for #DRJ71-5603
+            // and fix for special characters in date format
+            let str = writers[j](v);
+            str = str.replace(' ', ' ');
+            str = str.replace('\u202F', ' ');
+
+            if (str.startsWith('=')) {
+              csv += str.replace('=', ' =');
+              continue;
+            }
+            if (str.startsWith('"=')) {
+              csv += str.replace('"=', '" =');
+              continue;
+            }
+
+            if (str.startsWith('"@')) {
+              csv += str.replace('"@', '" @');
+              continue;
+            }
+            if (str.startsWith('@')) {
+              csv += str.replace('@', ' @');
+              continue;
+            }
+            // BMC Change: end
+            csv += str;
           }
         }
         csv = csv + config.newline;

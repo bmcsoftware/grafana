@@ -244,8 +244,10 @@ func (ps *ProvisioningServiceImpl) ProvisionDashboards(ctx context.Context) erro
 	defer ps.mutex.Unlock()
 
 	ps.cancelPolling()
-	dashProvisioner.CleanUpOrphanedDashboards(ctx)
-
+	// BMC code
+	// Start - this cleanup causes our OOB dashboards to be disappeared.
+	// dashProvisioner.CleanUpOrphanedDashboards(ctx)
+	// End
 	err = dashProvisioner.Provision(ctx)
 	if err != nil {
 		// If we fail to provision with the new provisioner, the mutex will unlock and the polling will restart with the

@@ -18,6 +18,7 @@ import {
 import { UserRolePicker } from 'app/core/components/RolePicker/UserRolePicker';
 import { fetchRoleOptions, updateUserRoles } from 'app/core/components/RolePicker/api';
 import { OrgPicker, OrgSelectItem } from 'app/core/components/Select/OrgPicker';
+import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { AccessControlAction, Organization, OrgRole, Role, UserDTO, UserOrg } from 'app/types';
 
@@ -81,20 +82,25 @@ export class UserOrgs extends PureComponent<Props, State> {
               </tbody>
             </table>
           </div>
-          <div className={addToOrgContainerClass}>
-            {canAddToOrg && (
-              <Button variant="secondary" onClick={this.showOrgAddModal} ref={this.addToOrgButtonRef}>
-                Add user to organization
-              </Button>
-            )}
-          </div>
-          <AddToOrgModal
-            user={user}
-            userOrgs={orgs}
-            isOpen={showAddOrgModal}
-            onOrgAdd={onOrgAdd}
-            onDismiss={this.dismissOrgAddModal}
-          />
+          {/* BMC code - next line */}
+          {config.buildInfo.env === 'development' && (
+            <>
+              <div className={addToOrgContainerClass}>
+                {canAddToOrg && (
+                  <Button variant="secondary" onClick={this.showOrgAddModal} ref={this.addToOrgButtonRef}>
+                    Add user to organization
+                  </Button>
+                )}
+              </div>
+              <AddToOrgModal
+                user={user}
+                userOrgs={orgs}
+                isOpen={showAddOrgModal}
+                onOrgAdd={onOrgAdd}
+                onDismiss={this.dismissOrgAddModal}
+              />
+            </>
+          )}
         </div>
       </>
     );
@@ -241,12 +247,14 @@ class UnThemedOrgRow extends PureComponent<OrgRowProps> {
         <td colSpan={1}>
           <div className="pull-right">
             {canRemoveFromOrg && (
+              /* BMC code - inline change. Disable button for server admin */
               <ConfirmButton
                 confirmText="Confirm removal"
                 confirmVariant="destructive"
                 onCancel={this.onCancelClick}
                 onConfirm={this.onOrgRemove}
                 autoFocus
+                disabled={true}
               >
                 Remove from organization
               </ConfirmButton>
@@ -469,12 +477,13 @@ export function ChangeOrgButton({
           </Tooltip>
         </>
       ) : (
+        //  {/* BMC code - inline change. Disable button for server admin */}
         <ConfirmButton
           confirmText="Save"
           onClick={onChangeRoleClick}
           onCancel={onCancelClick}
           onConfirm={onOrgRoleSave}
-          disabled={isExternalUser}
+          disabled={true}
         >
           Change role
         </ConfirmButton>

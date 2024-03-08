@@ -138,4 +138,12 @@ const tableStyles = {
   selectWrapper: css`
     padding: 8px 8px 0px 8px;
   `,
+  // BMC code
+  noDataWrapper: css`
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `,
+  // End
 };

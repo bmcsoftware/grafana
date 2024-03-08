@@ -43,6 +43,10 @@ func (hs *HTTPServer) GetCurrentOrg(c *contextmodel.ReqContext) response.Respons
 // 500: internalServerError
 func (hs *HTTPServer) GetOrgByID(c *contextmodel.ReqContext) response.Response {
 	orgId, err := strconv.ParseInt(web.Params(c.Req)[":orgId"], 10, 64)
+	// BMC change next block: To support IMS tenant 0
+	if orgId == setting.IMS_Tenant0 {
+		orgId = setting.GF_Tenant0
+	}
 	if err != nil {
 		return response.Error(http.StatusBadRequest, "orgId is invalid", err)
 	}
@@ -130,6 +134,10 @@ func (hs *HTTPServer) CreateOrg(c *contextmodel.ReqContext) response.Response {
 	cmd := org.CreateOrgCommand{}
 	if err := web.Bind(c.Req, &cmd); err != nil {
 		return response.Error(http.StatusBadRequest, "bad request data", err)
+	}
+	// BMC change next block: To support IMS tenant 0
+	if cmd.ID == setting.IMS_Tenant0 {
+		cmd.ID = setting.GF_Tenant0
 	}
 	acEnabled := !hs.AccessControl.IsDisabled()
 	if !acEnabled && !(setting.AllowUserOrgCreate || c.IsGrafanaAdmin) {
@@ -284,6 +292,10 @@ func (hs *HTTPServer) updateOrgAddressHelper(ctx context.Context, form dtos.Upda
 // 500: internalServerError
 func (hs *HTTPServer) DeleteOrgByID(c *contextmodel.ReqContext) response.Response {
 	orgID, err := strconv.ParseInt(web.Params(c.Req)[":orgId"], 10, 64)
+	// BMC change next block: To support IMS tenant 0
+	if orgID == setting.IMS_Tenant0 {
+		orgID = setting.GF_Tenant0
+	}
 	if err != nil {
 		return response.Error(http.StatusBadRequest, "orgId is invalid", err)
 	}

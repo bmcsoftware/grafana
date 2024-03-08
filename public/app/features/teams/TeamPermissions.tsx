@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { Permissions } from 'app/core/components/AccessControl';
-import { contextSrv } from 'app/core/services/context_srv';
+// import { contextSrv } from 'app/core/services/context_srv';
 
-import { AccessControlAction, Team } from '../../types';
+import { Team } from '../../types';
 
 type TeamPermissionsProps = {
   team: Team;
@@ -11,10 +11,11 @@ type TeamPermissionsProps = {
 
 // TeamPermissions component replaces TeamMembers component when the accesscontrol feature flag is set
 const TeamPermissions = (props: TeamPermissionsProps) => {
-  const canSetPermissions = contextSrv.hasPermissionInMetadata(
-    AccessControlAction.ActionTeamsPermissionsWrite,
-    props.team
-  );
+  // BMC Code: Comment below
+  // const canSetPermissions = contextSrv.hasPermissionInMetadata(
+  //   AccessControlAction.ActionTeamsPermissionsWrite,
+  //   props.team
+  // );
 
   return (
     <Permissions
@@ -24,7 +25,7 @@ const TeamPermissions = (props: TeamPermissionsProps) => {
       emptyLabel="There are no members in this team or you do not have the permissions to list the current members."
       resource="teams"
       resourceId={props.team.id}
-      canSetPermissions={canSetPermissions}
+      canSetPermissions={false}
     />
   );
 };
