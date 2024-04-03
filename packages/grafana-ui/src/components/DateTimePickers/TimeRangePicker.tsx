@@ -193,14 +193,30 @@ export function TimeRangePicker(props: TimeRangePickerProps) {
 }
 
 TimeRangePicker.displayName = 'TimeRangePicker';
-
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2024
+// Commented the `ZoomOutTooltip' function
+/*
 const ZoomOutTooltip = () => (
   <>
     <Trans i18nKey="time-picker.range-picker.zoom-out-tooltip">
       Time range zoom out <br /> CTRL+Z
     </Trans>
   </>
+); */
+// End
+
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2023
+// Removed <br/> tag from returned string
+
+const ZoomOutTooltip = () => (
+  <>
+    <Trans i18nKey="time-picker.range-picker.zoom-out-tooltip">Time range zoom out</Trans>
+  </>
 );
+
+// End
 
 export const TimePickerTooltip = ({ timeRange, timeZone }: { timeRange: TimeRange; timeZone?: TimeZone }) => {
   const styles = useStyles2(getLabelStyles);

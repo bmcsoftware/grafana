@@ -238,7 +238,11 @@ class GraphElement {
   ): (() => MenuItemsGroup[]) => {
     return () => {
       // Fixed context menu items
-      const items: MenuItemsGroup[] = this.dashboard.canAddAnnotations()
+      // @Copyright 2024 BMC Software, Inc.
+      // Date - 02/02/2024
+      // Remove Add annotation context menu
+      const items: MenuItemsGroup[] = [];
+      /* const items: MenuItemsGroup[] = this.dashboard.canAddAnnotations()
         ? [
             {
               items: [
@@ -251,7 +255,7 @@ class GraphElement {
               ],
             },
           ]
-        : [];
+        : []; */
 
       if (!linksSupplier) {
         return items;

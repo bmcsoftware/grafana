@@ -19,14 +19,20 @@ export function EntityNotFound({ entity = 'Page' }: Props) {
     <div className={styles.container}>
       <h1>{entity} not found</h1>
       <div className={styles.subtitle}>
-        We&apos;re looking but can&apos;t seem to find this {entity.toLowerCase()}. Try returning{' '}
+        We&apos;re looking but can&apos;t seem to find this {entity.toLowerCase()}.
+        { // @Copyright 2024 BMC Software, Inc.
+          // Date - 02/02/2024
+          // Commented text
+        /* Try returning{' '}
         <a href="/" className="external-link">
           home
         </a>{' '}
         or seeking help on the{' '}
         <a href="https://community.grafana.com" target="_blank" rel="noreferrer" className="external-link">
           community site.
-        </a>
+        </a> */
+        // END
+        }
       </div>
       <div className={styles.grot}>
         <img src={`public/img/grot-404-${theme.isDark ? 'dark' : 'light'}.svg`} width="100%" alt="grot" />

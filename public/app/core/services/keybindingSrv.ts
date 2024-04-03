@@ -342,13 +342,16 @@ export class KeybindingSrv {
     this.bind('d k', () => {
       this.chromeService.onToggleKioskMode();
     });
-
+    // @Copyright 2024 BMC Software, Inc.
+    // Date - 02/02/2024
+    // Disable (d a)
     //Autofit panels
-    this.bind('d a', () => {
+    /* this.bind('d a', () => {
       // this has to be a full page reload
       const queryParams = this.locationService.getSearchObject();
       const newUrlParam = queryParams.autofitpanels ? '' : '&autofitpanels';
       window.location.href = window.location.href + newUrlParam;
-    });
+    }); */
+    // END
   }
 }
