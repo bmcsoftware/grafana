@@ -258,6 +258,11 @@ var (
 			Owner:       awsPluginsSquad,
 		},
 		{
+			Name:        "cloudWatchCrossAccountQuerying",
+			Description: "Use cross-account querying in CloudWatch datasource",
+			State:       FeatureStateAlpha,
+		},
+		{
 			Name:         "redshiftAsyncQueryDataSupport",
 			Description:  "Enable async query data support for Redshift",
 			State:        FeatureStateAlpha,

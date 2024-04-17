@@ -191,28 +191,32 @@ export class CSVReader {
   }
 }
 
-type FieldWriter = (value: unknown) => string;
+// BMC Change: @param link added
+type FieldWriter = (value: unknown, link?: string) => string;
 
-function writeValue(value: unknown, config: CSVConfig): string {
+// BMC Change: @param link added
+function writeValue(value: unknown, config: CSVConfig, link?: string): string {
   if (value === null || value === undefined) {
     return '';
   }
   const str = value.toString();
-  if (str.includes('"')) {
+  const linkStr = link ? `=HYPERLINK("${link}",[@@meta@@]"${str}")` : str;
+  if (linkStr.includes('"')) {
     // Escape the double quote characters
-    return config.quoteChar + str.replace(/"/gi, '""') + config.quoteChar;
+    return config.quoteChar + linkStr.replace(/"/gi, '""') + config.quoteChar;
   }
-  if (str.includes('\n') || (config.delimiter && str.includes(config.delimiter))) {
-    return config.quoteChar + str + config.quoteChar;
+  if (linkStr.includes('\n') || (config.delimiter && linkStr.includes(config.delimiter))) {
+    return config.quoteChar + linkStr + config.quoteChar;
   }
-  return str;
+  return linkStr;
 }
 
+// BMC Change: @param link added
 function makeFieldWriter(field: Field, config: CSVConfig): FieldWriter {
   if (field.display) {
-    return (value: unknown) => {
+    return (value: unknown, link?: string) => {
       const displayValue = field.display!(value);
-      return writeValue(formattedValueToString(displayValue), config);
+      return writeValue(formattedValueToString(displayValue), config, link);
     };
   }
 
@@ -251,6 +255,13 @@ function getHeaderLine(key: string, fields: Field[], config: CSVConfig): string 
 }
 
 function getLocaleDelimiter(): string {
+  // BMC Code: Start
+  const urlParams = new URLSearchParams(window.location.search);
+  const delimiter = urlParams.get('csvDelimiter');
+  if (delimiter && ((window as any).grafanaBootData.settings.csvDelimiters ?? []).includes(delimiter)) {
+    return delimiter;
+  }
+  // BMC Code: end
   const arr = ['x', 'y'];
   if (arr.toLocaleString) {
     return arr.toLocaleString().charAt(1);
@@ -272,6 +283,12 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
     useExcelHeader: false,
   });
   let csv = config.useExcelHeader ? `sep=${config.delimiter}${config.newline}` : '';
+
+  // BMC Code: Start
+  const urlParams = new URLSearchParams(window.location.search);
+  const enableOverrides = urlParams.get('enableOverrides');
+  const fullTable = urlParams.get('fullTable');
+  // BMC Code: end
 
   for (const series of data) {
     const { fields } = series;
@@ -298,7 +315,13 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
       csv += config.newline;
     }
 
-    const length = fields[0].values.length;
+    // BMC Code: Start
+    // Adding hard limit of 10k records for PDF full table download to avoid high memory usage.
+    let length = fields[0].values.length;
+    if (length > 10000 && fullTable === 'true') {
+      length = 10000;
+    }
+    // BMC Code: end
 
     if (length > 0) {
       const writers = fields.map((field) => makeFieldWriter(field, config!));
@@ -310,7 +333,44 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
 
           const v = fields[j].values.get(i);
           if (v !== null) {
-            csv = csv + writers[j](v);
+            // BMC Change: start
+            // Add data link
+            // ToDo: Add check for excel download
+            if (enableOverrides === 'true' && fields[j].config?.links?.length !== 0) {
+              const link = fields[j].getLinks?.({ valueRowIndex: i });
+
+              const length = link?.length ?? 0;
+              if (length > 0) {
+                csv += writers[j](v, link![length - 1].href);
+                continue;
+              }
+            }
+            // Avoid csv injection
+            // and a regression fix for #DRJ71-5603
+            // and fix for special characters in date format
+            let str = writers[j](v);
+            str = str.replace(' ', ' ');
+            str = str.replace('\u202F', ' ');
+
+            if (str.startsWith('=')) {
+              csv += str.replace('=', ' =');
+              continue;
+            }
+            if (str.startsWith('"=')) {
+              csv += str.replace('"=', '" =');
+              continue;
+            }
+
+            if (str.startsWith('"@')) {
+              csv += str.replace('"@', '" @');
+              continue;
+            }
+            if (str.startsWith('@')) {
+              csv += str.replace('@', ' @');
+              continue;
+            }
+            // BMC Change: end
+            csv += str;
           }
         }
         csv = csv + config.newline;

@@ -53,6 +53,12 @@ func addTeamMigrations(mg *Migrator) {
 		Name: "email", Type: DB_NVarchar, Nullable: true, Length: 190,
 	}))
 
+	// BMC code - Set default value for IsMspTeam
+	mg.AddMigration("Add new column is_msp_team to team table", NewAddColumnMigration(teamV1, &Column{
+		Name: "is_msp_team", Type: DB_Bool, Nullable: true, Default: "0",
+	}))
+	//End BMC Code
+
 	mg.AddMigration("Add column external to team_member table", NewAddColumnMigration(teamMemberV1, &Column{
 		Name: "external", Type: DB_Bool, Nullable: true,
 	}))
@@ -60,4 +66,9 @@ func addTeamMigrations(mg *Migrator) {
 	mg.AddMigration("Add column permission to team_member table", NewAddColumnMigration(teamMemberV1, &Column{
 		Name: "permission", Type: DB_SmallInt, Nullable: true,
 	}))
+	// BMC code
+	// Abhishek, 07122020, alter id column to bigint
+	mg.AddMigration("alter team.id to bigint", NewRawSQLMigration("").
+		Postgres("ALTER TABLE public.team ALTER COLUMN id TYPE int8;"))
+	// End
 }

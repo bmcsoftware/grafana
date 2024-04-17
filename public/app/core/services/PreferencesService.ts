@@ -1,4 +1,6 @@
-import { Preferences as UserPreferencesDTO } from '@grafana/schema/src/raw/preferences/x/preferences_types.gen';
+// BMC Code: Commented next line
+// import { Preferences as UserPreferencesDTO } from '@grafana/schema/src/raw/preferences/x/preferences_types.gen';
+import { BMCUserPreferencesDTO as UserPreferencesDTO } from '../components/SharedPreferences/SharedPreferences';
 
 import { backendSrv } from './backend_srv';
 

@@ -321,6 +321,10 @@ func (hs *HTTPServer) Logout(c *contextmodel.ReqContext) {
 		if authInfo, err := hs.authInfoService.GetAuthInfo(c.Req.Context(), &getAuthQuery); err == nil {
 			if authInfo.AuthModule == loginservice.SAMLAuthModule {
 				c.Redirect(hs.Cfg.AppSubURL + "/logout/saml")
+				//BMC Code - start
+				//Remove helix_jwt_token cookie on logout operation
+				cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+				//BMC Code - end
 				return
 			}
 		}
@@ -338,6 +342,10 @@ func (hs *HTTPServer) Logout(c *contextmodel.ReqContext) {
 		hs.log.Error("failed to revoke auth token", "error", err)
 	}
 
+	//BMC Code - start
+	//Remove helix_jwt_token cookie on logout operation
+	cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+	//BMC Code - end
 	authn.DeleteSessionCookie(c.Resp, hs.Cfg)
 
 	if setting.SignoutRedirectUrl != "" {

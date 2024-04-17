@@ -2,6 +2,7 @@ import React from 'react';
 
 import { DeleteButton } from '@grafana/ui';
 import { TeamRolePicker } from 'app/core/components/RolePicker/TeamRolePicker';
+import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction, Role, Team } from 'app/types';
 
@@ -52,14 +53,19 @@ export const TeamListRow = ({ team, roleOptions, isTeamAdmin, displayRolePicker,
         )}
       </td>
       {displayRolePicker && <td>{canSeeTeamRoles && <TeamRolePicker teamId={team.id} roleOptions={roleOptions} />}</td>}
-      <td className="text-right">
-        <DeleteButton
-          aria-label={`Delete team ${team.name}`}
-          size="sm"
-          disabled={!canDelete}
-          onConfirm={() => onDelete(team.id)}
-        />
-      </td>
+      {/* BMC code - next line */}
+      {config.buildInfo.env === 'development' && (
+        <>
+          <td className="text-right">
+            <DeleteButton
+              aria-label={`Delete team ${team.name}`}
+              size="sm"
+              disabled={!canDelete}
+              onConfirm={() => onDelete(team.id)}
+            />
+          </td>
+        </>
+      )}
     </tr>
   );
 };
