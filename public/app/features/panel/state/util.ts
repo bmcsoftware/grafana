@@ -3,7 +3,6 @@ import { config } from 'app/core/config';
 
 export function getAllPanelPluginMeta(): PanelPluginMeta[] {
   const allPanels = config.panels;
-
   return Object.keys(allPanels)
     .filter((key) => allPanels[key]['hideFromList'] === false)
     .map((key) => allPanels[key])

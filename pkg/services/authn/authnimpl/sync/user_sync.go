@@ -265,7 +265,20 @@ func (s *UserSync) createUser(ctx context.Context, id *authn.Identity) (*user.Us
 		isAdmin = *id.IsGrafanaAdmin
 	}
 
+	// BMC Changes - START
+	_, userAuth, errUser := s.getUser(ctx, id)
+	if errUser != nil {
+		s.log.FromContext(ctx).Error("Failed to get user", "error", errUser)
+		return nil, errUser
+	}
+	if userAuth != nil {
+		s.log.FromContext(ctx).Error("User auth failed", "error", errUser)
+		return nil, errSyncUserInternal.Errorf("%w", login.ErrInvalidCredentials)
+	}
+	// BMC Changes - END
+
 	usr, errCreateUser := s.userService.Create(ctx, &user.CreateUserCommand{
+		Id:           userAuth.UserId,
 		Login:        id.Login,
 		Email:        id.Email,
 		Name:         id.Name,

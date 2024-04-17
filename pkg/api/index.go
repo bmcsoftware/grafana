@@ -116,6 +116,12 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 				Identifier:         c.SignedInUser.Analytics.Identifier,
 				IntercomIdentifier: c.SignedInUser.Analytics.IntercomIdentifier,
 			},
+			// BMC code
+			HasExternalOrg:     c.SignedInUser.HasExternalOrg,
+			MspOrgs:            c.SignedInUser.MspOrgs,
+			IsUnrestrictedUser: c.SignedInUser.IsUnrestrictedUser,
+			IsLanguageSet:      prefs.IsLanguageSet,
+			// BMC code end
 		},
 		Settings:                            settings,
 		Theme:                               prefs.Theme,
@@ -133,7 +139,7 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 		AppNameBodyClass:                    "app-grafana",
 		FavIcon:                             "public/img/fav32.png",
 		AppleTouchIcon:                      "public/img/apple-touch-icon.png",
-		AppTitle:                            "Grafana",
+		AppTitle:                            "BMC Helix Dashboards",
 		NavTree:                             navTree,
 		Sentry:                              &hs.Cfg.Sentry,
 		Nonce:                               c.RequestNonce,

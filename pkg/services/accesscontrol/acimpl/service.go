@@ -9,6 +9,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
+	bhdperm "github.com/grafana/grafana/pkg/api/bmc/bhd_rbac/bhd_permissions"
 	"github.com/grafana/grafana/pkg/api/routing"
 	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/infra/localcache"
@@ -62,6 +63,7 @@ type store interface {
 	SearchUsersPermissions(ctx context.Context, orgID int64, options accesscontrol.SearchOptions) (map[int64][]accesscontrol.Permission, error)
 	GetUsersBasicRoles(ctx context.Context, userFilter []int64, orgID int64) (map[int64][]string, error)
 	DeleteUserPermissions(ctx context.Context, orgID, userID int64) error
+	GetBHDPermissionsByRoles(ctx context.Context, bhdRoles []int64) ([]accesscontrol.Permission, error)
 }
 
 // Service is the service implementing role based access control.
@@ -113,11 +115,51 @@ func (s *Service) getUserPermissions(ctx context.Context, user *user.SignedInUse
 		TeamIDs:    user.Teams,
 		RolePrefix: accesscontrol.ManagedRolePrefix,
 	})
+
 	if err != nil {
 		return nil, err
 	}
 
+	// BMC code start - RBAC changes
+	// doing this after append so if there are any duplicates, the rbac permissions will take precedence
+	bhdPermissions := s.loadBHDPermissions(ctx, user)
+	permissions = append(permissions, bhdPermissions...)
+
+	// for action, enabled := range user.Rbac {
+	// 	if !enabled {
+	// 		// Search and remove from permissions list the disabled ones
+	// 		for i, p := range dbPermissions {
+	// 			if p.Action == action {
+	// 				dbPermissions = append(dbPermissions[:i], dbPermissions[i+1:]...)
+	// 				break
+	// 			}
+	// 		}
+	// 		continue
+	// 	}
+
+	// 	perm := accesscontrol.Permission{
+	// 		Action:  action,
+	// 		Scope:   fmt.Sprintf("%s:*", action),
+	// 		Created: time.Now(),
+	// 		Updated: time.Now(),
+	// 	}
+	// 	permissions = append(permissions, perm)
+
+	// 	//User with "dashboards:create" permission should be able to build a dashboard in the general folder, so this permission is added again with the scope "folders:uid:general".
+	// 	if action == "dashboards:create" {
+	// 		perm := accesscontrol.Permission{
+	// 			Action:  action,
+	// 			Scope:   "folders:uid:general",
+	// 			Created: time.Now(),
+	// 			Updated: time.Now(),
+	// 		}
+	// 		permissions = append(permissions, perm)
+	// 	}
+
+	// }
+
 	return append(permissions, dbPermissions...), nil
+	// BMC code end
 }
 
 func (s *Service) getCachedUserPermissions(ctx context.Context, user *user.SignedInUser, options accesscontrol.Options) ([]accesscontrol.Permission, error) {
@@ -144,6 +186,47 @@ func (s *Service) getCachedUserPermissions(ctx context.Context, user *user.Signe
 	s.cache.Set(key, permissions, cacheTTL)
 
 	return permissions, nil
+}
+
+func (s *Service) loadBHDPermissions(ctx context.Context, user *user.SignedInUser) []accesscontrol.Permission {
+	list := []string{}
+	permissions := []accesscontrol.Permission{}
+	bhdPermissions, err := s.store.GetBHDPermissionsByRoles(ctx, user.BHDRoles)
+	if err != nil {
+		s.log.Error("Failed to load bhd permissions")
+		return permissions
+	}
+	for _, bhdPermission := range bhdPermissions {
+		relatedBHDPermissions := bhdperm.GetRelatedPermissions(bhdPermission.Action)
+		for _, relatedBHDPermission := range relatedBHDPermissions {
+			if !contains(list, relatedBHDPermission) {
+				list = append(list, relatedBHDPermission)
+				permissions = append(permissions, accesscontrol.Permission{
+					Action: relatedBHDPermission,
+					Scope:  fmt.Sprintf("%s:*", relatedBHDPermission),
+				})
+
+				//User with "dashboards:create" permission should be able to build a dashboard in the general folder, so this permission is added again with the scope "folders:uid:general".
+				if relatedBHDPermission == "dashboards:create" {
+					perm := accesscontrol.Permission{
+						Action: relatedBHDPermission,
+						Scope:  "folders:uid:general",
+					}
+					permissions = append(permissions, perm)
+				}
+			}
+		}
+	}
+	return permissions
+}
+
+func contains(slice []string, element string) bool {
+	for _, item := range slice {
+		if item == element {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *Service) ClearUserPermissionCache(user *user.SignedInUser) {
