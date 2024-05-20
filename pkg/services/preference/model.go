@@ -32,6 +32,8 @@ type Preference struct {
 	Created         time.Time           `db:"created"`
 	Updated         time.Time           `db:"updated"`
 	JSONData        *PreferenceJSONData `xorm:"json_data" db:"json_data"`
+	// BMC code -next line: for localization, auto set locale header of ITSM
+	IsLanguageSet   bool                `xorm:"-"`
 }
 
 func (p Preference) Cookies(typ string) bool {
@@ -68,6 +70,9 @@ type SavePreferenceCommand struct {
 	Language          string                  `json:"language,omitempty"`
 	QueryHistory      *QueryHistoryPreference `json:"queryHistory,omitempty"`
 	CookiePreferences []CookieType            `json:"cookiePreferences,omitempty"`
+
+	// BMC code
+	TimeFormat string `json:"timeFormat,omitempty"`
 }
 
 type PatchPreferenceCommand struct {
@@ -83,12 +88,18 @@ type PatchPreferenceCommand struct {
 	Language          *string                 `json:"language,omitempty"`
 	QueryHistory      *QueryHistoryPreference `json:"queryHistory,omitempty"`
 	CookiePreferences []CookieType            `json:"cookiePreferences,omitempty"`
+
+	// BMC code
+	TimeFormat *string `json:"timeFormat,omitempty"`
 }
 
 type PreferenceJSONData struct {
 	Language          string                 `json:"language"`
 	QueryHistory      QueryHistoryPreference `json:"queryHistory"`
 	CookiePreferences map[string]struct{}    `json:"cookiePreferences"`
+	
+	// BMC code
+	TimeFormat        string                 `json:"timeFormat"`
 }
 
 type QueryHistoryPreference struct {

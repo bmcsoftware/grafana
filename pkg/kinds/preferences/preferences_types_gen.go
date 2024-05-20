@@ -28,6 +28,9 @@ type Preferences struct {
 
 	// WeekStart day of the week (sunday, monday, etc)
 	WeekStart *string `json:"weekStart,omitempty"`
+	
+	// Format for dashboards, panels and reports timestamps
+	TimeFormat *string `json:"timeFormat,omitempty"`
 }
 
 // QueryHistoryPreference defines model for QueryHistoryPreference.

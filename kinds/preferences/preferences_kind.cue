@@ -31,6 +31,9 @@ lineage: seqs: [
 								// one of: '' | 'query' | 'starred';
 								homeTab?: string
 				} @cuetsy(kind="interface") //0.0
+
+        // Format for dashboards, panels and reports timestamps
+        timeFormat?: string
 			},
 		]
 	},
