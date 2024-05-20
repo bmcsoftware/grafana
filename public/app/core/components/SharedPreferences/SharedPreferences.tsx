@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 
 import { FeatureState, SelectableValue } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
-import { config, reportInteraction } from '@grafana/runtime';
+import { config, reportInteraction, getDataSourceSrv } from '@grafana/runtime';
 import { Preferences as UserPreferencesDTO } from '@grafana/schema/src/raw/preferences/x/preferences_types.gen';
 import {
   Button,
@@ -19,9 +19,14 @@ import {
   FeatureBadge,
 } from '@grafana/ui';
 import { DashboardPicker } from 'app/core/components/Select/DashboardPicker';
-import { t, Trans } from 'app/core/internationalization';
+import { Trans, t } from 'app/core/internationalization';
 import { LANGUAGES } from 'app/core/internationalization/constants';
 import { PreferencesService } from 'app/core/services/PreferencesService';
+import { getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
+import { OrgCustomConfiguration } from 'app/features/org/OrgCustomConfiguration';
+import { FEATURE_FLAG_CONFIGURABLE_LINK, customConfigSrv } from 'app/features/org/state/configuration';
+
+import { CustomDateFormatPicker } from './CustomSharedPreferences';
 
 export interface Props {
   resourceUri: string;
@@ -30,7 +35,20 @@ export interface Props {
   onConfirm?: () => Promise<boolean>;
 }
 
-export type State = UserPreferencesDTO;
+// BMC code
+export interface BMCUserPreferencesDTO extends UserPreferencesDTO {
+  docLink?: string;
+  supportLink?: string;
+  communityLink?: string;
+  videoLink?: string;
+  queryType?: string;
+  defaultDataSource?: any;
+  timeFormat?: string;
+}
+// end
+
+// BMC code - inline change
+export type State = BMCUserPreferencesDTO;
 
 function getLanguageOptions(): Array<SelectableValue<string>> {
   const languageOptions = LANGUAGES.map((v) => ({
@@ -65,6 +83,14 @@ export class SharedPreferences extends PureComponent<Props, State> {
       weekStart: '',
       language: '',
       queryHistory: { homeTab: '' },
+      // BMC code
+      docLink: '',
+      supportLink: '',
+      communityLink: '',
+      videoLink: '',
+      queryType: '',
+      timeFormat: '',
+      // End
     };
 
     this.themeOptions = [
@@ -76,26 +102,59 @@ export class SharedPreferences extends PureComponent<Props, State> {
   }
 
   async componentDidMount() {
-    const prefs = await this.service.load();
+    // BMC code: rewritten logic for whole did mount
+    const res = await Promise.all([
+      this.service.load(),
+      customConfigSrv.getCustomConfiguration(),
+      getDataSourceSrv()
+        .get('BMC Helix')
+        .catch(() => null),
+    ]).then((result) => {
+      return {
+        ...result[0],
+        ...result[1],
+        ds: result[2],
+      };
+    });
+    // BMC code end
 
     this.setState({
-      homeDashboardUID: prefs.homeDashboardUID,
-      theme: prefs.theme,
-      timezone: prefs.timezone,
-      weekStart: prefs.weekStart,
-      language: prefs.language,
-      queryHistory: prefs.queryHistory,
+      homeDashboardUID: res.homeDashboardUID,
+      theme: res.theme,
+      timezone: res.timezone,
+      weekStart: res.weekStart,
+      language: res.language,
+      queryHistory: res.queryHistory,
+      // BMC code
+      communityLink: res.communityLink,
+      docLink: res.docLink,
+      supportLink: res.supportLink,
+      videoLink: res.videoLink,
+      queryType: res.queryType,
+      defaultDataSource: res.ds,
+      timeFormat: res.timeFormat ? res.timeFormat : '',
+      // End
     });
   }
 
   onSubmitForm = async () => {
-    const confirmationResult = this.props.onConfirm ? await this.props.onConfirm() : true;
+    // BMC code - comment below line, if statement and reload as we are doing this check in onSubmitFormCustom
+    // const confirmationResult = this.props.onConfirm ? await this.props.onConfirm() : true;
 
-    if (confirmationResult) {
-      const { homeDashboardUID, theme, timezone, weekStart, language, queryHistory } = this.state;
-      await this.service.update({ homeDashboardUID, theme, timezone, weekStart, language, queryHistory });
-      window.location.reload();
-    }
+    // if (confirmationResult) {
+    const { homeDashboardUID, theme, timezone, weekStart, language, queryHistory, timeFormat } = this.state;
+    await this.service.update({
+      homeDashboardUID,
+      theme,
+      timezone,
+      weekStart,
+      language,
+      queryHistory,
+      timeFormat,
+    });
+    // window.location.reload();
+    // }
+    // BMC code - end
   };
 
   onThemeChanged = (value: string) => {
@@ -126,8 +185,58 @@ export class SharedPreferences extends PureComponent<Props, State> {
     });
   };
 
+  // BMC code
+  onDocLinkChange = (event: any) => {
+    this.setState({ docLink: event.target.value });
+  };
+
+  onCommunityLinkChange = (event: any) => {
+    this.setState({ communityLink: event.target.value });
+  };
+
+  onSupportLinkChange = (event: any) => {
+    this.setState({ supportLink: event.target.value });
+  };
+
+  onVideoLinkChange = (event: any) => {
+    this.setState({ videoLink: event.target.value });
+  };
+
+  onQueryChanged = (queryType: string) => {
+    this.setState({ queryType });
+  };
+
+  onTimeFormatChanged = (timeFormat: string) => {
+    this.setState({ timeFormat });
+  };
+
+  onSubmitConfiguration = async () => {
+    if (this.props.resourceUri !== 'org') {
+      return;
+    }
+    const config = this.state;
+    await customConfigSrv.setCustomConfiguration({
+      docLink: config.docLink ?? '',
+      supportLink: config.supportLink ?? '',
+      communityLink: config.communityLink ?? '',
+      videoLink: config.videoLink ?? '',
+      queryType: config.queryType ?? '',
+    });
+  };
+
+  onSubmitFormCustom = async () => {
+    const confirmationResult = this.props.onConfirm ? await this.props.onConfirm() : true;
+
+    if (confirmationResult) {
+      await this.onSubmitForm();
+      await this.onSubmitConfiguration();
+      window.location.reload();
+    }
+  };
+  // End
+
   render() {
-    const { theme, timezone, weekStart, homeDashboardUID, language } = this.state;
+    const { theme, timezone, weekStart, homeDashboardUID, language, queryType } = this.state;
     const { disabled } = this.props;
     const styles = getStyles();
     const languages = getLanguageOptions();
@@ -137,8 +246,9 @@ export class SharedPreferences extends PureComponent<Props, State> {
     }
 
     return (
-      <Form onSubmit={this.onSubmitForm}>
-        {() => {
+      // BMC code - inline change
+      <Form onSubmit={this.onSubmitFormCustom}>
+        {(form) => {
           return (
             <FieldSet label={<Trans i18nKey="shared-preferences.title">Preferences</Trans>} disabled={disabled}>
               <Field label={t('shared-preferences.fields.theme-label', 'UI Theme')}>
@@ -213,6 +323,51 @@ export class SharedPreferences extends PureComponent<Props, State> {
                   />
                 </Field>
               ) : null}
+
+              {this.props.resourceUri === 'org' && this.state.defaultDataSource ? (
+                <Field
+                  label={
+                    <Label htmlFor="default-query">
+                      <span className={styles.labelText}>
+                        <Trans i18nKey="shared-preferences.fields.query-type-label">Query Type</Trans>
+                      </span>
+                    </Label>
+                  }
+                  data-testid="Default Query Type Drop Down"
+                >
+                  <Select
+                    value={this.state.defaultDataSource.queryTypeOptions?.find(
+                      (query: any) => query.value === queryType
+                    )}
+                    onChange={(query: SelectableValue<string>) => this.onQueryChanged(query.value ?? '')}
+                    options={this.state.defaultDataSource.queryTypeOptions}
+                    placeholder={t('shared-preferences.fields.query-type-placeholder', 'Choose query type')}
+                    inputId="default-query"
+                  />
+                </Field>
+              ) : null}
+
+              <CustomDateFormatPicker
+                value={this.state.timeFormat}
+                onChange={(value: string) => this.onTimeFormatChanged(value)}
+                resourceUri={this.props.resourceUri}
+              />
+
+              {/* BMC code - start */}
+              {this.props.resourceUri === 'org' && getFeatureStatus(FEATURE_FLAG_CONFIGURABLE_LINK) && (
+                <OrgCustomConfiguration
+                  onDocLinkChange={this.onDocLinkChange}
+                  onCommunityLinkChange={this.onCommunityLinkChange}
+                  onSupportLinkChange={this.onSupportLinkChange}
+                  onVideoLinkChange={this.onVideoLinkChange}
+                  communityLink={this.state.communityLink ?? ''}
+                  docLink={this.state.docLink ?? ''}
+                  supportLink={this.state.supportLink ?? ''}
+                  videoLink={this.state.videoLink ?? ''}
+                  {...form}
+                />
+              )}
+              {/* BMC code - end */}
 
               <div className="gf-form-button-row">
                 <Button

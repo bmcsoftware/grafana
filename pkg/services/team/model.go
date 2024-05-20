@@ -26,6 +26,8 @@ type Team struct {
 	OrgID int64  `json:"orgId" xorm:"org_id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+	// BMC code - added IsMspTeam
+	IsMspTeam bool `json:"isMspTeam" xorm:"is_msp_team"`
 
 	Created time.Time `json:"created"`
 	Updated time.Time `json:"updated"`
@@ -35,9 +37,15 @@ type Team struct {
 // COMMANDS
 
 type CreateTeamCommand struct {
+	// BMC code
+	// Added Abhishek_06182020, Extended Create Team API to additionally accept Teamid as optional input parameter
+	Id int64 `json:"id"`
+	// End
 	Name  string `json:"name" binding:"Required"`
 	Email string `json:"email"`
 	OrgID int64  `json:"-"`
+	// BMC code - added IsMspTeam
+	IsMspTeam bool `json:"isMspTeam,omitempty"`
 }
 
 type UpdateTeamCommand struct {
@@ -81,10 +89,12 @@ type SearchTeamsQuery struct {
 }
 
 type TeamDTO struct {
-	ID            int64                     `json:"id" xorm:"id"`
-	OrgID         int64                     `json:"orgId" xorm:"org_id"`
-	Name          string                    `json:"name"`
-	Email         string                    `json:"email"`
+	ID    int64  `json:"id" xorm:"id"`
+	OrgID int64  `json:"orgId" xorm:"org_id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	// BMC code - added IsMspTeam
+	IsMspTeam     bool                      `json:"isMspTeam" xorm:"is_msp_team"`
 	AvatarURL     string                    `json:"avatarUrl"`
 	MemberCount   int64                     `json:"memberCount"`
 	Permission    dashboards.PermissionType `json:"permission"`

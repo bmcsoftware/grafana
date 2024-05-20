@@ -63,6 +63,7 @@ func (s *Service) GetWithDefaults(ctx context.Context, query *pref.GetPreference
 		if p.JSONData != nil {
 			if p.JSONData.Language != "" {
 				res.JSONData.Language = p.JSONData.Language
+				res.IsLanguageSet = true
 			}
 
 			if p.JSONData.QueryHistory.HomeTab != "" {
@@ -71,6 +72,11 @@ func (s *Service) GetWithDefaults(ctx context.Context, query *pref.GetPreference
 
 			if p.JSONData.CookiePreferences != nil {
 				res.JSONData.CookiePreferences = p.JSONData.CookiePreferences
+			}
+
+			// BMC code
+			if p.JSONData.TimeFormat != "" {
+				res.JSONData.TimeFormat = p.JSONData.TimeFormat
 			}
 		}
 	}
@@ -168,6 +174,14 @@ func (s *Service) Patch(ctx context.Context, cmd *pref.PatchPreferenceCommand) e
 		preference.JSONData.Language = *cmd.Language
 	}
 
+	// BMC code - Add time format
+	if cmd.TimeFormat != nil {
+		if preference.JSONData == nil {
+			preference.JSONData = &pref.PreferenceJSONData{}
+		}
+		preference.JSONData.TimeFormat = *cmd.TimeFormat
+	}
+
 	if cmd.QueryHistory != nil {
 		if preference.JSONData == nil {
 			preference.JSONData = &pref.PreferenceJSONData{}
@@ -222,7 +236,10 @@ func (s *Service) GetDefaults() *pref.Preference {
 		Timezone:        s.cfg.DateFormats.DefaultTimezone,
 		WeekStart:       &s.cfg.DateFormats.DefaultWeekStart,
 		HomeDashboardID: 0,
-		JSONData:        &pref.PreferenceJSONData{},
+		JSONData: &pref.PreferenceJSONData{
+			// BMC code
+			TimeFormat: "browser",
+		},
 	}
 
 	if s.features.IsEnabled(featuremgmt.FlagInternationalization) {
@@ -256,7 +273,9 @@ func parseCookiePreferences(prefs []pref.CookieType) (map[string]struct{}, error
 
 func preferenceData(cmd *pref.SavePreferenceCommand) (*pref.PreferenceJSONData, error) {
 	jsonData := &pref.PreferenceJSONData{
-		Language: cmd.Language,
+		Language:   cmd.Language,
+		// BMC code
+		TimeFormat: cmd.TimeFormat,
 	}
 
 	if cmd.QueryHistory != nil {

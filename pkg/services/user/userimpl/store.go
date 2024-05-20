@@ -182,19 +182,7 @@ func (ss *sqlStore) GetByLogin(ctx context.Context, query *user.GetUserByLoginQu
 		var has bool
 		var err error
 
-		// Since username can be an email address, attempt login with email address
-		// first if the login field has the "@" symbol.
-		if strings.Contains(query.LoginOrEmail, "@") {
-			where = "email=?"
-			if ss.cfg.CaseInsensitiveLogin {
-				where = "LOWER(email)=LOWER(?)"
-			}
-			has, err = sess.Where(ss.notServiceAccountFilter()).Where(where, query.LoginOrEmail).Get(usr)
-			if err != nil {
-				return err
-			}
-		}
-
+		// Bmc Code Start -  Reversed the order to get user, first by Login and then by email
 		// Look for the login field instead of email
 		if !has {
 			where = "login=?"
@@ -203,6 +191,24 @@ func (ss *sqlStore) GetByLogin(ctx context.Context, query *user.GetUserByLoginQu
 			}
 			has, err = sess.Where(ss.notServiceAccountFilter()).Where(where, query.LoginOrEmail).Get(usr)
 		}
+
+		// Since username can be an email address, attempt login with email address
+		// first if the login field has the "@" symbol.
+		if !has {
+			if strings.Contains(query.LoginOrEmail, "@") {
+				where = "email=?"
+				if ss.cfg.CaseInsensitiveLogin {
+					where = "LOWER(email)=LOWER(?)"
+				}
+				has, err = sess.Where(ss.notServiceAccountFilter()).Where(where, query.LoginOrEmail).Get(usr)
+
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		// Bmc code end
 
 		if err != nil {
 			return err
@@ -284,25 +290,31 @@ func (ss *sqlStore) LoginConflict(ctx context.Context, login, email string, case
 
 func (ss *sqlStore) loginConflict(ctx context.Context, sess *db.Session, login, email string, caseInsensitive bool) error {
 	users := make([]user.User, 0)
-	where := "email=? OR login=?"
+
+	//BMC Code Change: Remove Email conflict
+	where := "login=?"
 	if caseInsensitive {
-		where = "LOWER(email)=LOWER(?) OR LOWER(login)=LOWER(?)"
+
+		where = "LOWER(login)=LOWER(?)"
 		login = strings.ToLower(login)
 		email = strings.ToLower(email)
+
 	}
 
-	exists, err := sess.Where(where, email, login).Get(&user.User{})
+	exists, err := sess.Where(where, login).Get(&user.User{})
 	if err != nil {
 		return err
 	}
 	if exists {
 		return user.ErrUserAlreadyExists
 	}
-	if err := sess.Where("LOWER(email)=LOWER(?) OR LOWER(login)=LOWER(?)",
-		email, login).Find(&users); err != nil {
+
+	if err := sess.Where("LOWER(login)=LOWER(?)",
+		login).Find(&users); err != nil {
 		return err
 	}
 
+	//BMC Code Change End: Remove Email conflict
 	if len(users) > 1 {
 		return &user.ErrCaseInsensitiveLoginConflict{Users: users}
 	}

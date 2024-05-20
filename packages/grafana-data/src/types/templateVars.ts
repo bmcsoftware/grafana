@@ -1,5 +1,6 @@
 import { LoadingState } from './data';
 import { DataSourceRef } from './query';
+import { TimeRange } from './time';
 
 export type VariableType = TypedVariableModel['type'];
 
@@ -20,7 +21,10 @@ export type TypedVariableModel =
   | CustomVariableModel
   | UserVariableModel
   | OrgVariableModel
-  | DashboardVariableModel;
+  | DashboardVariableModel
+  | DatePickerVariableModel
+  | OptimizeVariableModel
+   ;
 
 export enum VariableRefresh {
   never, // removed from the UI
@@ -103,6 +107,8 @@ export interface ConstantVariableModel extends VariableWithOptions {
 }
 
 export interface VariableWithMultiSupport extends VariableWithOptions {
+  // BMC change next inline
+  discardForAll?: boolean;
   multi: boolean;
   includeAll: boolean;
   allValue?: string | null;
@@ -158,3 +164,23 @@ export interface BaseVariableModel {
   error: any | null;
   description: string | null;
 }
+
+// BMC code starts
+export interface DatePickerVariableModel extends VariableWithOptions {
+  type: 'datepicker';
+  originalQuery: TimeRange | null;
+}
+
+export interface Domain{
+  id: string;
+  name: string;
+  value: string;
+}
+
+export interface OptimizeVariableModel extends VariableWithOptions {
+  type: 'optimizepicker';
+  originalQuery: Domain[] | null;
+  filterondescendant?: any;
+  definition?: string;
+}
+// Bmc code ends

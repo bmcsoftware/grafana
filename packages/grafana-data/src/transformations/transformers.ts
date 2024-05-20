@@ -1,3 +1,4 @@
+import { advanceFunctionsTransformer } from './transformers/advanceFunctions';
 import { calculateFieldTransformer } from './transformers/calculateField';
 import { concatenateTransformer } from './transformers/concat';
 import { convertFieldTypeTransformer } from './transformers/convertFieldType';
@@ -19,6 +20,7 @@ import { organizeFieldsTransformer } from './transformers/organize';
 import { reduceTransformer } from './transformers/reduce';
 import { renameFieldsTransformer } from './transformers/rename';
 import { renameByRegexTransformer } from './transformers/renameByRegex';
+import { sanitizeFieldTransformer } from './transformers/sanitizeField';
 import { seriesToRowsTransformer } from './transformers/seriesToRows';
 import { sortByTransformer } from './transformers/sortBy';
 
@@ -49,4 +51,8 @@ export const standardTransformers = {
   convertFieldTypeTransformer,
   groupingToMatrixTransformer,
   limitTransformer,
+  // BMC code
+  advanceFunctionsTransformer,
+  sanitizeFieldTransformer,
+  // End
 };

@@ -102,6 +102,7 @@ const getStyles = (theme: GrafanaTheme2, loading: boolean) => {
       flex-direction: column;
     `,
     page: css`
+      ${clearButtonStyles(theme)}
       display: flex;
       margin: ${theme.spacing(2)} 0;
       cursor: ${loading ? 'auto' : 'pointer'};

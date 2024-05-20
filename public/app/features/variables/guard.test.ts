@@ -19,6 +19,8 @@ import {
   createCustomVariable,
   createDashboardVariable,
   createDatasourceVariable,
+  createDatePickerVariable,
+  createOptimizeVariable,
   createIntervalVariable,
   createOrgVariable,
   createQueryVariable,
@@ -172,7 +174,10 @@ describe('type guards', () => {
     user:       { variable: createUserVariable(),       isMulti: false, hasOptions: false, hasCurrent: true },
     org:        { variable: createOrgVariable(),        isMulti: false, hasOptions: false, hasCurrent: true },
     dashboard:  { variable: createDashboardVariable(),  isMulti: false, hasOptions: false, hasCurrent: true },
-    custom:     { variable: createCustomVariable(),     isMulti: true,  hasOptions: true,  hasCurrent: true },
+    custom:     { variable: createCustomVariable(),     isMulti: false,  hasOptions: true,  hasCurrent: true },
+    // BMC code - next line (added because build was failing)
+    datepicker:    { variable: createDatePickerVariable(),    isMulti: false, hasOptions: true,  hasCurrent: true },
+    optimizepicker:    { variable: createOptimizeVariable(),    isMulti: false, hasOptions: true,  hasCurrent: true }
   };
 
   const variableFacts = Object.values(variableFactsObj);

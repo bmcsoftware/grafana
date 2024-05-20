@@ -8,6 +8,7 @@ import { Trans, t } from 'app/core/internationalization';
 
 import { ALL_VARIABLE_VALUE } from '../../constants';
 import { VariableOption } from '../../types';
+import { OPTIONS_LIMIT } from '../OptionsPicker/reducer';
 
 export interface Props extends React.HTMLProps<HTMLUListElement>, Themeable2 {
   multi: boolean;
@@ -20,6 +21,7 @@ export interface Props extends React.HTMLProps<HTMLUListElement>, Themeable2 {
    * Used for aria-controls
    */
   id: string;
+  totalOptions: number;
 }
 
 class VariableOptions extends PureComponent<Props> {
@@ -54,6 +56,11 @@ class VariableOptions extends PureComponent<Props> {
           >
             {this.renderMultiToggle()}
             {values.map((option, index) => this.renderOption(option, index))}
+            {restProps.totalOptions > values.length && values.length === OPTIONS_LIMIT ? (
+              <li style={{ padding: '2px 27px 0 8px' }}>
+                <span>... More options</span>
+              </li>
+            ) : null}
           </ul>
         </div>
       </div>
@@ -90,7 +97,7 @@ class VariableOptions extends PureComponent<Props> {
             })}
           ></span>
           <span data-testid={selectors.pages.Dashboard.SubMenu.submenuItemValueDropDownOptionTexts(`${option.text}`)}>
-            {isAllOption ? t('variable.picker.option-all', 'All') : option.text}
+            {isAllOption ? (option.text === 'Omit' ? 'Omit' : t('variable.picker.option-all', 'All')) : option.text}
           </span>
         </button>
       </li>
