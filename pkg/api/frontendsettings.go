@@ -221,6 +221,14 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 			MaxIdleConns:    hs.Cfg.SqlDatasourceMaxIdleConnsDefault,
 			ConnMaxLifetime: hs.Cfg.SqlDatasourceMaxConnLifetimeDefault,
 		},
+		// BMC code
+		EnvType:                  setting.EnvType,
+		BulkLimit:                setting.BulkLimit,
+		BulkExportLimit:          setting.BulkExportLimit,
+		BhdVersion:               setting.BHD_Version,
+		EmailAttachmentSizeLimit: setting.EmailAttachmentSizeLimit,
+		CSVDelimiter:             setting.CSVDelimiter,
+		// End
 	}
 
 	if hs.Cfg.UnifiedAlerting.Enabled != nil {

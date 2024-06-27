@@ -234,4 +234,17 @@ type FrontendSettingsDTO struct {
 	// Enterprise
 	Licensing     *FrontendSettingsLicensingDTO     `json:"licensing,omitempty"`
 	Whitelabeling *FrontendSettingsWhitelabelingDTO `json:"whitelabeling,omitempty"`
+
+	// BMC Change - start
+	EnvType                  string   `json:"EnvType"`
+	BhdVersion               string   `json:"bhdVersion"`
+	BulkLimit                int      `json:"bulkLimit"`
+	BulkExportLimit          int      `json:"bulkExportLimit"`
+	EmailAttachmentSizeLimit int      `json:"emailAttachmentSizeLimit"`
+	CSVDelimiter             []string `json:"csvDelimiters"`
+	EnabledQueryTypes        struct {
+		EnabledTypes  []string `json:"enabledTypes"`
+		ApplyForAdmin bool     `json:"applyForAdmin"`
+	} `json:"enabledQueryTypes"`
+	// BMC Change - end
 }

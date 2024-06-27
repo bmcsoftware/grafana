@@ -8,11 +8,15 @@ import (
 	contextmodel "github.com/grafana/grafana/pkg/services/contexthandler/model"
 	"github.com/grafana/grafana/pkg/services/login"
 	"github.com/grafana/grafana/pkg/services/user"
+	"github.com/grafana/grafana/pkg/web"
 )
 
 type Service interface {
 	SearchUsers(c *contextmodel.ReqContext) response.Response
 	SearchUsersWithPaging(c *contextmodel.ReqContext) response.Response
+	// BMC code - start
+	SearchUsersByIds(c *contextmodel.ReqContext) response.Response
+	// BMC code - end
 }
 
 type OSSService struct {
@@ -115,3 +119,50 @@ func (s *OSSService) SearchUser(c *contextmodel.ReqContext) (*user.SearchUserQue
 
 	return res, nil
 }
+
+// BMC code - start
+func (s *OSSService) SearchUsersByIds(c *contextmodel.ReqContext) response.Response {
+	cmd := user.SearchUsersByIdListQuery{}
+	if err := web.Bind(c.Req, &cmd); err != nil {
+		return response.Error(http.StatusBadRequest, "bad request data", err)
+	}
+
+	perPage := c.QueryInt("perpage")
+	if perPage <= 0 {
+		perPage = 1000
+	}
+	page := c.QueryInt("page")
+
+	if page < 1 {
+		page = 1
+	}
+
+	query := &user.SearchUsersQuery{
+		// added SignedInUser to the query, as to only list the users that the user has permission to read
+		SignedInUser: c.SignedInUser,
+		IDs:          cmd.IDs,
+		Page:         page,
+		Limit:        perPage,
+	}
+	res, err := s.userService.Search(c.Req.Context(), query)
+	if err != nil {
+		return response.Error(http.StatusBadRequest, "bad request data", err)
+	}
+
+	for _, user := range res.Users {
+		user.AvatarURL = dtos.GetGravatarUrl(user.Email)
+		user.AuthLabels = make([]string, 0)
+		if user.AuthModule != nil && len(user.AuthModule) > 0 {
+			for _, authModule := range user.AuthModule {
+				user.AuthLabels = append(user.AuthLabels, login.GetAuthProviderLabel(authModule))
+			}
+		}
+	}
+
+	res.Page = page
+	res.PerPage = perPage
+
+	return response.JSON(http.StatusOK, res)
+}
+
+// BMC code - end

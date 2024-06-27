@@ -7,6 +7,7 @@ import (
 
 	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/services/accesscontrol"
+	"github.com/lib/pq"
 )
 
 func ProvideService(sql db.DB) *AccessControlStore {
@@ -231,3 +232,24 @@ func (s *AccessControlStore) DeleteUserPermissions(ctx context.Context, orgID, u
 	})
 	return err
 }
+
+// BMC code start - RBAC changes
+// Fetch BHD permissions by provided role ids
+func (s *AccessControlStore) GetBHDPermissionsByRoles(ctx context.Context, bhdRoles []int64) ([]accesscontrol.Permission, error) {
+	result := make([]accesscontrol.Permission, 0)
+	if len(bhdRoles) == 0 {
+		return result, nil
+	}
+	err := s.sql.WithDbSession(ctx, func(sess *db.Session) error {
+		q := `SELECT distinct(bhd_permission_name) as action, CONCAT(bhd_permission_name, ':*') as scope FROM public.bhd_role_permission where bhd_role_id=any(?)`
+		params := make([]interface{}, 0)
+		params = append(params, pq.Array(bhdRoles))
+		if err := sess.SQL(q, params...).Find(&result); err != nil {
+			return err
+		}
+		return nil
+	})
+	return result, err
+}
+
+// BMC code end - RBAC changes

@@ -1,5 +1,140 @@
 {
   "_comment": "Do not manually edit this file. Translations must be made in Crowdin which will sync them back into this file",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "",
+      "import": {
+        "import-all-failed": "",
+        "no-import": ""
+      },
+      "import-all": "",
+      "import-failed": "",
+      "import-success": "",
+      "select-datasource": "",
+      "set-parameters": ""
+    },
+    "calc-fields": {
+      "a-z": "",
+      "aggregated": "",
+      "all": "",
+      "clone": "",
+      "confirm-delete": "",
+      "connection-error": "",
+      "custom": "",
+      "delete": "",
+      "details": "",
+      "edit": "",
+      "edit-field": "",
+      "eg": "",
+      "failed": "",
+      "failure": "",
+      "filter-by-type": "",
+      "form-name": "",
+      "is-aggregate": "",
+      "is-aggregate-description": "",
+      "module": "",
+      "module-name": "",
+      "name": "",
+      "name-placeholder": "",
+      "new-field": "",
+      "no-calc-fields": "",
+      "not-found": "",
+      "ootb": "",
+      "query-info": "",
+      "query-not-validated": "",
+      "save": "",
+      "search-by-name": "",
+      "select-form": "",
+      "select-module": "",
+      "sort-asc": "",
+      "sort-asc-descripton": "",
+      "sort-dsc": "",
+      "sort-dsc-descripton": "",
+      "sort-placeholder": "",
+      "sql-query": "",
+      "subtitle": "",
+      "title": "",
+      "unknown-failure": "",
+      "update": "",
+      "validate": "",
+      "validation-success": ""
+    },
+    "common": {
+      "cancel": "",
+      "download": ""
+    },
+    "contact-support": "",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "",
+        "reset-filters": "",
+        "reset-filters-failure": "",
+        "save-filters": "",
+        "save-filters-failure": "",
+        "save-filters-success": ""
+      }
+    },
+    "date-picker": {
+      "description": "",
+      "name": ""
+    },
+    "export": {
+      "generation-failed": "",
+      "grid": "",
+      "landscape": "",
+      "layout": "",
+      "orientation": "",
+      "portrait": "",
+      "reduce-selection": "",
+      "save-as": "",
+      "simple": "",
+      "success": "",
+      "type": "",
+      "view": ""
+    },
+    "manage-dashboards": {
+      "drop-click": "",
+      "import-failed": "",
+      "serialization-failed": "",
+      "upload-json": ""
+    },
+    "org-custom-config": {
+      "community": "",
+      "documentation": "",
+      "invalid-url": "",
+      "support": "",
+      "video": ""
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "",
+        "invalid-url": "",
+        "url": ""
+      },
+      "bmc-welcome": {
+        "communities": "",
+        "community-description": "",
+        "dashboards": "",
+        "documentation": "",
+        "documentation-description": "",
+        "video-description": "",
+        "videos": ""
+      }
+    },
+    "route-error": "",
+    "search": {
+      "comfirm-export": "",
+      "export": "",
+      "export-failed": "",
+      "export-success": ""
+    },
+    "share-modal": {
+      "loading": ""
+    },
+    "toggle-feature": {
+      "manage-features": ""
+    }
+  },
   "clipboard-button": {
     "inline-toast": {
       "success": "已复制"
@@ -12,15 +147,15 @@
       "light-theme": "浅色"
     },
     "search-box": {
-      "placeholder": ""
+      "placeholder": "搜索或跳转至..."
     },
     "section": {
       "actions": "操作",
       "dashboard-search-results": "仪表板",
-      "folder-search-results": "",
+      "folder-search-results": "文件夹",
       "pages": "页面",
       "preferences": "首选项",
-      "recent-dashboards": ""
+      "recent-dashboards": "最近的仪表板"
     }
   },
   "common": {
@@ -31,21 +166,21 @@
   },
   "dashboard": {
     "add-menu": {
-      "import": "",
-      "paste-panel": "",
-      "row": "",
-      "visualization": ""
+      "import": "从库导入",
+      "paste-panel": "粘贴面板",
+      "row": "行",
+      "visualization": "可视化"
     },
     "empty": {
-      "add-import-body": "",
-      "add-import-button": "",
-      "add-import-header": "",
-      "add-row-body": "",
-      "add-row-button": "",
-      "add-row-header": "",
-      "add-visualization-body": "",
-      "add-visualization-button": "",
-      "add-visualization-header": ""
+      "add-import-body": "导入与其他仪表板共享的可视化。",
+      "add-import-button": "导入库面板",
+      "add-import-header": "导入面板",
+      "add-row-body": "将您的可视化分组成可扩展部分。",
+      "add-row-button": "添加行",
+      "add-row-header": "添加一行",
+      "add-visualization-body": "选择一个数据源，然后用图表、统计信息和表格查询您的数据以及将其可视化，或创建列表、Markdown 和其他小部件。",
+      "add-visualization-button": "添加可视化",
+      "add-visualization-header": "通过添加可视化开始您的新仪表板"
     },
     "inspect": {
       "data-tab": "数据",
@@ -92,7 +227,6 @@
     },
     "inspect-stats": {
       "data-title": "数据源统计信息",
-      "data-traceids": "",
       "processing-time": "数据处理时间",
       "queries": "查询数",
       "request-time": "总请求时间",
@@ -100,7 +234,7 @@
       "table-title": "统计信息"
     },
     "toolbar": {
-      "add": "",
+      "add": "添加",
       "add-panel": "添加面板",
       "mark-favorite": "标记为收藏",
       "open-original": "打开原始仪表板",
@@ -111,6 +245,7 @@
       "save": "保存仪表板",
       "settings": "仪表板设置",
       "share": "分享仪表板或面板",
+      "tv-button": "",
       "unmark-favorite": "取消标记为收藏"
     }
   },
@@ -128,9 +263,9 @@
   },
   "grafana-ui": {
     "segment-async": {
-      "error": "",
-      "loading": "",
-      "no-options": ""
+      "error": "加载选项失败",
+      "loading": "正在加载选项...",
+      "no-options": "未找到选项"
     }
   },
   "library-panel": {
@@ -143,7 +278,7 @@
       "name": "库面板名称"
     },
     "add-widget": {
-      "title": ""
+      "title": "从面板库中添加面板"
     }
   },
   "library-panels": {
@@ -186,7 +321,7 @@
       "title": "警报规则"
     },
     "alerting-receivers": {
-      "subtitle": "",
+      "subtitle": "选择当警报实例触发时如何通知联系人",
       "title": "联络点"
     },
     "alerting-silences": {
@@ -195,7 +330,7 @@
     },
     "alerts-and-incidents": {
       "subtitle": "警报和事件管理应用",
-      "title": "警报和事件"
+      "title": "警报和 IRM"
     },
     "api-keys": {
       "subtitle": "管理和创建用于与 Grafana HTTP API 交互的 API 密钥",
@@ -206,7 +341,8 @@
       "title": "应用"
     },
     "config": {
-      "title": "管理"
+      "title": "管理",
+      "titleBeforeTopnav": ""
     },
     "correlations": {
       "subtitle": "添加并配置相关性",
@@ -216,7 +352,7 @@
       "title": "创建"
     },
     "create-alert": {
-      "title": ""
+      "title": "创建警报规则"
     },
     "create-dashboard": {
       "title": "仪表板"
@@ -225,7 +361,7 @@
       "title": "文件夹"
     },
     "create-import": {
-      "title": ""
+      "title": "导入仪表板"
     },
     "dashboards": {
       "subtitle": "创建并管理仪表板，以将您的数据可视化",
@@ -244,7 +380,8 @@
     },
     "global-users": {
       "subtitle": "在 Grafana 中管理用户",
-      "title": "用户"
+      "title": "用户",
+      "titleBeforeTopnav": ""
     },
     "help": {
       "title": "帮助"
@@ -260,12 +397,15 @@
       "subtitle": "可重复使用的面板，可以添加到多个仪表板",
       "title": "库面板"
     },
+    "manage-dashboards": {
+      "title": ""
+    },
     "manage-folder": {
-      "subtitle": ""
+      "subtitle": "管理文件夹仪表板和权限"
     },
     "monitoring": {
       "subtitle": "监控和基础设施应用",
-      "title": "正在监控"
+      "title": "可观测性"
     },
     "new": {
       "title": "新建"
@@ -278,7 +418,8 @@
     },
     "org-settings": {
       "subtitle": "管理整个组织的首选项",
-      "title": "默认首选项"
+      "title": "默认首选项",
+      "titleBeforeTopnav": ""
     },
     "playlists": {
       "subtitle": "以序列显示的仪表板组",
@@ -297,14 +438,15 @@
     "profile/settings": {
       "title": "个人资料"
     },
+    "profile/switch-org": "",
     "public": {
-      "title": ""
+      "title": "公共仪表板"
     },
     "scenes": {
       "title": "场景"
     },
     "search": {
-      "placeholderCommandPalette": ""
+      "placeholderCommandPalette": "搜索或跳转至..."
     },
     "search-dashboards": {
       "title": "搜索仪表板"
@@ -317,6 +459,7 @@
       "subtitle": "使用服务帐户在 Grafana 中运行自动化工作负载",
       "title": "服务帐户"
     },
+    "sign-in": "",
     "sign-out": {
       "title": "退出登录"
     },
@@ -355,9 +498,9 @@
       "tv-alert": "按 ESC 退出 kiosk 模式"
     },
     "toolbar": {
-      "enable-kiosk": "",
-      "toggle-menu": "",
-      "toggle-search-bar": ""
+      "enable-kiosk": "启用 kiosk 模式",
+      "toggle-menu": "切换菜单",
+      "toggle-search-bar": "切换顶部搜索栏"
     }
   },
   "news": {
@@ -407,12 +550,13 @@
   },
   "search": {
     "actions": {
-      "include-panels": "",
-      "remove-datasource-filter": "",
-      "sort-placeholder": "",
+      "include-panels": "包括面板",
+      "remove-datasource-filter": "数据源：{{datasource}}",
+      "sort-placeholder": "排序",
       "starred": "已加星标",
-      "view-as-folders": "",
-      "view-as-list": ""
+      "view-as-folders": "按文件夹查看",
+      "view-as-grid": "",
+      "view-as-list": "以列表形式查看"
     },
     "dashboard-actions": {
       "import": "导入",
@@ -421,26 +565,26 @@
       "new-folder": "新建文件夹"
     },
     "folder-view": {
-      "go-to-folder": "",
-      "select-folder": ""
+      "go-to-folder": "前往文件夹",
+      "select-folder": "选择文件夹"
     },
     "result-kind": {
       "dashboard": "仪表板",
       "folder": "文件夹",
-      "panel": ""
+      "panel": "面板"
     },
     "results-table": {
-      "datasource-header": "",
-      "location-header": "",
-      "name-header": "姓名",
-      "tags-header": "",
+      "datasource-header": "数据源",
+      "location-header": "位置",
+      "name-header": "名称",
+      "tags-header": "标签",
       "type-dashboard": "仪表板",
       "type-folder": "文件夹",
-      "type-header": ""
+      "type-header": "类型"
     },
     "search-input": {
-      "include-panels-placeholder": "",
-      "placeholder": ""
+      "include-panels-placeholder": "搜索仪表板和面板",
+      "placeholder": "搜索仪表板"
     }
   },
   "share-modal": {
@@ -475,7 +619,6 @@
       "rendered-image": "直接链接至渲染后的图像",
       "save-alert": "仪表板未保存",
       "save-dashboard": "要渲染面板图像，需要先保存仪表板。",
-      "shorten-url": "缩短网址",
       "time-range-description": "将当前相对时间范围转换为绝对时间范围",
       "time-range-label": "锁定时间范围"
     },
@@ -541,9 +684,9 @@
     "title": "首选项"
   },
   "tag-filter": {
-    "loading": "",
-    "no-tags": "",
-    "placeholder": ""
+    "loading": "加载中...",
+    "no-tags": "未找到标签",
+    "placeholder": "按标签筛选"
   },
   "time-picker": {
     "absolute": {
@@ -596,7 +739,6 @@
   "user-orgs": {
     "current-org-button": "当前",
     "name-column": "姓名",
-    "role-column": "角色",
     "select-org-button": "选择组织",
     "title": "组织"
   },
@@ -621,7 +763,7 @@
   },
   "variable": {
     "adhoc": {
-      "placeholder": ""
+      "placeholder": "选择值"
     },
     "dropdown": {
       "placeholder": "输入变量值"

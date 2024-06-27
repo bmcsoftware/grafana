@@ -1,7 +1,8 @@
 import React, { ChangeEvent, FormEvent, useCallback } from 'react';
 
 import { selectors } from '@grafana/e2e-selectors';
-import { VerticalGroup } from '@grafana/ui';
+import { useTheme2, VerticalGroup } from '@grafana/ui';
+import { getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
 
 import { KeyedVariableIdentifier } from '../state/types';
 import { VariableWithMultiSupport } from '../types';
@@ -21,6 +22,8 @@ export const SelectionOptionsEditor = ({
   onPropChange,
   variable,
 }: SelectionOptionsEditorProps) => {
+  // BMC change next line
+  const theme = useTheme2();
   const onMultiChanged = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       onMultiChangedProps(toKeyedVariableIdentifier(variable), event.target.checked);
@@ -31,6 +34,13 @@ export const SelectionOptionsEditor = ({
   const onIncludeAllChanged = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       onPropChange({ propName: 'includeAll', propValue: event.target.checked });
+    },
+    [onPropChange]
+  );
+
+  const onIncludeOnlyAvailable = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      onPropChange({ propName: 'discardForAll', propValue: event.target.checked });
     },
     [onPropChange]
   );
@@ -53,9 +63,24 @@ export const SelectionOptionsEditor = ({
       <VariableCheckboxField
         value={variable.includeAll}
         name="Include All option"
-        description="Enables an option to include all variables"
+        // BMC change inline
+        description="Enables an option to include all variable values"
         onChange={onIncludeAllChanged}
       />
+      {/* BMC change starts */}
+      {(variable.query.startsWith?.('remedy') || (variable.query as any)?.sourceType === 'remedy') &&
+        variable.includeAll &&
+        (getFeatureStatus('bhd-ar-all-values') || getFeatureStatus('bhd-ar-all-values-v2')) && (
+          <div style={{ display: 'flex', flexDirection: 'column', marginLeft: `${theme.typography.size.lg}` }}>
+            <VariableCheckboxField
+              value={variable.discardForAll === undefined ? getDefaultValueForDiscard() : variable.discardForAll}
+              name="Exclude variable"
+              description="Select to exclude the variable from the query"
+              onChange={onIncludeOnlyAvailable}
+            />
+          </div>
+        )}
+      {/* BMC change starts */}
       {variable.includeAll && (
         <VariableTextField
           value={variable.allValue ?? ''}
@@ -69,3 +94,7 @@ export const SelectionOptionsEditor = ({
   );
 };
 SelectionOptionsEditor.displayName = 'SelectionOptionsEditor';
+
+const getDefaultValueForDiscard = (): boolean => {
+  return getFeatureStatus('bhd-ar-all-values-v2') ? false : true;
+};
