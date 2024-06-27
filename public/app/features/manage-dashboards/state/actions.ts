@@ -1,5 +1,5 @@
 import { DataSourceInstanceSettings, locationUtil } from '@grafana/data';
-import { getDataSourceSrv, locationService, getBackendSrv, isFetchError } from '@grafana/runtime';
+import { getDataSourceSrv, locationService, getBackendSrv, isFetchError, config } from '@grafana/runtime';
 import { notifyApp } from 'app/core/actions';
 import { createErrorNotification } from 'app/core/copy/appNotification';
 import { SaveDashboardCommand } from 'app/features/dashboard/components/SaveDashboard/types';
@@ -14,6 +14,7 @@ import { DeleteDashboardResponse } from '../types';
 
 import {
   clearDashboard,
+  dashboardsLoaded,
   fetchDashboard,
   fetchFailed,
   ImportDashboardDTO,
@@ -343,3 +344,68 @@ function executeInOrder(tasks: any[]): Promise<unknown> {
     return Promise.resolve(acc).then(task);
   }, []);
 }
+
+// BMC Code
+export function fetchDashboards(): ThunkResult<void> {
+  return async (dispatch) => {
+    dispatch(fetchDashboard());
+  };
+}
+
+export function dashboardLoaded(): ThunkResult<void> {
+  return async (dispatch) => {
+    dispatch(dashboardsLoaded());
+  };
+}
+
+export const exportDashboards = async (req: any, callback?: () => string[]) => {
+    const uids = req.dashUids;
+    const failedDashboards: string[] = [];
+    const failedUids: string[] = [];
+    for(const uid of uids){
+      try{
+        const res = await fetch(`${config.appSubUrl}/api/bmc/export-dashboards`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folderUids: req.folderUids, dashUids: [uid] }),
+        });
+    
+        if (res.status !== 200) {
+          await res.json();
+        }
+    
+        const fileName = res.headers.get('content-Disposition')?.split('filename=\"')[1]?.split('\"')[0];
+    
+        const blob = await res.blob();
+        const link = document.createElement('a');
+        const href = window.URL.createObjectURL(blob);
+    
+        link.setAttribute('href', href);
+        link.setAttribute('target', '_self');
+        link.setAttribute('download', `${fileName}`);
+    
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        callback?.();
+      } catch (error) {
+        failedUids.push(uid)
+      }
+    }
+    if(failedUids.length > 0){
+      let query = ""
+      for(let i = 0; i < failedUids.length; i++){
+        query = query + "dashboardUIDs=" + failedUids[i]
+        if(i+1 !== failedUids.length){
+          query = query + "&"
+        }
+      }
+      const failedDashs  = await getBackendSrv().get(`/api/search?${query}`);
+      
+      for(const dash of failedDashs){
+        failedDashboards.push(dash.title.toString())
+      }
+    }
+    
+    return (failedUids.length > 0) ? failedDashboards: null
+};

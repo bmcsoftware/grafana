@@ -22,6 +22,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util"
+	"github.com/lib/pq"
 )
 
 type Service struct {
@@ -97,13 +98,17 @@ func (s *Service) Create(ctx context.Context, cmd *user.CreateUserCommand) (*use
 		cmd.Email = cmd.Login
 	}
 
-	err = s.store.LoginConflict(ctx, cmd.Login, cmd.Email, s.cfg.CaseInsensitiveLogin)
-	if err != nil {
-		return nil, user.ErrUserAlreadyExists
-	}
+	// Bmc code - start
+	//err = s.store.LoginConflict(ctx, cmd.Login, cmd.Email, s.cfg.CaseInsensitiveLogin)
+	//if err != nil {
+	//	return nil, user.ErrUserAlreadyExists
+	//}
+	// Bmc code - end
 
 	// create user
 	usr := &user.User{
+		// BMC Changes - Add user id to create payload.
+		ID:               cmd.Id,
 		Email:            cmd.Email,
 		Name:             cmd.Name,
 		Login:            cmd.Login,
@@ -139,9 +144,15 @@ func (s *Service) Create(ctx context.Context, cmd *user.CreateUserCommand) (*use
 
 	_, err = s.store.Insert(ctx, usr)
 	if err != nil {
-		return nil, err
+		// Bmc code - start
+		pqErr := err.(*pq.Error)
+		if pqErr.Code == "23505" {
+			return nil, user.ErrUserAlreadyExists
+		} else {
+			return nil, err
+		}
+		// Bmc code - end
 	}
-
 	// create org user link
 	if !cmd.SkipOrgSetup {
 		orgUser := org.OrgUser{

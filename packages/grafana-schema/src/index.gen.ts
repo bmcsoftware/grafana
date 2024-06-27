@@ -116,8 +116,12 @@ export { defaultPlaylist } from './raw/playlist/x/playlist_types.gen';
 // Raw generated types from Preferences kind.
 export type {
   Preferences,
-  QueryHistoryPreference
+  QueryHistoryPreference,
+  EnabledQueryTypes
 } from './raw/preferences/x/preferences_types.gen';
+
+// Raw generated enums and default consts from preferences kind.
+export { defaultEnabledQueryTypes } from './raw/preferences/x/preferences_types.gen';
 
 // Raw generated types from PublicDashboard kind.
 export type { PublicDashboard } from './raw/publicdashboard/x/publicdashboard_types.gen';

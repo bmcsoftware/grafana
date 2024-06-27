@@ -201,9 +201,8 @@ export class InspectDataTab extends PureComponent<Props, State> {
       theme: config.theme2,
       fieldConfig: panel.fieldConfig,
       timeZone,
-      replaceVariables: (value: string) => {
-        return value;
-      },
+      // BMC Change: Inline
+      replaceVariables: panel.replaceVariables,
     });
   }
 
@@ -249,7 +248,9 @@ export class InspectDataTab extends PureComponent<Props, State> {
             onDataFrameChange={this.onDataFrameChange}
             toggleDownloadForExcel={this.toggleDownloadForExcel}
           />
+          {/* BMC code - inline change */}
           <Button
+            id={'custom-csv-selector-download-csv'}
             variant="primary"
             onClick={() => {
               if (hasLogs) {

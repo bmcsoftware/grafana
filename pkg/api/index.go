@@ -11,6 +11,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/folder"
+	navT "github.com/grafana/grafana/pkg/services/navtree"
 	pref "github.com/grafana/grafana/pkg/services/preference"
 	"github.com/grafana/grafana/pkg/setting"
 )
@@ -81,6 +82,23 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 	}
 
 	navTree, err := hs.navTreeService.GetNavTree(c, hasEditPerm, prefs)
+
+	// BMC Code starts
+	adminNode := navTree.FindById(navT.NavIDCfg)
+	if adminNode != nil {
+		isVQBEnabled := hs.sqlStore.IsFeatureEnabled(c.Req.Context(), c.OrgID, "Visual Query Builder")
+		if !isVQBEnabled {
+			var configNodes []*navT.NavLink
+			for _, child := range adminNode.Children {
+				if child.Id != "rms-config" {
+					configNodes = append(configNodes, child)
+				}
+			}
+			adminNode.Children = configNodes
+		}
+	}
+	// BMC Code ends
+
 	if err != nil {
 		return nil, err
 	}
@@ -116,6 +134,12 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 				Identifier:         c.SignedInUser.Analytics.Identifier,
 				IntercomIdentifier: c.SignedInUser.Analytics.IntercomIdentifier,
 			},
+			// BMC code
+			HasExternalOrg:     c.SignedInUser.HasExternalOrg,
+			MspOrgs:            c.SignedInUser.MspOrgs,
+			IsUnrestrictedUser: c.SignedInUser.IsUnrestrictedUser,
+			IsLanguageSet:      prefs.IsLanguageSet,
+			// BMC code end
 		},
 		Settings:                            settings,
 		Theme:                               prefs.Theme,
@@ -133,7 +157,7 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 		AppNameBodyClass:                    "app-grafana",
 		FavIcon:                             "public/img/fav32.png",
 		AppleTouchIcon:                      "public/img/apple-touch-icon.png",
-		AppTitle:                            "Grafana",
+		AppTitle:                            "BMC Helix Dashboards",
 		NavTree:                             navTree,
 		Sentry:                              &hs.Cfg.Sentry,
 		Nonce:                               c.RequestNonce,
@@ -163,6 +187,19 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 		data.User.Theme = themeURLParam
 		data.Theme = themeURLParam
 	}
+
+	// BMC Code
+	if prefs.JSONData.TimeFormat != "" {
+		if prefs.JSONData.TimeFormat == "browser" {
+			data.Settings.DateFormats.UseBrowserLocale = true
+		} else {
+			data.Settings.DateFormats.UseBrowserLocale = false
+			data.Settings.DateFormats.FullDate = prefs.JSONData.TimeFormat
+		}
+	}
+
+	data.Settings.EnabledQueryTypes.EnabledTypes = prefs.JSONData.EnabledQueryTypes.EnabledTypes
+	data.Settings.EnabledQueryTypes.ApplyForAdmin = prefs.JSONData.EnabledQueryTypes.ApplyForAdmin
 
 	hs.HooksService.RunIndexDataHooks(&data, c)
 

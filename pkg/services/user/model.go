@@ -54,6 +54,10 @@ type User struct {
 }
 
 type CreateUserCommand struct {
+	// BMC code
+	// Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+	Id int64
+	// End
 	Email            string
 	Login            string
 	Name             string
@@ -112,7 +116,21 @@ type SearchUsersQuery struct {
 	Filters      []Filter
 
 	IsDisabled *bool
+	// Bmc code - start
+	IDs []int64 `json:"ids"`
+	// Bmc code - end
 }
+
+// Bmc code - start
+type SearchUsersByIdListQuery struct {
+	IDs []int64 `json:"ids"`
+}
+
+type GetUsersByIDList struct {
+	IDs []int64
+}
+
+// Bmc code - end
 
 type SearchUserQueryResult struct {
 	TotalCount int64               `json:"totalCount"`
@@ -220,6 +238,19 @@ type SignedInUser struct {
 	Analytics          AnalyticsSettings
 	// Permissions grouped by orgID and actions
 	Permissions map[int64]map[string][]string `json:"-"`
+	// Bmc code - start
+
+	HasExternalOrg     bool
+	IsUnrestrictedUser bool
+	MspOrgs            []string
+	BHDRoles           []int64
+	// Bmc code end
+}
+
+type OrgResponseDTO struct {
+	OrgId  int64  `json:"org_id"`
+	Name   string `json:"name"`
+	Source string `json:"source"`
 }
 
 func (u *User) NameOrFallback() string {

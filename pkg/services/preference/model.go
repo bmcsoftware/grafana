@@ -32,6 +32,8 @@ type Preference struct {
 	Created         time.Time           `db:"created"`
 	Updated         time.Time           `db:"updated"`
 	JSONData        *PreferenceJSONData `xorm:"json_data" db:"json_data"`
+	// BMC code -next line: for localization, auto set locale header of ITSM
+	IsLanguageSet bool `xorm:"-"`
 }
 
 func (p Preference) Cookies(typ string) bool {
@@ -68,6 +70,10 @@ type SavePreferenceCommand struct {
 	Language          string                  `json:"language,omitempty"`
 	QueryHistory      *QueryHistoryPreference `json:"queryHistory,omitempty"`
 	CookiePreferences []CookieType            `json:"cookiePreferences,omitempty"`
+
+	// BMC code
+	TimeFormat        string                       `json:"timeFormat,omitempty"`
+	EnabledQueryTypes *EnabledQueryTypesPreference `json:"enabledQueryTypes"`
 }
 
 type PatchPreferenceCommand struct {
@@ -83,17 +89,33 @@ type PatchPreferenceCommand struct {
 	Language          *string                 `json:"language,omitempty"`
 	QueryHistory      *QueryHistoryPreference `json:"queryHistory,omitempty"`
 	CookiePreferences []CookieType            `json:"cookiePreferences,omitempty"`
+
+	// BMC code
+	TimeFormat        *string                      `json:"timeFormat,omitempty"`
+	EnabledQueryTypes *EnabledQueryTypesPreference `json:"enabledQueryTypes"`
 }
 
 type PreferenceJSONData struct {
 	Language          string                 `json:"language"`
 	QueryHistory      QueryHistoryPreference `json:"queryHistory"`
 	CookiePreferences map[string]struct{}    `json:"cookiePreferences"`
+
+	// BMC code
+	TimeFormat        string                      `json:"timeFormat"`
+	EnabledQueryTypes EnabledQueryTypesPreference `json:"enabledQueryTypes"`
 }
 
 type QueryHistoryPreference struct {
 	HomeTab string `json:"homeTab"`
 }
+
+// BMC Code
+type EnabledQueryTypesPreference struct {
+	EnabledTypes  []string `json:"enabledTypes"`
+	ApplyForAdmin bool     `json:"applyForAdmin"`
+}
+
+// End
 
 func (j *PreferenceJSONData) FromDB(data []byte) error {
 	dec := json.NewDecoder(bytes.NewBuffer(data))

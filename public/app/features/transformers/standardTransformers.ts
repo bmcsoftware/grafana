@@ -4,6 +4,7 @@ import { config } from '@grafana/runtime';
 import { filterByValueTransformRegistryItem } from './FilterByValueTransformer/FilterByValueTransformerEditor';
 import { heatmapTransformRegistryItem } from './calculateHeatmap/HeatmapTransformerEditor';
 import { configFromQueryTransformRegistryItem } from './configFromQuery/ConfigFromQueryTransformerEditor';
+import { advanceFunctionsTransformRegistryItem } from './editors/AdvanceFunctionsTransformerEditor';
 import { calculateFieldTransformRegistryItem } from './editors/CalculateFieldTransformerEditor';
 import { concatenateTransformRegistryItem } from './editors/ConcatenateTransformerEditor';
 import { convertFieldTypeTransformRegistryItem } from './editors/ConvertFieldTypeTransformerEditor';
@@ -19,6 +20,7 @@ import { mergeTransformerRegistryItem } from './editors/MergeTransformerEditor';
 import { organizeFieldsTransformRegistryItem } from './editors/OrganizeFieldsTransformerEditor';
 import { reduceTransformRegistryItem } from './editors/ReduceTransformerEditor';
 import { renameByRegexTransformRegistryItem } from './editors/RenameByRegexTransformer';
+import { sanitizeFieldTransformRegistryItem } from './editors/SanitizeTransformerEditor';
 import { seriesToRowsTransformerRegistryItem } from './editors/SeriesToRowsTransformerEditor';
 import { sortByTransformRegistryItem } from './editors/SortByTransformerEditor';
 import { extractFieldsTransformRegistryItem } from './extractFields/ExtractFieldsTransformerEditor';
@@ -60,5 +62,8 @@ export const getStandardTransformers = (): Array<TransformerRegistryItem<any>> =
     joinByLabelsTransformRegistryItem,
     partitionByValuesTransformRegistryItem,
     ...(config.featureToggles.timeSeriesTable ? [timeSeriesTableTransformRegistryItem] : []),
+    // BMC code - next line
+    advanceFunctionsTransformRegistryItem,
+    sanitizeFieldTransformRegistryItem,
   ];
 };

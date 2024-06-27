@@ -282,6 +282,17 @@ export function ensureStringValues(value: any | any[]): string | string[] {
   return '';
 }
 
+// BMC code
+export function dateRangeExtract(str: string) {
+  const parts = str.split(/From: | - To: /);
+  if (parts.length === 3) {
+    // Create an array with the "from" and "to" values
+    return [parts[1], parts[2]];
+  }
+  // Return null if the input format is unexpected
+  return [];
+}
+// End
 export function hasOngoingTransaction(key: string, state: StoreState = getState()): boolean {
   return getVariablesState(key, state).transaction.status !== TransactionStatus.NotStarted;
 }

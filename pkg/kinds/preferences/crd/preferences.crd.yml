@@ -22,6 +22,16 @@ spec:
                 properties:
                     spec:
                         properties:
+                            enabledQueryTypes:
+                                description: Toggle to set available query types for the tenant
+                                properties:
+                                    applyForAdmin:
+                                        type: boolean
+                                    enabledTypes:
+                                        items:
+                                            type: string
+                                        type: array
+                                type: object
                             homeDashboardUID:
                                 description: UID for the home dashboard
                                 type: string
@@ -37,6 +47,9 @@ spec:
                                 type: object
                             theme:
                                 description: light, dark, empty is default
+                                type: string
+                            timeFormat:
+                                description: Format for dashboards, panels and reports timestamps
                                 type: string
                             timezone:
                                 description: |-

@@ -17,8 +17,9 @@ func ProvideService(db db.DB, cfg *setting.Cfg) team.Service {
 	return &Service{store: &xormStore{db: db, cfg: cfg}}
 }
 
-func (s *Service) CreateTeam(name, email string, orgID int64) (team.Team, error) {
-	return s.store.Create(name, email, orgID)
+// BMC code - inline change
+func (s *Service) CreateTeam(name, email string, orgID int64, Id int64, IsMspTeams ...bool) (team.Team, error) {
+	return s.store.Create(name, email, orgID, Id, IsMspTeams...)
 }
 
 func (s *Service) UpdateTeam(ctx context.Context, cmd *team.UpdateTeamCommand) error {
@@ -44,6 +45,13 @@ func (s *Service) GetTeamsByUser(ctx context.Context, query *team.GetTeamsByUser
 func (s *Service) AddTeamMember(userID, orgID, teamID int64, isExternal bool, permission dashboards.PermissionType) error {
 	return s.store.AddMember(userID, orgID, teamID, isExternal, permission)
 }
+
+// BMC code
+func (s *Service) CustomAddTeamMember(ctx context.Context, cmd *team.AddTeamMemberCommand) error {
+	return s.store.CustomAddMember(ctx, cmd)
+}
+
+// End
 
 func (s *Service) UpdateTeamMember(ctx context.Context, cmd *team.UpdateTeamMemberCommand) error {
 	return s.store.UpdateMember(ctx, cmd)

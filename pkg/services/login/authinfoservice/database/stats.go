@@ -63,17 +63,24 @@ func (s *AuthInfoStore) RunMetricsCollection(ctx context.Context) error {
 func (s *AuthInfoStore) GetLoginStats(ctx context.Context) (login.LoginStats, error) {
 	var stats login.LoginStats
 	outerErr := s.sqlStore.WithDbSession(ctx, func(dbSession *db.Session) error {
-		rawSQL := `SELECT
-		(SELECT COUNT(*) FROM (` + s.duplicateUserEntriesSQL(ctx) + `) AS d WHERE (d.dup_login IS NOT NULL OR d.dup_email IS NOT NULL)) as duplicate_user_entries,
-		(SELECT COUNT(*) FROM (` + s.mixedCasedUsers(ctx) + `) AS mcu) AS mixed_cased_users
-		`
+		// BMC Code - Start
+		rawSQL := `SELECT (SELECT COUNT(*) AS duplicate_user_entries FROM (SELECT a.login FROM "user" a,` +
+			` "user" b WHERE (LOWER(a.login) = LOWER(b.login)) AND (a.login != b.login) Union SELECT a.email from` +
+			` "user" a, "user" b WHERE (LOWER(a.email) = LOWER(b.email)) AND (a.email != b.email)) As d), ` +
+			`(SELECT COUNT(*) as mixed_cased_users FROM (SELECT login, email FROM "user"` +
+			` WHERE (LOWER(login) != login OR LOWER(email) != email)) as mcu)`
+		s.logger.Debug("GetLoginStats rawsql query is ", "GetLoginStats", rawSQL)
+		// End
 		_, err := dbSession.SQL(rawSQL).Get(&stats)
 		return err
 	})
 	if outerErr != nil {
+		// BMC Code - Next line
+		s.logger.Error("Error while executing GetLoginStats is ", outerErr)
 		return stats, outerErr
 	}
-
+	// BMC Code - Next line
+	s.logger.Debug("Stats query output is  ", "DuplicateUserEntries", stats.DuplicateUserEntries, "MixedCasedUsers", stats.MixedCasedUsers)
 	// set prometheus metrics stats
 	login.MStatDuplicateUserEntries.Set(float64(stats.DuplicateUserEntries))
 	if stats.DuplicateUserEntries == 0 {

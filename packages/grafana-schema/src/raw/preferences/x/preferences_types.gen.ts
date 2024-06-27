@@ -15,7 +15,20 @@ export interface QueryHistoryPreference {
   homeTab?: string;
 }
 
+export interface EnabledQueryTypes {
+  applyForAdmin?: boolean;
+  enabledTypes?: Array<string>;
+}
+
+export const defaultEnabledQueryTypes: Partial<EnabledQueryTypes> = {
+  enabledTypes: [],
+};
+
 export interface Preferences {
+  /**
+   * Toggle to set available query types for the tenant
+   */
+  enabledQueryTypes?: EnabledQueryTypes;
   /**
    * UID for the home dashboard
    */
@@ -32,6 +45,10 @@ export interface Preferences {
    * light, dark, empty is default
    */
   theme?: string;
+  /**
+   * Format for dashboards, panels and reports timestamps
+   */
+  timeFormat?: string;
   /**
    * The timezone selection
    * TODO: this should use the timezone defined in common
