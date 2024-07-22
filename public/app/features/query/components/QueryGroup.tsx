@@ -409,7 +409,8 @@ export function QueryGroupTopSection({
               onChange={async (ds, defaultQueries) => {
                 return await onDataSourceChange?.(ds, defaultQueries);
               }}
-              isDataSourceModalOpen={Boolean(locationService.getSearchObject().firstPanel)}
+              // BMC Change: Comment below line to disable DS Modal
+              // isDataSourceModalOpen={Boolean(locationService.getSearchObject().firstPanel)}
             />
           </div>
           {dataSource && (

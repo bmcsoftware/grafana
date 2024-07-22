@@ -3,14 +3,18 @@ package clients
 import (
 	"context"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"hash/fnv"
 	"net"
 	"path"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.bmc.com/DSOM-ADE/authz-go"
+	bmc "github.com/grafana/grafana/pkg/api/bmc"
 	"github.com/grafana/grafana/pkg/infra/log"
 	authidentity "github.com/grafana/grafana/pkg/services/auth/identity"
 	"github.com/grafana/grafana/pkg/services/authn"
@@ -72,8 +76,46 @@ func (c *Proxy) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 	if !c.isAllowedIP(r) {
 		return nil, errNotAcceptedIP.Errorf("request ip is not in the configured accept list")
 	}
-
 	username := getProxyHeader(r, c.cfg.AuthProxyHeaderName, c.cfg.AuthProxyHeadersEncoded)
+
+	// BMC code
+	// Changes for userID as RSSOUser@RSSO Tenant - required to achieve unique userID's across tenants
+	userInfo, rssoUsername, rssoTenant, err := c.getRequestUserAuthInfo(r)
+	if err != nil {
+		return nil, errors.New("To get permission to the dashboard. Please contact your admin")
+	}
+
+	//If we come here via authProxy, we are authenticated already and jwt token is available
+	r.DecodedToken = userInfo
+	if r.DecodedToken != nil {
+		r.OrgID, _ = strconv.ParseInt(userInfo.Tenant_Id, 10, 64)
+		if r.OrgID == setting.IMS_Tenant0 {
+			userInfo.Tenant_Id = strconv.FormatInt(setting.GF_Tenant0, 10)
+			r.OrgID = setting.GF_Tenant0
+		}
+	}
+
+	if c.HasValidPermissions(userInfo, username) != nil {
+		c.log.Error(
+			"User does not have sufficient privileges to access dashboards",
+			"username", r.HTTPRequest.Header.Get("X-Webauth-User"),
+			"message", "missing-reporting-permission",
+		)
+		return nil, authn.ErrInvalidPermission
+	}
+	// BMC code: ends
+
+	// Update username with rsso username and ignore appending tenant as suffix if it is a superuser realm tenant.
+	if rssoTenant != "" && rssoTenant != "dashboards_superuser_tenant" {
+		username = rssoUsername + "@" + rssoTenant
+	} else {
+		username = rssoUsername
+	}
+
+	// Forward the username to request header for further use
+	r.HTTPRequest.Header.Set("X-HELIX-AUTH", username)
+	// BMC code
+
 	if len(username) == 0 {
 		return nil, errEmptyProxyHeader.Errorf("no username provided in auth proxy header")
 	}
@@ -187,6 +229,50 @@ func (c *Proxy) isAllowedIP(r *authn.Request) bool {
 
 	return false
 }
+
+// BMC Code: Starts
+
+// HasValidPermissions checks if the user has valid permissions to access the dashboard
+// Todo: check if we can get the username from userInfo
+func (c *Proxy) HasValidPermissions(userInfo *authz.UserInfo, username string) error {
+	if username == c.cfg.AdminUser {
+		return nil
+	}
+	// make above in a switch
+	sort.Strings(userInfo.Permissions)
+	switch {
+	case bmc.ContainsLower(userInfo.Permissions, "*"):
+	case bmc.ContainsLower(userInfo.Permissions, bmc.ReportingViewer):
+	case bmc.ContainsLower(userInfo.Permissions, bmc.ReportingEditor):
+	case bmc.ContainsLower(userInfo.Permissions, bmc.ReportingAdmin):
+		break
+	default:
+		return errors.New("To get permission to the dashboard. Please contact your admin")
+	}
+
+	return nil
+}
+
+// BMC code
+func (c *Proxy) getRequestUserAuthInfo(r *authn.Request) (*authz.UserInfo, string, string, error) {
+	token := getProxyHeader(r, "X-Jwt-Token", false)
+	rssoTenant := getProxyHeader(r, "X-Rsso-Tenant", false)
+	rssoUsername := getProxyHeader(r, "X-Webauth-User", false)
+	if rssoUsername == "" {
+		c.log.Error("Failed to get X-Jwt-Token or X-Webauth-User from request", "rssoUsername", rssoUsername, "rssoTenant", rssoTenant, "token", token)
+		return nil, rssoUsername, rssoTenant, errors.New("To get permission to the dashboard. Please contact your admin")
+	}
+	if rssoTenant == "dashboards_superuser_tenant" && rssoUsername == c.cfg.AdminUser {
+		return nil, rssoUsername, rssoTenant, nil
+	}
+	userInfo, err := authz.Authorize(token)
+	if err != nil {
+		c.log.Error("Failed to authorize user", "error", err.Error())
+	}
+	return userInfo, rssoUsername, rssoTenant, err
+}
+
+// BMC Code: Ends
 
 func parseAcceptList(s string) ([]*net.IPNet, error) {
 	if len(strings.TrimSpace(s)) == 0 {

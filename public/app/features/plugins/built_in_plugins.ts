@@ -45,6 +45,8 @@ import * as alertListPanel from 'app/plugins/panel/alertlist/module';
 import * as annoListPanel from 'app/plugins/panel/annolist/module';
 import * as barChartPanel from 'app/plugins/panel/barchart/module';
 import * as barGaugePanel from 'app/plugins/panel/bargauge/module';
+import * as bmcVideoPanel from 'app/plugins/panel/bmcvideo/module';
+import * as bmcwelcomeBanner from 'app/plugins/panel/bmcwelcome/module';
 import * as candlestickPanel from 'app/plugins/panel/candlestick/module';
 import * as dashListPanel from 'app/plugins/panel/dashlist/module';
 import * as dataGridPanel from 'app/plugins/panel/datagrid/module';
@@ -138,6 +140,10 @@ const builtInPlugins: Record<string, System.Module | (() => Promise<System.Modul
   'core:plugin/nodeGraph': nodeGraph,
   'core:plugin/histogram': histogramPanel,
   'core:plugin/alertGroups': alertGroupsPanel,
+  // BMC code
+  'core:plugin/bmcwelcome': bmcwelcomeBanner,
+  'core:plugin/bmcvideo': bmcVideoPanel,
+  // End
 };
 
 export default builtInPlugins;

@@ -1,5 +1,7 @@
+import { cloneDeep } from 'lodash';
+
 import { DataSourceInstanceSettings } from '@grafana/data';
-import { getBackendSrv, getDataSourceSrv, isFetchError } from '@grafana/runtime';
+import { getBackendSrv, getDataSourceSrv, isFetchError, config } from '@grafana/runtime';
 import { notifyApp } from 'app/core/actions';
 import { createErrorNotification } from 'app/core/copy/appNotification';
 import { browseDashboardsAPI, ImportInputs } from 'app/features/browse-dashboards/api/browseDashboardsAPI';
@@ -20,6 +22,7 @@ import { DashboardJson, DeleteDashboardResponse } from '../types';
 
 import {
   clearDashboard,
+  dashboardsLoaded,
   fetchDashboard,
   fetchFailed,
   ImportDashboardDTO,
@@ -126,6 +129,9 @@ function processInputs(): ThunkResult<void> {
 
         if (input.type === InputType.DataSource) {
           getDataSourceOptions(input, inputModel);
+        } if (input.type === InputType.View) {
+          // BMC code next line
+          inputModel.id = input.id;
         } else if (!inputModel.info) {
           inputModel.info = 'Specify a string constant';
         }
@@ -212,6 +218,18 @@ export function importDashboard(importDashboardForm: ImportDashboardDTO): ThunkR
       });
     });
 
+
+    // BMC Code: start
+    // TODO: FIX ME
+    // Need to remove the inputs as we have validation based in input on go side
+    let newDashboard: any = cloneDeep(dashboard);
+    if(dashboard.__inputs){
+      const newInput = dashboard.__inputs.filter((input: any) => input.type !== InputType.View);
+      newDashboard.__inputs = newInput;
+      updateVQBView(newDashboard, importDashboardForm);
+    }
+    // BMC Code: end
+
     importDashboardForm.constants?.forEach((constant: any, index: number) => {
       const input = inputs.constants[index];
 
@@ -227,7 +245,7 @@ export function importDashboard(importDashboardForm: ImportDashboardDTO): ThunkR
         // uid: if user changed it, take the new uid from importDashboardForm,
         // else read it from original dashboard
         // by default the uid input is disabled, onSubmit ignores values from disabled inputs
-        dashboard: { ...dashboard, title: importDashboardForm.title, uid: importDashboardForm.uid || dashboard.uid },
+        dashboard: { ...newDashboard, title: importDashboardForm.title, uid: importDashboardForm.uid || dashboard.uid },
         overwrite: true,
         inputs: inputsToPersist,
         folderUid: importDashboardForm.folder.uid,
@@ -261,6 +279,31 @@ const getDataSourceDescription = (input: { usage?: InputUsage }): string | undef
 
   return undefined;
 };
+
+// BMC Code: start
+function updateVQBView(newDashboard: any, importDashboardForm: ImportDashboardDTO) {
+  for (const panel of newDashboard.panels) {
+    // We will construct the inputs in case of helix VQB view.
+    if (panel?.datasource?.type === 'bmchelix-ade-datasource') {
+      const childPanelList = panel?.targets || [];
+
+      for (const childPanel of childPanelList) {
+        const sourceQuery = childPanel?.sourceQuery;
+
+        if (sourceQuery?.queryType === 'Views' && importDashboardForm.vqbViews && importDashboardForm.vqbViews.length) {
+          let selectedView = sourceQuery.view?.selectedView;
+
+          const newSelectedViewList = importDashboardForm.vqbViews.filter(item => item.id === selectedView.viewId);
+          newSelectedViewList.forEach((newSelectedView) => {
+            selectedView.viewId = newSelectedView?.value;
+            selectedView.viewName = newSelectedView?.label;
+          })
+        }
+      }
+    }
+  }
+}
+// BMC Code: end
 
 export async function moveFolders(folderUIDs: string[], toFolder: FolderInfo) {
   const result = {
@@ -368,3 +411,68 @@ function executeInOrder(tasks: any[]): Promise<unknown> {
     return Promise.resolve(acc).then(task);
   }, []);
 }
+
+// BMC Code
+export function fetchDashboards(): ThunkResult<void> {
+  return async (dispatch) => {
+    dispatch(fetchDashboard());
+  };
+}
+
+export function dashboardLoaded(): ThunkResult<void> {
+  return async (dispatch) => {
+    dispatch(dashboardsLoaded());
+  };
+}
+
+export const exportDashboards = async (req: any, callback?: () => string[]) => {
+  const uids = req.dashUids;
+  const failedDashboards: string[] = [];
+  const failedUids: string[] = [];
+  for (const uid of uids) {
+    try {
+      const res = await fetch(`${config.appSubUrl}/api/bmc/export-dashboards`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folderUids: req.folderUids, dashUids: [uid] }),
+      });
+
+      if (res.status !== 200) {
+        await res.json();
+      }
+
+      const fileName = res.headers.get('content-Disposition')?.split('filename="')[1]?.split('"')[0];
+
+      const blob = await res.blob();
+      const link = document.createElement('a');
+      const href = window.URL.createObjectURL(blob);
+
+      link.setAttribute('href', href);
+      link.setAttribute('target', '_self');
+      link.setAttribute('download', `${fileName}`);
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      callback?.();
+    } catch (error) {
+      failedUids.push(uid);
+    }
+  }
+  if (failedUids.length > 0) {
+    let query = '';
+    for (let i = 0; i < failedUids.length; i++) {
+      query = query + 'dashboardUIDs=' + failedUids[i];
+      if (i + 1 !== failedUids.length) {
+        query = query + '&';
+      }
+    }
+    const failedDashs = await getBackendSrv().get(`/api/search?${query}`);
+
+    for (const dash of failedDashs) {
+      failedDashboards.push(dash.title.toString());
+    }
+  }
+
+  return failedUids.length > 0 ? failedDashboards : null;
+};

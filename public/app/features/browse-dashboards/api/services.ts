@@ -37,7 +37,8 @@ export async function listFolders(
     title: item.title,
     parentTitle,
     parentUID,
-    url: isSharedWithMe(item.uid) ? undefined : `/dashboards/f/${item.uid}/`,
+    // BMC Code: Next line, correcting url with suburl inclusion
+    url: isSharedWithMe(item.uid) ? undefined : `${config.appSubUrl}/dashboards/f/${item.uid}/`,
   }));
 }
 
