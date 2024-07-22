@@ -77,12 +77,27 @@ func (s *ServiceImpl) processAppPlugin(plugin pluginstore.Plugin, c *contextmode
 		Url:        s.cfg.AppSubURL + "/a/" + plugin.ID,
 	}
 
+	// BMC Code: to set icon instead of img for Report plugin
+	if plugin.ID == "reports" {
+		appLink.Img = ""
+		appLink.Icon = "bmc-reports"
+	}
+	// BMC Code: End
+
 	for _, include := range plugin.Includes {
 		if !hasAccessToInclude(include) {
 			continue
 		}
 
 		if include.Type == "page" {
+			// BMC code - start
+			// Apply BHD Rbac permissions on report scheduler plugin
+			hasAccess := c.HasAppPluginAccess(plugin.ID, include.Name)
+			if !hasAccess {
+				continue
+			}
+			// BMC code - end
+
 			link := &navtree.NavLink{
 				Text:     include.Name,
 				Icon:     include.Icon,
@@ -204,7 +219,7 @@ func (s *ServiceImpl) addPluginToSection(c *contextmodel.ReqContext, treeRoot *n
 			treeRoot.AddSection(&navtree.NavLink{
 				Text:       "Apps",
 				Icon:       "layer-group",
-				SubTitle:   "App plugins that extend the Grafana experience",
+				SubTitle:   "App plugins that extend the BMC Helix Dashboards experience",
 				Id:         navtree.NavIDApps,
 				Children:   []*navtree.NavLink{appLink},
 				SortWeight: navtree.WeightApps,
@@ -307,6 +322,8 @@ func (s *ServiceImpl) readNavigationSettings() {
 		"grafana-easystart-app":            {SectionID: navtree.NavIDRoot, SortWeight: navtree.WeightApps + 1, Text: "Connections", Icon: "adjust-circle"},
 		"k6-app":                           {SectionID: navtree.NavIDTestingAndSynthetics, SortWeight: 1, Text: "Performance"},
 		"grafana-asserts-app":              {SectionID: navtree.NavIDRoot, SortWeight: navtree.WeightAsserts, Icon: "asserts"},
+		// BMC Code Next line: To add reports plugin on root
+		"reports": {SectionID: navtree.NavIDRoot},
 	}
 
 	s.navigationAppPathConfig = map[string]NavigationAppConfig{

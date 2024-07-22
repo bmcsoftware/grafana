@@ -7,12 +7,15 @@ import {
 /**
  * @deprecated use the type from @grafana/schema
  */
-export interface DataQuery extends SchemaDataQuery {}
+export interface DataQuery extends SchemaDataQuery {
+  // BMC Code
+  [x: string]: any;
+}
 
 /**
  * @deprecated use the type from @grafana/schema
  */
-export interface DataSourceRef extends SchemaDataSourceRef {}
+export interface DataSourceRef extends SchemaDataSourceRef { }
 
 /**
  * Attached to query results (not persisted)

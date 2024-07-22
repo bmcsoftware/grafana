@@ -3,6 +3,7 @@ package contexthandler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -113,6 +114,10 @@ func (h *ContextHandler) Middleware(next http.Handler) http.Handler {
 
 		identity, err := h.authnService.Authenticate(reqContext.Req.Context(), &authn.Request{HTTPRequest: reqContext.Req, Resp: reqContext.Resp})
 		if err != nil {
+			// BMC change: next block
+			if errors.Is(err, authn.ErrInvalidPermission) {
+				reqContext.Handle(h.Cfg, 401, "Oops... sorry you dont have access to this Dashboard", err)
+			}
 			// Hack: set all errors on LookupTokenErr, so we can check it in auth middlewares
 			reqContext.LookupTokenErr = err
 		} else {
@@ -121,6 +126,12 @@ func (h *ContextHandler) Middleware(next http.Handler) http.Handler {
 			reqContext.IsSignedIn = !reqContext.SignedInUser.IsAnonymous
 			reqContext.AllowAnonymous = reqContext.SignedInUser.IsAnonymous
 			reqContext.IsRenderCall = identity.GetAuthenticatedBy() == login.RenderModule
+			// BMC Change: Below block to set context with needed values
+			reqContext.BHDRoles = identity.BHDRoles
+			reqContext.HasExternalOrg = identity.HasExternalOrg
+			reqContext.MspOrgs = identity.MspOrgs
+			reqContext.IsUnrestrictedUser = identity.IsUnrestrictedUser
+			reqContext.OrgRole = identity.OrgRoles[identity.OrgID]
 		}
 
 		reqContext.Logger = reqContext.Logger.New("userId", reqContext.UserID, "orgId", reqContext.OrgID, "uname", reqContext.Login)

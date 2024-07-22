@@ -22,7 +22,7 @@ export function AngularDeprecationNotice({ dashboardUid }: Props) {
           return null;
         }
         return (
-          <div>
+          <div id="angular-deprecation-notice">
             <Alert
               severity="warning"
               title="This dashboard depends on Angular, which is deprecated and will stop working in future releases of Grafana."

@@ -142,6 +142,8 @@ export class TablePanelCtrl extends MetricsPanelCtrl {
 
     this.renderer = new TableRenderer(
       this.panel,
+      // BMC code - next line
+      this,
       this.table,
       this.dashboard.getTimezone(),
       this.$sanitize,

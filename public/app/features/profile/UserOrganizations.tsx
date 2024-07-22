@@ -36,9 +36,10 @@ export class UserOrganizations extends PureComponent<Props> {
               <th>
                 <Trans i18nKey="user-orgs.name-column">Name</Trans>
               </th>
-              <th>
+              {/* BMC code - next line */}
+              {/* <th>
                 <Trans i18nKey="user-orgs.role-column">Role</Trans>
-              </th>
+              </th> */}
               <th />
             </tr>
           </thead>
@@ -47,7 +48,8 @@ export class UserOrganizations extends PureComponent<Props> {
               return (
                 <tr key={index}>
                   <td>{org.name}</td>
-                  <td>{org.role}</td>
+                  {/* BMC code - next line */}
+                  {/* <td>{org.role}</td> */}
                   <td className="text-right">
                     {org.orgId === user?.orgId ? (
                       <Button variant="secondary" size="sm" disabled>

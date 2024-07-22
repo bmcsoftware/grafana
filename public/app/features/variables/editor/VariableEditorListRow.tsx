@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import React, { ReactElement } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
-import { GrafanaTheme2, TypedVariableModel } from '@grafana/data';
+import { GrafanaTheme2, TypedVariableModel, OptimizeVariableModel } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { reportInteraction } from '@grafana/runtime';
 import { Button, Icon, IconButton, useStyles2, useTheme2 } from '@grafana/ui';
@@ -114,6 +114,11 @@ export function VariableEditorListRow({
 
 function getDefinition(model: TypedVariableModel): string {
   let definition = '';
+  // BMC Code: Below block
+  // ToDo_GF_10.4.2: Verify if this below block is actually needed.
+  if (model.type === 'optimizepicker') {
+    return (model as OptimizeVariableModel).definition || '';
+  }
   if (model.type === 'query') {
     if (model.definition) {
       definition = model.definition;

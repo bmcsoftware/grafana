@@ -67,6 +67,13 @@ type Requester interface {
 	// GetIDToken returns a signed token representing the identity that can be forwarded to plugins and external services.
 	// Will only be set when featuremgmt.FlagIdForwarding is enabled.
 	GetIDToken() string
+
+	// BMC Change: Starts
+	GetHasExternalOrg() bool
+	GetIsUnrestrictedUser() bool
+	GetMspOrgs() []string
+	GetBHDRoles() []int64
+	// BMC Change: Ends
 }
 
 // IsNamespace returns true if namespace matches any expected namespace

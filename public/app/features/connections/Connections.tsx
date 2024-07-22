@@ -4,6 +4,9 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { DataSourcesRoutesContext } from 'app/features/datasources/state';
 import { StoreState, useSelector } from 'app/types';
 
+import { FEATURE_CONST, getFeatureStatus } from '../dashboard/services/featureFlagSrv';
+import { isGrafanaAdmin } from '../plugins/admin/permissions';
+
 import { ROUTES } from './constants';
 import {
   AddNewConnectionPage,
@@ -41,15 +44,23 @@ export default function Connections() {
     >
       <Switch>
         {/* Redirect to "Add new connection" by default */}
-        <Route exact sensitive path={ROUTES.Base} component={() => <Redirect to={ROUTES.AddNewConnection} />} />
+        <Route
+          exact
+          sensitive
+          path={ROUTES.Base} // BMC Change Inline: Redirect to your connection page for non super admin
+          component={() => <Redirect to={isGrafanaAdmin() ? ROUTES.AddNewConnection : ROUTES.DataSources} />}
+        />
         <Route exact sensitive path={ROUTES.DataSources} component={DataSourcesListPage} />
-        <Route exact sensitive path={ROUTES.DataSourcesNew} component={NewDataSourcePage} />
+        {/* BMC Code change: Below condition */}
+        {getFeatureStatus(FEATURE_CONST.DASHBOARDS_SSRF_FEATURE_NAME) || isGrafanaAdmin() ? (
+          <Route exact sensitive path={ROUTES.DataSourcesNew} component={NewDataSourcePage} />
+        ) : null}
         <Route exact sensitive path={ROUTES.DataSourcesDetails} component={DataSourceDetailsPage} />
         <Route exact sensitive path={ROUTES.DataSourcesEdit} component={EditDataSourcePage} />
         <Route exact sensitive path={ROUTES.DataSourcesDashboards} component={DataSourceDashboardsPage} />
 
         {/* "Add new connection" page - we don't register a route in case a plugin already registers a standalone page for it */}
-        {!isAddNewConnectionPageOverridden && (
+        {!isAddNewConnectionPageOverridden && isGrafanaAdmin() && (
           <Route exact sensitive path={ROUTES.AddNewConnection} component={AddNewConnectionPage} />
         )}
 
