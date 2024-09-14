@@ -1,5 +1,140 @@
 {
   "_comment": "Ce fichier est la source de vérité pour les chaînes anglaises. Modifiez-le dans la base de code pour adapter les pluriels et les autres phrases pour l'interface utilisateur.",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "Aucune source de données de type {{pluginName}} n’a été trouvée",
+      "import": {
+        "import-all-failed": "Impossible d’importer tous les tableaux de bord",
+        "no-import": "Aucun tableau de bord importé"
+      },
+      "import-all": "Tout importer",
+      "import-failed": "Impossible d’importer les tableaux de bord suivants",
+      "import-success": "Tous les tableaux de bord ont été importés avec succès",
+      "select-datasource": "Sélectionner une source de données {{pluginName}}",
+      "set-parameters": "définir les paramètres obligatoires pour les tableaux de bord sélectionnés"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Agrégées",
+      "all": "Tout",
+      "clone": "Cloner",
+      "confirm-delete": "Voulez-vous supprimer les champs calculés sélectionnés ?",
+      "connection-error": "La connectivité à BMC Helix ITSM n’est pas configurée.",
+      "custom": "Personnalisé",
+      "delete": "Supprimer",
+      "details": "Détails du champ calculé",
+      "edit": "Modifier",
+      "edit-field": "Modifier le champ calculé",
+      "eg": "par ex.",
+      "failed": "Impossible de récupérer les champs calculés",
+      "failure": "Échec",
+      "filter-by-type": "Filtrer par type (par défaut Tous)",
+      "form-name": "Nom du formulaire",
+      "is-aggregate": "Agréger",
+      "is-aggregate-description": "Activez cette option si votre requête inclut des fonctions d’agrégation.",
+      "module": "Module",
+      "module-name": "Nom du module",
+      "name": "Nom",
+      "name-placeholder": "Entrer le nom du champ calculé",
+      "new-field": "Nouveau champ calculé",
+      "no-calc-fields": "Vous n’avez pas encore créé de champs calculés.",
+      "not-found": "Aucun champ calculé correspondant à votre requête n’a été trouvé.",
+      "ootb": "Clés en main",
+      "query-info": "La requête doit être une requête à colonne unique",
+      "query-not-validated": "Requête non validée",
+      "save": "Enregistrer",
+      "search-by-name": "Rechercher les champs calculés par nom",
+      "select-form": "Sélectionner un formulaire",
+      "select-module": "Sélectionner un module",
+      "sort-asc": "Alphabétique (A-Z)",
+      "sort-asc-descripton": "Trier les résultats par ordre alphabétique croissant",
+      "sort-dsc": "Alphabétique (Z-A)",
+      "sort-dsc-descripton": "Trier les résultats par ordre alphabétique décroissant",
+      "sort-placeholder": "Trier (par défaut {{label}})",
+      "sql-query": "Requête SQL",
+      "subtitle": "Créer et gérer des champs calculés pour le service ITSM",
+      "title": "Champs calculés",
+      "unknown-failure": "Erreur inconnue",
+      "update": "Mettre à jour",
+      "validate": "Valider",
+      "validation-success": "Requête validée avec succès"
+    },
+    "common": {
+      "cancel": "Annuler",
+      "download": "Télécharger"
+    },
+    "contact-support": "<0>Prenez un instantané des détails de l’erreur indiqués ci-dessous et envoyez-le à </0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Gérer les rapports planifiés",
+        "reset-filters": "Réinitialiser les filtres",
+        "reset-filters-failure": "Impossible de réinitialiser les valeurs du filtre.",
+        "save-filters": "Enregistrer les filtres",
+        "save-filters-failure": "Impossible d’enregistrer les valeurs du filtre.",
+        "save-filters-success": "Les valeurs du filtre ont été enregistrées avec succès."
+      }
+    },
+    "date-picker": {
+      "description": "Définissez une variable de plage de dates qui permette aux utilisateurs de sélectionner n’importe quelle plage de dates",
+      "name": "Plage de dates"
+    },
+    "export": {
+      "generation-failed": "Impossible de générer le rapport. Réessayez plus tard",
+      "grid": "Grille",
+      "landscape": "Paysage",
+      "layout": "Disposition",
+      "orientation": "Orientation",
+      "portrait": "Portrait",
+      "reduce-selection": "Réduisez les valeurs des variables sélectionnées pour {{variableQuery}} et réessayez plus tard",
+      "save-as": "Enregistrer {{target}} comme {{type}}",
+      "simple": "Simple",
+      "success": "Rapport généré avec succès",
+      "type": "Type",
+      "view": "Affichage"
+    },
+    "manage-dashboards": {
+      "drop-click": "Glissez-déposez ici ou cliquez pour parcourir",
+      "import-failed": "Échec de l’importation",
+      "serialization-failed": "JSON -> Échec de la sérialisation JS",
+      "upload-json": "Télécharger les fichiers JSON du tableau de bord"
+    },
+    "org-custom-config": {
+      "community": "Communauté",
+      "documentation": "Documentation",
+      "invalid-url": "URL non valide !",
+      "support": "Support",
+      "video": "Vidéo"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Saisir la vidéo incorporée",
+        "invalid-url": "URL non valide",
+        "url": "URL de la vidéo"
+      },
+      "bmc-welcome": {
+        "communities": "Communautés",
+        "community-description": "Description de la communauté",
+        "dashboards": "Tableaux de bord",
+        "documentation": "Documentation",
+        "documentation-description": "Description de la documentation",
+        "video-description": "Description de la vidéo",
+        "videos": "Vidéos"
+      }
+    },
+    "route-error": "Oups... une erreur inattendue s’est produite.",
+    "search": {
+      "comfirm-export": "Voulez-vous exporter les {{dashCount}} tableaux de bord sélectionnés ?",
+      "export": "Exporter",
+      "export-failed": "Échec de l’exportation",
+      "export-success": "Exportation réussie"
+    },
+    "share-modal": {
+      "loading": "Chargement en cours"
+    },
+    "toggle-feature": {
+      "manage-features": "Gérer les fonctionnalités du tableau de bord"
+    }
+  },
   "access-control": {
     "add-permission": {
       "role-label": "Rôle",
@@ -747,14 +882,14 @@
       "title": "Alertes et IRM"
     },
     "api-keys": {
-      "subtitle": "Gérer et créer des clés API utilisées pour interagir avec les API HTTP de Grafana",
+      "subtitle": "Gérer et créer des clés API utilisées pour interagir avec les API HTTP de BMC Helix Dashboards",
       "title": "Clés API"
     },
     "application": {
       "title": "Application"
     },
     "apps": {
-      "subtitle": "Plugins d'application qui prolongent l'expérience Grafana",
+      "subtitle": "Plugins d'application qui prolongent l'expérience BMC Helix Dashboards",
       "title": "Applications"
     },
     "authentication": {
@@ -830,11 +965,11 @@
       "title": "Frontend"
     },
     "global-orgs": {
-      "subtitle": "Instances isolées de Grafana exécutées sur le même serveur",
+      "subtitle": "Instances isolées de BMC Helix Dashboards exécutées sur le même serveur",
       "title": "Organisations"
     },
     "global-users": {
-      "subtitle": "Gérer les utilisateurs dans Grafana",
+      "subtitle": "Gérer les utilisateurs dans BMC Helix Dashboards",
       "title": "Utilisateurs"
     },
     "grafana-quaderno": {
@@ -904,7 +1039,7 @@
       "title": "Listes de lecture"
     },
     "plugins": {
-      "subtitle": "Prolonger l'expérience Grafana avec des plug-ins",
+      "subtitle": "Prolonger l'expérience BMC Helix Dashboards avec des plug-ins",
       "title": "Plug-ins"
     },
     "private-data-source-connections": {
@@ -942,11 +1077,11 @@
       "title": "Rechercher dans les tableaux de bord"
     },
     "server-settings": {
-      "subtitle": "Afficher les paramètres définis dans votre configuration Grafana",
+      "subtitle": "Afficher les paramètres définis dans votre configuration BMC Helix Dashboards",
       "title": "Paramètres"
     },
     "service-accounts": {
-      "subtitle": "Utiliser des comptes de service pour exécuter des charges de travail automatisées dans Grafana",
+      "subtitle": "Utiliser des comptes de service pour exécuter des charges de travail automatisées dans BMC Helix Dashboards",
       "title": "Comptes de service"
     },
     "sign-out": {
@@ -1295,7 +1430,7 @@
     "embed": {
       "copy": "Copier dans le presse-papiers",
       "html": "Intégrer du HTML",
-      "html-description": "Le code HTML ci-dessous peut être copié et inclus dans une autre page Web. Sauf si l'accès anonyme est activé, l'utilisateur qui consulte cette page doit être connecté à Grafana pour que le graphique charge.",
+      "html-description": "Le code HTML ci-dessous peut être copié et inclus dans une autre page Web. Sauf si l'accès anonyme est activé, l'utilisateur qui consulte cette page doit être connecté à BMC Helix Dashboards pour que le graphique charge.",
       "info": "Générer du HTML pour intégrer un iframe avec ce panneau.",
       "time-range": "Période temporelle actuelle",
       "time-range-description": "Transforme la période temporelle relative actuelle en une période temporelle absolue"
@@ -1320,7 +1455,6 @@
       "rendered-image": "Lien direct vers l'image dont il faut améliorer le rendu",
       "save-alert": "Le tableau de bord n'est pas enregistré",
       "save-dashboard": "Pour améliorer le rendu d'une image de panneau, vous devez d'abord enregistrer le tableau de bord.",
-      "shorten-url": "Raccourcir l'URL",
       "time-range-description": "Transforme la période temporelle relative actuelle en une période temporelle absolue",
       "time-range-label": "Verrouiller la période temporelle"
     },
@@ -1483,7 +1617,6 @@
   "user-orgs": {
     "current-org-button": "Actuel",
     "name-column": "Nom",
-    "role-column": "Rôle",
     "select-org-button": "Sélectionner une organisation",
     "title": "Organisations"
   },

@@ -7,10 +7,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana/pkg/infra/db"
 	ac "github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/auth/identity"
 	"github.com/grafana/grafana/pkg/services/dashboards/dashboardaccess"
+	"github.com/grafana/grafana/pkg/services/sqlstore"
 	"github.com/grafana/grafana/pkg/services/sqlstore/migrator"
 	"github.com/grafana/grafana/pkg/services/team"
 	"github.com/grafana/grafana/pkg/setting"
@@ -18,7 +20,8 @@ import (
 )
 
 type store interface {
-	Create(name, email string, orgID int64) (team.Team, error)
+	// BMC inline change - Add Id to createTeam and IsMspTeams
+	Create(name, email string, orgID int64, Id int64, IsMspTeams ...bool) (team.Team, error)
 	Update(ctx context.Context, cmd *team.UpdateTeamCommand) error
 	Delete(ctx context.Context, cmd *team.DeleteTeamCommand) error
 	Search(ctx context.Context, query *team.SearchTeamsQuery) (team.SearchTeamQueryResult, error)
@@ -27,6 +30,8 @@ type store interface {
 	GetIDsByUser(ctx context.Context, query *team.GetTeamIDsByUserQuery) ([]int64, error)
 	RemoveUsersMemberships(ctx context.Context, userID int64) error
 	AddMember(userID, orgID, teamID int64, isExternal bool, permission dashboardaccess.PermissionType) error
+	// BMC code - next line
+	CustomAddMember(ctx context.Context, cmd *team.AddTeamMemberCommand) error
 	UpdateMember(ctx context.Context, cmd *team.UpdateTeamMemberCommand) error
 	IsMember(orgId int64, teamId int64, userId int64) (bool, error)
 	RemoveMember(ctx context.Context, cmd *team.RemoveTeamMemberCommand) error
@@ -80,8 +85,22 @@ func getTeamSelectSQLBase(db db.DB, filteredUsers []string) string {
 		` FROM team as team `
 }
 
-func (ss *xormStore) Create(name, email string, orgID int64) (team.Team, error) {
+// BMC code - inline change
+func getTeamSelectWithPermissionsSQLBase(db db.DB, filteredUsers []string) string {
+	return `SELECT
+		team.id AS id,
+		team.org_id,
+		team.name AS name,
+		team.email AS email,
+		team_member.permission, ` +
+		getTeamMemberCount(db, filteredUsers) +
+		` FROM team AS team
+		INNER JOIN team_member ON team.id = team_member.team_id AND team_member.user_id = ? `
+}
+
+func (ss *xormStore) Create(name, email string, orgID int64, Id int64, isMspTeams ...bool) (team.Team, error) {
 	t := team.Team{
+		ID:      Id,
 		UID:     util.GenerateShortUID(),
 		Name:    name,
 		Email:   email,
@@ -89,6 +108,11 @@ func (ss *xormStore) Create(name, email string, orgID int64) (team.Team, error) 
 		Created: time.Now(),
 		Updated: time.Now(),
 	}
+
+	if len(isMspTeams) > 0 {
+		t.IsMspTeam = isMspTeams[0]
+	}
+
 	err := ss.db.WithTransactionalDbSession(context.Background(), func(sess *db.Session) error {
 		if isNameTaken, err := isTeamNameTaken(orgID, name, 0, sess); err != nil {
 			return err
@@ -144,6 +168,9 @@ func (ss *xormStore) Delete(ctx context.Context, cmd *team.DeleteTeamCommand) er
 			"DELETE FROM team WHERE org_id=? and id = ?",
 			"DELETE FROM dashboard_acl WHERE org_id=? and team_id = ?",
 			"DELETE FROM team_role WHERE org_id=? and team_id = ?",
+			// BMC Code - start - delete role on team deletion
+			"DELETE FROM role WHERE org_id=? and name = 'managed:teams:' || ? || ':permissions'",
+			// BMC Code - end
 		}
 
 		deletes = append(deletes, ss.deletes...)
@@ -200,7 +227,15 @@ func (ss *xormStore) Search(ctx context.Context, query *team.SearchTeamsQuery) (
 			params = append(params, user)
 		}
 
-		sql.WriteString(getTeamSelectSQLBase(ss.db, filteredUsers))
+		// BMC Code: Change start
+		// Added back from grafana 9.5.3, and not needed for count
+		if query.UserIDFilter != nil {
+			sql.WriteString(getTeamSelectWithPermissionsSQLBase(ss.db, filteredUsers))
+			params = append(params, *query.UserIDFilter)
+		} else {
+			sql.WriteString(getTeamSelectSQLBase(ss.db, filteredUsers))
+		}
+		// BMC Code: Change end
 		sql.WriteString(` WHERE team.org_id = ?`)
 		params = append(params, query.OrgID)
 
@@ -367,7 +402,41 @@ func (ss *xormStore) AddMember(userID, orgID, teamID int64, isExternal bool, per
 	})
 }
 
-func getTeamMember(sess *db.Session, orgId int64, teamId int64, userId int64) (team.TeamMember, error) {
+// BMC code
+// AddMember adds a user to a team
+func (ss *xormStore) CustomAddMember(ctx context.Context, cmd *team.AddTeamMemberCommand) error {
+	log.DefaultLogger.Info("Adding team member", "UserId", cmd.UserID, "Team ", cmd.TeamID)
+	return ss.db.WithTransactionalDbSession(ctx, func(sess *db.Session) error {
+		if res, err := sess.Query("SELECT 1 from team_member WHERE org_id=? and team_id=? and user_id=?", cmd.OrgID, cmd.TeamID, cmd.UserID); err != nil {
+			return err
+		} else if len(res) == 1 {
+			return team.ErrTeamMemberAlreadyAdded
+		}
+
+		if _, err := teamExists(cmd.OrgID, cmd.TeamID, sess); err != nil {
+			return err
+		}
+
+		entity := team.TeamMember{
+			OrgID:      cmd.OrgID,
+			TeamID:     cmd.TeamID,
+			UserID:     cmd.UserID,
+			External:   cmd.External,
+			Created:    time.Now(),
+			Updated:    time.Now(),
+			Permission: cmd.Permission,
+		}
+
+		_, err := sess.Insert(&entity)
+		return err
+	})
+}
+
+// End
+
+// BMC code - inline change
+// ToDo_GF_10.4.2: use XormStore instead of sqlStore
+func getTeamMember(sess *sqlstore.DBSession, orgId int64, teamId int64, userId int64) (team.TeamMember, error) {
 	rawSQL := `SELECT * FROM team_member WHERE org_id=? and team_id=? and user_id=?`
 	var member team.TeamMember
 	exists, err := sess.SQL(rawSQL, orgId, teamId, userId).Get(&member)

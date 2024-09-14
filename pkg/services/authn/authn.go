@@ -3,6 +3,7 @@ package authn
 import (
 	"context"
 	"fmt"
+	"github.bmc.com/DSOM-ADE/authz-go"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -153,6 +154,9 @@ type Request struct {
 
 	// metadata is additional information about the auth request
 	metadata map[string]string
+
+	// BMC Code: Adding decodedToken on authn request, to ease access in different hooks
+	DecodedToken *authz.UserInfo
 }
 
 func (r *Request) SetMeta(k, v string) {

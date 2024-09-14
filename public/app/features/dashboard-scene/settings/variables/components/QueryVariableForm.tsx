@@ -1,3 +1,4 @@
+import { css } from '@emotion/css';
 import React, { FormEvent } from 'react';
 import { useAsync } from 'react-use';
 
@@ -6,7 +7,8 @@ import { selectors } from '@grafana/e2e-selectors';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { QueryVariable } from '@grafana/scenes';
 import { DataSourceRef, VariableRefresh, VariableSort } from '@grafana/schema';
-import { Field } from '@grafana/ui';
+import { Field, useTheme2, InlineFieldRow, InlineField, InlineSwitch, Modal, Button } from '@grafana/ui';
+import { getGrafanaFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
 import { QueryEditor } from 'app/features/dashboard-scene/settings/variables/components/QueryEditor';
 import { SelectionOptionsForm } from 'app/features/dashboard-scene/settings/variables/components/SelectionOptionsForm';
 import { DataSourcePicker } from 'app/features/datasources/components/picker/DataSourcePicker';
@@ -18,6 +20,10 @@ import { VariableLegend } from './VariableLegend';
 import { VariableTextAreaField } from './VariableTextAreaField';
 
 type VariableQueryType = QueryVariable['state']['query'];
+
+// BMC Code start
+const bmcDefaultDs = 'bmchelix-ade-datasource';
+// BMC Code end
 
 interface QueryVariableEditorFormProps {
   datasource?: DataSourceRef;
@@ -38,6 +44,9 @@ interface QueryVariableEditorFormProps {
   onIncludeAllChange: (event: FormEvent<HTMLInputElement>) => void;
   allValue: string;
   onAllValueChange: (event: FormEvent<HTMLInputElement>) => void;
+  // BMC Code: Below all props
+  onIncludeOnlyAvailable?: (event: FormEvent<HTMLInputElement>) => void;
+  discardForAll?: boolean;
 }
 
 export function QueryVariableEditorForm({
@@ -59,6 +68,9 @@ export function QueryVariableEditorForm({
   onIncludeAllChange,
   allValue,
   onAllValueChange,
+  // BMC Code: Below all props
+  onIncludeOnlyAvailable,
+  discardForAll,
 }: QueryVariableEditorFormProps) {
   const { value: dsConfig } = useAsync(async () => {
     const datasource = await getDataSourceSrv().get(datasourceRef ?? '');
@@ -68,12 +80,87 @@ export function QueryVariableEditorForm({
   }, [datasourceRef]);
   const { datasource, VariableQueryEditor } = dsConfig ?? {};
 
+  // BMC Code Starts
+  const RenderBMCHelixToggle = () => {
+    const theme = useTheme2();
+    const [toggle, setToggle] = React.useState<boolean>(false);
+    const [modalStatus, setModalStatus] = React.useState<boolean>(false);
+    React.useEffect(() => {
+      setToggle(query && typeof query !== 'string' ? true : false);
+    }, []);
+    return (
+      <InlineFieldRow style={{ marginBottom: '10px', flexDirection: 'column' }}>
+        <InlineField label="Enable query editor" style={{ marginBottom: 0 }}>
+          <InlineSwitch
+            value={toggle}
+            onChange={(e: any) => {
+              setModalStatus(true);
+            }}
+          />
+        </InlineField>
+        <span
+          className={css`
+            font-size: ${theme.typography.size.xs};
+            font-style: italic;
+          `}
+        >
+          Note: Applicable only to the Service Management query type.
+        </span>
+        <Modal
+          isOpen={modalStatus}
+          title="Unsaved changes"
+          onDismiss={() => {
+            setModalStatus(false);
+          }}
+          icon="exclamation-triangle"
+          className={css`
+            width: 500px;
+          `}
+          closeOnBackdropClick={false}
+        >
+          <h5>The current query will be lost. Do you want to continue?</h5>
+          <Modal.ButtonRow>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setModalStatus(false);
+              }}
+              fill="outline"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                const newToggleState = !toggle;
+                newToggleState
+                  ? onLegacyQueryChange((datasource as any)?.variableDefaultQuery ?? {}, 'Open editor to see')
+                  : onQueryChange('');
+                setToggle(newToggleState);
+                setModalStatus(false);
+              }}
+            >
+              Continue
+            </Button>
+          </Modal.ButtonRow>
+        </Modal>
+      </InlineFieldRow>
+    );
+  };
+  // BMC Code Ends
+
   return (
     <>
       <VariableLegend>Query options</VariableLegend>
       <Field label="Data source" htmlFor="data-source-picker">
         <DataSourcePicker current={datasourceRef} onChange={onDataSourceChange} variables={true} width={30} />
       </Field>
+
+      {/* BMC Code Starts */}
+      {datasource?.type === bmcDefaultDs && getGrafanaFeatureStatus('Visual Query Builder') ? (
+        <RenderBMCHelixToggle />
+      ) : null}
+      {/* BMC Code Ends */}
 
       {datasource && VariableQueryEditor && (
         <QueryEditor
@@ -130,6 +217,10 @@ export function QueryVariableEditorForm({
         onMultiChange={onMultiChange}
         onIncludeAllChange={onIncludeAllChange}
         onAllValueChange={onAllValueChange}
+        // BMC Code: Below all Props
+        query={query}
+        onIncludeOnlyAvailable={onIncludeOnlyAvailable}
+        discardForAll={discardForAll}
       />
     </>
   );

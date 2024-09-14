@@ -1,0 +1,138 @@
+{
+  "_comment": "Diese Datei nicht händisch bearbeiten oder diese Source-Phrasen in Crowdin aktualisieren. Die Code-Source ist die Quelle der Wahrheit für englische Strings",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "Keine Datenquellen des Typs {{pluginName}} gefunden",
+      "import": {
+        "import-all-failed": "Import aller Dashboards fehlgeschlagen",
+        "no-import": "Keine Dashboards importiert"
+      },
+      "import-all": "Alle importieren",
+      "import-failed": "Folgende Dashboards konnten nicht importiert werden",
+      "import-success": "Alle Dashboards erfolgreich importiert",
+      "select-datasource": "Eine {{pluginName}} Datenquelle auswählen",
+      "set-parameters": "erforderlichen Parameter für die ausgewählten Dashboards festlegen"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Aggregiert",
+      "all": "Alle",
+      "clone": "Klonen",
+      "confirm-delete": "Möchten Sie das/die ausgewählte/-n berechnete/-n Feld/-er löschen",
+      "connection-error": "Verbindung mit BMC Helix ITSM nicht konfiguriert",
+      "custom": "Benutzerdefiniert",
+      "delete": "Löschen",
+      "details": "Details zu berechneten Feldern",
+      "edit": "Bearbeiten",
+      "edit-field": "Berechnetes Feld bearbeiten",
+      "eg": "Z. B.",
+      "failed": "Abrufen berechneter Felder fehlgeschlagen",
+      "failure": "Fehler",
+      "filter-by-type": "Nach Typ filtern (Standardwert: Alle)",
+      "form-name": "Formularname",
+      "is-aggregate": "Ist aggregiert",
+      "is-aggregate-description": "Aktivieren Sie diese Option, wenn Ihre Abfrage Funktionen zur Aggregation enthält.",
+      "module": "Modul",
+      "module-name": "Modulname",
+      "name": "Name",
+      "name-placeholder": "Geben Sie den Namen des berechneten Felds ein",
+      "new-field": "Neues berechnetes Feld",
+      "no-calc-fields": "Sie haben noch keine berechneten Felder erstellt.",
+      "not-found": "Es wurden keine berechneten Felder gefunden, die mit Ihrer Abfrage übereinstimmen.",
+      "ootb": "Standardmäßig",
+      "query-info": "Die Abfrage muss einspaltig sein",
+      "query-not-validated": "Abfrage nicht validiert",
+      "save": "Speichern",
+      "search-by-name": "Berechnete Felder nach Namen suchen",
+      "select-form": "Formular auswählen",
+      "select-module": "Modul auswählen",
+      "sort-asc": "Alphabetisch (A–Z)",
+      "sort-asc-descripton": "Ergebnisse in alphabetisch aufsteigender Reihenfolge sortieren",
+      "sort-dsc": "Alphabetisch (Z–A)",
+      "sort-dsc-descripton": "Ergebnisse in alphabetisch absteigender Reihenfolge sortieren",
+      "sort-placeholder": "Sortierung (Standard {{label}})",
+      "sql-query": "SQL-Abfrage",
+      "subtitle": "Berechnete Felder für ITSM-Service erstellen und verwalten",
+      "title": "Berechnete Felder",
+      "unknown-failure": "Unbekannter Fehler",
+      "update": "Aktualisieren",
+      "validate": "Validieren",
+      "validation-success": "Abfrage erfolgreich validiert"
+    },
+    "common": {
+      "cancel": "Abbrechen",
+      "download": "Herunterladen"
+    },
+    "contact-support": "<0>Erstellen Sie einen Snapshot der unten angegebenen Fehlerdetails und senden Sie ihn an den</0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Geplante Berichte verwalten",
+        "reset-filters": "Filter zurücksetzen",
+        "reset-filters-failure": "Filterwerte konnten nicht zurückgesetzt werden.",
+        "save-filters": "Gespeicherte Filter",
+        "save-filters-failure": "Filterwerte konnten nicht gespeichert werden.",
+        "save-filters-success": "Filterwerte erfolgreich gespeichert."
+      }
+    },
+    "date-picker": {
+      "description": "Eine Datumsbereichvariable definieren, mit der Benutzer einen beliebigen Datumsbereich auswählen können",
+      "name": "Datumsbereich"
+    },
+    "export": {
+      "generation-failed": "Bericht konnte nicht erstellt werden, versuchen Sie es später erneut",
+      "grid": "Raster",
+      "landscape": "Querformat",
+      "layout": "Layout",
+      "orientation": "Ausrichtung",
+      "portrait": "Hochformat",
+      "reduce-selection": "Reduzieren Sie die ausgewählten Variablenwerte für {{variableQuery}} und versuchen Sie es später erneut",
+      "save-as": "{{target}} als {{type}} speichern",
+      "simple": "Einfach",
+      "success": "Bericht erfolgreich erstellt",
+      "type": "Typ",
+      "view": "Anzeigen"
+    },
+    "manage-dashboards": {
+      "drop-click": "Hier per Drag-and-Drop ablegen oder zum Durchsuchen klicken",
+      "import-failed": "Import fehlgeschlagen",
+      "serialization-failed": "JSON -> JS-Serialisierung fehlgeschlagen",
+      "upload-json": "Dashboard-JSON-Datei(en) hochladen"
+    },
+    "org-custom-config": {
+      "community": "Community",
+      "documentation": "Dokumentation",
+      "invalid-url": "URL ungültig!",
+      "support": "Support",
+      "video": "Video"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Eingebettetes Video eingeben",
+        "invalid-url": "Keine gültige URL",
+        "url": "Video-URL"
+      },
+      "bmc-welcome": {
+        "communities": "Communitys",
+        "community-description": "Community-Beschreibung",
+        "dashboards": "Dashboards",
+        "documentation": "Dokumentation",
+        "documentation-description": "Beschreibung der Dokumentation",
+        "video-description": "Videobeschreibung",
+        "videos": "Videos"
+      }
+    },
+    "route-error": "Hoppla … Ein unerwarteter Fehler ist aufgetreten.",
+    "search": {
+      "comfirm-export": "Möchten Sie das/die {{dashCount}} ausgewählte/-n Dashboard/-s exportieren?",
+      "export": "Exportieren",
+      "export-failed": "Export fehlgeschlagen",
+      "export-success": "Erfolgreich exportiert"
+    },
+    "share-modal": {
+      "loading": "Ladevorgang"
+    },
+    "toggle-feature": {
+      "manage-features": "Dashboard-Funktionen verwalten"
+    }
+  }
+}

@@ -74,6 +74,38 @@ var (
 	// packaging
 	Packaging = "unknown"
 
+	// BMC code
+	// author (ateli) start - Custom config parameter to fetch IMS JWQT refresh endpoint
+	IMSJWTRefreshEP string
+	// author (ateli) end
+	// author (kmejdi) start - UI content service endpoint
+	UcsEndpoint string
+	// author (kmejdi) end
+	EnvType string
+	// End
+	// BMC code
+	// feature flag
+	FeatureFlagEndpoint string
+	FeatureFlagEnabled  bool
+	// End
+	// BMC code
+	// Reporting endpoint
+	ReportingServerURL                 string
+	ReportingServerPDFEndPoint         string
+	ReportingServerMailerEndPoint      string
+	ReportingServerExecuteOnceEndPoint string
+	ReportSchedulerTrialDefaultLimit   int
+	ReportSchedulerLicenseDefaultLimit int
+
+	BulkLimit       int
+	BulkExportLimit int
+	IMS_Tenant0     int64
+	GF_Tenant0      int64
+	BHD_Version     string
+
+	EmailAttachmentSizeLimit int
+	CSVDelimiter             []string
+	// End
 	CookieSecure           bool
 	CookieSameSiteDisabled bool
 	CookieSameSiteMode     http.SameSite
@@ -141,7 +173,10 @@ type Cfg struct {
 	Smtp SmtpSettings
 
 	// Rendering
-	ImagesDir                      string
+	ImagesDir string
+	// BMC code - Start
+	XLSsDir string
+	// End
 	CSVsDir                        string
 	PDFsDir                        string
 	RendererUrl                    string
@@ -1047,7 +1082,9 @@ func (cfg *Cfg) parseINIFile(iniFile *ini.File) error {
 	if Target != "" {
 		cfg.Target = util.SplitString(Target)
 	}
-	cfg.Env = valueAsString(iniFile.Section(""), "app_mode", "development")
+	// BMC Change: Next two lines, setting Env correctly
+	Env = valueAsString(iniFile.Section(""), "app_mode", "development")
+	cfg.Env = Env
 	cfg.StackID = valueAsString(iniFile.Section("environment"), "stack_id", "")
 	cfg.Slug = valueAsString(iniFile.Section("environment"), "stack_slug", "")
 	//nolint:staticcheck
@@ -1063,6 +1100,16 @@ func (cfg *Cfg) parseINIFile(iniFile *ini.File) error {
 		return err
 	}
 
+	// BMC code
+	// author(ateli) start - Assign value for custom config parameter "IMSJWTRefreshEP"
+	server := iniFile.Section("server")
+	IMSJWTRefreshEP = valueAsString(server, "ims_jwt_refresh_endpoint", "")
+	// author(ateli) end
+	// author(kmejdi) start
+	UcsEndpoint = valueAsString(server, "ucs_endpoint", "")
+	// author(kmejdi) end
+	EnvType = valueAsString(server, "env_type", "HelixADE")
+	// End
 	if err := readDataProxySettings(iniFile, cfg); err != nil {
 		return err
 	}
@@ -1259,6 +1306,19 @@ func (cfg *Cfg) parseINIFile(iniFile *ini.File) error {
 	cfg.readDateFormats()
 	cfg.readGrafanaJavascriptAgentConfig()
 
+	// BMC code
+	reportScheduler := iniFile.Section("report_scheduler")
+	ReportingServerURL = valueAsString(reportScheduler, "server_url", "")
+	ReportingServerPDFEndPoint = valueAsString(reportScheduler, "preview_endpoint", "/preview")
+	ReportingServerMailerEndPoint = valueAsString(reportScheduler, "mail_endpoint", "/mail")
+	ReportingServerExecuteOnceEndPoint = valueAsString(reportScheduler, "execute_endpoint", "/execute")
+	miscSection := iniFile.Section("misc")
+	allowedCSVDelimiterStr := valueAsString(reportScheduler, "allowed_csv_delimiter", "")
+	if len(allowedCSVDelimiterStr) > 0 {
+		CSVDelimiter = strings.Split(allowedCSVDelimiterStr, "")
+	}
+	// End
+
 	if err := cfg.readLiveSettings(iniFile); err != nil {
 		return err
 	}
@@ -1271,6 +1331,24 @@ func (cfg *Cfg) parseINIFile(iniFile *ini.File) error {
 
 	cfg.readFeatureManagementConfig()
 	cfg.readPublicDashboardsSettings()
+
+	// BMC code start
+	ReportSchedulerLicenseDefaultLimit = reportScheduler.Key("licensed_tenant_limit").MustInt(10)
+	ReportSchedulerTrialDefaultLimit = reportScheduler.Key("trial_tenant_limit").MustInt(5)
+
+	pluginsSection := iniFile.Section("plugins")
+	BulkLimit = pluginsSection.Key("bulk_limit").MustInt(10)
+	BulkExportLimit = pluginsSection.Key("bulk_export_limit").MustInt(100)
+	EmailAttachmentSizeLimit = miscSection.Key("email_attachment_size_limit").MustInt(30)
+
+	IMSTenant0 := os.Getenv("IMS_TENANT0")
+	GFTenant0 := os.Getenv("GF_TENANT0")
+	BHD_Version = os.Getenv("RELEASE_VERSION")
+
+	IMS_Tenant0, _ = strconv.ParseInt(IMSTenant0, 10, 64)
+	GF_Tenant0, _ = strconv.ParseInt(GFTenant0, 10, 64)
+
+	// BMC code end
 
 	return nil
 }
@@ -1667,7 +1745,8 @@ func readUserSettings(iniFile *ini.File, cfg *Cfg) error {
 			string(roletype.RoleAdmin)})
 	cfg.VerifyEmailEnabled = users.Key("verify_email_enabled").MustBool(false)
 
-	cfg.CaseInsensitiveLogin = users.Key("case_insensitive_login").MustBool(true)
+	// BMC Code: Next line inline
+	cfg.CaseInsensitiveLogin = users.Key("case_insensitive_login").MustBool(false)
 
 	cfg.LoginHint = valueAsString(users, "login_hint", "")
 	cfg.PasswordHint = valueAsString(users, "password_hint", "")
@@ -1740,6 +1819,9 @@ func (cfg *Cfg) readRenderingSettings(iniFile *ini.File) error {
 	cfg.RendererConcurrentRequestLimit = renderSec.Key("concurrent_render_request_limit").MustInt(30)
 	cfg.RendererRenderKeyLifeTime = renderSec.Key("render_key_lifetime").MustDuration(5 * time.Minute)
 	cfg.ImagesDir = filepath.Join(cfg.DataPath, "png")
+	// BMC code - Start
+	cfg.XLSsDir = filepath.Join(cfg.DataPath, "excel")
+	// End
 	cfg.CSVsDir = filepath.Join(cfg.DataPath, "csv")
 	cfg.PDFsDir = filepath.Join(cfg.DataPath, "pdf")
 
@@ -1747,6 +1829,11 @@ func (cfg *Cfg) readRenderingSettings(iniFile *ini.File) error {
 }
 
 func (cfg *Cfg) readAlertingSettings(iniFile *ini.File) error {
+	// BMC code
+	featureflag := iniFile.Section("featureFlag")
+	FeatureFlagEnabled = featureflag.Key("enabled").MustBool(true)
+	FeatureFlagEndpoint = valueAsString(featureflag, "feature_flag_endpoint", "")
+	// End
 	alerting := iniFile.Section("alerting")
 	enabled, err := alerting.Key("enabled").Bool()
 	cfg.AlertingEnabled = nil

@@ -1,7 +1,7 @@
 import { defaults, each, sortBy } from 'lodash';
 
 import { DataSourceRef, PanelPluginMeta } from '@grafana/data';
-import { getDataSourceSrv } from '@grafana/runtime';
+import { getDataSourceSrv, getBackendSrv } from '@grafana/runtime';
 import config from 'app/core/config';
 import { PanelModel } from 'app/features/dashboard/state';
 import { getLibraryPanel } from 'app/features/library-panels/state/api';
@@ -70,12 +70,28 @@ interface DataSources {
   };
 }
 
+// BMC Code
+
+const VQBView = {
+  GET_VIEW_LIST: "/api/rmsmetadata/view/list",
+  VQB_VIEW_TYPE: "Views",
+  HELIX_DATASOURCE: "bmchelix-ade-datasource",
+  INPUT_VIEW_TYPE: "view"
+}
+
+// BMC Code Ends
+
 export interface LibraryElementExport {
   name: string;
   uid: string;
   model: any;
   kind: LibraryElementKind;
 }
+
+// BMC Code: start
+type ViewListItem = { label: string, value: number };
+type ViewListType = { id: number; itsmCompVersion: string; name: string; deleted: boolean };
+// BMC Code: end
 
 export class DashboardExporter {
   async makeExportable(dashboard: DashboardModel) {
@@ -94,8 +110,10 @@ export class DashboardExporter {
     const inputs: Input[] = [];
     const requires: Requires = {};
     const datasources: DataSources = {};
+    const viewVQBList: any = {};
     const variableLookup: { [key: string]: any } = {};
     const libraryPanels: Map<string, LibraryElementExport> = new Map<string, LibraryElementExport>();
+    const viewList: ViewListItem[] = [];
 
     for (const variable of saveModel.getVariables()) {
       variableLookup[variable.name] = variable;
@@ -208,6 +226,37 @@ export class DashboardExporter {
       }
     };
 
+    // BMC Code: starts
+    const getViewList = async () => {
+      const data: ViewListType[] = await getBackendSrv().get(VQBView.GET_VIEW_LIST);
+      return Array.isArray(data) ? data.filter(i => !i.deleted).map(item => ({ label: item.name, value: item.id })) : [];
+    };
+
+    const updateVQBInputs = async (sourceQuery: any) => {
+      let selectedView = sourceQuery.view?.selectedView;
+      if (typeof selectedView !== 'object') {
+        if (viewList.length === 0) {
+          viewList.push(...await getViewList());
+        }
+        const currentView = viewList.find(item => item.value === selectedView);
+        selectedView = sourceQuery.view.selectedView = {
+          viewId: currentView?.value || selectedView,
+          viewName: currentView?.label || "",
+        };
+      }
+      const refName = `VIEW_${selectedView.viewName.replace(' ', '_').toUpperCase()}`;
+      if (!viewVQBList.hasOwnProperty(refName)) {
+        viewVQBList[refName] = {
+          name: refName,
+          label: selectedView.viewName,
+          id: selectedView.viewId,
+          description: '',
+          type: 'view',
+        }
+      } 
+    }
+    // BMC Code: ends
+
     try {
       // check up panel data sources
       for (const panel of saveModel.panels) {
@@ -245,9 +294,24 @@ export class DashboardExporter {
         version: config.buildInfo.version,
       };
 
+
       // we need to process all panels again after all the promises are resolved
       // so all data sources, variables and targets have been templateized when we process library panels
       for (const panel of saveModel.panels) {
+        // BMC Code: start
+        // We will construct the inputs in case of helix VQB view.
+        if (panel?.datasource?.type === VQBView.HELIX_DATASOURCE) {
+          const childPanelList = panel?.targets || [];
+
+          for (const childPanel of childPanelList) {
+            const sourceQuery = childPanel?.sourceQuery;
+            if (sourceQuery?.queryType === VQBView.VQB_VIEW_TYPE) {
+              updateVQBInputs(sourceQuery);
+            }
+          }
+        }
+        // END VQB view inputs
+        // // BMC Code: end
         await processLibraryPanels(panel);
         if (panel.collapsed !== undefined && panel.collapsed === true && panel.panels) {
           for (const rowPanel of panel.panels) {
@@ -256,7 +320,20 @@ export class DashboardExporter {
         }
       }
 
+      // BMC Code: starts
+      for (const list of saveModel?.templating?.list) {
+        const sourceQuery = list?.query?.sourceQuery;
+        if (sourceQuery?.queryType === VQBView.VQB_VIEW_TYPE) {
+          updateVQBInputs(sourceQuery);
+        }
+      }
+      // BMC Code: ends
+
       each(datasources, (value: any) => {
+        inputs.push(value);
+      });
+      // BMC Code
+      each(viewVQBList, (value: any) => {
         inputs.push(value);
       });
 

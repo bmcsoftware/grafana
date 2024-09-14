@@ -1,12 +1,14 @@
 package navtreeimpl
 
 import (
+	"github.com/grafana/grafana/pkg/api/bmc/external"
 	ac "github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/accesscontrol/ssoutils"
 	contextmodel "github.com/grafana/grafana/pkg/services/contexthandler/model"
 	"github.com/grafana/grafana/pkg/services/correlations"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/navtree"
+	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/pluginsintegration/pluginaccesscontrol"
 	"github.com/grafana/grafana/pkg/services/serviceaccounts"
 )
@@ -22,20 +24,19 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 	// FIXME: If plugin admin is disabled or externally managed, server admins still need to access the page, this is why
 	// while we don't have a permissions for listing plugins the legacy check has to stay as a default
 	if pluginaccesscontrol.ReqCanAdminPlugins(s.cfg)(c) || hasAccess(pluginaccesscontrol.AdminAccessEvaluator) {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "Plugins",
-			Id:       "plugins",
-			SubTitle: "Extend the Grafana experience with plugins",
-			Icon:     "plug",
-			Url:      s.cfg.AppSubURL + "/plugins",
-		})
+		if ac.ReqGrafanaAdmin(c) {
+			configNodes = append(configNodes, &navtree.NavLink{
+				Text:     "Plugins",
+				Id:       "plugins",
+				SubTitle: "Extend the BMC Helix Dashboards experience with plugins",
+				Icon:     "plug",
+				Url:      s.cfg.AppSubURL + "/plugins",
+			})
+		}
 	}
 
-	if hasAccess(ac.EvalAny(ac.EvalPermission(ac.ActionOrgUsersRead), ac.EvalPermission(ac.ActionUsersRead, ac.ScopeGlobalUsersAll))) {
-		configNodes = append(configNodes, &navtree.NavLink{
-			Text: "Users", SubTitle: "Manage users in Grafana", Id: "global-users", Url: s.cfg.AppSubURL + "/admin/users", Icon: "user",
-		})
-	}
+	// BMC code - RBAC
+	rbacEnabled := external.FeatureFlagBhdRBAC.Enabled(c.Req, c.SignedInUser)
 
 	if hasAccess(ac.TeamsAccessEvaluator) {
 		configNodes = append(configNodes, &navtree.NavLink{
@@ -47,29 +48,61 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 		})
 	}
 
-	if enableServiceAccount(s, c) {
+	if c.OrgRole == org.RoleAdmin && rbacEnabled {
 		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "Service accounts",
-			Id:       "serviceaccounts",
-			SubTitle: "Use service accounts to run automated workloads in Grafana",
-			Icon:     "gf-service-account",
-			Url:      s.cfg.AppSubURL + "/org/serviceaccounts",
+			Text:     "Roles",
+			Id:       "roles",
+			SubTitle: "Manage roles across an organization",
+			Icon:     "roles-alt",
+			Url:      s.cfg.AppSubURL + "/org/roles",
 		})
 	}
 
-	disabled, err := s.apiKeyService.IsDisabled(ctx, c.SignedInUser.GetOrgID())
-	if err != nil {
-		return nil, err
-	}
-	if hasAccess(ac.ApiKeyAccessEvaluator) && !disabled {
+	if c.OrgRole == org.RoleAdmin {
 		configNodes = append(configNodes, &navtree.NavLink{
-			Text:     "API keys",
-			Id:       "apikeys",
-			SubTitle: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
-			Icon:     "key-skeleton-alt",
-			Url:      s.cfg.AppSubURL + "/org/apikeys",
+			Text:     "Reporting Metadata Studio",
+			Id:       "rms-config",
+			SubTitle: "Introduction and starting point to reporting metadata studio",
+			Icon:     "cog",
+			Url:      s.cfg.AppSubURL + "/org/rms-config",
 		})
 	}
+
+	// When user is admin or superuser -> true
+	// When user have users:read or global:users:* permissions -> true
+	if c.OrgRole == org.RoleAdmin || hasAccess(ac.EvalPermission(ac.ActionUsersRead, ac.ScopeGlobalUsersAll)) {
+		configNodes = append(configNodes, &navtree.NavLink{
+			Text: "Users", SubTitle: "Manage users in BMC Helix Dashboards", Id: "global-users", Url: s.cfg.AppSubURL + "/admin/users", Icon: "user",
+		})
+	}
+
+	// BMC code
+	/*
+
+		if enableServiceAccount(s, c) {
+			configNodes = append(configNodes, &navtree.NavLink{
+				Text:     "Service accounts",
+				Id:       "serviceaccounts",
+				SubTitle: "Use service accounts to run automated workloads in Grafana",
+				Icon:     "gf-service-account",
+				Url:      s.cfg.AppSubURL + "/org/serviceaccounts",
+			})
+		}
+		disabled, err := s.apiKeyService.IsDisabled(ctx, c.SignedInUser.GetOrgID())
+		if err != nil {
+			return nil, err
+		}
+		if hasAccess(ac.ApiKeyAccessEvaluator) && !disabled {
+			configNodes = append(configNodes, &navtree.NavLink{
+				Text:     "API keys",
+				Id:       "apikeys",
+				SubTitle: "Manage and create API keys that are used to interact with Grafana HTTP APIs",
+				Icon:     "key-skeleton-alt",
+				Url:      s.cfg.AppSubURL + "/org/apikeys",
+			})
+		}
+	*/
+	// End
 
 	if hasAccess(ac.OrgPreferencesAccessEvaluator) {
 		configNodes = append(configNodes, &navtree.NavLink{
@@ -94,7 +127,7 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 
 	if hasAccess(ac.EvalPermission(ac.ActionSettingsRead, ac.ScopeSettingsAll)) {
 		configNodes = append(configNodes, &navtree.NavLink{
-			Text: "Settings", SubTitle: "View the settings defined in your Grafana config", Id: "server-settings", Url: s.cfg.AppSubURL + "/admin/settings", Icon: "sliders-v-alt",
+			Text: "Settings", SubTitle: "View the settings defined in your BMC Helix Dashboards config", Id: "server-settings", Url: s.cfg.AppSubURL + "/admin/settings", Icon: "sliders-v-alt",
 		})
 	}
 
@@ -135,6 +168,9 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 		configNodes = append(configNodes, storage)
 	}
 
+	if len(configNodes) == 0 {
+		return nil, nil
+	}
 	configNode := &navtree.NavLink{
 		Id:         navtree.NavIDCfg,
 		Text:       "Administration",

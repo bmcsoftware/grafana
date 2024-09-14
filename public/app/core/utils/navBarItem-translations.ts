@@ -36,6 +36,9 @@ export function getNavTitle(navId: string | undefined) {
       return t('nav.snapshots.title', 'Snapshots');
     case 'dashboards/library-panels':
       return t('nav.library-panels.title', 'Library panels');
+    // BMC code - next case
+    case 'calc-fields':
+      return t('bmc.calc-fields.title', 'Calculated fields');
     case 'reports':
       return t('nav.reporting.title', 'Reporting');
     case 'dashboards/public':
@@ -98,6 +101,12 @@ export function getNavTitle(navId: string | undefined) {
       return t('nav.users.title', 'Users');
     case 'teams':
       return t('nav.teams.title', 'Teams');
+    // BMC Code: Start
+    case 'roles':
+      return t('bmc.nav.roles.title', 'Roles');
+    case 'rms-config':
+      return t('bmc.nav.rms.title', 'Reporting Metadata Studio');
+    // BMC Code: End
     case 'plugins':
       return t('nav.plugins.title', 'Plugins');
     case 'org-settings':
@@ -204,6 +213,9 @@ export function getNavSubTitle(navId: string | undefined) {
       );
     case 'dashboards/library-panels':
       return t('nav.library-panels.subtitle', 'Reusable panels that can be added to multiple dashboards');
+    // BMC code - next case
+    case 'calc-fields':
+      return t('bmc.calc-fields.subtitle', 'Create and manage calculated fields for ITSM service');
     case 'alerting':
       return t('nav.alerting.subtitle', 'Learn about problems in your systems moments after they occur');
     case 'alerting-upgrade':
@@ -232,20 +244,32 @@ export function getNavSubTitle(navId: string | undefined) {
       return t('nav.users.subtitle', 'Invite and assign roles to users');
     case 'teams':
       return t('nav.teams.subtitle', 'Groups of users that have common dashboard and permission needs');
+    // BMC code - start
+    case 'roles':
+      return t('bmc.nav.roles.subtitle', 'Manage roles across an organization');
+    case 'rms-config':
+      return t('bmc.nav.rms.subtitle', 'An application to create and modify views for Visual Query Builder');
+    // BMC code - end
     case 'plugins':
-      return t('nav.plugins.subtitle', 'Extend the Grafana experience with plugins');
+      return t('nav.plugins.subtitle', 'Extend the BMC Helix Dashboards experience with plugins');
     case 'org-settings':
       return t('nav.org-settings.subtitle', 'Manage preferences across an organization');
     case 'apikeys':
-      return t('nav.api-keys.subtitle', 'Manage and create API keys that are used to interact with Grafana HTTP APIs');
+      return t(
+        'nav.api-keys.subtitle',
+        'Manage and create API keys that are used to interact with BMC Helix Dashboards HTTP APIs'
+      );
     case 'serviceaccounts':
-      return t('nav.service-accounts.subtitle', 'Use service accounts to run automated workloads in Grafana');
+      return t(
+        'nav.service-accounts.subtitle',
+        'Use service accounts to run automated workloads in BMC Helix Dashboards'
+      );
     case 'global-users':
-      return t('nav.global-users.subtitle', 'Manage users in Grafana');
+      return t('nav.global-users.subtitle', 'Manage users in BMC Helix Dashboards');
     case 'global-orgs':
-      return t('nav.global-orgs.subtitle', 'Isolated instances of Grafana running on the same server');
+      return t('nav.global-orgs.subtitle', 'Isolated instances of BMC Helix Dashboards running on the same server');
     case 'server-settings':
-      return t('nav.server-settings.subtitle', 'View the settings defined in your Grafana config');
+      return t('nav.server-settings.subtitle', 'View the settings defined in your BMC Helix Dashboards config');
     case 'storage':
       return t('nav.storage.subtitle', 'Manage file storage');
     case 'support-bundles':
@@ -262,7 +286,7 @@ export function getNavSubTitle(navId: string | undefined) {
     case 'cfg/access':
       return t('nav.config-access.subtitle', 'Configure access for individual users, teams, and service accounts');
     case 'apps':
-      return t('nav.apps.subtitle', 'App plugins that extend the Grafana experience');
+      return t('nav.apps.subtitle', 'App plugins that extend the BMC Helix Dashboards experience');
     case 'monitoring':
       return t('nav.monitoring.subtitle', 'Out-of-the-box observability solutions');
     case 'infrastructure':
