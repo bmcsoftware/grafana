@@ -4,6 +4,7 @@ import Skeleton from 'react-loading-skeleton';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { GrafanaTheme2 } from '@grafana/data';
+import { config } from '@grafana/runtime';
 import {
   Avatar,
   CellProps,
@@ -23,6 +24,7 @@ import EmptyListCTA from 'app/core/components/EmptyListCTA/EmptyListCTA';
 import { Page } from 'app/core/components/Page/Page';
 import { fetchRoleOptions } from 'app/core/components/RolePicker/api';
 import { contextSrv } from 'app/core/services/context_srv';
+import { isGrafanaAdmin } from 'app/features/plugins/admin/permissions';
 import { AccessControlAction, Role, StoreState, Team } from 'app/types';
 
 import { TeamRolePicker } from '../../core/components/RolePicker/TeamRolePicker';
@@ -176,12 +178,14 @@ export const TeamList = ({
                   </a>
                 </Tooltip>
               )}
-              <DeleteButton
-                aria-label={`Delete team ${original.name}`}
-                size="sm"
-                disabled={!canDelete}
-                onConfirm={() => deleteTeam(original.id)}
-              />
+              {config.buildInfo.env === 'development' || isGrafanaAdmin() ? (
+                <DeleteButton
+                  aria-label={`Delete team ${original.name}`}
+                  size="sm"
+                  disabled={!canDelete}
+                  onConfirm={() => deleteTeam(original.id)}
+                />
+              ) : null}
             </Stack>
           );
         },
@@ -194,24 +198,29 @@ export const TeamList = ({
     <Page
       navId="teams"
       actions={
-        <LinkButton href={canCreate ? 'org/teams/new' : '#'} disabled={!canCreate}>
-          New Team
-        </LinkButton>
+        config.buildInfo.env === 'development' && (
+          <LinkButton href={canCreate ? 'org/teams/new' : '#'} disabled={!canCreate}>
+            New Team
+          </LinkButton>
+        )
       }
     >
       <Page.Contents>
         {noTeams ? (
-          <EmptyListCTA
-            title="You haven't created any teams yet."
-            buttonIcon="users-alt"
-            buttonLink="org/teams/new"
-            buttonTitle=" New team"
-            buttonDisabled={!contextSrv.hasPermission(AccessControlAction.ActionTeamsCreate)}
-            proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
-            proTipLink=""
-            proTipLinkTitle=""
-            proTipTarget="_blank"
-          />
+          // BMC code - next line
+          config.buildInfo.env === 'development' && (
+            <EmptyListCTA
+              title="You haven't created any teams yet."
+              buttonIcon="users-alt"
+              buttonLink="org/teams/new"
+              buttonTitle=" New team"
+              buttonDisabled={!contextSrv.hasPermission(AccessControlAction.ActionTeamsCreate)}
+              proTip="Assign folder and dashboard permissions to teams instead of users to ease administration."
+              proTipLink=""
+              proTipLinkTitle=""
+              proTipTarget="_blank"
+            />
+          )
         ) : (
           <>
             <div className="page-action-bar">

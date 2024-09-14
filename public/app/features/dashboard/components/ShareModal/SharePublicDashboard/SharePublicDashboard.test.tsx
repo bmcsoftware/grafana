@@ -12,8 +12,8 @@ import config from 'app/core/config';
 import { backendSrv } from 'app/core/services/backend_srv';
 import { contextSrv } from 'app/core/services/context_srv';
 import { Echo } from 'app/core/services/echo/Echo';
-import { createDashboardModelFixture } from 'app/features/dashboard/state/__fixtures__/dashboardFixtures';
 import { DashboardInteractions } from 'app/features/dashboard-scene/utils/interactions';
+import { createDashboardModelFixture } from 'app/features/dashboard/state/__fixtures__/dashboardFixtures';
 
 import { shareDashboardType } from '../utils';
 

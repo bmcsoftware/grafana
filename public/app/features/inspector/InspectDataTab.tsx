@@ -194,6 +194,7 @@ export class InspectDataTab extends PureComponent<Props, State> {
       theme: config.theme2,
       fieldConfig: fieldConfigCleaned,
       timeZone,
+      // ToDo_GF_10.4.2: Check below function works fine or not
       replaceVariables: (value, scopedVars, format) => getTemplateSrv().replace(value, scopedVars, format),
     });
   }
@@ -220,7 +221,13 @@ export class InspectDataTab extends PureComponent<Props, State> {
   renderActions(dataFrames: DataFrame[], hasLogs: boolean, hasTraces: boolean, hasServiceGraph: boolean) {
     return (
       <>
-        <Button variant="primary" onClick={() => this.exportCsv(dataFrames, hasLogs)} size="sm">
+        {/* BMC Code: Next component inline for id */}
+        <Button
+          id={'custom-csv-selector-download-csv'}
+          variant="primary"
+          onClick={() => this.exportCsv(dataFrames, hasLogs)}
+          size="sm"
+        >
           <Trans i18nKey="dashboard.inspect-data.download-csv">Download CSV</Trans>
         </Button>
         {hasLogs && (

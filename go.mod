@@ -42,7 +42,7 @@ require (
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // @grafana/backend-platform
 	github.com/centrifugal/centrifuge v0.30.2 // @grafana/grafana-app-platform-squad
 	github.com/crewjam/saml v0.4.13 // @grafana/grafana-authnz-team
-	github.com/fatih/color v1.15.0 // @grafana/backend-platform
+	github.com/fatih/color v1.16.0 // @grafana/backend-platform
 	github.com/gchaincl/sqlhooks v1.3.0 // @grafana/backend-platform
 	github.com/go-ldap/ldap/v3 v3.4.4 // @grafana/grafana-authnz-team
 	github.com/go-openapi/strfmt v0.22.0 // @grafana/alerting-squad-backend
@@ -65,7 +65,7 @@ require (
 	github.com/grafana/grafana-azure-sdk-go v1.12.0 // @grafana/partner-datasources
 	github.com/grafana/grafana-plugin-sdk-go v0.218.0 // @grafana/plugins-platform-backend
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // @grafana/backend-platform
-	github.com/hashicorp/go-hclog v1.6.2 // @grafana/plugins-platform-backend
+	github.com/hashicorp/go-hclog v1.6.3 // @grafana/plugins-platform-backend
 	github.com/hashicorp/go-plugin v1.6.0 // @grafana/plugins-platform-backend
 	github.com/hashicorp/go-version v1.6.0 // @grafana/backend-platform
 	github.com/hashicorp/hcl/v2 v2.17.0 // @grafana/alerting-squad-backend
@@ -74,10 +74,10 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // @grafana/backend-platform
 	github.com/json-iterator/go v1.1.12 // @grafana/backend-platform
 	github.com/lib/pq v1.10.9 // @grafana/backend-platform
-	github.com/linkedin/goavro/v2 v2.10.0 // @grafana/backend-platform
+	github.com/linkedin/goavro/v2 v2.11.1 // @grafana/backend-platform
 	github.com/m3db/prometheus_remote_client_golang v0.4.4 // @grafana/backend-platform
 	github.com/magefile/mage v1.15.0 // @grafana/grafana-release-guild
-	github.com/mattn/go-isatty v0.0.19 // @grafana/backend-platform
+	github.com/mattn/go-isatty v0.0.20 // @grafana/backend-platform
 	github.com/mattn/go-sqlite3 v1.14.19 // @grafana/backend-platform
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // @grafana/alerting-squad-backend
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // @grafana/grafana-operator-experience-squad
@@ -137,7 +137,7 @@ require (
 	github.com/FZambia/eagle v0.1.0 // indirect
 	github.com/alecthomas/units v0.0.0-20231202071711-9a357b53e9c9 // indirect
 	github.com/andybalholm/brotli v1.0.5 // @grafana/partner-datasources
-	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
@@ -199,7 +199,7 @@ require (
 	github.com/prometheus/exporter-toolkit v0.11.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20220428173112-74888fd59c2b // indirect
-	github.com/rs/cors v1.10.1 // indirect
+	github.com/rs/cors v1.11.0 // indirect
 	github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529 // indirect
 	github.com/segmentio/encoding v0.3.6 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
@@ -214,7 +214,7 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.11.0 // @grafana/alerting-squad-backend
 	go.uber.org/goleak v1.3.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.14.0 // @grafana/backend-platform
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
@@ -346,7 +346,7 @@ require (
 	github.com/grafana/regexp v0.0.0-20221123153739-15dc172cd2db // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
-	github.com/hashicorp/go-retryablehttp v0.7.4 // indirect
+	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/memberlist v0.5.0 // indirect
@@ -438,6 +438,7 @@ require (
 	github.com/ProtonMail/go-crypto v0.0.0-20230828082145-3c4c8a2d2371 // @grafana/plugins-platform-backend
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/axiomhq/hyperloglog v0.0.0-20191112132149-a4c4c47bc57f // indirect
+	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/blevesearch/go-porterstemmer v1.0.3 // indirect
 	github.com/blevesearch/mmap-go v1.0.4 // indirect
@@ -488,14 +489,27 @@ require github.com/fullstorydev/grpchan v1.1.1 // @grafana/backend-platform
 
 require (
 	github.com/bufbuild/protocompile v0.4.0 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/gorilla/css v1.0.0 // indirect
 	github.com/grafana/sqlds/v3 v3.2.0 // indirect
 	github.com/jhump/protoreflect v1.15.1 // indirect
+	github.com/kr/fs v0.1.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mithrandie/csvq v1.17.10 // indirect
 	github.com/mithrandie/csvq-driver v1.6.8 // indirect
 	github.com/mithrandie/go-file/v2 v2.1.0 // indirect
 	github.com/mithrandie/go-text v1.5.4 // indirect
 	github.com/mithrandie/ternary v1.1.1 // indirect
+)
+
+// BMC code
+require (
+	github.bmc.com/DSOM-ADE/authz-go v0.0.0-20240118072739-071795dae1e7
+	github.com/confluentinc/confluent-kafka-go v1.9.2
+	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
+	github.com/jlaffaye/ftp v0.1.0
+	github.com/microcosm-cc/bluemonday v1.0.18
+	github.com/pkg/sftp v1.13.5
 )
 
 // Use fork of crewjam/saml with fixes for some issues until changes get merged into upstream

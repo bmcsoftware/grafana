@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { PureComponent, lazy, Suspense } from 'react';
 
-import { Modal, ModalTabsHeader, TabContent, Themeable2, withTheme2 } from '@grafana/ui';
-import { config } from 'app/core/config';
+import { Modal, ModalTabsHeader, TabContent, Themeable2, withTheme2, LoadingPlaceholder } from '@grafana/ui';
 import { contextSrv } from 'app/core/core';
 import { t } from 'app/core/internationalization';
 import { SharePublicDashboard } from 'app/features/dashboard/components/ShareModal/SharePublicDashboard/SharePublicDashboard';
 import { isPublicDashboardsEnabled } from 'app/features/dashboard/components/ShareModal/SharePublicDashboard/SharePublicDashboardUtils';
+import {
+  getGrafanaFeatureStatus,
+  FEATURE_CONST,
+  getFeatureStatus,
+} from 'app/features/dashboard/services/featureFlagSrv';
 import { DashboardModel, PanelModel } from 'app/features/dashboard/state';
 import { DashboardInteractions } from 'app/features/dashboard-scene/utils/interactions';
 import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
@@ -13,10 +17,37 @@ import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
 import { ShareEmbed } from './ShareEmbed';
 import { ShareExport } from './ShareExport';
 import { ShareLibraryPanel } from './ShareLibraryPanel';
-import { ShareLink } from './ShareLink';
+import { ShareLink, Props as ShareProps } from './ShareLink';
 import { ShareSnapshot } from './ShareSnapshot';
 import { ShareModalTabModel } from './types';
 import { shareDashboardType } from './utils';
+
+// BMC code
+const ExportUtility = lazy(() => import(/* webpackChunkName: "ExportUtility" */ './ExportUtility'));
+
+const renderLoader = () => {
+  return (
+    <div className="preloader">
+      <LoadingPlaceholder text={t('bmc.share-modal.loading', 'Loading') + '...'} />
+    </div>
+  );
+};
+
+export class LazyExportUtility extends PureComponent<ShareProps> {
+  constructor(props: ShareProps) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Suspense fallback={renderLoader()}>
+        <ExportUtility {...this.props} />
+      </Suspense>
+    );
+  }
+}
+// End
+// prettier-ignore
 
 const customDashboardTabs: ShareModalTabModel[] = [];
 const customPanelTabs: ShareModalTabModel[] = [];
@@ -33,7 +64,16 @@ function getTabs(panel?: PanelModel, activeTab?: string) {
   const linkLabel = t('share-modal.tab-title.link', 'Link');
   const tabs: ShareModalTabModel[] = [{ label: linkLabel, value: shareDashboardType.link, component: ShareLink }];
 
-  if (contextSrv.isSignedIn && config.snapshotEnabled) {
+  // BMC code
+  const rbacFeatureEnabled = getFeatureStatus(FEATURE_CONST.RBAC);
+  const canDownloadReport = contextSrv.hasPermission('dashboards:download') && rbacFeatureEnabled;
+
+  const downloadLabel = t('bmc.common.download', 'Download');
+  const downloadTab: ShareModalTabModel[] = [{ label: downloadLabel, value: 'download', component: LazyExportUtility }];
+  // end
+
+  // BMC code - inline change
+  if (contextSrv.isSignedIn && getGrafanaFeatureStatus(FEATURE_CONST.snapshot)) {
     const snapshotLabel = t('share-modal.tab-title.snapshot', 'Snapshot');
     tabs.push({ label: snapshotLabel, value: shareDashboardType.snapshot, component: ShareSnapshot });
   }
@@ -47,6 +87,12 @@ function getTabs(panel?: PanelModel, activeTab?: string) {
       tabs.push({ label: libraryPanelLabel, value: shareDashboardType.libraryPanel, component: ShareLibraryPanel });
     }
     tabs.push(...customPanelTabs);
+    // BMC code
+
+    if (!panel.isEditing && (!rbacFeatureEnabled || canDownloadReport)) {
+      tabs.push(...downloadTab);
+    }
+    // End
   } else {
     const exportLabel = t('share-modal.tab-title.export', 'Export');
     tabs.push({
@@ -55,6 +101,10 @@ function getTabs(panel?: PanelModel, activeTab?: string) {
       component: ShareExport,
     });
     tabs.push(...customDashboardTabs);
+    // BMC code - next line
+    if (!rbacFeatureEnabled || canDownloadReport) {
+      tabs.push(...downloadTab);
+    }
   }
 
   if (isPublicDashboardsEnabled()) {
@@ -77,7 +127,8 @@ interface Props extends Themeable2 {
   dashboard: DashboardModel;
   panel?: PanelModel;
   activeTab?: string;
-  onDismiss(): void;
+  // BMC code - inline change
+  onDismiss?(): void;
 }
 
 interface State {

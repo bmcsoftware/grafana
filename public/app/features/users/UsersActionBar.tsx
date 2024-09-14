@@ -2,9 +2,9 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RadioButtonGroup, LinkButton, FilterInput, InlineField } from '@grafana/ui';
-import config from 'app/core/config';
-import { contextSrv } from 'app/core/core';
-import { AccessControlAction, StoreState } from 'app/types';
+// import config from 'app/core/config';
+// import { contextSrv } from 'app/core/core';
+import { StoreState } from 'app/types';
 
 import { selectTotal } from '../invites/state/selectors';
 
@@ -46,12 +46,13 @@ export const UsersActionBarUnconnected = ({
     { label: 'Users', value: 'users' },
     { label: `Pending Invites (${pendingInvitesCount})`, value: 'invites' },
   ];
-  const canAddToOrg: boolean = contextSrv.hasPermission(AccessControlAction.OrgUsersAdd);
+  // BMC code - start
+  // const canAddToOrg: boolean = contextSrv.hasPermission(AccessControlAction.OrgUsersAdd);
   // Show invite button in the following cases:
   // 1) the instance is not a hosted Grafana instance (!config.externalUserMngInfo)
   // 2) new basic auth users can be created for this instance (!config.disableLoginForm).
-  const showInviteButton: boolean = canAddToOrg && !(config.disableLoginForm && config.externalUserMngInfo);
-
+  // const showInviteButton: boolean = canAddToOrg && !(config.disableLoginForm && config.externalUserMngInfo);
+  // BMC code - end
   return (
     <div className="page-action-bar" data-testid="users-action-bar">
       <InlineField grow>
@@ -66,7 +67,8 @@ export const UsersActionBarUnconnected = ({
           <RadioButtonGroup value={showInvites ? 'invites' : 'users'} options={options} onChange={onShowInvites} />
         </div>
       )}
-      {showInviteButton && <LinkButton href="org/users/invite">Invite</LinkButton>}
+      {/* // BMC code - next line */}
+      {/* {showInviteButton && <LinkButton href="org/users/invite">Invite</LinkButton>} */}
       {externalUserMngLinkUrl && (
         <LinkButton href={externalUserMngLinkUrl} target="_blank" rel="noopener">
           {externalUserMngLinkName}

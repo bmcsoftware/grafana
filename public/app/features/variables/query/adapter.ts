@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash';
 
+import { getFeatureStatus } from 'app/features/dashboard/services/featureFlagSrv';
+
 import { dispatch } from '../../../store/store';
 import { VariableAdapter } from '../adapters';
 import { ALL_VARIABLE_TEXT } from '../constants';
@@ -44,7 +46,8 @@ export const createQueryVariableAdapter = (): VariableAdapter<QueryVariableModel
     },
     getValueForUrl: (variable) => {
       if (isAllVariable(variable)) {
-        return ALL_VARIABLE_TEXT;
+        // BMC Change: Next line inline
+        return getFeatureStatus('bhd-ar-all-values-v2') && variable.discardForAll ? 'Omit' : ALL_VARIABLE_TEXT;
       }
       return variable.current.value;
     },
