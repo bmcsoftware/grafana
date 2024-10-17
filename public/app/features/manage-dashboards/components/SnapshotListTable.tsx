@@ -3,7 +3,7 @@ import useAsync from 'react-use/lib/useAsync';
 
 import { config } from '@grafana/runtime';
 import { ConfirmModal } from '@grafana/ui';
-import { Trans } from 'app/core/internationalization';
+import { t, Trans } from 'app/core/internationalization';
 import { getDashboardSnapshotSrv, Snapshot } from 'app/features/dashboard/services/SnapshotSrv';
 
 import { SnapshotListTableRow } from './SnapshotListTableRow';
@@ -84,9 +84,9 @@ export const SnapshotListTable = () => {
       <ConfirmModal
         isOpen={!!removeSnapshot}
         icon="trash-alt"
-        title="Delete"
-        body={`Are you sure you want to delete '${removeSnapshot?.name}'?`}
-        confirmText="Delete"
+        title={t('bmcgrafana.snapshots.delete-modal.delete', 'Delete')}
+        body={`${t('bmcgrafana.snapshots.delete-modal.confirmation-text', "Are you sure you want to delete '{{snapshotName}}'?", { snapshotName: removeSnapshot?.name })}`}
+        confirmText={t('bmcgrafana.snapshots.delete-modal.delete', 'Delete')}
         onDismiss={() => setRemoveSnapshot(undefined)}
         onConfirm={() => {
           doRemoveSnapshot(removeSnapshot!);

@@ -6,6 +6,7 @@ import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../themes';
 import { IconName } from '../../types/icon';
+import { t } from '../../utils/i18n';
 import { Button, ButtonVariant } from '../Button';
 import { Input } from '../Input/Input';
 import { HorizontalGroup } from '../Layout/Layout';
@@ -56,7 +57,8 @@ export const ConfirmModal = ({
   confirmText,
   confirmVariant = 'destructive',
   confirmationText,
-  dismissText = 'Cancel',
+  // BMC Change: Next line
+  dismissText = t('bmc.common.cancel', 'Cancel'),
   dismissVariant = 'secondary',
   alternativeText,
   modalClass,
@@ -103,7 +105,15 @@ export const ConfirmModal = ({
         {confirmationText ? (
           <div className={styles.modalConfirmationInput}>
             <HorizontalGroup>
-              <Input placeholder={`Type "${confirmationText}" to confirm`} onChange={onConfirmationTextChange} />
+              <Input
+                // BMC Change: Next line
+                placeholder={t(
+                  'bmcgrafana.grafana-ui.confirmation-model.confirmation-text',
+                  'Type "{{confirmationText}}" to confirm',
+                  { confirmationText }
+                )}
+                onChange={onConfirmationTextChange}
+              />
             </HorizontalGroup>
           </div>
         ) : null}

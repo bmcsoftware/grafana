@@ -13,6 +13,7 @@ import (
 
 // ExporterName is used as namespace for exposing prometheus metrics
 const ExporterName = "grafana"
+const HelixExporterName = "bmc_hdb"
 
 var (
 	// MInstanceStart is a metric counter for started instances
@@ -64,7 +65,7 @@ var (
 	MApiDashboardSnapshotCreate prometheus.Counter
 
 	// MApiDashboardSnapshotExternal is a metric external dashboard snapshots created
-	MApiDashboardSnapshotExternal prometheus.Counter
+    MApiDashboardSnapshotExternal prometheus.Counter
 
 	// MApiDashboardSnapshotGet is a metric loaded dashboards
 	MApiDashboardSnapshotGet prometheus.Counter
@@ -119,7 +120,7 @@ var (
 var (
 	// MDataSourceProxyReqTimer is a metric summary for dataproxy request duration
 	MDataSourceProxyReqTimer prometheus.Summary
-
+	
 	// MAlertingExecutionTime is a metric summary of alert execution duration
 	MAlertingExecutionTime prometheus.Summary
 
@@ -137,6 +138,10 @@ var (
 
 	// MAccessEvaluationsSummary is a metric summary for loading permissions request duration when evaluating access
 	MAccessEvaluationsSummary prometheus.Histogram
+
+	// MDataSourceProxyResDataSize is a metric summary for data proxy data consumption
+	MDataSourceProxyResDataSize *prometheus.GaugeVec
+	MDashboardHitCount *prometheus.CounterVec
 )
 
 // StatTotals
@@ -443,6 +448,18 @@ func init() {
 		Namespace:  ExporterName,
 	})
 
+	MDataSourceProxyResDataSize = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name:      "api_dataproxy_response_data_size",
+		Help:      "summary for dataproxy data consumption",
+		Namespace: HelixExporterName,
+	}, []string{"tenant_id", "data_source_id"})
+
+	MDashboardHitCount = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name:      "api_dashboard_hit",
+		Help:      "No of hits of a dashboard",
+		Namespace: HelixExporterName,
+	}, []string{"tenant_id", "dashboard_id"})
+
 	MAlertingExecutionTime = prometheus.NewSummary(prometheus.SummaryOpts{
 		Name:       "alerting_execution_time_milliseconds",
 		Help:       "summary of alert execution duration",
@@ -723,6 +740,8 @@ func initMetricVars(reg prometheus.Registerer) {
 		MApiDashboardGet,
 		MApiDashboardSearch,
 		MDataSourceProxyReqTimer,
+		MDataSourceProxyResDataSize,
+		MDashboardHitCount,
 		MAlertingExecutionTime,
 		MApiAdminUserCreate,
 		MApiLoginPost,

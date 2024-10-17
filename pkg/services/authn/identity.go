@@ -85,6 +85,14 @@ type Identity struct {
 	// IDToken is a signed token representing the identity that can be forwarded to plugins and external services.
 	// Will only be set when featuremgmt.FlagIdForwarding is enabled.
 	IDToken string
+
+	// Bmc code - start
+	HasExternalOrg     bool
+	IsUnrestrictedUser bool
+	MspOrgs            []string
+	BHDRoles           []int64
+	IsDedicatedInst    bool
+	// Bmc code end
 }
 
 func (i *Identity) GetAuthenticatedBy() string {
@@ -219,6 +227,15 @@ func (i *Identity) SignedInUser() *user.SignedInUser {
 		Teams:           i.Teams,
 		Permissions:     i.Permissions,
 		IDToken:         i.IDToken,
+
+		// BMC Change: Starts
+		HasExternalOrg:     i.HasExternalOrg,
+		IsUnrestrictedUser: i.IsUnrestrictedUser,
+		MspOrgs:            i.MspOrgs,
+		BHDRoles:           i.BHDRoles,
+		IsDedicatedInst:    i.IsDedicatedInst,
+		// BMC Change: Ends
+
 	}
 
 	if namespace == NamespaceAPIKey {
@@ -277,5 +294,34 @@ func IdentityFromSignedInUser(id string, usr *user.SignedInUser, params ClientPa
 		ClientParams:    params,
 		Permissions:     usr.Permissions,
 		IDToken:         usr.IDToken,
+		// BMC Change: Starts
+		HasExternalOrg:     usr.HasExternalOrg,
+		IsUnrestrictedUser: usr.IsUnrestrictedUser,
+		MspOrgs:            usr.MspOrgs,
+		BHDRoles:           usr.BHDRoles,
+		// BMC Change: Ends
 	}
 }
+
+// BMC Change: Starts
+func (i *Identity) GetHasExternalOrg() bool {
+	return i.HasExternalOrg
+}
+
+func (i *Identity) GetIsUnrestrictedUser() bool {
+	return i.IsUnrestrictedUser
+}
+
+func (i *Identity) GetMspOrgs() []string {
+	return i.MspOrgs
+}
+
+func (i *Identity) GetBHDRoles() []int64 {
+	return i.BHDRoles
+}
+
+func (i *Identity) GetIsDedicatedIst() bool {
+	return i.IsDedicatedInst
+}
+
+// BMC Change: Ends

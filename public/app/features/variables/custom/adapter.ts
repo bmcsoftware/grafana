@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash';
 
+import { t } from 'app/core/internationalization';
+
 import { dispatch } from '../../../store/store';
 import { VariableAdapter } from '../adapters';
 import { ALL_VARIABLE_TEXT } from '../constants';
@@ -7,16 +9,17 @@ import { optionPickerFactory } from '../pickers';
 import { setOptionAsCurrent, setOptionFromUrl } from '../state/actions';
 import { CustomVariableModel } from '../types';
 import { containsVariable, isAllVariable, toKeyedVariableIdentifier } from '../utils';
-
+ 
 import { CustomVariableEditor } from './CustomVariableEditor';
 import { updateCustomVariableOptions } from './actions';
 import { customVariableReducer, initialCustomVariableModelState } from './reducer';
 
+{/*BMC Change: To enable localization for below text*/}
 export const createCustomVariableAdapter = (): VariableAdapter<CustomVariableModel> => {
   return {
     id: 'custom',
-    description: 'Define variable values manually',
-    name: 'Custom',
+    description: t('bmcgrafana.dashboards.settings.variables.editor.select-variable-type.custom.description','Define variable values manually'),
+    name: t('bmcgrafana.dashboards.settings.variables.editor.select-variable-type.custom.name','Custom'),
     initialState: initialCustomVariableModelState,
     reducer: customVariableReducer,
     picker: optionPickerFactory<CustomVariableModel>(),

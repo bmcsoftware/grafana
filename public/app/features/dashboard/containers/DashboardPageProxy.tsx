@@ -7,6 +7,7 @@ import DashboardScenePage from 'app/features/dashboard-scene/pages/DashboardScen
 import { getDashboardScenePageStateManager } from 'app/features/dashboard-scene/pages/DashboardScenePageStateManager';
 import { DashboardRoutes } from 'app/types';
 
+
 import DashboardPage from './DashboardPage';
 import { DashboardPageRouteParams, DashboardPageRouteSearchParams } from './types';
 
@@ -18,6 +19,7 @@ export type DashboardPageProxyProps = GrafanaRouteComponentProps<
 // This proxy component is used for Dashboard -> Scenes migration.
 // It will render DashboardScenePage if the user is only allowed to view the dashboard.
 function DashboardPageProxy(props: DashboardPageProxyProps) {
+  
   if (config.featureToggles.dashboardScene || props.queryParams.scenes) {
     return <DashboardScenePage {...props} />;
   }
@@ -57,7 +59,7 @@ function DashboardPageProxy(props: DashboardPageProxyProps) {
   ) {
     return <DashboardScenePage {...props} />;
   } else {
-    return <DashboardPage {...props} />;
+    return <DashboardPage {...props} />
   }
 }
 

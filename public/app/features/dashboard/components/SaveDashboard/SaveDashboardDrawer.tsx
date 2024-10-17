@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 
 import { config, isFetchError } from '@grafana/runtime';
 import { Drawer, Tab, TabsBar } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
 import { jsonDiff } from 'app/features/dashboard-scene/settings/version-history/utils';
 
 import DashboardValidation from './DashboardValidation';
@@ -101,12 +102,14 @@ export const SaveDashboardDrawer = ({ dashboard, onDismiss, onSaveSuccess, isCop
     );
   }
 
-  let title = 'Save dashboard';
+  // BMC Change: Starts for localization support
+  let title = t('bmcgrafana.dashboards.save-dashboard.save-text', 'Save dashboard');
   if (isCopy) {
-    title = 'Save dashboard copy';
+    title = t('bmcgrafana.dashboards.save-dashboard.save-copy', 'Save dashboard copy');
   } else if (isProvisioned) {
-    title = 'Provisioned dashboard';
+    title = t('bmcgrafana.dashboards.save-dashboard.provisioned-text', 'Provisioned dashboard');
   }
+  // BMC Change: Ends
 
   return (
     <Drawer
@@ -115,9 +118,20 @@ export const SaveDashboardDrawer = ({ dashboard, onDismiss, onSaveSuccess, isCop
       subtitle={dashboard.title}
       tabs={
         <TabsBar>
-          <Tab label={'Details'} active={!showDiff} onChangeTab={() => setShowDiff(false)} />
+          <Tab
+            // BMC Change: Next line
+            label={t('bmcgrafana.dashboards.save-dashboard.change-details', 'Details')}
+            active={!showDiff}
+            onChangeTab={() => setShowDiff(false)}
+          />
           {data.hasChanges && (
-            <Tab label={'Changes'} active={showDiff} onChangeTab={() => setShowDiff(true)} counter={data.diffCount} />
+            <Tab
+              // BMC Change: Next line
+              label={t('bmcgrafana.dashboards.save-dashboard.changes-text', 'Changes')}
+              active={showDiff}
+              onChangeTab={() => setShowDiff(true)}
+              counter={data.diffCount}
+            />
           )}
         </TabsBar>
       }

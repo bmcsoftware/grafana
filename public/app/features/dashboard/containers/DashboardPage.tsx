@@ -14,6 +14,7 @@ import { createErrorNotification } from 'app/core/copy/appNotification';
 import { getKioskMode } from 'app/core/navigation/kiosk';
 import { GrafanaRouteComponentProps } from 'app/core/navigation/types';
 import { getNavModel } from 'app/core/selectors/navModel';
+import { dashboardLoadTime } from 'app/core/services/dashboardLoadTime_srv';
 import { PanelModel } from 'app/features/dashboard/state';
 import { dashboardWatcher } from 'app/features/live/dashboard/dashboardWatcher';
 import { AngularDeprecationNotice } from 'app/features/plugins/angularDeprecation/AngularDeprecationNotice';
@@ -78,7 +79,7 @@ export interface State {
 export class UnthemedDashboardPage extends PureComponent<Props, State> {
   declare context: GrafanaContextType;
   static contextType = GrafanaContext;
-
+  
   private forceRouteReloadCounter = 0;
   state: State = this.getCleanState();
 
@@ -88,7 +89,7 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
       viewPanel: null,
       showLoadingState: false,
       panelNotFound: false,
-      editPanelAccessDenied: false,
+      editPanelAccessDenied: false
     };
   }
 
@@ -109,6 +110,10 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
   initDashboard() {
     const { dashboard, match, queryParams } = this.props;
 
+    // BMC code 
+    // Start dashboard load time
+    dashboardLoadTime.reset();
+    
     if (dashboard) {
       this.closeDashboard();
     }
@@ -124,7 +129,7 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
       accessToken: match.params.accessToken,
       keybindingSrv: this.context.keybindings,
     });
-
+ 
     // small delay to start live updates
     setTimeout(this.updateLiveTimer, 250);
   }
@@ -447,6 +452,7 @@ function updateStatePageNavFromProps(props: Props, state: State): State {
     sectionNav,
   };
 }
+
 
 export const DashboardPage = withTheme2(UnthemedDashboardPage);
 DashboardPage.displayName = 'DashboardPage';

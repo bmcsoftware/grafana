@@ -1,21 +1,25 @@
 import { cloneDeep } from 'lodash';
 
+import { t } from 'app/core/internationalization';
+
 import { dispatch } from '../../../store/store';
 import { VariableAdapter } from '../adapters';
 import { optionPickerFactory } from '../pickers';
 import { setOptionAsCurrent, setOptionFromUrl } from '../state/actions';
 import { IntervalVariableModel } from '../types';
 import { toKeyedVariableIdentifier } from '../utils';
-
+ 
 import { IntervalVariableEditor } from './IntervalVariableEditor';
 import { updateAutoValue, updateIntervalVariableOptions } from './actions';
 import { initialIntervalVariableModelState, intervalVariableReducer } from './reducer';
 
+// BMC Change: To enable localization for below text
 export const createIntervalVariableAdapter = (): VariableAdapter<IntervalVariableModel> => {
   return {
     id: 'interval',
-    description: 'Define a timespan interval (ex 1m, 1h, 1d)',
-    name: 'Interval',
+    // description: 'Define a timespan interval (ex 1m, 1h, 1d)',
+    description: t('bmcgrafana.dashboards.settings.variables.editor.select-variable-type.interval.description','Define a timespan interval') + ' ex 1m, 1h, 1d',
+    name: t('bmcgrafana.dashboards.settings.variables.editor.select-variable-type.interval.name','Interval'),
     initialState: initialIntervalVariableModelState,
     reducer: intervalVariableReducer,
     picker: optionPickerFactory<IntervalVariableModel>(),

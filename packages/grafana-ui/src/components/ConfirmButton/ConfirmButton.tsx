@@ -6,7 +6,9 @@ import { GrafanaTheme2 } from '@grafana/data';
 import { stylesFactory, withTheme2 } from '../../themes';
 import { Themeable2 } from '../../types';
 import { ComponentSize } from '../../types/size';
+import { Trans } from '../../utils/i18n';
 import { Button, ButtonVariant } from '../Button';
+
 
 export interface Props extends Themeable2 {
   /** Confirm action callback */
@@ -134,7 +136,8 @@ class UnThemedConfirmButton extends PureComponent<Props, State> {
             {confirmText}
           </Button>
           <Button size={size} fill="text" onClick={this.onClickCancel}>
-            Cancel
+            {/*BMC Change: To enable localization for below text*/}
+            <Trans i18nKey={"bmcgrafana.grafana-ui.confirm-button.cancel-label"}>Cancel</Trans>
           </Button>
         </span>
       </span>

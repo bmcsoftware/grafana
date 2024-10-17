@@ -5,6 +5,7 @@ import { getInstanceState } from '../state/selectors';
 import { initialVariablesState, VariablePayload, VariablesState } from '../state/types';
 import { initialVariableModelState, IntervalVariableModel, VariableOption, VariableRefresh } from '../types';
 
+
 export const initialIntervalVariableModelState: IntervalVariableModel = {
   ...initialVariableModelState,
   type: 'interval',

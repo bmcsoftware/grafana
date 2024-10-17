@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 
 import { SelectableValue } from '@grafana/data';
 import { LinkButton, FilterInput, InlineField } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
 
 import { SortPicker } from '../Select/SortPicker';
 
@@ -25,7 +26,8 @@ export default class PageActionBar extends PureComponent<Props> {
       linkButton,
       setSearchQuery,
       target,
-      placeholder = 'Search by name or type',
+      // BMC Change: Next line
+      placeholder = t('bmcgrafana.search-inputs.name-type', 'Search by name or type'),
       sortPicker,
     } = this.props;
     const linkProps: typeof LinkButton.defaultProps = { href: linkButton?.href, disabled: linkButton?.disabled };

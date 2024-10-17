@@ -25,6 +25,920 @@
       "user": "User"
     }
   },
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "No data sources of type {{pluginName}} found",
+      "import": {
+        "import-all-failed": "Import all dashboard failed",
+        "no-import": "No Dashboards Imported"
+      },
+      "import-all": "Import all",
+      "import-failed": "Failed to import the following dashboards",
+      "import-success": "All dashboards are successfully imported",
+      "select-datasource": "Select a {{pluginName}} data source",
+      "set-parameters": "set required parameters for the selected dashboards",
+      "specify-constant": "Specify a string constant"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Aggregated",
+      "all": "All",
+      "clone": "Clone",
+      "confirm-delete": "Do you want to delete the selected calculated field(s)",
+      "connection-error": "Connectivity to BMC Helix ITSM is not configured.",
+      "custom": "Custom",
+      "delete": "Delete",
+      "details": "Calculated field details",
+      "edit": "Edit",
+      "edit-field": "Edit Calculated Field",
+      "eg": "Eg",
+      "failed": "Failed to get calculated fields",
+      "failure": "Failure",
+      "filter-by-type": "Filter by type (Default All)",
+      "form-name": "Form name",
+      "is-aggregate": "Is aggregate",
+      "is-aggregate-description": "Enable this option if your query includes aggregation functions.",
+      "module": "Module",
+      "module-name": "Module name",
+      "name": "Name",
+      "name-placeholder": "Enter the name of the calculated field",
+      "new-field": "New Calculated Field",
+      "no-calc-fields": "You haven't created any calculated fields yet.",
+      "not-found": "No calculated fields matching your query were found.",
+      "ootb": "Out-of-the-box",
+      "query-info": "Query must be a single column query",
+      "query-not-validated": "Query not validated",
+      "save": "Save",
+      "search-by-name": "Search calculated fields by name",
+      "select-form": "Select form",
+      "select-module": "Select module",
+      "sort-asc": "Alphabetically (A-Z)",
+      "sort-asc-descripton": "Sort results in an alphabetically ascending order",
+      "sort-dsc": "Alphabetically (Z-A)",
+      "sort-dsc-descripton": "Sort results in an alphabetically descending order",
+      "sort-placeholder": "Sort (Default {{label}})",
+      "sql-query": "SQL query",
+      "subtitle": "Create and manage calculated fields for ITSM service",
+      "title": "Calculated fields",
+      "unknown-failure": "Unknown failure",
+      "update": "Update",
+      "validate": "Validate",
+      "validation-success": "Query Validated Successfully"
+    },
+    "common": {
+      "cancel": "Cancel",
+      "dashboards": "Dashboards",
+      "delete": "Delete",
+      "download": "Download",
+      "edit": "Edit",
+      "loading": "Loading...",
+      "name": "Name",
+      "save": "Save",
+      "type": "Type"
+    },
+    "contact-support": "<0>Take a snapshot of the error details given below, and send it to</0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Manage scheduled reports",
+        "reset-filters": "Reset filters",
+        "reset-filters-failure": "Failed to reset filter values.",
+        "save-filters": "Save filters",
+        "save-filters-failure": "Failed to save filter values.",
+        "save-filters-success": "Saved filter values successfully."
+      }
+    },
+    "dashboard-import": {
+      "import-text": "Import",
+      "options": "Options",
+      "overwrite": "Overwrite",
+      "panel-import": "Panel import",
+      "panel-import-alert": "The import has a {{vqb}} panel. Please re-export it from the desired environment, or manual intervention will be required for view selection.",
+      "sub-title": "Import dashboard from file or via dashboard json",
+      "title": "Import dashboard"
+    },
+    "date-picker": {
+      "description": "Define a date range variable, where users can select any date range",
+      "name": "Date Range"
+    },
+    "export": {
+      "csvdelimiter": "Delimiter",
+      "generation-failed": "Failed to generate report, try again later",
+      "grid": "Grid",
+      "landscape": "Landscape",
+      "layout": "Layout",
+      "orientation": "Orientation",
+      "portrait": "Portrait",
+      "reduce-selection": "Please reduce selected variable values for {{variableQuery}} and try again later",
+      "save-as": "Save the {{target}} as {{type}}",
+      "simple": "Simple",
+      "success": "Successfully generated report",
+      "tableScaling": "Table scaling",
+      "type": "Type",
+      "view": "View"
+    },
+    "features-list": {
+      "date-function-resolution-for-service-management": "Date function resolution for service management",
+      "enable-ootb-views-for-visual-query-builder": "Enable OOTB Views for Visual Query Builder",
+      "export-complete-table-in-pdf": "Export Complete Table In PDF",
+      "skip-ootb-dashboards-during-upgrade": "Skip OOTB dashboards during upgrade",
+      "skip-ootb-dashboards-during-upgrade-confirm-dialog": {
+        "confirm-button": "Enable",
+        "desc": "Delete the folders of out-of-the-box dashboards that are not required before enabling this feature",
+        "title": "Toggle Feature"
+      },
+      "snapshot": "Snapshot"
+    },
+    "manage-dashboards": {
+      "drop-click": "Drag and drop here or click to browse",
+      "import-failed": "Import failed",
+      "serialization-failed": "JSON -> JS Serialization failed",
+      "upload-json": "Upload dashboard JSON file(s)"
+    },
+    "nav": {
+      "rms": {
+        "subtitle": "An application to create and modify views for Visual Query Builder",
+        "title": "Reporting Metadata Studio"
+      },
+      "roles": {
+        "subtitle": "Manage roles across an organization",
+        "title": "Roles"
+      }
+    },
+    "org-custom-config": {
+      "community": "Community",
+      "documentation": "Documentation",
+      "errors": {
+        "query-type-mandatory": "At least one query type should be enabled"
+      },
+      "support": "Support",
+      "video": "Video"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Enter embeded video",
+        "invalid-url": "Not a valid URL",
+        "url": "Video URL"
+      },
+      "bmc-welcome": {
+        "communities": "Communities",
+        "community-description": "Community description",
+        "default-community-description": "Connect. Share. Discover. Join discussions with peers and experts on BMC products and solutions.",
+        "default-documentation-description": "Go through the product documentation to understand all the Reporting features and how to use them.",
+        "default-video-description": "View video how-tos, overviews, and demos about BMC products and solutions on the BMC YouTube channel.",
+        "documentation": "Documentation",
+        "documentation-description": "Documentation description",
+        "video-description": "Video description",
+        "videos": "Videos"
+      }
+    },
+    "rbac": {
+      "common": {
+        "all": "All",
+        "assigned": "Assigned",
+        "menu": "Menu",
+        "name": "Name"
+      },
+      "permissions": {
+        "admin": {
+          "datasource-manage": "Manage datasources",
+          "datasource-manage-desc": "can manage datasources",
+          "reports-manage": "Manage report scheduler",
+          "reports-manage-desc": "can manage all reports",
+          "title": "Administration"
+        },
+        "calc-fields": {
+          "create-desc": "can create or update calculated fields",
+          "view-desc": "can view calculated fields"
+        },
+        "common": {
+          "create": "Create",
+          "view": "View"
+        },
+        "dashboards": {
+          "create-desc": "can create dashboards",
+          "download-desc": "can download dashboard as pdf/xlsx/csv",
+          "view-desc": "can view permitted dashboards"
+        },
+        "datasource": {
+          "explore": "Explore",
+          "explore-desc": "can use explore mode for datasources"
+        },
+        "datasources": {
+          "title": "Datasources"
+        },
+        "folders": {
+          "create-desc": "can create folders",
+          "title": "Folders",
+          "view-desc": "can view permitted folders"
+        },
+        "list": "List of permissions",
+        "reports": {
+          "access": "Access",
+          "access-desc": "can view and create reports",
+          "history-read": "View history",
+          "history-read-desc": "can view reports history section",
+          "settings-read": "View settings",
+          "settings-read-desc": "can view reports settings",
+          "title": "Reports"
+        },
+        "title": "Permissions"
+      },
+      "roles": {
+        "actions": "Actions",
+        "create": "Create",
+        "custom": "Custom",
+        "delete": "Delete role",
+        "delete-confirmation": "Are you sure you want to delete this role?",
+        "delete-role": "Delete role",
+        "description": "Description",
+        "edit": "Edit role",
+        "manage-permissions": "Manage permissions",
+        "manage-teams": "Manage teams",
+        "manage-users": "Manage users",
+        "name-required": "Role name is required",
+        "new": "New role",
+        "search": "Search roles",
+        "system": "System",
+        "update": "Update"
+      },
+      "teams": {
+        "none-assigned": "No teams assigned",
+        "none-found": "No teams found",
+        "search": "Search team name",
+        "team": "team",
+        "title": "Teams"
+      },
+      "users": {
+        "email": "Email",
+        "login": "Login",
+        "none-assigned": "No users assigned",
+        "none-found": "No users found",
+        "team": "user",
+        "title": "Users"
+      }
+    },
+    "rms": {
+      "description": "Reporting Metadata Studio is a Windows application based on Pentaho Metadata Editor. It is used to create customized views or modify a copy of an out-of-the-box view. For more information, see the online documentation.",
+      "download": {
+        "error": "Unable to download"
+      },
+      "headers": {
+        "env-details": "Environment details"
+      }
+    },
+    "route-error": "Oops... some unexpected error has occurred.",
+    "search": {
+      "comfirm-export": "Do you want to export the {{dashCount}} selected dashboard(s)?",
+      "export": "Export",
+      "export-status": "Export Status"
+    },
+    "share-modal": {
+      "loading": "Loading"
+    },
+    "shared-preferences": {
+      "datetime-format": {
+        "description": "This will change the default time format used in dashboards, panels and reports.",
+        "label": "Datetime Format"
+      },
+      "fields": {
+        "apply-admins": "Apply to admins",
+        "enabled-query-types": "Manage service management query types",
+        "query-type-label": "Query Type",
+        "query-type-placeholder": "Choose query type"
+      }
+    },
+    "toggle-feature": {
+      "manage-features": "Manage dashboard features"
+    },
+    "variables": {
+      "query-editor": {
+        "continue": "Continue",
+        "enable-editor": "Enable query editor",
+        "modal-close-confirmation": "The current query will be lost. Do you want to continue?",
+        "modal-close-title": "Unsaved changes",
+        "query-text": "Query",
+        "service-management-note": "Note: Applicable only to the Service Management query type."
+      }
+    }
+  },
+  "bmcgrafana": {
+    "connections": {
+      "redirect-notice": "<0>Data sources have a new home! You can discover new data sources or manage existing ones in the Connections page, accessible from the main menu.</0><1>Go to connections</1>"
+    },
+    "dashboard": {
+      "inspect-data": {
+        "loading": "Loading",
+        "no-data": "No Data"
+      },
+      "panel-copied": "Panel copied. Click **Add panel** icon to paste.",
+      "remove-panel": {
+        "confirm-button-text": "Remove",
+        "confirmation-text": "Are you sure you want to remove this panel?",
+        "title": "Remove panel"
+      }
+    },
+    "dashboard-import": {
+      "change-uid": "Change uid",
+      "datasource-validation": "A data source is required",
+      "existing-library-panels": "Existing library panels",
+      "existing-library-panels-desc": "List of existing library panels. These panels are not affected by the import.",
+      "folder": "Folder",
+      "name-validation-text": "Name is required",
+      "needs-value": "needs a value",
+      "new-library-panels": "New library panels",
+      "new-library-panels-desc": "List of new library panels that will get imported.",
+      "select-view": "Select view",
+      "uid": "Unique identifier (UID)",
+      "uid-desc": "The unique identifier (UID) of a dashboard can be used for uniquely identify a dashboard between multiple Grafana installs. The UID allows having consistent URLs for accessing dashboards so changing the title of a dashboard will not break any bookmarked links to that dashboard.",
+      "view-selection-tooltip": "Do not change the pre-selected view",
+      "view-selection-validation": "A view selection is required"
+    },
+    "dashboards": {
+      "save-dashboard": {
+        "cant-save-provisioned": "This dashboard cannot be saved from the BMC Helix Dashboards because it has been provisioned from another source. Copy the JSON or save it to a file below, then you can update your dashboard in the provisioning source.",
+        "change-details": "Details",
+        "changes-text": "Changes",
+        "close-text": "Close",
+        "copy-json": "Copy JSON to clipboard",
+        "copy-tags-text": "Copy tags",
+        "curr-time-as-default": "Save current time range as dashboard default",
+        "curr-var-as-default": "Save current variable values as dashboard default",
+        "description-placeholder-text": "Add a note to describe your changes.",
+        "description-text": "Description",
+        "error": "Error saving dashboard",
+        "errors": {
+          "dash-folder-same-name": "Dashboard name cannot be the same as folder name",
+          "dash-name-invalid": "Dashboard name is invalid"
+        },
+        "full-json-diff": "Full JSON diff",
+        "no-changes": "No changes to save",
+        "no-changes-dash": "No changes in this dashboard",
+        "provisioned-text": "Provisioned dashboard",
+        "save-as-text": "Save as",
+        "save-copy": "Save dashboard copy",
+        "save-json": "Save JSON to file",
+        "save-text": "Save dashboard",
+        "saving-text": "Saving...",
+        "title-text": "Title"
+      },
+      "settings": {
+        "annotation": {
+          "anno-name-builtin": "(Built-in)",
+          "anno-name-disabled": "(Disabled)",
+          "button-title": "Add annotation query",
+          "data-source": "Data source",
+          "edit-form": {
+            "all-panels-desc": "Send the annotation data to all panels that support annotations",
+            "all-panels-except-desc": "Do not send annotation data to the following panels",
+            "all-panels-except-label": "All panels except",
+            "all-panels-label": "All panels",
+            "apply-btn": "Apply",
+            "choose-panels-placeholder": "Choose panels",
+            "color-desc": "Color to use for the annotation event markers",
+            "color-label": "Color",
+            "data-source-label": "Data source",
+            "delete-btn": "Delete",
+            "enabled-desc": "When enabled the annotation query is issued every dashboard refresh",
+            "enabled-label": "Enabled",
+            "hidden-desc": "Annotation queries can be toggled on or off at the top of the dashboard. With this option checked this toggle will be hidden.",
+            "hidden-label": "Hidden",
+            "name-label": "Name",
+            "new-annotation": "New annotation",
+            "preview-btn": "Preview in dashboard",
+            "query-editor": {
+              "filter-by": {
+                "dashboard-desc": "Query for events created on this dashboard and show them in the panels where they where created",
+                "dashboard-label": "Dashboard",
+                "tags-desc": "This will fetch any annotation events that match the tags filter",
+                "tags-label": "Tags"
+              },
+              "filter-by-label": "Filter by",
+              "match-any-desc": "Enabling this returns annotations that match any of the tags specified below",
+              "match-any-label": "Match any",
+              "max-limit-label": "Max limit",
+              "query-type": {
+                "annotation-desc": "Show annotations or alerts managed by grafana",
+                "annotation-label": "Annotations & Alerts",
+                "time-region-desc": "Configure a repeating time region",
+                "time-region-label": "Time regions"
+              },
+              "query-type-label": "Query type",
+              "tag-field-desc": "<0>Specify a list of tags to match. To specify a key and value tag use `key:value` syntax.</0>"
+            },
+            "query-heading": "Query",
+            "selected-panels-desc": "Send the annotations to the explicitly listed panels",
+            "selected-panels-label": "Selected panels",
+            "showin-label": "Show in"
+          },
+          "info-body": "Annotations provide a way to integrate event data into your graphs. They are visualized as vertical lines\n          and icons on all graph panels. When you hover over an annotation icon you can get event text &amp; tags for\n          the event. You can add annotation events directly from grafana by holding CTRL or CMD + click on graph (or\n          drag region). These will be stored in Grafana's annotation database.",
+          "info-body-doc-link": "Checkout the <0>Annotations documentation</0> for more information.",
+          "info-title": "What are annotation queries?",
+          "move-down": "Move down",
+          "move-up": "Move up",
+          "new-query-button": "New query",
+          "query-name": "Query name",
+          "title": "There are no custom annotation queries added yet"
+        },
+        "confirm-delete-text": "Do you want to delete this dashboard?",
+        "delete": "Delete",
+        "general": {
+          "default-label": "Default",
+          "editable-label": "Editable",
+          "read-only-label": "Read-only",
+          "share-tooltip-label": "Shared Tooltip",
+          "shared-crosshair-label": "Shared crosshair"
+        },
+        "links": {
+          "dashboard-link-form": {
+            "button": {
+              "go-back": "Back to list"
+            },
+            "field": {
+              "label-icon": "Icon",
+              "label-include-current-template-variable-values": "Include current template variable values",
+              "label-include-current-time-range": "Include current time range",
+              "label-open-link-in-new-tab": "Open link in new tab",
+              "label-options": "Options",
+              "label-show-dropdown": "Show as dropdown",
+              "label-title": "Title",
+              "label-tooltip": "Tooltip",
+              "label-type": "Type",
+              "label-url": "URL",
+              "label-withtags": "With tags",
+              "link-type-link": "Link",
+              "link-type-options": "Dashboards"
+            }
+          },
+          "dashboard-link-list": {
+            "buttontitle-text": "Add dashboard link",
+            "html-text": "Dashboard Links allow you to place links to other dashboards and web sites directly below the dashboard header.",
+            "infoboxtitle-text": "What are dashboard links?",
+            "new-link": "New link",
+            "table": {
+              "info": " <1>Info</1>  ",
+              "type": "<0>Type</0> "
+            },
+            "title-text": "There are no dashboard links added yet"
+          },
+          "dashboard-linked-list": {
+            "tooltip": {
+              "arrow-down": "Move link down",
+              "arrow-up": "Move link up",
+              "copy-link": "Copy link"
+            }
+          },
+          "description-edit-link": "Edit a specific link of your dashboard",
+          "tags-input": {
+            "placeholder-new-tag": "New tag (enter key to add)"
+          },
+          "title-edit-link": "Edit link",
+          "title-new-link": "New link"
+        },
+        "variables": {
+          "editor": {
+            "button": {
+              "apply": "Apply",
+              "delete": "Delete",
+              "run-query": "Run query"
+            },
+            "custom-all": "Custom all value",
+            "custom-all-placeholder": "blank = auto",
+            "exlude-variable": "Exclude variable",
+            "exlude-variable-desc": "Select to exclude the variable from the query",
+            "include-all": "Include All option",
+            "include-all-desc": "Enables an option to include all variable values",
+            "multi-value": "Multi-value",
+            "multi-value-desc": "Enables multiple values to be selected at the same time",
+            "select-variable-type": {
+              "ad-hoc-filters": {
+                "description": "Add key/value filters on the fly.",
+                "name": "Ad hoc filters"
+              },
+              "constant": {
+                "description": "Define a hidden constant variable, useful for metric prefixes in dashboards you want to share.",
+                "name": "Constant"
+              },
+              "custom": {
+                "description": "Define variable values manually",
+                "name": "Custom"
+              },
+              "data-source": {
+                "description": "Enables you to dynamically switch the data source for multiple panels.",
+                "name": "Data source"
+              },
+              "interval": {
+                "description": "Define a timespan interval",
+                "name": "Interval"
+              },
+              "query": {
+                "description": "Variable values are fetched from a datasource query",
+                "name": "Query"
+              },
+              "textbox": {
+                "description": "Define a textbox variable, where users can enter any arbitrary string",
+                "name": "Text box"
+              }
+            },
+            "select-variable-type-text": "Select variable type",
+            "selection-options": "Selection options",
+            "types": {
+              "ad-hoc": {
+                "data-source-placeholder": "Select data source",
+                "data-source-text": "Data source",
+                "title": "Ad-hoc options"
+              },
+              "constant": {
+                "placeholder": "your metric prefix",
+                "title": "Constant options",
+                "value": "Value"
+              },
+              "custom": {
+                "desc": "Values separated by comma",
+                "title": "Custom options"
+              },
+              "data-source": {
+                "name-filter": "Instance name filter",
+                "name-filter-desc1": "Regex filter for which data source instances to choose from in the variable value list. Leave empty for all.",
+                "name-filter-desc2": "Example: ",
+                "title": "Data source options",
+                "type": "Type"
+              },
+              "date-range": {
+                "title": "Select Time Range"
+              },
+              "internal": {
+                "auto-option-description": "Dynamically calculates interval by dividing time range by the count specified",
+                "auto-option-name": "Auto option",
+                "min-interval-description": "The calculated value will not go below this threshold",
+                "min-interval-name": "Min interval",
+                "preview-values": "Preview of values",
+                "step-count-description": "How many times the current time range should be divided to calculate the value",
+                "step-count-name": "Step count",
+                "title": "Interval options",
+                "values": "Values"
+              },
+              "query": {
+                "data-source": "Data source",
+                "editor-placeholder": "Metric name or tags query",
+                "query-options": "Query options",
+                "query-text": "Query",
+                "refresh": "Refresh",
+                "refresh-desc": "When to update the values of this variable",
+                "refresh-options": {
+                  "on-dash-load": "On dashboard load",
+                  "on-time-change": "On time range change"
+                },
+                "regex-editor-text": "<0>Optional, if you want to extract part of a series name or metric node segment.<1></1>Named capture groups can be used to separate the display text and value (<3>see examples</3>).</0>",
+                "sort": "Sort",
+                "sort-desc": "How to sort the values of this variable",
+                "sort-options": {
+                  "alpha-asc": "Alphabetical (asc)",
+                  "alpha-case-insensitive-asc": "Alphabetical (case-insensitive, asc)",
+                  "alpha-case-insensitive-dsc": "Alphabetical (case-insensitive, desc)",
+                  "alpha-dsc": "Alphabetical (desc)",
+                  "disabled": "Disabled",
+                  "natural-asc": "Natural (asc)",
+                  "natural-dsc": "Natural (desc)",
+                  "number-asc": "Numerical (asc)",
+                  "number-dsc": "Numerical (desc)"
+                }
+              },
+              "text-box": {
+                "default-value": "Default value",
+                "placeholder": "default value, if any",
+                "title": "Text options"
+              }
+            },
+            "variable-hide-select": {
+              "label": "Show on dashboard",
+              "label-value": "Label and value",
+              "nothing": "Nothing",
+              "value": "Value"
+            },
+            "variable-text-field": {
+              "description": {
+                "name": "Description",
+                "placeholder": "Descriptive text"
+              },
+              "label": {
+                "description": "Optional display name",
+                "placeholder": "Label name",
+                "text": "Label"
+              },
+              "name": {
+                "description": "The name of the template variable. (Max. 50 characters)",
+                "placeholder": "Variable name",
+                "text": "Name"
+              }
+            }
+          },
+          "empty-list": "There are no variables yet",
+          "info-body": "Variables enable more interactive and dynamic dashboards. Instead of hard-coding things like server or sensor names in your metric queries you can use variables in their place. Variables are shown as list boxes at the top of the dashboard. These drop-down lists make it easy to change the data being displayed in your dashboard. Check out the <0>Templates and variables documentation</0> for more information.",
+          "variables-tab": {
+            "button-title": "Add variable",
+            "delete": {
+              "body": "Are you sure you want to delete variable \"{{varName}}\"?",
+              "delete-confirm-text": "Delete",
+              "delete-variable-title": "Delete variable"
+            },
+            "info-box-title": "What do variables do?",
+            "variable-editor-list": {
+              "button-text": "New variable",
+              "definition": "Definition",
+              "variable": "Variable"
+            },
+            "variable-editor-list-row": {
+              "copy-title": "Duplicate variable",
+              "exclamation-triangle-title": "This variable is not referenced by any variable or dashboard.",
+              "show-usage": "Show usages",
+              "show-usage-modal-title": "Showing usages for: ${{id}}",
+              "trash-alt-title": "Remove variable"
+            },
+            "variables-unknown-table": {
+              "decription": "No renamed or missing variables found.",
+              "info-circle-description": "Click to expand a list with all variable references that have been renamed or are missing from the dashboard.",
+              "title": "Renamed or missing variables"
+            }
+          }
+        },
+        "versions": {
+          "buttons": {
+            "compare-versions": "Compare versions",
+            "more-versions": "Show more versions"
+          },
+          "comparision": {
+            "comparing-text": "Comparing",
+            "latest-text": "Latest",
+            "restore-base-version": "Restore to version {{baseVersion}}",
+            "version-from-details": "<bold>Version {{baseVersion}}</bold> updated by {{baseCreatedBy}} {{baseAgeString}} {{baseMsg}}",
+            "version-to-details": "<bold>Version {{newVersion}}</bold> updated by {{newCreatedBy}} {{newAgeString}} {{newMsg}}",
+            "view-json-diff": "View JSON Diff"
+          },
+          "loading-msgs": {
+            "changes": "Fetching changes&hellip;",
+            "history-list": "Fetching history list&hellip;",
+            "more-entries": "Fetching more entries&hellip;"
+          },
+          "tags": {
+            "latest": "Latest",
+            "restore": "Restore"
+          },
+          "version-list": {
+            "headers": {
+              "date-text": "Date",
+              "notes-text": "Notes",
+              "updated-by-text": "Updated by",
+              "version-text": "Version"
+            }
+          }
+        }
+      },
+      "unsaved-modal": {
+        "confirmation-text": "Do you want to save your changes?",
+        "discard": "Discard",
+        "title": "Unsaved changes"
+      }
+    },
+    "datesource": {
+      "configuration": {
+        "build-dashboard": "Build a dashboard",
+        "sort-asc": "Sort by A–Z",
+        "sort-desc": "Sort by Z–A"
+      }
+    },
+    "explore": {
+      "outline": "Outline",
+      "to-dashboard": {
+        "choose-dashboard-text": "Select in which dashboard the panel will be created.",
+        "choose-dashboard-type-text": "Choose where to add the panel.",
+        "dashboard-text": "Dashboard",
+        "errors": {
+          "add-panel-err": "Error adding the panel",
+          "field-mandatory": "This field is required.",
+          "general": "Something went wrong. Please try again.",
+          "navigation-to-dashboard": "Could not navigate to the selected dashboard. Please try again.",
+          "panel-to-dashboard-err": "Could not add panel to dashboard. Please try again.",
+          "unable-fetch-dash-info": "Could not fetch dashboard information. Please try again."
+        },
+        "existing-dashboard-text": "Existing dashboard",
+        "new-dashboard-text": "New dashboard",
+        "open-dash-text": "Open dashboard",
+        "open-new-tab-text": "Open in new tab",
+        "panel-to-dashboard": "Add panel to dashboard",
+        "target-dashboard-text": "Target dashboard",
+        "to-existing-dashboard-title": "Add panel to existing dashboard",
+        "to-new-dashboard-title": "Add panel to new dashboard"
+      }
+    },
+    "grafana-data": {
+      "timezone": {
+        "browser-time": "Browser Time",
+        "coord-universal-time": "Coordinated Universal Time"
+      }
+    },
+    "grafana-ui": {
+      "confirm-button": {
+        "cancel-label": "Cancel"
+      },
+      "confirmation-model": {
+        "confirmation-text": "Type \"{{confirmationText}}\" to confirm"
+      },
+      "date-time": {
+        "month": {
+          "apr": "April",
+          "aug": "August",
+          "dec": "December",
+          "feb": "February",
+          "jan": "January",
+          "jul": "July",
+          "jun": "June",
+          "mar": "March",
+          "may": "May",
+          "nov": "November",
+          "oct": "October",
+          "sep": "September"
+        },
+        "quick-ranges": {
+          "day-before-yesterday": "Day before yesterday",
+          "hidden": {
+            "next-12-hour": "Next 12 hours",
+            "next-15-min": "Next 15 minutes",
+            "next-2-day": "Next 2 days",
+            "next-2-year": "Next 2 years",
+            "next-24-hour": "Next 24 hours",
+            "next-3-hour": "Next 3 hours",
+            "next-30-day": "Next 30 days",
+            "next-30-min": "Next 30 minutes",
+            "next-5-min": "Next 5 minutes",
+            "next-5-year": "Next 5 years",
+            "next-6-hour": "Next 6 hours",
+            "next-6-month": "Next 6 months",
+            "next-7-day": "Next 7 days",
+            "next-90-day": "Next 90 days",
+            "next-hour": "Next hour",
+            "next-min": "Next minute",
+            "next-year": "Next year"
+          },
+          "last-1-hour": "Last 1 hour",
+          "last-1-year": "Last 1 year",
+          "last-12-hour": "Last 12 hours",
+          "last-15-min": "Last 15 minutes",
+          "last-2-day": "Last 2 days",
+          "last-2-year": "Last 2 years",
+          "last-24-hour": "Last 24 hours",
+          "last-3-hour": "Last 3 hours",
+          "last-30-day": "Last 30 days",
+          "last-30-min": "Last 30 minutes",
+          "last-5-min": "Last 5 minutes",
+          "last-5-year": "Last 5 years",
+          "last-6-hour": "Last 6 hours",
+          "last-6-month": "Last 6 months",
+          "last-7-day": "Last 7 days",
+          "last-90-day": "Last 90 days",
+          "prev-fiscal-quarter": "Previous fiscal quarter",
+          "prev-fiscal-year": "Previous fiscal year",
+          "prev-month": "Previous month",
+          "prev-week": "Previous week",
+          "prev-year": "Previous year",
+          "this-day-last-week": "This day last week",
+          "this-fiscal-quarter": "This fiscal quarter",
+          "this-fiscal-quarter-so-far": "This fiscal quarter so far",
+          "this-fiscal-year": "This fiscal year",
+          "this-fiscal-year-so-far": "This fiscal year so far",
+          "this-month": "This month",
+          "this-month-so-far": "This month so far",
+          "this-week": "This week",
+          "this-week-so-far": "This week so far",
+          "this-year": "This year",
+          "this-year-so-far": "This year so far",
+          "today": "Today",
+          "today-so-far": "Today so far",
+          "yesterday": "Yesterday"
+        }
+      },
+      "date-time-pickers": {
+        "time-range-input-text": "Select time range"
+      },
+      "delete-button": {
+        "confirm-text": "Delete"
+      },
+      "tags-input": {
+        "button-add": "Add"
+      },
+      "weekdays": {
+        "friday": "Friday",
+        "monday": "Monday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "thursday": "Thursday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday"
+      }
+    },
+    "library-panels": {
+      "delete": {
+        "cannot-delete-text": "This library panel can not be deleted because it is connected to {{message}} dashboard(s). Remove the library panel from the dashboards listed below and retry.",
+        "confirmation-text": "Do you want to delete this panel?",
+        "dashboard-name-title": "Dashboard name",
+        "delete-text": "Delete",
+        "loading-text": "Loading library panel...",
+        "title": "Delete library panel"
+      },
+      "no-panels-found": "No library panels found.",
+      "panel-types-not-found": "No Panel types found",
+      "unlink": {
+        "body": "If you unlink this panel, you will be able to edit it without affecting any other dashboards. However, once you make a change you will not be able to revert to its original reusable panel.",
+        "confirmation-text": "Yes, unlink",
+        "title": "Do you really want to unlink this panel?"
+      }
+    },
+    "manage-dashboards": {
+      "specify-constant": "Specify a string constant"
+    },
+    "page-loader": {
+      "text": "Loading"
+    },
+    "page-not-found": {
+      "load-error": "Oops... we could not load that page.",
+      "load-error-subtext": "<0>This page might have been removed, had its name changed, or is temporarily unavailable.</0><1>Go back to the <1>Home Page</1>, or contact <3>BMC Support</3>.</1>"
+    },
+    "plugins": {
+      "dashboard-list": {
+        "mark-fav": "Mark \"{{dashTitle}}\" as favorite",
+        "recent-viewed-header": "Recently viewed dashboards",
+        "search": "Search",
+        "starred-dash-header": "Starred dashboards",
+        "unmark-fav": "Unmark \"{{dashTitle}}\" as favorite"
+      }
+    },
+    "search-inputs": {
+      "clear-types": "Clear types",
+      "filter-folder": "Filter by folder",
+      "filter-type": "Filter by type",
+      "folder-not-found": "Filter by folder",
+      "name-description": "Search by name or description",
+      "name-type": "Search by name or type"
+    },
+    "shared-preferences": {
+      "confirm-modal": {
+        "body": "This will update the preferences for the whole organization. Are you sure you want to update the preferences?",
+        "title": "Confirm preferences update"
+      },
+      "org": {
+        "org-name-text": "Organization name",
+        "title": "Organization profile"
+      },
+      "profile": {
+        "team": {
+          "loading-text": "Loading teams..."
+        }
+      }
+    },
+    "snapshots": {
+      "delete-modal": {
+        "confirmation-text": "Are you sure you want to delete '{{snapshotName}}'?",
+        "delete": "Delete"
+      }
+    },
+    "team-permissions": {
+      "add-member": "Add member",
+      "no-members-message": "There are no members in this team or you do not have the permissions to list the current members."
+    },
+    "time-region-editor": {
+      "change-timezone-btn": "Change timezone",
+      "dashboard-timezone": "Dashboard timezone",
+      "everyday-placeholder": "Everyday",
+      "from-label": "From",
+      "timezone-label": "Timezone",
+      "to-label": "To"
+    },
+    "top-search-bar": {
+      "go-to-home": "Go to home"
+    },
+    "users-and-access": {
+      "headers": {
+        "edit-team-text": "Edit team",
+        "email-text": "Email",
+        "last-active-text": "Last active",
+        "login-text": "Login",
+        "members-text": "Members",
+        "name-text": "Name",
+        "settings-text": "Settings"
+      },
+      "search-teams-placeholder-text": "Search teams",
+      "search-user-placeholder-text": "Search user by login, email or name",
+      "team": {
+        "details": {
+          "email-description-text": "This is optional and is primarily used to set the team profile avatar (via gravatar service).",
+          "title": "Team details"
+        }
+      },
+      "teams": {
+        "page-description": "Manage members and settings",
+        "title": "Teams"
+      }
+    }
+  },
   "bouncing-loader": {
     "label": "Loading"
   },
@@ -97,6 +1011,7 @@
       "text": "No results found for your query."
     }
   },
+  "cdescription-new-link": "Create a new link on your dashboard",
   "clipboard-button": {
     "inline-toast": {
       "success": "Copied"
@@ -330,19 +1245,9 @@
     }
   },
   "dashboard-import": {
-    "file-dropzone": {
-      "primary-text": "Upload dashboard JSON file",
-      "secondary-text": "Drag and drop here or click to browse"
-    },
     "form-actions": {
       "cancel": "Cancel",
       "load": "Load"
-    },
-    "gcom-field": {
-      "label": "Find and import dashboards for common applications at <1></1>",
-      "load-button": "Load",
-      "placeholder": "Grafana.com dashboard URL or ID",
-      "validation-required": "A Grafana dashboard URL or ID is required"
     },
     "json-field": {
       "label": "Import via dashboard JSON model",
@@ -560,6 +1465,7 @@
   "folder-picker": {
     "loading": "Loading folders..."
   },
+  "General": "General",
   "grafana-ui": {
     "drawer": {
       "close": "Close"
@@ -648,13 +1554,16 @@
     },
     "add-widget": {
       "title": "Add panel from panel library"
+    },
+    "modal": {
+      "button-cancel": "Cancel"
     }
   },
   "library-panels": {
     "modal": {
       "body_one": "This panel is being used in {{count}} dashboard. Please choose which dashboard to view the panel in:",
       "body_other": "This panel is being used in {{count}} dashboards. Please choose which dashboard to view the panel in:",
-      "button-cancel": "<0>Cancel</0>",
+      "button-cancel": "Cancel",
       "button-view-panel1": "View panel in {{label}}...",
       "button-view-panel2": "View panel in dashboard...",
       "panel-not-linked": "Panel is not linked to a dashboard. Add the panel to a dashboard and retry.",
@@ -747,14 +1656,14 @@
       "title": "Alerts & IRM"
     },
     "api-keys": {
-      "subtitle": "Manage and create API keys that are used to interact with Grafana HTTP APIs",
+      "subtitle": "Manage and create API keys that are used to interact with BMC Helix Dashboards HTTP APIs",
       "title": "API keys"
     },
     "application": {
       "title": "Application"
     },
     "apps": {
-      "subtitle": "App plugins that extend the Grafana experience",
+      "subtitle": "App plugins that extend the BMC Helix Dashboards experience",
       "title": "Apps"
     },
     "authentication": {
@@ -830,11 +1739,11 @@
       "title": "Frontend"
     },
     "global-orgs": {
-      "subtitle": "Isolated instances of Grafana running on the same server",
+      "subtitle": "Isolated instances of BMC Helix Dashboards running on the same server",
       "title": "Organizations"
     },
     "global-users": {
-      "subtitle": "Manage users in Grafana",
+      "subtitle": "Manage users in BMC Helix Dashboards",
       "title": "Users"
     },
     "grafana-quaderno": {
@@ -904,7 +1813,7 @@
       "title": "Playlists"
     },
     "plugins": {
-      "subtitle": "Extend the Grafana experience with plugins",
+      "subtitle": "Extend the BMC Helix Dashboards experience with plugins",
       "title": "Plugins"
     },
     "private-data-source-connections": {
@@ -942,11 +1851,11 @@
       "title": "Search dashboards"
     },
     "server-settings": {
-      "subtitle": "View the settings defined in your Grafana config",
+      "subtitle": "View the settings defined in your BMC Helix Dashboards config",
       "title": "Settings"
     },
     "service-accounts": {
-      "subtitle": "Use service accounts to run automated workloads in Grafana",
+      "subtitle": "Use service accounts to run automated workloads in BMC Helix Dashboards",
       "title": "Service accounts"
     },
     "sign-out": {
@@ -1295,7 +2204,7 @@
     "embed": {
       "copy": "Copy to clipboard",
       "html": "Embed HTML",
-      "html-description": "The HTML code below can be pasted and included in another web page. Unless anonymous access is enabled, the user viewing that page need to be signed into Grafana for the graph to load.",
+      "html-description": "The HTML code below can be pasted and included in another web page. Unless anonymous access is enabled, the user viewing that page need to be signed into BMC Helix Dashboards for the graph to load.",
       "info": "Generate HTML for embedding an iframe with this panel.",
       "time-range": "Current time range",
       "time-range-description": "Transforms the current relative time range to an absolute time range"
@@ -1483,7 +2392,6 @@
   "user-orgs": {
     "current-org-button": "Current",
     "name-column": "Name",
-    "role-column": "Role",
     "select-org-button": "Select organisation",
     "title": "Organizations"
   },

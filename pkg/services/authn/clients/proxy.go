@@ -3,14 +3,22 @@ package clients
 import (
 	"context"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"hash/fnv"
 	"net"
+	"os"
 	"path"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/grafana/grafana/pkg/services/contexthandler"
+	"github.com/grafana/grafana/pkg/services/org"
+
+	"github.bmc.com/DSOM-ADE/authz-go"
+	bmc "github.com/grafana/grafana/pkg/api/bmc"
 	"github.com/grafana/grafana/pkg/infra/log"
 	authidentity "github.com/grafana/grafana/pkg/services/auth/identity"
 	"github.com/grafana/grafana/pkg/services/authn"
@@ -42,12 +50,12 @@ var (
 	_ authn.ContextAwareClient = new(Proxy)
 )
 
-func ProvideProxy(cfg *setting.Cfg, cache proxyCache, clients ...authn.ProxyClient) (*Proxy, error) {
+func ProvideProxy(cfg *setting.Cfg, cache proxyCache, orgService org.Service, clients ...authn.ProxyClient) (*Proxy, error) {
 	list, err := parseAcceptList(cfg.AuthProxyWhitelist)
 	if err != nil {
 		return nil, err
 	}
-	return &Proxy{log.New(authn.ClientProxy), cfg, cache, clients, list}, nil
+	return &Proxy{log.New(authn.ClientProxy), cfg, cache, clients, list, orgService}, nil
 }
 
 type proxyCache interface {
@@ -62,6 +70,7 @@ type Proxy struct {
 	cache       proxyCache
 	clients     []authn.ProxyClient
 	acceptedIPs []*net.IPNet
+	orgService  org.Service
 }
 
 func (c *Proxy) Name() string {
@@ -72,8 +81,54 @@ func (c *Proxy) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 	if !c.isAllowedIP(r) {
 		return nil, errNotAcceptedIP.Errorf("request ip is not in the configured accept list")
 	}
-
 	username := getProxyHeader(r, c.cfg.AuthProxyHeaderName, c.cfg.AuthProxyHeadersEncoded)
+
+	// BMC code
+	// Changes for userID as RSSOUser@RSSO Tenant - required to achieve unique userID's across tenants
+	userInfo, rssoUsername, rssoTenant, err := c.getRequestUserAuthInfo(r)
+	if err != nil {
+		return nil, errors.New("To get permission to the dashboard. Please contact your admin")
+	}
+
+	//If we come here via authProxy, we are authenticated already and jwt token is available
+	r.DecodedToken = userInfo
+	if r.DecodedToken != nil {
+		r.OrgID, _ = strconv.ParseInt(userInfo.Tenant_Id, 10, 64)
+		if r.OrgID == setting.IMS_Tenant0 {
+			userInfo.Tenant_Id = strconv.FormatInt(setting.GF_Tenant0, 10)
+			r.OrgID = setting.GF_Tenant0
+		}
+	}
+
+	if c.HasValidPermissions(userInfo, username) != nil {
+		c.log.Error(
+			"User does not have sufficient privileges to access dashboards",
+			"username", r.HTTPRequest.Header.Get("X-Webauth-User"),
+			"message", "missing-reporting-permission",
+		)
+		return nil, authn.ErrInvalidPermission
+	}
+
+	inDedicatedInst, dedicatedTenantErr := c.forwardIfRequestForDedicatedTenant(r, userInfo, username)
+	if dedicatedTenantErr != nil {
+		var tmpIdentity *authn.Identity
+		tmpIdentity.OrgID = r.OrgID
+		return tmpIdentity, authn.ErrRequestForDedicatedTenant
+	}
+
+	// BMC code: ends
+
+	// Update username with rsso username and ignore appending tenant as suffix if it is a superuser realm tenant.
+	if rssoTenant != "" && rssoTenant != "dashboards_superuser_tenant" {
+		username = rssoUsername + "@" + rssoTenant
+	} else {
+		username = rssoUsername
+	}
+
+	// Forward the username to request header for further use
+	r.HTTPRequest.Header.Set("X-HELIX-AUTH", username)
+	// BMC code
+
 	if len(username) == 0 {
 		return nil, errEmptyProxyHeader.Errorf("no username provided in auth proxy header")
 	}
@@ -110,12 +165,55 @@ func (c *Proxy) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 		identity, clientErr = proxyClient.AuthenticateProxy(ctx, r, username, additional)
 		if identity != nil {
 			identity.ClientParams.CacheAuthProxyKey = cacheKey
+			// Bmc code in next condition
+			if inDedicatedInst {
+				identity.IsDedicatedInst = true
+			}
 			return identity, nil
 		}
 	}
 
 	return nil, clientErr
 }
+
+// Bmc code start
+// Decides whether a request belongs to master instance or dedicated tenant based on env var and tenant cache
+func (c *Proxy) forwardIfRequestForDedicatedTenant(r *authn.Request, userInfo *authz.UserInfo, username string) (bool, error) {
+	if username == c.cfg.AdminUser {
+		return false, nil
+	}
+	cache := contexthandler.GetInstance()
+	orgId, _ := strconv.ParseInt(userInfo.Tenant_Id, 10, 64)
+	tenantExists := true
+	if !cache.Exists(userInfo.Tenant_Id) {
+		org, _ := c.orgService.GetByID(r.HTTPRequest.Context(), &org.GetOrgByIDQuery{ID: orgId})
+		if org != nil {
+			cache.Set(string(org.ID), org.Name)
+		} else {
+			c.log.Info("This request belongs to dedicated tenant", userInfo.Tenant_Id)
+			tenantExists = false
+		}
+	}
+	isDedicated, ok := os.LookupEnv("IS_DEDICATED")
+	if (!ok || isDedicated != "true") && tenantExists {
+		c.log.Debug("This is a master reporting instance.")
+		return false, nil
+	} else if ((!ok || isDedicated != "true") || (ok && isDedicated == "true")) && !tenantExists {
+		c.log.Info("Request belongs to dedicated tenant. Forward this to its ingress.")
+		// Request is in master/dedicated instance and it needs to forward the request to dedicated tenant ingress
+		return false, errors.New("Request belongs to dedicated tenant. Forward this to its ingress.")
+	} else if (ok && isDedicated == "true") && tenantExists {
+		c.log.Info("Request is in its dedicated tenant instance.")
+		// Request is in its dedicated tenant instance. Check if cookie present or else create one and send in response
+		return true, nil
+	} else {
+		c.log.Error("Request entered in alien area. This is a dedicated instance for tenant ", os.Getenv("DEDICATED_TENANT_ID"))
+
+	}
+	return false, nil
+}
+
+// Bmc code ends
 
 func (c *Proxy) Test(ctx context.Context, r *authn.Request) bool {
 	return len(getProxyHeader(r, c.cfg.AuthProxyHeaderName, c.cfg.AuthProxyHeadersEncoded)) != 0
@@ -187,6 +285,50 @@ func (c *Proxy) isAllowedIP(r *authn.Request) bool {
 
 	return false
 }
+
+// BMC Code: Starts
+
+// HasValidPermissions checks if the user has valid permissions to access the dashboard
+// Todo: check if we can get the username from userInfo
+func (c *Proxy) HasValidPermissions(userInfo *authz.UserInfo, username string) error {
+	if username == c.cfg.AdminUser {
+		return nil
+	}
+	// make above in a switch
+	sort.Strings(userInfo.Permissions)
+	switch {
+	case bmc.ContainsLower(userInfo.Permissions, "*"):
+	case bmc.ContainsLower(userInfo.Permissions, bmc.ReportingViewer):
+	case bmc.ContainsLower(userInfo.Permissions, bmc.ReportingEditor):
+	case bmc.ContainsLower(userInfo.Permissions, bmc.ReportingAdmin):
+		break
+	default:
+		return errors.New("To get permission to the dashboard. Please contact your admin")
+	}
+
+	return nil
+}
+
+// BMC code
+func (c *Proxy) getRequestUserAuthInfo(r *authn.Request) (*authz.UserInfo, string, string, error) {
+	token := getProxyHeader(r, "X-Jwt-Token", false)
+	rssoTenant := getProxyHeader(r, "X-Rsso-Tenant", false)
+	rssoUsername := getProxyHeader(r, "X-Webauth-User", false)
+	if rssoUsername == "" {
+		c.log.Error("Failed to get X-Jwt-Token or X-Webauth-User from request", "rssoUsername", rssoUsername, "rssoTenant", rssoTenant, "token", token)
+		return nil, rssoUsername, rssoTenant, errors.New("To get permission to the dashboard. Please contact your admin")
+	}
+	if rssoTenant == "dashboards_superuser_tenant" && rssoUsername == c.cfg.AdminUser {
+		return nil, rssoUsername, rssoTenant, nil
+	}
+	userInfo, err := authz.Authorize(token)
+	if err != nil {
+		c.log.Error("Failed to authorize user", "error", err.Error())
+	}
+	return userInfo, rssoUsername, rssoTenant, err
+}
+
+// BMC Code: Ends
 
 func parseAcceptList(s string) ([]*net.IPNet, error) {
 	if len(strings.TrimSpace(s)) == 0 {

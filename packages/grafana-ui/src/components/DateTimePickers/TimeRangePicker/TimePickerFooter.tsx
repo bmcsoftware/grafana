@@ -1,6 +1,6 @@
 import { css, cx } from '@emotion/css';
 import { isString } from 'lodash';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { getTimeZoneInfo, GrafanaTheme2, TimeZone } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
@@ -15,7 +15,7 @@ import { TimeZonePicker } from '../TimeZonePicker';
 import { TimeZoneDescription } from '../TimeZonePicker/TimeZoneDescription';
 import { TimeZoneOffset } from '../TimeZonePicker/TimeZoneOffset';
 import { TimeZoneTitle } from '../TimeZonePicker/TimeZoneTitle';
-import { monthOptions } from '../options';
+import { getMonthOptions } from '../options';
 
 interface Props {
   timeZone?: TimeZone;
@@ -26,6 +26,9 @@ interface Props {
 }
 
 export const TimePickerFooter = (props: Props) => {
+  const monthOptions = useMemo(() => {
+    return getMonthOptions();
+  }, []);
   const {
     timeZone,
     fiscalYearStartMonth,

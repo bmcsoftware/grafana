@@ -1,21 +1,24 @@
 import { cloneDeep } from 'lodash';
+ 
+import { t } from 'app/core/internationalization';
 
 import { dispatch } from '../../../store/store';
 import { VariableAdapter } from '../adapters';
 import { setOptionAsCurrent } from '../state/actions';
 import { TextBoxVariableModel } from '../types';
 import { toKeyedVariableIdentifier } from '../utils';
-
+ 
 import { TextBoxVariableEditor } from './TextBoxVariableEditor';
 import { TextBoxVariablePicker } from './TextBoxVariablePicker';
 import { setTextBoxVariableOptionsFromUrl, updateTextBoxVariableOptions } from './actions';
 import { initialTextBoxVariableModelState, textBoxVariableReducer } from './reducer';
-
+ 
 export const createTextBoxVariableAdapter = (): VariableAdapter<TextBoxVariableModel> => {
   return {
     id: 'textbox',
-    description: 'Define a textbox variable, where users can enter any arbitrary string',
-    name: 'Text box',
+    // BMC Change: To enable localization for below text
+    description: t('bmcgrafana.dashboards.settings.variables.editor.select-variable-type.textbox.description','Define a textbox variable, where users can enter any arbitrary string'),
+    name: t('bmcgrafana.dashboards.settings.variables.editor.select-variable-type.textbox.name','Text box'),
     initialState: initialTextBoxVariableModelState,
     reducer: textBoxVariableReducer,
     picker: TextBoxVariablePicker,
