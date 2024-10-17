@@ -9,8 +9,9 @@ type PostFrontendMetricsCommand struct {
 
 // FrontendMetricEvent a single metric measurement event
 type FrontendMetricEvent struct {
-	Name  string  `json:"name"`
-	Value float64 `json:"value"`
+	Name   string            `json:"name"`
+	Value  float64           `json:"value"`
+	Labels map[string]string `json:"labels"`
 }
 
 // FrontendMetricsRecorder handles the recording of the event, ie passes it to a prometheus metric
@@ -35,6 +36,19 @@ func registerFrontendHistogram(reg prometheus.Registerer, name string, help stri
 
 	reg.MustRegister(histogram)
 }
+// BMC code
+// Registers Counter vector frontend metric
+func registerFrontendCounterVec(reg prometheus.Registerer, name string, labels []string, help string) {
+	counterVec := prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name:      name,
+		Help:      help,
+		Namespace: HelixExporterName,
+	}, labels)
+	FrontendMetrics[name] = func(event FrontendMetricEvent) {
+		counterVec.With(event.Labels).Add(event.Value)
+	}
+	reg.MustRegister(counterVec)
+}
 
 func initFrontendMetrics(r prometheus.Registerer) {
 	registerFrontendHistogram(r, "frontend_boot_load_time_seconds", "Frontend boot time measurement")
@@ -43,4 +57,23 @@ func initFrontendMetrics(r prometheus.Registerer) {
 	registerFrontendHistogram(r, "frontend_boot_js_done_time_seconds", "Frontend boot initial js load")
 	registerFrontendHistogram(r, "frontend_boot_css_time_seconds", "Frontend boot initial css load")
 	registerFrontendHistogram(r, "frontend_plugins_preload_ms", "Frontend preload plugin time measurement")
+    // BMC code
+	/*
+		url :: http://localhost:3000/api/frontend-metrics
+		json ::{
+	 "events":   [
+	    {
+	        "name": "api_dashboard_loadtime",
+	        "value": 10,
+	        "labels": {
+	                "dashboard_name": "test",
+	                "tenant_name": "xerox"
+	        }
+	    }
+	]
+	}
+	*/
+	registerFrontendCounterVec(r, "api_dashboard_loadtime", []string{"dashboard_id", "tenant_id"}, "Dashboard load time")
+	registerFrontendCounterVec(r, "api_user_dashboard_hit", []string{"user_id", "tenant_id"}, "Dashboard hit by user")
+
 }

@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/grafana/grafana/pkg/api/bmc"
+
 	"github.com/grafana/grafana/pkg/api/apierrors"
 	"github.com/grafana/grafana/pkg/api/dtos"
 	"github.com/grafana/grafana/pkg/api/response"
@@ -222,6 +224,13 @@ func (hs *HTTPServer) GetDashboard(c *contextmodel.ReqContext) response.Response
 	}
 
 	c.TimeRequest(metrics.MApiDashboardGet)
+
+	// BMC Changes - Will check for user dash personalization and apply it if found
+	bmc.SetupCustomPersonalization(hs.sqlStore, c.Req.Context(), &dto, c.OrgID, c.UserID, uid)
+	metric := metrics.MDashboardHitCount.WithLabelValues(strconv.FormatInt(c.OrgID, 10), strconv.FormatInt(dash.ID, 10))
+	metric.Inc()
+	// BMC Changes - End
+
 	return response.JSON(http.StatusOK, dto)
 }
 
@@ -547,7 +556,8 @@ func (hs *HTTPServer) GetHomeDashboard(c *contextmodel.ReqContext) response.Resp
 
 	filePath := hs.Cfg.DefaultHomeDashboardPath
 	if filePath == "" {
-		filePath = filepath.Join(hs.Cfg.StaticRootPath, "dashboards/home.json")
+		// BMC code - inline change
+		filePath = filepath.Join(hs.Cfg.StaticRootPath, "dashboards/bmc_home.json")
 	}
 
 	// It's safe to ignore gosec warning G304 since the variable part of the file path comes from a configuration
@@ -573,7 +583,10 @@ func (hs *HTTPServer) GetHomeDashboard(c *contextmodel.ReqContext) response.Resp
 		return response.Error(http.StatusInternalServerError, "Failed to load home dashboard", err)
 	}
 
-	hs.addGettingStartedPanelToHomeDashboard(c, dash.Dashboard)
+	// BMC code
+	// Hide getting started panel on home page
+	// hs.addGettingStartedPanelToHomeDashboard(c, dash.Dashboard)
+	// End
 
 	return response.JSON(http.StatusOK, &dash)
 }

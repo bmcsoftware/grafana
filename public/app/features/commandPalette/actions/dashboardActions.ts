@@ -1,6 +1,7 @@
 import debounce from 'debounce-promise';
 import { useEffect, useRef, useState } from 'react';
 
+import { locationUtil } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { t } from 'app/core/internationalization';
 import { contextSrv } from 'app/core/services/context_srv';
@@ -71,7 +72,8 @@ export async function getSearchResultActions(searchQuery: string): Promise<Comma
           ? t('command-palette.section.dashboard-search-results', 'Dashboards')
           : t('command-palette.section.folder-search-results', 'Folders'),
       priority: SEARCH_RESULTS_PRIORITY,
-      url,
+      // BMC Change inline
+      url: kind === 'folder' ? url : locationUtil.stripBaseFromUrl(url),
       subtitle: data.view.dataFrame.meta?.custom?.locationInfo[location]?.name,
     };
   });

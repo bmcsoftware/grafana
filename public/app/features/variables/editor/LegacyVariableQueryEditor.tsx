@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 
 import { selectors } from '@grafana/e2e-selectors';
 import { TextArea, useStyles2 } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
 
 import { getStyles } from '../../dashboard-scene/settings/variables/components/VariableTextAreaField';
 import { VariableQueryEditorProps } from '../types';
@@ -32,7 +33,7 @@ export const LegacyVariableQueryEditor = ({ onChange, query }: VariableQueryEdit
       value={value}
       onChange={onValueChange}
       onBlur={onBlur}
-      placeholder="Metric name or tags query"
+      placeholder={t('bmcgrafana.dashboards.settings.variables.editor.types.query.editor-placeholder', 'Metric name or tags query')}
       required
       data-testid={selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsQueryInput}
       cols={52}

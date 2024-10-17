@@ -75,10 +75,12 @@ swagger:model Preferences
 | Property            | Type                                              | Required | Default | Description                                                                     |
 |---------------------|---------------------------------------------------|----------|---------|---------------------------------------------------------------------------------|
 | `cookiePreferences` | [CookiePreferences](#cookiepreferences)           | No       |         |                                                                                 |
+| `enabledQueryTypes` | [EnabledQueryTypes](#enabledquerytypes)           | No       |         |                                                                                 |
 | `homeDashboardUID`  | string                                            | No       |         | UID for the home dashboard                                                      |
 | `language`          | string                                            | No       |         | Selected language (beta)                                                        |
 | `queryHistory`      | [QueryHistoryPreference](#queryhistorypreference) | No       |         |                                                                                 |
 | `theme`             | string                                            | No       |         | light, dark, empty is default                                                   |
+| `timeFormat`        | string                                            | No       |         | Format for dashboards, panels and reports timestamps                            |
 | `timezone`          | string                                            | No       |         | The timezone selection<br/>TODO: this should use the timezone defined in common |
 | `weekStart`         | string                                            | No       |         | day of the week (sunday, monday, etc)                                           |
 
@@ -104,6 +106,13 @@ swagger:model Preferences
 
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
+
+### EnabledQueryTypes
+
+| Property        | Type     | Required | Default | Description |
+|-----------------|----------|----------|---------|-------------|
+| `applyForAdmin` | boolean  | No       |         |             |
+| `enabledTypes`  | string[] | No       |         |             |
 
 ### QueryHistoryPreference
 

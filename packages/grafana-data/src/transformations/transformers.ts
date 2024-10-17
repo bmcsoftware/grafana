@@ -1,3 +1,4 @@
+import { advanceFunctionsTransformer } from './transformers/advanceFunctions';
 import { calculateFieldTransformer } from './transformers/calculateField';
 import { concatenateTransformer } from './transformers/concat';
 import { convertFieldTypeTransformer } from './transformers/convertFieldType';
@@ -13,6 +14,7 @@ import { groupToNestedTable } from './transformers/groupToNestedTable';
 import { groupingToMatrixTransformer } from './transformers/groupingToMatrix';
 import { histogramTransformer } from './transformers/histogram';
 import { joinByFieldTransformer } from './transformers/joinByField';
+import { dynamicFieldsFormatterTransformer } from './transformers/dynamicFieldsFormatter';
 import { labelsToFieldsTransformer } from './transformers/labelsToFields';
 import { limitTransformer } from './transformers/limit';
 import { mergeTransformer } from './transformers/merge';
@@ -22,6 +24,7 @@ import { organizeFieldsTransformer } from './transformers/organize';
 import { reduceTransformer } from './transformers/reduce';
 import { renameFieldsTransformer } from './transformers/rename';
 import { renameByRegexTransformer } from './transformers/renameByRegex';
+import { sanitizeFieldTransformer } from './transformers/sanitizeField';
 import { seriesToRowsTransformer } from './transformers/seriesToRows';
 import { sortByTransformer } from './transformers/sortBy';
 
@@ -54,5 +57,10 @@ export const standardTransformers = {
   convertFieldTypeTransformer,
   groupingToMatrixTransformer,
   limitTransformer,
+  // BMC code
+  advanceFunctionsTransformer,
+  dynamicFieldsFormatterTransformer,
+  sanitizeFieldTransformer,
+  // End
   groupToNestedTable,
 };

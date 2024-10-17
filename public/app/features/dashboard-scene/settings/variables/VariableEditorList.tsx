@@ -8,6 +8,7 @@ import { SceneVariable, SceneVariableState } from '@grafana/scenes';
 import { useStyles2, Stack, Button } from '@grafana/ui';
 import EmptyListCTA from 'app/core/components/EmptyListCTA/EmptyListCTA';
 
+
 import { VariableEditorListRow } from './VariableEditorListRow';
 
 export interface Props {

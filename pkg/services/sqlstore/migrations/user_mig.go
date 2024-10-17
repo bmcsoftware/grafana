@@ -38,7 +38,10 @@ func addUserMigrations(mg *Migrator) {
 	mg.AddMigration("create user table", NewAddTableMigration(userV1))
 	// add indices
 	mg.AddMigration("add unique index user.login", NewAddIndexMigration(userV1, userV1.Indices[0]))
-	mg.AddMigration("add unique index user.email", NewAddIndexMigration(userV1, userV1.Indices[1]))
+	// BMC code
+	// Abhishek, 08232020, disable unique index on email column
+	// mg.AddMigration("add unique index user.email", NewAddIndexMigration(userV1, userV1.Indices[1]))
+	// End
 
 	// ---------------------
 	// account -> org changes
@@ -71,7 +74,10 @@ func addUserMigrations(mg *Migrator) {
 		},
 		Indices: []*Index{
 			{Cols: []string{"login"}, Type: UniqueIndex},
-			{Cols: []string{"email"}, Type: UniqueIndex},
+			// BMC code
+			// Abhishek, 08232020, disable unique index on email column
+			// {Cols: []string{"email"}, Type: UniqueIndex},
+			// End
 		},
 	}
 
@@ -128,6 +134,11 @@ func addUserMigrations(mg *Migrator) {
 	mg.AddMigration("Add index user.login/user.email", NewAddIndexMigration(userV2, &Index{
 		Cols: []string{"login", "email"},
 	}))
+	// BMC code
+	// Start Abhishek, 07122020, alter id column to bigint
+	mg.AddMigration("alter user.id to bigint", NewRawSQLMigration("").
+		Postgres("ALTER TABLE public.user ALTER COLUMN id TYPE int8;"))
+	// End
 
 	//Service accounts are lightweight users with restricted permissions.  They support API keys
 	//and provisioning and tasks like alarms and reports.
@@ -148,8 +159,14 @@ func addUserMigrations(mg *Migrator) {
 
 	mg.AddMigration("Update uid column values for users", NewRawSQLMigration("").
 		SQLite("UPDATE user SET uid=printf('u%09d',id) WHERE uid IS NULL;").
-		Postgres("UPDATE `user` SET uid='u' || lpad('' || id::text,9,'0') WHERE uid IS NULL;").
-		Mysql("UPDATE user SET uid=concat('u',lpad(id,9,'0')) WHERE uid IS NULL;"))
+		Postgres("UPDATE `user` SET uid='u' || lpad('' || id::text,20,'0') WHERE uid IS NULL;").
+		Mysql("UPDATE user SET uid=concat('u',lpad(id,20,'0')) WHERE uid IS NULL;"))
+
+	// BMC Change: Start
+	// Fail safe for user uid correction, if same exists, before creating new index on uid
+	// Assumption: Only postgres used as grafana db
+	mg.AddMigration("Make sure user uid are unique", &BMCUserUIDCorrection{})
+	// BMC Change: End
 
 	mg.AddMigration("Add unique index user_uid", NewAddIndexMigration(userV2, &Index{
 		Cols: []string{"uid"}, Type: UniqueIndex,
@@ -202,3 +219,37 @@ func (m *AddMissingUserSaltAndRandsMigration) Exec(sess *xorm.Session, mg *Migra
 	}
 	return nil
 }
+
+// BMC Code: Start
+type BMCUserUIDCorrection struct {
+	MigrationBase
+}
+
+func (m *BMCUserUIDCorrection) SQL(dialect Dialect) string {
+	return "code migration"
+}
+
+type BMCTempUserDTO struct {
+	Id    int64
+	Login string
+	Uid   string
+}
+
+func (m *BMCUserUIDCorrection) Exec(sess *xorm.Session, mg *Migrator) error {
+	users := make([]*TempUserDTO, 0)
+
+	err := sess.SQL(fmt.Sprintf("SELECT u1.id, u1.login, u1.uid from %s as u1 join %s as u2 on u1.uid = u2.uid and u1.id != u2.id", mg.Dialect.Quote("user"), mg.Dialect.Quote("user"))).Find(&users)
+	if err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		if _, err := sess.Exec("UPDATE "+mg.Dialect.Quote("user")+
+			" SET uid='u' || lpad('' || id::text,20,'0') WHERE id = ?", user.Id); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// BMC Code: End

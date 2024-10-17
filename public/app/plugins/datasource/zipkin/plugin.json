@@ -27,5 +27,7 @@
         "url": "https://zipkin.io"
       }
     ]
-  }
+  },
+
+  "state": "alpha"
 }

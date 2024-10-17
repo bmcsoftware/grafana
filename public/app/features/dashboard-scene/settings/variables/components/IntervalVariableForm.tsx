@@ -4,11 +4,14 @@ import React, { ChangeEvent, FormEvent } from 'react';
 import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { useStyles2 } from '@grafana/ui';
-
+import { Trans,t } from 'app/core/internationalization';
+ 
 import { VariableCheckboxField } from './VariableCheckboxField';
 import { VariableLegend } from './VariableLegend';
 import { VariableSelectField } from './VariableSelectField';
 import { VariableTextField } from './VariableTextField';
+
+
 
 interface IntervalVariableFormProps {
   intervals: string;
@@ -41,29 +44,30 @@ export function IntervalVariableForm({
 
   return (
     <>
-      <VariableLegend>Interval options</VariableLegend>
+      {/*BMC Change: To enable localization for below text*/}
+      <VariableLegend><Trans i18nKey="bmcgrafana.dashboards.settings.variables.editor.types.internal.title">Interval options</Trans></VariableLegend>
       <VariableTextField
         defaultValue={intervals}
-        name="Values"
+        name={t('bmcgrafana.dashboards.settings.variables.editor.types.internal.values','Values')}
         placeholder="1m,10m,1h,6h,1d,7d"
         onBlur={onIntervalsChange}
         testId={selectors.pages.Dashboard.Settings.Variables.Edit.IntervalVariable.intervalsValueInput}
         width={32}
         required
       />
-
+      
       <VariableCheckboxField
         value={autoEnabled}
-        name="Auto option"
-        description="Dynamically calculates interval by dividing time range by the count specified"
+        name={t('bmcgrafana.dashboards.settings.variables.editor.types.internal.auto-option-name','Auto option')}
+        description={t('bmcgrafana.dashboards.settings.variables.editor.types.internal.auto-option-description','Dynamically calculates interval by dividing time range by the count specified')}
         onChange={onAutoEnabledChange}
         testId={selectors.pages.Dashboard.Settings.Variables.Edit.IntervalVariable.autoEnabledCheckbox}
       />
       {autoEnabled && (
         <div className={styles.autoFields}>
           <VariableSelectField
-            name="Step count"
-            description="How many times the current time range should be divided to calculate the value"
+            name={t('bmcgrafana.dashboards.settings.variables.editor.types.internal.step-count-name','Step count')}
+            description={t('bmcgrafana.dashboards.settings.variables.editor.types.internal.step-count-description','How many times the current time range should be divided to calculate the value')}
             value={stepCount}
             options={STEP_OPTIONS}
             onChange={onAutoCountChanged}
@@ -72,9 +76,9 @@ export function IntervalVariableForm({
           />
           <VariableTextField
             value={autoMinInterval}
-            name="Min interval"
-            description="The calculated value will not go below this threshold"
-            placeholder="10s"
+            name={t('bmcgrafana.dashboards.settings.variables.editor.types.internal.min-interval-name','Min interval')}
+            description={t('bmcgrafana.dashboards.settings.variables.editor.types.internal.min-interval-description','The calculated value will not go below this threshold')}
+            placeholder='10s'
             onChange={onAutoMinIntervalChanged}
             width={11}
             testId={selectors.pages.Dashboard.Settings.Variables.Edit.IntervalVariable.minIntervalInput}

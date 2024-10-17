@@ -62,7 +62,8 @@ export class SearchStateManager extends StateManagerBase<SearchState> {
     const prevSort = localStorage.getItem(SEARCH_SELECTED_SORT) ?? undefined;
     const sort = layout === SearchLayout.List ? stateFromUrl.sort || prevSort : null;
 
-    stateManager.setState({
+    // BMC Changes: Start
+    const newState: Partial<SearchState> = {
       ...initialState,
       ...stateFromUrl,
       layout,
@@ -70,7 +71,12 @@ export class SearchStateManager extends StateManagerBase<SearchState> {
       prevSort,
       folderUid: folderUid,
       eventTrackingNamespace: folderUid ? 'manage_dashboards' : 'dashboard_search',
-    });
+    };
+    if (stateManager.state.query === 'folder:current' && !stateFromUrl.query) {
+      newState.query = '';
+    }
+    stateManager.setState(newState);
+    // BMC Changes: End
 
     if (doInitialSearch && this.hasSearchFilters()) {
       this.doSearch();

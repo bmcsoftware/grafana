@@ -2,6 +2,7 @@ package pluginproxy
 
 import (
 	"bytes"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -11,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/grafana/grafana/pkg/infra/metrics"
+	"github.com/grafana/grafana/pkg/models/roletype"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
@@ -126,6 +129,11 @@ func (proxy *DataSourceProxy) HandleRequest() {
 				Header:        http.Header{},
 				Request:       resp.Request,
 			}
+		} else {
+			// BMC code
+			//Add Data usage metric
+			metric := metrics.MDataSourceProxyResDataSize.WithLabelValues(strconv.FormatInt(proxy.ctx.OrgID, 10), strconv.FormatInt(proxy.ds.ID,10))
+			metric.Add(float64(resp.ContentLength))
 		}
 		return nil
 	}
@@ -171,6 +179,28 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 	req.URL.Host = proxy.targetUrl.Host
 	req.Host = proxy.targetUrl.Host
 
+	// BMC code
+	// change for multiple url configuration in source plugin
+	// Obtain JWT Token value in local variable - Fix for DRJ71_4295
+	HelixJwtToken := req.Header.Get("X-Jwt-Token")
+	if strings.Contains(proxy.proxyPath, "api/arsys") && proxy.ds.JsonData != nil {
+		s, err := proxy.ds.JsonData.Map()
+		if s != nil && len(s) > 0 && err == nil {
+			pUrl := s["platformURL"].(string)
+			if pUrl != "" {
+				parsedUrl, _ := url.Parse(pUrl)
+				req.URL.Scheme = parsedUrl.Scheme
+				req.URL.Host = parsedUrl.Host
+				req.Host = parsedUrl.Host
+				proxy.targetUrl = parsedUrl
+			}
+		} else {
+			logger.Error("Datasource url for converged platfrom is not configured correctly.")
+			return
+		}
+
+	}
+	// End
 	reqQueryVals := req.URL.Query()
 
 	ctxLogger := logger.FromContext(req.Context())
@@ -222,10 +252,75 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 		req.Header.Set("Authorization", util.GetBasicAuthHeader(proxy.ds.BasicAuthUser,
 			password))
 	}
+	//BMC Code (ateli) - start
+	//Fix for DRJ71_4295 - Removing X-Jwt-Token from headers if request comes for third party domain
 
+	parts := strings.Split(proxy.targetUrl.Host, ".")
+	domain := parts[len(parts)-2] + "." + parts[len(parts)-1]
+	if domain != "bmc.com" || domain != "onbmc.com" {
+		req.Header.Set("X-Jwt-Token", "")
+	}
+
+	if proxy.proxyPath == "api/usagedata" && proxy.ds.Type == datasources.DS_BMC_JSON {
+		// vishaln - DRJ71-13468 - Auth check for individual params
+		authenticated := false
+
+		APIValuesAndRequiredPermissions := map[string]roletype.RoleType{
+			// Viewer role needed for these
+			"plugininfo": roletype.RoleViewer,
+
+			// Admin role needed for these
+			// "hitcount":  roletype.RoleAdmin, Disabled till metering server is fixed
+			"schedule": roletype.RoleAdmin,
+			"usercount": roletype.RoleAdmin,
+		}
+
+		predefinedQuery := req.URL.Query()["predefinedQuery"]
+
+		if len(predefinedQuery) > 0 {
+			reqdRole, ok := APIValuesAndRequiredPermissions[predefinedQuery[0]]
+			if ok && proxy.ctx.HasRole(reqdRole) {
+				authenticated = true
+			}
+		}
+
+		if !authenticated {
+			ctxLogger.Error(fmt.Sprintf("not authorized to call %v", predefinedQuery), req.URL.RawPath, "error")
+			return
+		}
+
+		// DRJ71-13174 - ymulthan, vishaln
+		username := proxy.cfg.AdminUser
+		password := proxy.cfg.AdminPassword
+
+		if username != "" && password != "" {
+
+			// Combine username and password in the format "username:password"
+			auth := username + ":" + password
+
+			// Encode the auth string to base64
+			encodedAuth := base64.StdEncoding.EncodeToString([]byte(auth))
+			req.URL.Scheme = "http"
+			req.URL.Host = "127.0.0.1" + ":" + proxy.cfg.HTTPPort
+			req.Header.Set("X-DS-Authorization", "")
+			req.Header.Set("Authorization", "Basic "+encodedAuth)
+			req.Header.Set("X-Jwt-Token", "")
+		}
+	}
+	//BMC Code (ateli) - end
 	dsAuth := req.Header.Get("X-DS-Authorization")
 	if len(dsAuth) > 0 {
 		req.Header.Del("X-DS-Authorization")
+		// BMC code
+		// Send the rsso auth proxy token to external API - starts
+		if HelixJwtToken != "" {
+			if strings.Contains(proxy.proxyPath, "api/arsys") {
+				dsAuth = "IMS-JWT " + HelixJwtToken
+			} else {
+				dsAuth = "Bearer " + HelixJwtToken
+			}
+		}
+		// End
 		req.Header.Set("Authorization", dsAuth)
 	}
 
