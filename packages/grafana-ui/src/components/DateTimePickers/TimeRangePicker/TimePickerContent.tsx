@@ -76,7 +76,8 @@ export const TimePickerContentWithScreenSize = (props: PropsWithScreenSize) => {
   };
 
   return (
-    <div id="TimePickerContent" className={cx(styles.container, className)}>
+    // BMC Code - inline change
+    <div id="TimePickerContent" className={cx(styles.container, className) + ' override'}>
       <div className={styles.body}>
         {(!isFullscreen || !hideQuickRanges) && (
           <div className={styles.rightSide}>
@@ -293,6 +294,8 @@ const getStyles = (
     borderRight: `${isReversed ? 'none' : `1px solid ${theme.colors.border.weak}`}`,
     width: `${!hideQuickRanges ? '60%' : '100%'}`,
     overflow: 'hidden',
+    // BMC Code: Next line, to get aligned in GF 11
+    overflowY: 'scroll',
     order: isReversed ? 1 : 0,
   }),
   rightSide: css({

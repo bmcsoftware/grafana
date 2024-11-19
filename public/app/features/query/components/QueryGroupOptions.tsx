@@ -5,6 +5,7 @@ import { rangeUtil, PanelData, DataSourceApi } from '@grafana/data';
 import { Switch, Input, InlineFormLabel, stylesFactory } from '@grafana/ui';
 import { QueryOperationRow } from 'app/core/components/QueryOperationRow/QueryOperationRow';
 import { config } from 'app/core/config';
+import { t, Trans } from 'app/core/internationalization';
 import { QueryGroupOptions } from 'app/types';
 
 interface Props {
@@ -216,20 +217,25 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
     const realMd = data.request?.maxDataPoints;
     const value = options.maxDataPoints ?? '';
     const isAuto = value === '';
-
     return (
       <div className="gf-form-inline">
         <div className="gf-form">
           <InlineFormLabel
             width={9}
             tooltip={
+              // BMC Change: To enable localization for below text
               <>
-                The maximum data points per series. Used directly by some data sources and used in calculation of auto
-                interval. With streaming data this value is used for the rolling buffer.
+                <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.max-data-points-tooltip">
+                  The maximum data points per series. Used directly by some data sources and used in calculation of auto
+                  interval. With streaming data this value is used for the rolling buffer.
+                </Trans>
               </>
             }
           >
-            Max data points
+            <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.max-data-points">
+              Max data points
+            </Trans>
+            {/* BMC Change ends */}
           </InlineFormLabel>
           <Input
             type="number"
@@ -242,7 +248,13 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
           {isAuto && (
             <>
               <div className="gf-form-label query-segment-operator">=</div>
-              <div className="gf-form-label">Width of panel</div>
+              {/* BMC Change: To enable localization for below text */}
+              <div className="gf-form-label">
+                <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.width-of-panel">
+                  Width of panel
+                </Trans>
+              </div>
+              {/* BMC Change ends */}
             </>
           )}
         </div>
@@ -253,7 +265,11 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
   renderIntervalOption() {
     const { data, dataSource, options } = this.props;
     const realInterval = data.request?.interval;
-    const minIntervalOnDs = dataSource.interval ?? 'No limit';
+    // BMC Change: To enable localization for below text
+    const minIntervalOnDs =
+      dataSource.interval ??
+      t('bmcgrafana.dashboards.edit-panel.query.query-options.min-interval-placeholder', 'No limit');
+    // BMC Change ends
 
     return (
       <>
@@ -262,14 +278,18 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
             <InlineFormLabel
               width={9}
               tooltip={
+                // BMC Change: To enable localization for below text
                 <>
-                  A lower limit for the interval. Recommended to be set to write frequency, for example <code>1m</code>{' '}
-                  if your data is written every minute. Default value can be set in data source settings for most data
-                  sources.
+                  <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.min-interval-tooltip">
+                    A lower limit for the interval. Recommended to be set to write frequency, for example{' '}
+                    <code>1m</code> if your data is written every minute. Default value can be set in data source
+                    settings for most data sources.
+                  </Trans>
                 </>
               }
             >
-              Min interval
+              <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.min-interval">Min interval</Trans>
+              {/* BMC Change ends */}
             </InlineFormLabel>
             <Input
               type="text"
@@ -286,18 +306,26 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
             <InlineFormLabel
               width={9}
               tooltip={
+                // BMC Change: To enable localization for below text
                 <>
-                  The evaluated interval that is sent to data source and is used in <code>$__interval</code> and{' '}
-                  <code>$__interval_ms</code>. This value is not exactly equal to{' '}
-                  <code>Time range / max data points</code>, it will approximate a series of magic number.
+                  <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.interval-tooltip">
+                    The evaluated interval that is sent to data source and is used in <code>$__interval</code> and{' '}
+                    <code>$__interval_ms</code>. This value is not exactly equal to{' '}
+                    <code>Time range / max data points</code>, it will approximate a series of magic number.
+                  </Trans>
                 </>
               }
             >
-              Interval
+              <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.interval">Interval</Trans>
+              {/* BMC Change ends */}
             </InlineFormLabel>
             <InlineFormLabel width={6}>{realInterval}</InlineFormLabel>
             <div className="gf-form-label query-segment-operator">=</div>
-            <div className="gf-form-label">Time range / max data points</div>
+            <div className="gf-form-label">
+              <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.time-range-max-points">
+                Time range / max data points
+              </Trans>
+            </div>
           </div>
         </div>
       </>
@@ -342,12 +370,13 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
     const { timeRangeHide: hideTimeOverride, relativeTimeIsValid, timeShiftIsValid } = this.state;
     const { timeRangeFrom: relativeTime, timeRangeShift: timeShift, isOpen } = this.state;
     const styles = getStyles();
-
     return (
       <QueryOperationRow
         id="Query options"
         index={0}
-        title="Query options"
+        // BMC Change: To enable localization for below text
+        title={t('bmcgrafana.dashboards.edit-panel.query.query-options.query-options-title', 'Query options')}
+        // BMC Change ends
         headerElement={this.renderCollapsedText(styles)}
         isOpen={isOpen}
         onOpen={this.onOpenOptions}
@@ -362,20 +391,26 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
           <InlineFormLabel
             width={9}
             tooltip={
+              // BMC Change: To enable localization for below text
               <>
-                Overrides the relative time range for individual panels, which causes them to be different than what is
-                selected in the dashboard time picker in the top-right corner of the dashboard. For example to configure
-                the Last 5 minutes the Relative time should be <code>now-5m</code> and <code>5m</code>, or variables
-                like <code>$_relativeTime</code>.
+                <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.relative-time-tooltip">
+                  Overrides the relative time range for individual panels, which causes them to be different than what
+                  is selected in the dashboard time picker in the top-right corner of the dashboard. For example to
+                  configure the Last 5 minutes the Relative time should be <code>now-5m</code> and <code>5m</code>, or
+                  variables like <code>$_relativeTime</code>.
+                </Trans>
               </>
             }
           >
-            Relative time
+            <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.relative-time">Relative time</Trans>
+            {/* BMC Change ends */}
           </InlineFormLabel>
           <Input
             type="text"
             className="width-6"
-            placeholder="1h"
+            // BMC Change: To enable localization for below text
+            placeholder={t('bmcgrafana.dashboards.edit-panel.query.query-options.relative-time-placeholder', '1h')}
+            // BMC Chenge ends
             onChange={this.onRelativeTimeChange}
             onBlur={this.onOverrideTime}
             invalid={!relativeTimeIsValid}
@@ -387,19 +422,25 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
           <InlineFormLabel
             width={9}
             tooltip={
+              // BMC Change: To enable localization for below text
               <>
-                Overrides the time range for individual panels by shifting its start and end relative to the time
-                picker. For example to configure the Last 1h the Time shift should be <code>now-1h</code> and{' '}
-                <code>1h</code>, or variables like <code>$_timeShift</code>.
+                <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.time-shift-tooltip">
+                  Overrides the time range for individual panels by shifting its start and end relative to the time
+                  picker. For example to configure the Last 1h the Time shift should be <code>now-1h</code> and{' '}
+                  <code>1h</code>, or variables like <code>$_timeShift</code>.
+                </Trans>
               </>
             }
           >
-            Time shift
+            <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.time-shift">Time shift</Trans>
+            {/* BMC Change ends */}
           </InlineFormLabel>
           <Input
             type="text"
             className="width-6"
-            placeholder="1h"
+            // BMC Change: To enable localization for below text
+            placeholder={t('bmcgrafana.dashboards.edit-panel.query.query-options.time-shift-placeholder', '1h')}
+            // BMC Change ends
             onChange={this.onTimeShiftChange}
             onBlur={this.onTimeShift}
             invalid={!timeShiftIsValid}
@@ -408,7 +449,13 @@ export class QueryGroupOptionsEditor extends PureComponent<Props, State> {
         </div>
         {(timeShift || relativeTime) && (
           <div className="gf-form-inline align-items-center">
-            <InlineFormLabel width={9}>Hide time info</InlineFormLabel>
+            {/* BMC Change: To enable localization for below text */}
+            <InlineFormLabel width={9}>
+              <Trans i18nKey="bmcgrafana.dashboards.edit-panel.query.query-options.hide-time-info">
+                Hide time info
+              </Trans>
+            </InlineFormLabel>
+            {/* BMC Change ends  */}
             <Switch value={hideTimeOverride} onChange={this.onToggleTimeOverride} />
           </div>
         )}
