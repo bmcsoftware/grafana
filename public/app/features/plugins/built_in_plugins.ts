@@ -45,6 +45,8 @@ import * as alertListPanel from 'app/plugins/panel/alertlist/module';
 import * as annoListPanel from 'app/plugins/panel/annolist/module';
 import * as barChartPanel from 'app/plugins/panel/barchart/module';
 import * as barGaugePanel from 'app/plugins/panel/bargauge/module';
+import * as bmcVideoPanel from 'app/plugins/panel/bmcvideo/module';
+import * as bmcwelcomeBanner from 'app/plugins/panel/bmcwelcome/module';
 import * as candlestickPanel from 'app/plugins/panel/candlestick/module';
 import * as dashListPanel from 'app/plugins/panel/dashlist/module';
 import * as dataGridPanel from 'app/plugins/panel/datagrid/module';
@@ -74,8 +76,9 @@ const canvasPanel = async () => await import(/* webpackChunkName: "canvasPanel" 
 const graphPanel = async () => await import(/* webpackChunkName: "graphPlugin" */ 'app/plugins/panel/graph/module');
 const heatmapPanel = async () =>
   await import(/* webpackChunkName: "heatmapPanel" */ 'app/plugins/panel/heatmap/module');
-const tableOldPanel = async () =>
-  await import(/* webpackChunkName: "tableOldPlugin" */ 'app/plugins/panel/table-old/module');
+// BMC Change: Commented next line
+// const tableOldPanel = async () =>
+//   await import(/* webpackChunkName: "tableOldPlugin" */ 'app/plugins/panel/table-old/module');
 
 const nodeGraph = async () =>
   await import(/* webpackChunkName: "nodeGraphPanel" */ 'app/plugins/panel/nodeGraph/module');
@@ -120,7 +123,8 @@ const builtInPlugins: Record<string, System.Module | (() => Promise<System.Modul
   'core:plugin/annolist': annoListPanel,
   'core:plugin/heatmap': heatmapPanel,
   'core:plugin/table': tablePanel,
-  'core:plugin/table-old': tableOldPanel,
+  // BMC Change: Commented next line
+  // 'core:plugin/table-old': tableOldPanel,
   'core:plugin/news': newsPanel,
   'core:plugin/live': livePanel,
   'core:plugin/stat': statPanel,
@@ -138,6 +142,10 @@ const builtInPlugins: Record<string, System.Module | (() => Promise<System.Modul
   'core:plugin/nodeGraph': nodeGraph,
   'core:plugin/histogram': histogramPanel,
   'core:plugin/alertGroups': alertGroupsPanel,
+  // BMC code
+  'core:plugin/bmcwelcome': bmcwelcomeBanner,
+  'core:plugin/bmcvideo': bmcVideoPanel,
+  // End
 };
 
 export default builtInPlugins;

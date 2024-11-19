@@ -1,5 +1,1086 @@
 {
   "_comment": "Este archivo es la fuente original para las cadenas en inglés. Edita la base del código para cambiar los plurales y otras frases de la interfaz de usuario.",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "No se han encontrado orígenes de datos del tipo {{pluginName}}.",
+      "import": {
+        "import-all-failed": "Error al importar todos los paneles",
+        "no-import": "No se ha importado ningún panel."
+      },
+      "import-all": "Importar todo",
+      "import-failed": "Error al importar los siguientes paneles",
+      "import-success": "Todos los paneles se han importado correctamente.",
+      "select-datasource": "Seleccione un origen de datos de {{pluginName}}",
+      "set-parameters": "Establecer los parámetros requeridos para los paneles seleccionados",
+      "specify-constant": "Especificar una constante de cadena"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Agregado",
+      "all": "Todo",
+      "clone": "Clonar",
+      "confirm-delete": "¿Desea eliminar los campos calculados seleccionados?",
+      "connection-error": "La conexión a BMC Helix ITSM no está configurada.",
+      "custom": "Personalizado",
+      "delete": "Eliminar",
+      "details": "Detalles del campo calculado",
+      "edit": "Editar",
+      "edit-field": "Editar campo calculado",
+      "eg": "Ej.",
+      "failed": "Error al obtener los campos calculados",
+      "failure": "Fallo",
+      "filter-by-type": "Filtrar por tipo (Predeterminado: Todo)",
+      "form-name": "Nombre de formulario",
+      "is-aggregate": "Está agregado",
+      "is-aggregate-description": "Habilite esta opción si su consulta incluye funciones de agregación.",
+      "module": "Módulo",
+      "module-name": "Nombre de módulo",
+      "name": "Nombre",
+      "name-placeholder": "Introduzca el nombre del campo calculado",
+      "new-field": "Nuevo campo calculado",
+      "no-calc-fields": "Aún no ha creado ningún campo calculado.",
+      "not-found": "No se ha encontrado ningún campo calculado que coincida con su consulta.",
+      "ootb": "Preconfigurado",
+      "query-info": "La consulta debe ser de una sola columna.",
+      "query-not-validated": "Consulta no validada",
+      "save": "Guardar",
+      "search-by-name": "Buscar campos calculados por nombre",
+      "select-form": "Seleccionar formulario",
+      "select-module": "Seleccionar módulo",
+      "sort-asc": "Alfabéticamente (A-Z)",
+      "sort-asc-descripton": "Ordenar los resultados en orden alfabético ascendente",
+      "sort-dsc": "Alfabéticamente (Z-A)",
+      "sort-dsc-descripton": "Ordenar los resultados en orden alfabético descendente",
+      "sort-placeholder": "Predeterminado ({{label}} predeterminado)",
+      "sql-query": "Consulta SQL",
+      "subtitle": "Crea y gestiona campos calculados para el servicio ITSM",
+      "title": "Campos calculados",
+      "unknown-failure": "Fallo desconocido",
+      "update": "Actualizar",
+      "validate": "Validar",
+      "validation-success": "La consulta se ha validado correctamente"
+    },
+    "common": {
+      "cancel": "Cancelar",
+      "dashboards": "Paneles",
+      "delete": "Eliminar",
+      "download": "Descargar",
+      "edit": "Editar",
+      "loading": "Cargando...",
+      "name": "Nombre",
+      "save": "Guardar",
+      "type": "Tipo"
+    },
+    "contact-support": "<0>Haga una instantánea de los detalles del error que se muestran a continuación y envíela a equipo de </0><1>soporte de BMC.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Gestionar informes programados",
+        "reset-filters": "Restablecer filtros",
+        "reset-filters-failure": "Error al restablecer los valores de los filtros.",
+        "save-filters": "Guardar filtros",
+        "save-filters-failure": "Error al guardar los valores de los filtros.",
+        "save-filters-success": "Valores de los filtros guardados correctamente."
+      }
+    },
+    "dashboard-import": {
+      "import-text": "Importar",
+      "options": "Opciones",
+      "overwrite": "Sobrescribir",
+      "panel-import": "Importación de paneles",
+      "panel-import-alert": "La importación tiene un panel {{vqb}}. Vuelva a exportarlo desde el entorno deseado o será necesaria una intervención manual para seleccionar la vista.",
+      "sub-title": "Importar el tablero de resultados desde un archivo o mediante json del tablero de resultados",
+      "title": "Importar tablero de resultados"
+    },
+    "date-picker": {
+      "description": "Defina una variable para un rango de fechas, en la que los usuarios puedan seleccionar cualquier rango.",
+      "name": "Rango de fechas"
+    },
+    "export": {
+      "csvdelimiter": "Delimitador",
+      "generation-failed": "Error al generar el informe; inténtelo de nuevo más tarde.",
+      "grid": "Cuadrícula",
+      "landscape": "Horizontal",
+      "layout": "Diseño",
+      "orientation": "Orientación",
+      "portrait": "Vertical",
+      "reduce-selection": "Reduzca los valores de la variable seleccionada en {{variableQuery}} e inténtelo de nuevo más tarde.",
+      "save-as": "Guardar {{target}} como {{type}}",
+      "simple": "Simple",
+      "success": "Informe generado correctamente",
+      "tableScaling": "Escalado de tablas",
+      "type": "Tipo",
+      "view": "Ver"
+    },
+    "features-list": {
+      "date-function-resolution-for-service-management": "Resolución de la función Fecha para la gestión de servicios",
+      "enable-ootb-views-for-visual-query-builder": "Habilitar las vistas OOTB para Visual Query Builder",
+      "export-complete-table-in-pdf": "Exportar tabla completa en PDF",
+      "skip-ootb-dashboards-during-upgrade": "Omitir paneles OOTB durante la actualización",
+      "skip-ootb-dashboards-during-upgrade-confirm-dialog": {
+        "confirm-button": "Activar",
+        "desc": "Elimine las carpetas de los paneles preconfigurados que no sean necesarias antes de habilitar esta función.",
+        "title": "Activar/Desactivar función"
+      },
+      "snapshot": "Imagen"
+    },
+    "manage-dashboards": {
+      "drop-click": "Arrastre y coloque aquí o haga clic para examinar.",
+      "import-failed": "Error de importación",
+      "serialization-failed": "JSON -> Error en la serialización de JS",
+      "upload-json": "Cargar archivo(s) JSON del panel"
+    },
+    "nav": {
+      "apps": {
+        "reports": {
+          "history": "Historial",
+          "settings": "Configuración"
+        }
+      },
+      "rms": {
+        "subtitle": "Una aplicación para crear y modificar vistas para Visual Query Builder",
+        "title": "Estudio de metadatos de informes"
+      },
+      "roles": {
+        "subtitle": "Gestionar roles en toda una organización",
+        "title": "Roles"
+      }
+    },
+    "org-custom-config": {
+      "community": "Comunidad",
+      "documentation": "Documentación",
+      "errors": {
+        "query-type-mandatory": "Se debe habilitar al menos un tipo de consulta"
+      },
+      "support": "Soporte",
+      "video": "Vídeo"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Introducir vídeo incrustado",
+        "invalid-url": "No es una URL válida",
+        "url": "URL del vídeo"
+      },
+      "bmc-welcome": {
+        "communities": "Comunidades",
+        "community-description": "Descripción de la comunidad",
+        "default-community-description": "Conectar. Compartir. Descubrir. Únase a debates con homólogos y expertos sobre productos y soluciones de BMC.",
+        "default-documentation-description": "Revise la documentación del producto para comprender todas las funciones de informes y cómo usarlas.",
+        "default-video-description": "Vea vídeos instructivos, descripciones generales y demostraciones sobre los productos y soluciones de BMC en el canal de BMC en YouTube.",
+        "documentation": "Documentación",
+        "documentation-description": "Descripción de la documentación",
+        "video-description": "Descripción del vídeo",
+        "videos": "Vídeos"
+      }
+    },
+    "rbac": {
+      "common": {
+        "all": "Todo",
+        "assigned": "Asignado",
+        "menu": "Menú",
+        "name": "Nombre"
+      },
+      "permissions": {
+        "admin": {
+          "datasource-manage": "Administrar fuentes de datos",
+          "datasource-manage-desc": "puede gestionar fuentes de datos",
+          "reports-manage": "Gestionar programador de informes",
+          "reports-manage-desc": "puede gestionar todos los informes",
+          "title": "Administración"
+        },
+        "calc-fields": {
+          "create-desc": "puede crear o actualizar campos calculados",
+          "view-desc": "puede ver los campos calculados"
+        },
+        "common": {
+          "create": "Crear",
+          "view": "Ver"
+        },
+        "dashboards": {
+          "create-desc": "puede crear tableros de resultados",
+          "download-desc": "puede descargar el tablero de resultados en formato PDF/XLSX/CSV",
+          "view-desc": "puede ver los tableros de resultados permitidos"
+        },
+        "datasource": {
+          "explore": "Explorar",
+          "explore-desc": "puede utilizar el modo de exploración para las fuentes de datos"
+        },
+        "datasources": {
+          "title": "Fuentes de datos"
+        },
+        "folders": {
+          "create-desc": "puede crear carpetas",
+          "title": "Carpetas",
+          "view-desc": "puede ver las carpetas permitidas"
+        },
+        "list": "Lista de permisos",
+        "reports": {
+          "access": "Acceso",
+          "access-desc": "puede ver y crear informes",
+          "history-read": "Ver historial",
+          "history-read-desc": "puede ver la sección de historial de informes",
+          "settings-read": "Ver configuración",
+          "settings-read-desc": "puede ver la configuración de los informes",
+          "title": "Informes"
+        },
+        "servicemanagement-querytypes": {
+          "sql": "De SQL",
+          "sql-desc": "puede editar la consulta sql",
+          "title": "Tipos de consultas de gestión de servicios"
+        },
+        "title": "Permisos"
+      },
+      "roles": {
+        "actions": "Acciones",
+        "create": "Crear",
+        "custom": "Personalizado",
+        "delete": "Eliminar rol",
+        "delete-confirmation": "¿Confirma que desea eliminar este rol?",
+        "delete-role": "Eliminar rol",
+        "description": "Descripción",
+        "edit": "Editar rol",
+        "manage-permissions": "Gestionar permisos",
+        "manage-teams": "Gestionar equipos",
+        "manage-users": "Gestionar usuarios",
+        "name-required": "El nombre del rol es obligatorio",
+        "new": "Nuevo rol",
+        "search": "Buscar roles",
+        "system": "Sistema",
+        "update": "Actualizar"
+      },
+      "teams": {
+        "none-assigned": "No hay equipos asignados",
+        "none-found": "No se encontraron equipos",
+        "search": "Buscar nombre del equipo",
+        "team": "equipo",
+        "title": "Equipos"
+      },
+      "users": {
+        "email": "Correo electrónico",
+        "login": "Iniciar sesión",
+        "none-assigned": "No hay usuarios asignados",
+        "none-found": "No se encontraron usuarios",
+        "team": "usuario",
+        "title": "Usuarios"
+      }
+    },
+    "rms": {
+      "description": "Reporting Metadata Studio es una aplicación de Windows basada en Pentaho Metadata Editor. Se utiliza para crear vistas personalizadas o modificar una copia de una vista preconfigurada. Para obtener más información, consulte la documentación en línea.",
+      "download": {
+        "error": "No se puede descargar"
+      },
+      "headers": {
+        "env-details": "Detalles del entorno"
+      }
+    },
+    "route-error": "Se ha producido un error inesperado.",
+    "search": {
+      "comfirm-export": "¿Desea exportar los paneles seleccionados ({{dashCount}})?",
+      "export": "Exportar",
+      "export-status": "Exportar estatus"
+    },
+    "share-modal": {
+      "loading": "Cargando"
+    },
+    "shared-preferences": {
+      "datetime-format": {
+        "description": "Esto cambiará el formato de hora predeterminado utilizado en tableros de resultados, paneles e informes.",
+        "label": "Formato de fecha y hora"
+      },
+      "fields": {
+        "apply-admins": "Aplicar a los administradores",
+        "enabled-query-types": "Administrar tipos de consultas de gestión de servicios",
+        "query-type-label": "Tipo de consulta",
+        "query-type-placeholder": "Elegir tipo de consulta"
+      }
+    },
+    "toggle-feature": {
+      "manage-features": "Gestionar funciones del panel"
+    },
+    "variables": {
+      "query-editor": {
+        "continue": "Continuar",
+        "enable-editor": "Habilitar editor de consultas",
+        "modal-close-confirmation": "La consulta actual se perderá. ¿Desea continuar?",
+        "modal-close-title": "Cambios no guardados",
+        "query-text": "Consulta",
+        "service-management-note": "Nota: Aplicable únicamente al tipo de consulta de gestión del servicio."
+      }
+    }
+  },
+  "bmcgrafana": {
+    "connections": {
+      "redirect-notice": "<0>¡Los orígenes de datos tienen un nuevo inicio! Puede descubrir nuevos orígenes de datos o gestionar los existentes en la página Conexiones, accesible desde el menú principal.</0><1>Ir a conexiones</1>"
+    },
+    "dashboard": {
+      "inspect-data": {
+        "loading": "Cargando",
+        "no-data": "Sin datos"
+      },
+      "panel-copied": "Panel copiado. Haga clic en el icono **Agregar panel** para pegar.",
+      "remove-panel": {
+        "confirm-button-text": "Eliminar",
+        "confirmation-text": "¿Confirma que desea eliminar este panel?",
+        "title": "Eliminar panel"
+      }
+    },
+    "dashboard-import": {
+      "change-uid": "Cambiar uid",
+      "datasource-validation": "Se requiere un origen de datos",
+      "existing-library-panels": "Paneles de biblioteca existentes",
+      "existing-library-panels-desc": "Listado de paneles de biblioteca existentes. Estos paneles no se ven afectados por la importación.",
+      "folder": "Carpeta",
+      "name-validation-text": "Se requiere nombre",
+      "needs-value": "necesita un valor",
+      "new-library-panels": "Nuevos paneles de la biblioteca",
+      "new-library-panels-desc": "Lista de nuevos paneles de biblioteca que se importarán.",
+      "select-view": "Seleccionar vista",
+      "uid": "Identificador único (UID)",
+      "uid-desc": "El identificador único (UID) de un tablero de resultados se puede utilizar para identificar de forma única un tablero de resultados entre varias instalaciones de Grafana. El UID permite tener URL coherentes para acceder a los tableros de resultados, de modo que cambiar el título de un tablero de resultados no romperá ningún enlace marcado a ese tablero de resultados.",
+      "view-selection-tooltip": "No cambiar la vista preseleccionada",
+      "view-selection-validation": "Se requiere una selección de vista"
+    },
+    "dashboards": {
+      "edit-panel": {
+        "actual": "Real",
+        "actual-description": "Hacer que sea del mismo tamaño que en el panel",
+        "apply": "Aplicar",
+        "apply-tooltip": "Aplicar cambios y volver al panel",
+        "axis": {
+          "centered-zero-text": "Centrado en el cero",
+          "color": {
+            "series-text": "Serie",
+            "text-text": "Texto"
+          },
+          "color-text": "Color",
+          "grid-lines": {
+            "auto-text": "Automático",
+            "off-text": "Desactivado",
+            "on-text": "Activado"
+          },
+          "grid-lines-text": "Mostrar líneas de la cuadrícula",
+          "label-placeholder": "Texto opcional",
+          "label-text": "Etiqueta",
+          "placement-text": "Ubicación",
+          "scale": {
+            "linear-text": "Lineal",
+            "logarithmic": {
+              "log-base-text": "Base logarítmica"
+            },
+            "Logarithmic-text": "Logarítmico",
+            "symlog": {
+              "linear-threshold-placeholder": "1",
+              "linear-threshold-text": "Umbral lineal"
+            },
+            "Symlog-text": "Symlog"
+          },
+          "scale-text": "Escala",
+          "show-border-text": "Mostrar borde",
+          "soft-max-description": "Ver: Opciones estándar > Máx.",
+          "soft-max-text": "Máx. no estricto",
+          "soft-min-placeholder": "Ver: Opciones estándar > Mín.",
+          "soft-min-text": "Mín. no estricto",
+          "text": "Eje",
+          "width-placeholder": "Automático",
+          "width-text": "Ancho"
+        },
+        "based-on-current-data": "Basado en los datos actuales",
+        "click-to-change-visualization": "Haga clic para cambiar la visualización",
+        "close-options-pane": "Cerrar panel de opciones",
+        "close-text": "Cerrar",
+        "create-library-panel-text": "Crear panel de biblioteca",
+        "create-new-library-panel-button": "Crear nuevo panel de biblioteca",
+        "data-links": {
+          "edit-link-title-tooltip": "Editar el título del vínculo de datos",
+          "link-title-not-provided": "Título del vínculo de datos no proporcionado",
+          "link-url-not-provided": "URL del vínculo de datos no proporcionada",
+          "remove-link-title-tooltip": "Eliminar título del vínculo de datos"
+        },
+        "discard": "Descartar",
+        "discard-tooltip": "Deshacer todos los cambios",
+        "fill": "Rellenar",
+        "fill-description": "Usar todo el espacio disponible",
+        "legend": {
+          "mode": "Modo",
+          "mode-list": "Lista",
+          "mode-table": "Tabla",
+          "placement": "Ubicación",
+          "placement-bottom-text": "Abajo",
+          "text": "Leyenda",
+          "values-description": "Seleccione los valores o cálculos que se mostrarán en la leyenda.",
+          "values-text": "Valores",
+          "visibility": "Visibilidad",
+          "width": "Ancho"
+        },
+        "library-panels-description": "Paneles reutilizables que puede compartir entre varios paneles.",
+        "library-panels-text": "Paneles de la biblioteca",
+        "overrides": {
+          "button": {
+            "none": "Ninguno",
+            "right": "Derecho"
+          }
+        },
+        "panel-links": {
+          "add-link": {
+            "edit-link": "Editar enlace"
+          },
+          "add-link-text": "Agregar vínculo"
+        },
+        "panel-options": {
+          "link-editor": {
+            "open-in-new-tab-label": "Abrir en una nueva pestaña",
+            "title-placeholder": "Mostrar detalles",
+            "url-placeholder": "http://your-grafana.com/d/000000010/annotations",
+            "url-text": "URL"
+          },
+          "panel-links": "Vínculos del panel",
+          "repeat-by-variabe": "Repetir por variable",
+          "repeat-by-variable-description": "Repetir este panel por cada valor en la variable seleccionada. Esto no es visible en el modo de edición. Debe regresar al panel y, a continuación, actualizar la variable o volver a cargar el panel.",
+          "repeat-options": {
+            "disable-repeating": "Deshabilitar la repetición",
+            "no-template-variables-found": "No se encontraron variables de plantilla."
+          },
+          "repeat-options-title": "Opciones de repetición",
+          "transparent-background-text": "Fondo transparente"
+        },
+        "query": {
+          "add-query-button": "Agregar consulta",
+          "data-source-help-title": "Ayuda del origen de datos",
+          "data-source-text": "Origen de datos",
+          "edit-query-name-title": "Editar nombre de la consulta",
+          "empty-query-edit-warning": "No se permite dejar el nombre de la consulta en blanco.",
+          "expression-button": "Expresión ",
+          "query-already-exist-warning": "El nombre de la consulta ya existe.",
+          "query-inspector-button": "Inspector de consultas",
+          "query-options": {
+            "hide-time-info": "Ocultar información de tiempo",
+            "interval": "Intervalo",
+            "interval-tooltip": "Intervalo evaluado que se ha enviado al origen de datos y que se utiliza en <1>$__interval</1> y <4>$__interval_ms</4>. Este valor no es exactamente igual a <7>Intervalo de tiempo/Puntos de datos máximos</7>; se aproximará a una serie de número mágico.",
+            "max-data-points": "N.º máximo de puntos de datos",
+            "max-data-points-tooltip": "La cantidad máxima de puntos de datos por serie. Lo utilizan directamente algunos orígenes de datos y en el cálculo del intervalo automático. En la transmisión de datos, este valor se utiliza para el búfer sucesivo.",
+            "min-interval": "Intervalo mínimo",
+            "min-interval-placeholder": "Sin límite",
+            "min-interval-tooltip": "Límite inferior para el intervalo. Se recomienda que se establezca conforme a frecuencia de escritura; por ejemplo, <2>1m</2>, si sus datos se escriben cada minuto. El valor predeterminado puede establecerse en la configuración del origen de datos para la mayoría de orígenes.",
+            "query-options-title": "Opciones de consulta",
+            "relative-time": "Tiempo relativo",
+            "relative-time-placeholder": "1h",
+            "relative-time-tooltip": "Anula el intervalo de tiempo relativo para los paneles individuales, lo que hace que sean diferentes a lo que está seleccionado en el selector de tiempo del panel de control, en la esquina superior derecha. Por ejemplo, para configurar los Últimos 5 minutos, el valor del Tiempo relativo debería ser <1>now-5m</1> y <3>5m</3>, o variables como <5>$_relativeTime</5>.",
+            "time-range-max-points": "Intervalo de tiempo/Puntos de datos máx.",
+            "time-shift": "Cambio de tiempo",
+            "time-shift-placeholder": "1h",
+            "time-shift-tooltip": "Anula el intervalo de tiempo para los paneles individuales cambiando sus inicios y finales relativos al selector de tiempo. Por ejemplo, para configurar la Última hora, el valor de Cambio de tiempo debería ser <1>now-1h</1> y <4>1h</4>, o variables como <6>$_timeShift</6>.",
+            "width-of-panel": "Ancho del panel"
+          },
+          "question-circle-description": "Abrir la ayuda del origen de datos"
+        },
+        "remove-text": "Eliminar",
+        "save-tooltip": "Aplicar los cambios y guardar el panel",
+        "search-for-text": "Buscar…",
+        "search-options": "Opciones de búsqueda",
+        "show-options-pane": "Mostrar panel de opciones",
+        "suggestions-text": "Sugerencias",
+        "table-view-switch": "Vista de tabla",
+        "tooltip": {
+          "hover-proximity": "Proximidad del cursor",
+          "hover-proximity-description": "La distancia a la que debe estar el cursor respecto a un punto para activar la información sobre herramientas, en píxeles",
+          "max-height": "Altura máx.",
+          "max-width": "Ancho máx.",
+          "mode-all": "Todo",
+          "mode-hidden": "Oculto",
+          "mode-single": "Simple",
+          "text": "Información sobre herramientas",
+          "tooltip-mode": "Modo de información sobre herramientas",
+          "values-sort-order": "Orden de clasificación de los valores",
+          "values-sort-order-ascending": "Ascendente",
+          "values-sort-order-descending": "Descendente"
+        },
+        "visualizations-text": "Visualizaciones",
+        "widgets-text": "Widgets"
+      },
+      "save-dashboard": {
+        "cant-save-provisioned": "Este tablero de resultados no se puede guardar desde los tableros de resultados BMC Helix porque se ha proporcionado desde otra fuente. Copie el JSON o guárdelo en un archivo a continuación, luego podrá actualizar su tablero de resultados en la fuente de aprovisionamiento.",
+        "change-details": "Detalles",
+        "changes-text": "Cambios",
+        "close-text": "Cerrar",
+        "copy-json": "Copiar JSON al portapapeles",
+        "copy-tags-text": "Copiar etiquetas",
+        "curr-time-as-default": "Guardar el rango de tiempo actual como predeterminado en el tablero de resultados",
+        "curr-var-as-default": "Guardar los valores de las variables actuales como valores predeterminados del tablero de resultados",
+        "description-placeholder-text": "Agregue una nota para describir sus cambios.",
+        "description-text": "Descripción",
+        "error": "Error al guardar el tablero de resultados",
+        "errors": {
+          "dash-folder-same-name": "El nombre del tablero de resultados no puede ser el mismo que el nombre de la carpeta",
+          "dash-name-invalid": "El nombre del tablero de resultados no es válido"
+        },
+        "full-json-diff": "JSON diff completa",
+        "no-changes": "No hay cambios para guardar",
+        "no-changes-dash": "No hay cambios en este tablero de resultados",
+        "provisioned-text": "Tablero de resultados aprovisionado",
+        "save-as-text": "Guardar como",
+        "save-copy": "Guardar copia del tablero de resultados",
+        "save-json": "Guardar JSON en archivo",
+        "save-text": "Guardar el tablero de resultados",
+        "saving-text": "Guardando...",
+        "title-text": "Título"
+      },
+      "settings": {
+        "annotation": {
+          "anno-name-builtin": "(Incorporado)",
+          "anno-name-disabled": "(Desactivado)",
+          "button-title": "Agregar consulta de anotación",
+          "data-source": "Origen de datos",
+          "edit-form": {
+            "all-panels-desc": "Enviar los datos de anotación a todos los paneles que admiten anotaciones",
+            "all-panels-except-desc": "No enviar datos de anotación a los siguientes paneles",
+            "all-panels-except-label": "Todos los paneles excepto",
+            "all-panels-label": "Todos los paneles",
+            "apply-btn": "Aplicar",
+            "choose-panels-placeholder": "Elegir paneles",
+            "color-desc": "Color a utilizar para los marcadores de eventos de anotación",
+            "color-label": "Color",
+            "data-source-label": "Origen de datos",
+            "delete-btn": "Eliminar",
+            "enabled-desc": "Cuando está habilitada, la consulta de anotación se emite en cada actualización del tablero de resultados",
+            "enabled-label": "Activado",
+            "hidden-desc": "Las consultas de anotación se pueden activar o desactivar en la parte superior del tablero de resultados. Con esta opción marcada, este interruptor quedará oculto.",
+            "hidden-label": "Oculto",
+            "name-label": "Nombre",
+            "new-annotation": "Nueva anotación",
+            "preview-btn": "Vista previa en el tablero de resultados",
+            "query-editor": {
+              "filter-by": {
+                "dashboard-desc": "Consulta los eventos creados en este tablero de resultados y muéstralos en los paneles donde se crearon",
+                "dashboard-label": "Panel",
+                "tags-desc": "Esto recuperará cualquier evento de anotación que coincida con el filtro de etiquetas",
+                "tags-label": "Etiquetas"
+              },
+              "filter-by-label": "Filtrar por",
+              "match-any-desc": "Al habilitar esta opción, se devuelven las anotaciones que coinciden con cualquiera de las etiquetas especificadas a continuación",
+              "match-any-label": "Coincidir con cualquiera",
+              "max-limit-label": "Límite máximo",
+              "query-type": {
+                "annotation-desc": "Mostrar anotaciones o alertas gestionadas por Grafana",
+                "annotation-label": "Anotaciones y alertas",
+                "time-region-desc": "Configurar una región de tiempo repetitiva",
+                "time-region-label": "Regiones horarias"
+              },
+              "query-type-label": "Tipo de consulta",
+              "tag-field-desc": "<0>Especifique una lista de etiquetas para que coincidan. Para especificar una etiqueta de clave y valor, utilice la sintaxis 'clave:valor'.</0>"
+            },
+            "query-heading": "Consulta",
+            "selected-panels-desc": "Envíe las anotaciones a los paneles enumerados explícitamente",
+            "selected-panels-label": "Paneles seleccionados",
+            "showin-label": "Mostrar en"
+          },
+          "info-body": "Las anotaciones proporcionan una forma de integrar datos de eventos en sus gráficos. Se visualizan como líneas verticales\n e iconos en todos los paneles gráficos. Cuando pasa el cursor sobre un icono de anotación, puede obtener etiquetas de texto &amp; para el evento \n. Puede agregar eventos de anotación directamente desde Grafana manteniendo presionada la tecla CTRL o CMD + clic en el gráfico (o\n          arrastre región). Estos se almacenarán en la base de datos de anotaciones de Grafana.",
+          "info-body-doc-link": "Eche un vistazo a la <0>Documentación de anotaciones</0> para obtener más información.",
+          "info-title": "¿Qué son las consultas de anotación?",
+          "move-down": "Bajar",
+          "move-up": "Subir",
+          "new-query-button": "Nueva consulta",
+          "query-name": "Nombre de consulta",
+          "title": "Aún no se han agregado consultas de anotaciones personalizadas"
+        },
+        "confirm-delete-text": "¿Quiere eliminar este panel?",
+        "delete": "Eliminar",
+        "general": {
+          "default-label": "Predeterminado",
+          "editable-label": "Editable",
+          "read-only-label": "Solo lectura",
+          "share-tooltip-label": "Información sobre herramientas compartida",
+          "shared-crosshair-label": "Retícula compartida"
+        },
+        "links": {
+          "dashboard-link-form": {
+            "button": {
+              "go-back": "Regresar a lista"
+            },
+            "field": {
+              "label-icon": "Icono",
+              "label-include-current-template-variable-values": "Incluir valores de variables de plantilla actuales",
+              "label-include-current-time-range": "Incluir rango de tiempo actual",
+              "label-open-link-in-new-tab": "Abrir enlace en una nueva pestaña",
+              "label-options": "Opciones",
+              "label-show-dropdown": "Mostrar como menú desplegable",
+              "label-title": "Título",
+              "label-tooltip": "Información sobre herramientas",
+              "label-type": "Tipo",
+              "label-url": "URL",
+              "label-withtags": "Con etiquetas",
+              "link-type-link": "Vínculo",
+              "link-type-options": "Paneles"
+            }
+          },
+          "dashboard-link-list": {
+            "buttontitle-text": "Agregar enlace al tablero de resultados",
+            "html-text": "Los enlaces del tablero de resultados le permiten colocar enlaces a otros tableros de resultados y sitios web directamente debajo del encabezado del tablero de resultados.",
+            "infoboxtitle-text": "¿Qué son los enlaces del tablero de resultados?",
+            "new-link": "Nuevo enlace",
+            "table": {
+              "info": " <1>Info</1>  ",
+              "type": "<0>Tipo</0> "
+            },
+            "title-text": "Aún no se han añadido enlaces al tablero de resultados"
+          },
+          "dashboard-linked-list": {
+            "tooltip": {
+              "arrow-down": "Mover enlace hacia abajo",
+              "arrow-up": "Mover enlace hacia arriba",
+              "copy-link": "Copiar enlace"
+            }
+          },
+          "description-edit-link": "Editar un enlace específico de su tablero de resultados",
+          "tags-input": {
+            "placeholder-new-tag": "Nueva etiqueta (presione la tecla Intro para agregarla)"
+          },
+          "title-edit-link": "Editar enlace",
+          "title-new-link": "Nuevo enlace"
+        },
+        "variables": {
+          "editor": {
+            "button": {
+              "apply": "Aplicar",
+              "delete": "Eliminar",
+              "run-query": "Ejecutar consulta"
+            },
+            "custom-all": "Todos los valores personalizados",
+            "custom-all-placeholder": "en blanco = automático",
+            "exlude-variable": "Excluir variable",
+            "exlude-variable-desc": "Seleccione para excluir la variable de la consulta",
+            "include-all": "Opción Incluir todo",
+            "include-all-desc": "Habilita una opción para incluir todos los valores de las variables",
+            "multi-value": "Multivalor",
+            "multi-value-desc": "Permite seleccionar varios valores al mismo tiempo",
+            "select-variable-type": {
+              "ad-hoc-filters": {
+                "description": "Agregar filtros clave/valor sobre la marcha.",
+                "name": "Filtros ad hoc"
+              },
+              "constant": {
+                "description": "Definir una variable constante oculta, útil para los prefijos métricos en los tableros de resultados que desea compartir.",
+                "name": "Constante"
+              },
+              "custom": {
+                "description": "Definir valores de variables manualmente",
+                "name": "Personalizado"
+              },
+              "data-source": {
+                "description": "Le permite cambiar dinámicamente el origen de datos para múltiples paneles.",
+                "name": "Origen de datos"
+              },
+              "interval": {
+                "description": "Definir un intervalo de tiempo",
+                "name": "Intervalo"
+              },
+              "query": {
+                "description": "Los valores de las variables se obtienen de una consulta de origen de datos",
+                "name": "Consulta"
+              },
+              "textbox": {
+                "description": "Define una variable de cuadro de texto, donde los usuarios pueden introducir cualquier cadena arbitraria",
+                "name": "Cuadro de texto"
+              }
+            },
+            "select-variable-type-text": "Seleccionar tipo de variable",
+            "selection-options": "Opciones de selección",
+            "types": {
+              "ad-hoc": {
+                "data-source-placeholder": "Seleccionar origen de datos",
+                "data-source-text": "Origen de datos",
+                "title": "Opciones ad hoc"
+              },
+              "constant": {
+                "placeholder": "su prefijo métrico",
+                "title": "Opciones constantes",
+                "value": "Valor"
+              },
+              "custom": {
+                "desc": "Valores separados por coma",
+                "title": "Opciones personalizadas"
+              },
+              "data-source": {
+                "name-filter": "Filtro de nombre de instancia",
+                "name-filter-desc1": "Filtro de expresiones regulares que indica qué instancias de origen de datos elegir en la lista de valores de la variable. Dejar vacío para todos.",
+                "name-filter-desc2": "Ejemplo: ",
+                "title": "Opciones de origen de datos",
+                "type": "Tipo"
+              },
+              "date-range": {
+                "title": "Seleccionar rango de tiempo"
+              },
+              "internal": {
+                "auto-option-description": "Calcula dinámicamente el intervalo dividiendo el rango de tiempo por el recuento especificado",
+                "auto-option-name": "Opción automática",
+                "min-interval-description": "El valor calculado no bajará de este umbral",
+                "min-interval-name": "Intervalo mínimo",
+                "preview-values": "Vista previa de valores",
+                "step-count-description": "¿Cuántas veces se debe dividir el rango de tiempo actual para calcular el valor?",
+                "step-count-name": "Recuento de pasos",
+                "title": "Opciones de intervalo",
+                "values": "Valores"
+              },
+              "query": {
+                "data-source": "Origen de datos",
+                "editor-placeholder": "Consulta de nombre de métrica o etiquetas",
+                "query-options": "Opciones de consulta",
+                "query-text": "Consulta",
+                "refresh": "Actualizar",
+                "refresh-desc": "Cuándo actualizar los valores de esta variable",
+                "refresh-options": {
+                  "on-dash-load": "Al cargar el tablero de resultados",
+                  "on-time-change": "Cuando cambie el rango de tiempo"
+                },
+                "regex-editor-text": "<0>Opcional, si desea extraer parte de un nombre de serie o un segmento de nodo métrico.<1></1>Se pueden utilizar grupos de captura con nombre para separar el texto y el valor de la pantalla (<3>ver ejemplos</3>).</0>",
+                "sort": "Ordenar",
+                "sort-desc": "Cómo ordenar los valores de esta variable",
+                "sort-options": {
+                  "alpha-asc": "Alfabético (asc)",
+                  "alpha-case-insensitive-asc": "Alfabético (sin distinguir entre mayúsculas y minúsculas, ascendente)",
+                  "alpha-case-insensitive-dsc": "Alfabético (sin distinguir entre mayúsculas y minúsculas, descendente)",
+                  "alpha-dsc": "Alfabético (descendente)",
+                  "disabled": "Desactivado",
+                  "natural-asc": "Natural (ascendente)",
+                  "natural-dsc": "Natural (descendente)",
+                  "number-asc": "Numérico (ascendente)",
+                  "number-dsc": "Numérico (descendente)"
+                }
+              },
+              "text-box": {
+                "default-value": "Valor predeterminado",
+                "placeholder": "valor predeterminado, si lo hay",
+                "title": "Opciones de texto"
+              }
+            },
+            "variable-hide-select": {
+              "label": "Mostrar en el tablero de resultados",
+              "label-value": "Etiqueta y valor",
+              "nothing": "Nada",
+              "value": "Valor"
+            },
+            "variable-text-field": {
+              "description": {
+                "name": "Descripción",
+                "placeholder": "Texto descriptivo"
+              },
+              "label": {
+                "description": "Nombre para mostrar opcional",
+                "placeholder": "Nombre de la etiqueta",
+                "text": "Etiqueta"
+              },
+              "name": {
+                "description": "El nombre de la variable de plantilla. (Máx. 50 caracteres)",
+                "placeholder": "Nombre de la variable",
+                "text": "Nombre"
+              }
+            }
+          },
+          "empty-list": "No hay variables todavía",
+          "info-body": "Las variables permiten tableros de resultados más interactivos y dinámicos. En lugar de codificar cosas como nombres de servidores o sensores en sus consultas de métricas, puede utilizar variables en su lugar. Las variables se muestran como cuadros de lista en la parte superior del tablero de resultados. Estas listas desplegables facilitan el cambio de los datos que se muestran en el tablero de resultados. Eche un vistazo a la <0>Documentación de plantillas y variables</0> para más información.",
+          "variables-tab": {
+            "button-title": "Agregar variable",
+            "delete": {
+              "body": "¿Está seguro de que desea eliminar la variable \"{{varName}}\"?",
+              "delete-confirm-text": "Eliminar",
+              "delete-variable-title": "Eliminar variable"
+            },
+            "info-box-title": "¿Qué hacen las variables?",
+            "variable-editor-list": {
+              "button-text": "Nueva variable",
+              "definition": "Definición",
+              "variable": "Variable"
+            },
+            "variable-editor-list-row": {
+              "copy-title": "Duplicar variable",
+              "exclamation-triangle-title": "Esta variable no está referenciada por ninguna variable o tablero de resultados.",
+              "show-usage": "Mostrar usos",
+              "show-usage-modal-title": "Mostrando usos para: ${{id}}",
+              "trash-alt-title": "Eliminar variable"
+            },
+            "variables-unknown-table": {
+              "decription": "No se encontraron variables renombradas o faltantes.",
+              "info-circle-description": "Haga clic para expandir una lista con todas las referencias de variables que han sido renombradas o que faltan en el tablero de resultados.",
+              "title": "Variables renombradas o faltantes"
+            }
+          }
+        },
+        "versions": {
+          "buttons": {
+            "compare-versions": "Comparar versiones",
+            "more-versions": "Mostrar más versiones"
+          },
+          "comparision": {
+            "comparing-text": "Comparando",
+            "latest-text": "Más reciente",
+            "restore-base-version": "Restaurar a la versión {{baseVersion}}",
+            "version-from-details": "<bold>Versión {{baseVersion}}</bold> actualizada por {{baseCreatedBy}} {{baseAgeString}} {{baseMsg}}",
+            "version-to-details": "<bold>Versión {{newVersion}}</bold> actualizada por {{newCreatedBy}} {{newAgeString}} {{newMsg}}",
+            "view-json-diff": "Ver JSON Diff"
+          },
+          "loading-msgs": {
+            "changes": "Obteniendo cambios&hellip;",
+            "history-list": "Obteniendo lista de historial&hellip;",
+            "more-entries": "Obteniendo más entradas&hellip;"
+          },
+          "tags": {
+            "latest": "Más reciente",
+            "restore": "Restaurar"
+          },
+          "version-list": {
+            "headers": {
+              "date-text": "Fecha",
+              "notes-text": "Notas",
+              "updated-by-text": "Actualizado por",
+              "version-text": "Versión"
+            }
+          }
+        }
+      },
+      "unsaved-modal": {
+        "confirmation-text": "¿Desea guardar sus cambios?",
+        "discard": "Descartar",
+        "title": "Cambios no guardados"
+      }
+    },
+    "datesource": {
+      "configuration": {
+        "build-dashboard": "Construir un tablero de resultados",
+        "sort-asc": "Ordenar por A–Z",
+        "sort-desc": "Ordenar por Z–A"
+      }
+    },
+    "explore": {
+      "outline": "Descripción",
+      "to-dashboard": {
+        "choose-dashboard-text": "Seleccione en qué tablero de resultados se creará el panel.",
+        "choose-dashboard-type-text": "Elija dónde agregar el panel.",
+        "dashboard-text": "Panel",
+        "errors": {
+          "add-panel-err": "Error al agregar el panel",
+          "field-mandatory": "Este campo es obligatorio.",
+          "general": "Algo salió mal. Vuelva a intentarlo.",
+          "navigation-to-dashboard": "No se pudo navegar al tablero de resultados seleccionado. Vuelva a intentarlo.",
+          "panel-to-dashboard-err": "No se pudo agregar el panel al tablero de resultados. Vuelva a intentarlo.",
+          "unable-fetch-dash-info": "No se pudo obtener la información del tablero de resultados. Vuelva a intentarlo."
+        },
+        "existing-dashboard-text": "Tablero de resultados existente",
+        "new-dashboard-text": "Nuevo tablero de resultados",
+        "open-dash-text": "Abrir el tablero de resultados",
+        "open-new-tab-text": "Abrir en una nueva pestaña",
+        "panel-to-dashboard": "Agregar panel al tablero de resultados",
+        "target-dashboard-text": "Tablero de resultados objetivo",
+        "to-existing-dashboard-title": "Agregar panel al tablero de resultados existente",
+        "to-new-dashboard-title": "Agregar panel al nuevo tablero de resultados"
+      }
+    },
+    "grafana-data": {
+      "timezone": {
+        "browser-time": "Tiempo de explorador",
+        "coord-universal-time": "Tiempo universal coordinado"
+      }
+    },
+    "grafana-ui": {
+      "confirm-button": {
+        "cancel-label": "Cancelar"
+      },
+      "confirmation-model": {
+        "confirmation-text": "Escriba \"{{confirmationText}}\" para confirmar"
+      },
+      "date-time": {
+        "month": {
+          "apr": "Abril",
+          "aug": "Agosto",
+          "dec": "Diciembre",
+          "feb": "Febrero",
+          "jan": "Enero",
+          "jul": "Julio",
+          "jun": "Junio",
+          "mar": "Marzo",
+          "may": "Mayo",
+          "nov": "Noviembre",
+          "oct": "Octubre",
+          "sep": "Septiembre"
+        },
+        "quick-ranges": {
+          "day-before-yesterday": "Anteayer",
+          "hidden": {
+            "next-12-hour": "Próximas 12 horas",
+            "next-15-min": "Próximos 15 minutos",
+            "next-2-day": "Próximos 2 días",
+            "next-2-year": "Próximos 2 años",
+            "next-24-hour": "Próximas 24 horas",
+            "next-3-hour": "Próximas 3 horas",
+            "next-30-day": "Próximos 30 días",
+            "next-30-min": "Próximos 30 minutos",
+            "next-5-min": "Próximos 5 minutos",
+            "next-5-year": "Próximos 5 años",
+            "next-6-hour": "Próximas 6 horas",
+            "next-6-month": "Próximos 6 meses",
+            "next-7-day": "Próximos 7 días",
+            "next-90-day": "Próximos 90 días",
+            "next-hour": "Próxima hora",
+            "next-min": "Próximo minuto",
+            "next-year": "Próximo año"
+          },
+          "last-1-hour": "Última hora",
+          "last-1-year": "Último año",
+          "last-12-hour": "Últimas 12 horas",
+          "last-15-min": "Últimos 15 minutos",
+          "last-2-day": "Últimos 2 días",
+          "last-2-year": "Últimos 2 años",
+          "last-24-hour": "Últimas 24 horas",
+          "last-3-hour": "Últimas 3 horas",
+          "last-30-day": "Últimos 30 días",
+          "last-30-min": "Últimos 30 minutos",
+          "last-5-min": "Últimos 5 minutos",
+          "last-5-year": "Últimos 5 años",
+          "last-6-hour": "Últimas 6 horas",
+          "last-6-month": "Últimos 6 meses",
+          "last-7-day": "Últimos 7 días",
+          "last-90-day": "Últimos 90 días",
+          "prev-fiscal-quarter": "Trimestre fiscal anterior",
+          "prev-fiscal-year": "Año fiscal anterior",
+          "prev-month": "Mes anterior",
+          "prev-week": "Semana anterior",
+          "prev-year": "Año anterior",
+          "this-day-last-week": "Este día la semana pasada",
+          "this-fiscal-quarter": "Este trimestre fiscal",
+          "this-fiscal-quarter-so-far": "Este trimestre fiscal hasta ahora",
+          "this-fiscal-year": "Este año fiscal",
+          "this-fiscal-year-so-far": "Este año fiscal hasta ahora",
+          "this-month": "Este mes",
+          "this-month-so-far": "Este mes hasta ahora",
+          "this-week": "Esta semana",
+          "this-week-so-far": "Esta semana hasta ahora",
+          "this-year": "Este año",
+          "this-year-so-far": "Este año hasta ahora",
+          "today": "Hoy",
+          "today-so-far": "Hoy hasta ahora",
+          "yesterday": "Ayer"
+        }
+      },
+      "date-time-pickers": {
+        "time-range-input-text": "Seleccionar rango de tiempo"
+      },
+      "delete-button": {
+        "confirm-text": "Eliminar"
+      },
+      "tags-input": {
+        "button-add": "Agregar"
+      },
+      "weekdays": {
+        "friday": "Viernes",
+        "monday": "Lunes",
+        "saturday": "Sábado",
+        "sunday": "Domingo",
+        "thursday": "Jueves",
+        "tuesday": "Martes",
+        "wednesday": "Miércoles"
+      }
+    },
+    "library-panels": {
+      "delete": {
+        "cannot-delete-text": "Este panel de biblioteca no se puede eliminar porque está conectado a {{message}} tablero(s) de resultados. Elimine el panel de la biblioteca de los tableros de resultados que se enumeran a continuación y vuelva a intentarlo.",
+        "confirmation-text": "¿Quiere eliminar este panel?",
+        "dashboard-name-title": "Nombre del tablero de resultados",
+        "delete-text": "Eliminar",
+        "loading-text": "Cargando panel de biblioteca…",
+        "title": "Eliminar panel de biblioteca"
+      },
+      "no-panels-found": "No se encontraron paneles de biblioteca.",
+      "panel-types-not-found": "No se encontraron tipos de paneles",
+      "unlink": {
+        "body": "Si desvincula este panel, podrá editarlo sin afectar a ningún otro tablero de resultados. Sin embargo, una vez que realice un cambio, no podrá volver a su panel reutilizable original.",
+        "confirmation-text": "Sí, desvincular",
+        "title": "¿Realmente desea desvincular este panel?"
+      }
+    },
+    "manage-dashboards": {
+      "specify-constant": "Especificar una constante de cadena"
+    },
+    "page-loader": {
+      "text": "Cargando"
+    },
+    "page-not-found": {
+      "load-error": "Ups… No pudimos cargar esa página.",
+      "load-error-subtext": "<0>Es posible que esta página haya sido eliminada, haya cambiado de nombre o no esté disponible temporalmente.</0><1>Regrese a la <1>Página de inicio</1>, o póngase en contacto con el <3>Soporte de BMC</3>.</1>"
+    },
+    "plugins": {
+      "dashboard-list": {
+        "mark-fav": "Marcar \"{{dashTitle}}\" como favorito",
+        "recent-viewed-header": "Tableros de resultados vistos recientemente",
+        "search": "Buscar",
+        "starred-dash-header": "Tableros de resultados destacados",
+        "unmark-fav": "Desmarcar \"{{dashTitle}}\" como favorito"
+      }
+    },
+    "search-inputs": {
+      "clear-types": "Borrar tipos",
+      "filter-folder": "Filtrar por carpeta",
+      "filter-type": "Filtrar por tipo",
+      "folder-not-found": "Filtrar por carpeta",
+      "name-description": "Buscar por nombre o descripción",
+      "name-type": "Buscar por nombre o correo electrónico"
+    },
+    "shared-preferences": {
+      "confirm-modal": {
+        "body": "Esto actualizará las preferencias de toda la organización. ¿Está seguro de que desea actualizar las preferencias?",
+        "title": "Confirmar actualización de preferencias"
+      },
+      "org": {
+        "org-name-text": "Nombre de organización",
+        "title": "Perfil de la organización"
+      },
+      "profile": {
+        "team": {
+          "loading-text": "Cargando equipos…"
+        }
+      }
+    },
+    "snapshots": {
+      "delete-modal": {
+        "confirmation-text": "¿Confirma que desea eliminar '{{snapshotName}}'?",
+        "delete": "Eliminar"
+      }
+    },
+    "team-permissions": {
+      "add-member": "Agregar miembro",
+      "no-members-message": "No hay miembros en este equipo o no tiene los permisos para enumerar los miembros actuales."
+    },
+    "time-region-editor": {
+      "change-timezone-btn": "Cambiar zona horaria",
+      "dashboard-timezone": "Zona horaria del tablero de resultados",
+      "everyday-placeholder": "Cada día",
+      "from-label": "De",
+      "timezone-label": "Zona horaria",
+      "to-label": "A"
+    },
+    "top-search-bar": {
+      "go-to-home": "Ir al inicio"
+    },
+    "users-and-access": {
+      "headers": {
+        "edit-team-text": "Editar equipo",
+        "email-text": "Correo electrónico",
+        "last-active-text": "Última actividad",
+        "login-text": "Iniciar sesión",
+        "members-text": "Miembros",
+        "name-text": "Nombre",
+        "settings-text": "Configuración"
+      },
+      "search-teams-placeholder-text": "Buscar equipos",
+      "search-user-placeholder-text": "Buscar usuario por inicio de sesión, correo electrónico o nombre",
+      "team": {
+        "details": {
+          "email-description-text": "Esto es opcional y se utiliza principalmente para configurar el avatar del perfil del equipo (a través del servicio gravatar).",
+          "title": "Detalles del equipo"
+        }
+      },
+      "teams": {
+        "page-description": "Gestionar miembros y configuraciones",
+        "title": "Equipos"
+      }
+    }
+  },
   "access-control": {
     "add-permission": {
       "role-label": "Rol",
@@ -652,7 +1733,7 @@
   },
   "library-panels": {
     "modal": {
-      "button-cancel": "<0>Cancelar</0>",
+      "button-cancel": "Cancelar",
       "button-view-panel1": "Ver panel en {{label}}...",
       "button-view-panel2": "Ver panel en el panel de control...",
       "panel-not-linked": "El panel no está vinculado a un panel de control. Añádalo a un panel de control y vuelva a intentarlo.",
@@ -747,14 +1828,14 @@
       "title": "Alertas e IRM"
     },
     "api-keys": {
-      "subtitle": "Administrar y crear claves de API que se utilizan para interactuar con las API de HTTP de Grafana",
+      "subtitle": "Administrar y crear claves de API que se utilizan para interactuar con las API de HTTP de BMC Helix Dashboards",
       "title": "Claves API"
     },
     "application": {
       "title": "Aplicación"
     },
     "apps": {
-      "subtitle": "Complementos de aplicaciones que amplían la experiencia de Grafana",
+      "subtitle": "Complementos de aplicaciones que amplían la experiencia de BMC Helix Dashboards",
       "title": "Aplicaciones"
     },
     "authentication": {
@@ -830,11 +1911,11 @@
       "title": "Interfaz"
     },
     "global-orgs": {
-      "subtitle": "Instancias aisladas de Grafana ejecutándose en el mismo servidor",
+      "subtitle": "Instancias aisladas de BMC Helix Dashboards ejecutándose en el mismo servidor",
       "title": "Organizaciones"
     },
     "global-users": {
-      "subtitle": "Gestionar usuarios de Grafana",
+      "subtitle": "Gestionar usuarios de BMC Helix Dashboards",
       "title": "Usuarios"
     },
     "grafana-quaderno": {
@@ -904,7 +1985,7 @@
       "title": "Listas de reproducción"
     },
     "plugins": {
-      "subtitle": "Amplíe la experiencia de Grafana con los complementos",
+      "subtitle": "Amplíe la experiencia de BMC Helix Dashboards con los complementos",
       "title": "Complementos"
     },
     "private-data-source-connections": {
@@ -942,11 +2023,11 @@
       "title": "Buscar paneles de control"
     },
     "server-settings": {
-      "subtitle": "Vea la configuración definida en los ajustes de Grafana",
+      "subtitle": "Vea la configuración definida en los ajustes de BMC Helix Dashboards",
       "title": "Configuración"
     },
     "service-accounts": {
-      "subtitle": "Use cuentas de servicio para ejecutar cargas de trabajo automatizadas en Grafana",
+      "subtitle": "Use cuentas de servicio para ejecutar cargas de trabajo automatizadas en BMC Helix Dashboards",
       "title": "Cuentas de servicios"
     },
     "sign-out": {
@@ -1295,7 +2376,7 @@
     "embed": {
       "copy": "Copiar al portapapeles",
       "html": "Incrustar HTML",
-      "html-description": "El código HTML a continuación se puede pegar e incluir en otra página web. A menos que se active el acceso anónimo, el usuario que vea esa página debe iniciar sesión en Grafana para que el gráfico se cargue.",
+      "html-description": "El código HTML a continuación se puede pegar e incluir en otra página web. A menos que se active el acceso anónimo, el usuario que vea esa página debe iniciar sesión en BMC Helix Dashboards para que el gráfico se cargue.",
       "info": "Genere un HTML para incrustar un iframe con este panel.",
       "time-range": "Intervalo de tiempo actual",
       "time-range-description": "Transforma el intervalo de tiempo relativo actual en un intervalo de tiempo absoluto"
@@ -1320,7 +2401,6 @@
       "rendered-image": "Enlace directo a la imagen renderizada",
       "save-alert": "El panel de control no se ha guardado",
       "save-dashboard": "Para renderizar una imagen de panel, primero debe guardar el panel de control.",
-      "shorten-url": "Acortar url",
       "time-range-description": "Transforma el intervalo de tiempo relativo actual en un intervalo de tiempo absoluto",
       "time-range-label": "Bloquear el intervalo de tiempo"
     },
@@ -1483,7 +2563,6 @@
   "user-orgs": {
     "current-org-button": "Actual",
     "name-column": "Nombre",
-    "role-column": "Rol",
     "select-org-button": "Seleccionar organización",
     "title": "Organizaciones"
   },

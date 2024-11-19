@@ -9,6 +9,15 @@ export const initialState: NavModelItem[] = config.bootData?.navTree ?? [];
 
 function translateNav(navTree: NavModelItem[]): NavModelItem[] {
   return navTree.map((navItem) => {
+    // BMC Code Starts: Reports Localization
+    if (navItem.pluginId === 'reports') {
+      if (navItem.text === 'History') {
+        navItem.id = 'reports/history';
+      } else if (navItem.text === 'Settings') {
+        navItem.id = 'reports/settings';
+      }
+    }
+    // BMC Code Ends
     const children = navItem.children && translateNav(navItem.children);
 
     return {

@@ -4,6 +4,7 @@ import { DataSourceInstanceSettings } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { DataSourceRef } from '@grafana/schema';
 import { Alert, Field } from '@grafana/ui';
+import { t, Trans } from 'app/core/internationalization';
 import { DataSourcePicker } from 'app/features/datasources/components/picker/DataSourcePicker';
 
 import { VariableLegend } from './VariableLegend';
@@ -13,12 +14,19 @@ interface AdHocVariableFormProps {
   onDataSourceChange: (dsSettings: DataSourceInstanceSettings) => void;
   infoText?: string;
 }
-
+{
+  /*BMC Change: To enable localization for below text*/
+}
 export function AdHocVariableForm({ datasource, infoText, onDataSourceChange }: AdHocVariableFormProps) {
   return (
     <>
-      <VariableLegend>Ad-hoc options</VariableLegend>
-      <Field label="Data source" htmlFor="data-source-picker">
+      <VariableLegend>
+        <Trans i18nKey="bmcgrafana.dashboards.settings.variables.editor.types.ad-hoc.title">Ad-hoc options</Trans>
+      </VariableLegend>
+      <Field
+        label={t('bmcgrafana.dashboards.settings.variables.editor.types.ad-hoc.data-source-text', 'Data source')}
+        htmlFor="data-source-picker"
+      >
         <DataSourcePicker current={datasource} onChange={onDataSourceChange} width={30} variables={true} noDefault />
       </Field>
 

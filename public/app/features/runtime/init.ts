@@ -1,8 +1,13 @@
-import { PanelData, RawTimeRange } from '@grafana/data';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import tinycolor from 'tinycolor2';
+
+import { PanelData, RawTimeRange, PanelModel as IPanelModel } from '@grafana/data';
 import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
 import { getTimeSrv } from 'app/features/dashboard/services/TimeSrv';
 
 import { DashboardModel } from '../dashboard/state';
+import { PanelMergeInfo } from '../dashboard/utils/panelMerge';
 
 declare global {
   interface Window {
@@ -10,6 +15,9 @@ declare global {
       getDashboardSaveModel: () => DashboardModel | undefined;
       getDashboardTimeRange: () => { from: number; to: number; raw: RawTimeRange };
       getPanelData: () => Record<number, PanelData | undefined> | undefined;
+      generatePdf: (fileName: string, template: any) => void;
+      getPanels: () => IPanelModel[] | undefined;
+      updatePanels: (panels: IPanelModel[]) => PanelMergeInfo | undefined;
     };
   }
 }
@@ -52,6 +60,227 @@ export function initWindowRuntime() {
         acc[panel.id] = panel.getQueryRunner().getLastResult();
         return acc;
       }, {});
+    },
+
+    getPanels: () => {
+      const d = getDashboardSrv().getCurrent();
+      if (!d) {
+        return undefined;
+      }
+      return d.panels;
+    },
+
+    updatePanels: (panels: IPanelModel[]): PanelMergeInfo | undefined => {
+      const d = getDashboardSrv().getCurrent();
+      if (!d) {
+        return undefined;
+      }
+      return d.updatePanels(panels);
+    },
+
+    /**
+     * This function utilizes JSPDF-Autotable library to generate the PDF mainly for cross tab plugin which will
+     * be streamed at the renderrer side after download and then merged with the final output PDF.
+     * This code is needed to be here because we can't get HTMLTableElement instance at the renderrer side
+     * using pupeteer. For merged colspan and rowspan entries, best way to generate the PDF is using HTMLTableElement
+     * instance which is supported by the JSPDF-Autotable library. This function is executed in browser console
+     * by renderrer to download the PDF in browser and then reading it like we are reading CSV file.
+     *
+     * @param fileName - Random fileName of the file to avoid conflicts.
+     * @param template - template instance which contains all basic details about header/footer, logo, orientation, theme etc.
+     */
+    generatePdf: (fileName: string, template: any) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const panelId = Number(urlParams.get('viewPanel'));
+      const panel = getDashboardSrv()
+        .getCurrent()
+        ?.getPanelById(panelId || 0);
+      const orientation = template.orientation === 'landscape' ? 'l' : 'p';
+      const lightTheme = template.theme === 'light';
+
+      if (panel?.type === 'bmc-ade-cross-tab') {
+        // - `A3` Paper Size: 11.7in x 16.54in (842.4pt x 1190.88pt) for Simple Layout
+        let doc = new jsPDF(orientation, 'pt', [842.4, 1190.88]);
+        let margin = 16;
+        // Theme instance which contains color codes regardin light and dark theme.
+        let theme = {
+          fillColor: lightTheme ? '#FFFFFF' : '#181B1F',
+          textColor: lightTheme ? '#505050' : '#CCCCDC',
+          lineColor: lightTheme ? '#C7C7C7' : '#25272C',
+          backGroundFillColor: lightTheme ? '#F4F5F5' : '#0B0C0E',
+          tableHeaderFillColor: lightTheme ? '#E0E0E0' : '#181B1F',
+          tableHeaderTextColor: lightTheme ? '#000000' : '#CCCCDC',
+          headerTextColor: lightTheme ? '#000000' : '#9FA7B3',
+          lineDrawColor: lightTheme ? '#000000' : '#2F2F32',
+          hyperLinkColor: '#1F62E0',
+          headerSectionColor: lightTheme ? '#FFFFFF' : '#0B0C0E',
+        };
+
+        const hideDashboardPath = urlParams.get('hideDashboardPath') === 'true';
+
+        // JSPDF-Autotable understands the HTMLTableElement instance to generate the PDF so redirecting
+        // renderrer to open the view cross tab panel and finding the instance using the css selector.
+        const selector: any = document.querySelector<HTMLTableElement>('.react-grid-layout table');
+        autoTable(doc, {
+          html: selector,
+          theme: 'grid',
+          styles: {
+            fillColor: theme.fillColor,
+            textColor: theme.textColor,
+            lineColor: theme.lineColor,
+          },
+          headStyles: {
+            fillColor: theme.tableHeaderFillColor,
+            textColor: theme.tableHeaderTextColor,
+            lineWidth: 1,
+          },
+          margin: { top: 85, left: margin, right: margin, bottom: 50 },
+          startY: 105,
+          willDrawPage: (data: any) => {
+            // Adding Header to each page - HEADER //
+            let fontFamily = 'helvetica';
+
+            doc.setFillColor(theme.headerSectionColor);
+            doc.rect(0, 0, doc.internal.pageSize.getWidth(), 80, 'F');
+            // Body BackGround Colour
+
+            doc.setFillColor(theme.backGroundFillColor);
+            doc.rect(0, 80, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight() - 80, 'F');
+
+            doc.setTextColor(theme.headerTextColor);
+            doc.setFontSize(8).setFont(fontFamily, 'bold');
+
+            if (!hideDashboardPath) {
+              doc.text(template.dashboardPath, margin, 20);
+              doc.setFontSize(8).setFont(fontFamily, 'normal');
+              doc.text('- generated on ' + template.generatedAt, doc.getTextWidth(template.dashboardPath) + 30, 20);
+            }
+
+            if (template.from) {
+              doc.setFontSize(8).setFont(fontFamily, 'bold');
+              doc.text('Data time range:', doc.internal.pageSize.getWidth() - 200, 20);
+              doc.text('to', doc.internal.pageSize.getWidth() - 147, 30);
+              doc.setFontSize(8).setFont(fontFamily, 'normal');
+              doc.text(template.from, doc.internal.pageSize.getWidth() - 137, 20);
+              doc.text(template.to, doc.internal.pageSize.getWidth() - 137, 30);
+            }
+
+            doc.setFontSize(12).setFont(fontFamily, 'bold');
+            let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+            let text = doc.splitTextToSize(template.reportName!, pageWidth - 35, {});
+            doc.text(text, margin, 50);
+
+            // Displaying the panel title only on the first page of the pdf for the table panel.
+            if (data.pageNumber === 1) {
+              doc.setFontSize(10);
+              doc.text(panel.title, margin, 95);
+            }
+
+            const imgProps = doc.getImageProperties(template.companyLogo!);
+            const fixedLogoHeight = 32;
+            const fixedLogoWidth = (imgProps.width / imgProps.height) * fixedLogoHeight;
+            const logoStartXPosition = fixedLogoWidth + 17;
+            const logoStartYPosition = 37;
+            doc.addImage(
+              template.companyLogo!,
+              imgProps.fileType,
+              doc.internal.pageSize.getWidth() - logoStartXPosition,
+              logoStartYPosition,
+              fixedLogoWidth,
+              fixedLogoHeight
+            );
+
+            doc.setDrawColor(theme.lineDrawColor);
+            doc.setLineWidth(1.3);
+            doc.line(margin, 75, doc.internal.pageSize.getWidth() - margin, 75);
+          },
+          didDrawPage: (data: any) => {
+            // Adding Footer to each page - FOOTER //
+            let fontFamily = 'helvetica';
+            doc.setFillColor(theme.headerSectionColor);
+            doc.rect(0, doc.internal.pageSize.getHeight() - 30, doc.internal.pageSize.getWidth(), 30, 'F');
+            doc.setFontSize(8).setFont(fontFamily, 'bolditalic');
+
+            doc.setTextColor(theme.headerTextColor);
+            const xStartingPoint = doc.internal.pageSize.getWidth() - doc.getTextWidth(template.reportFooterText!) - 15;
+            doc.text(template.reportFooterText!, xStartingPoint, doc.internal.pageSize.getHeight() - 15);
+            doc.link(
+              xStartingPoint,
+              doc.internal.pageSize.getHeight() - 30,
+              doc.getTextWidth(template.reportFooterText!),
+              15,
+              {
+                url: template.reportFooterURL!,
+              }
+            );
+          },
+          willDrawCell: function (data: any) {
+            let fontFamily = 'helvetica';
+            let computedStyle = getComputedStyle(data.cell.raw);
+            // Sometimes getting below mentioned rgb code from the computed style function which is invalid as well.
+            if (computedStyle.color && computedStyle.color !== 'rgba(0, 0, 0, 0)') {
+              const tinyColor = tinycolor(computedStyle.color);
+              if (tinyColor.isValid()) {
+                doc.setTextColor(tinyColor.toHexString());
+              }
+            }
+            if (computedStyle.backgroundColor && computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+              const tinyColor = tinycolor(computedStyle.backgroundColor);
+              if (tinyColor.isValid()) {
+                doc.setFillColor(tinyColor.toHexString());
+              }
+            }
+
+            if (data.cell.section === 'head' && data.cell.raw.nodeName === 'TH') {
+              // For head, getting the correct text alignment value in the textAlignLast proeprty.
+              if (computedStyle.textAlignLast) {
+                data.cell.styles.halign = computedStyle.textAlignLast;
+              }
+              doc.setFont(fontFamily, 'bold');
+            } else {
+              // For body, getting the correct text alignment value in the textAlign proeprty.
+              if (computedStyle.textAlign) {
+                data.cell.styles.halign = computedStyle.textAlign;
+              }
+              doc.setFont(fontFamily, 'normal');
+            }
+
+            let href;
+            // If hyperlink is set for TH table nodes then below code is used to set the link for head and body section.
+            if (
+              data.cell.raw &&
+              data.cell.raw.nodeName === 'TH' &&
+              data.cell.raw.firstChild &&
+              data.cell.raw.firstChild.href
+            ) {
+              href = data.cell.raw.firstChild.href;
+            }
+
+            // Below code is specifically for setting the link for body values only with TD node type.
+            // Because we are reading HtmlTableElement so parsing the anchor directly from that and finding
+            // the hyperlink cells. This implementation is different then table plugin hyperlink support.
+            if (
+              !href &&
+              data.cell.section === 'body' &&
+              data.cell.raw &&
+              data.cell.raw.firstChild &&
+              data.cell.raw.firstChild.lastChild instanceof HTMLAnchorElement &&
+              data.cell.raw.firstChild.lastChild.href
+            ) {
+              href = data.cell.raw.firstChild.lastChild.href;
+            }
+
+            if (href) {
+              // Because of variable text size and alignment, it is best and simple to provide the hyperlink to full cell
+              // to avoid unnecessary calculation about starting point and ending point of the link cursor box.
+              doc.link(data.cell.x, data.cell.y, data.column.width, data.cell.contentHeight, {
+                url: href,
+              });
+            }
+          },
+        });
+        doc.save(fileName, { returnPromise: true });
+      }
     },
   };
 }

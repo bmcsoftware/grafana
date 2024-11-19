@@ -11,6 +11,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
+	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/network"
 	"github.com/grafana/grafana/pkg/infra/remotecache"
@@ -34,6 +35,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/quota"
 	"github.com/grafana/grafana/pkg/services/rendering"
 	"github.com/grafana/grafana/pkg/services/signingkeys"
+	"github.com/grafana/grafana/pkg/services/team"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util/errutil"
@@ -74,6 +76,10 @@ func ProvideService(
 	ldapService service.LDAP, registerer prometheus.Registerer,
 	signingKeysService signingkeys.Service, oauthServer oauthserver.OAuth2Server,
 	settingsProviderService setting.Provider,
+	// BMC Code: Rest all args, adding db service, team Service
+	db db.DB,
+	teamService team.Service,
+	teamPermissionsService accesscontrol.TeamPermissionsService,
 ) *Service {
 	s := &Service{
 		log:             log.New("authn.service"),
@@ -124,7 +130,7 @@ func ProvideService(
 	}
 
 	if s.cfg.AuthProxyEnabled && len(proxyClients) > 0 {
-		proxy, err := clients.ProvideProxy(cfg, cache, proxyClients...)
+		proxy, err := clients.ProvideProxy(cfg, cache, orgService, proxyClients...)
 		if err != nil {
 			s.log.Error("Failed to configure auth proxy", "err", err)
 		} else {
@@ -146,8 +152,14 @@ func ProvideService(
 	}
 
 	// FIXME (jguer): move to User package
-	userSyncService := sync.ProvideUserSync(userService, userProtectionService, authInfoService, quotaService)
+	// BMC Code: Next line to inject db and team and team permission services
+	userSyncService := sync.ProvideUserSync(userService, userProtectionService, authInfoService, quotaService, db, teamService, teamPermissionsService)
 	orgUserSyncService := sync.ProvideOrgSync(userService, orgService, accessControlService)
+	// BMC Code: Starts , Adding post auth hooks
+	s.RegisterPostAuthHook(userSyncService.CheckIfUserSynced, 40)
+	s.RegisterPostAuthHook(userSyncService.TeamSync, 50)
+	s.RegisterPostAuthHook(userSyncService.BHDRoleUpdate, 101)
+	// BMC Code: Ends
 	s.RegisterPostAuthHook(userSyncService.SyncUserHook, 10)
 	s.RegisterPostAuthHook(userSyncService.EnableUserHook, 20)
 	s.RegisterPostAuthHook(orgUserSyncService.SyncOrgRolesHook, 30)
@@ -200,7 +212,10 @@ func (s *Service) Authenticate(ctx context.Context, r *authn.Request) (*authn.Id
 				if errors.Is(err, authn.ErrTokenNeedsRotation) {
 					return nil, err
 				}
-
+				if errors.Is(err, authn.ErrRequestForDedicatedTenant) {
+					s.log.Debug("Inside Authenticate func. Forwarding request to dedicated ingress -  ", "identity", identity.OrgID)
+					return identity, err
+				}
 				authErr = errors.Join(authErr, err)
 				// try next
 				continue
@@ -224,6 +239,10 @@ func (s *Service) Authenticate(ctx context.Context, r *authn.Request) (*authn.Id
 func (s *Service) authenticate(ctx context.Context, c authn.Client, r *authn.Request) (*authn.Identity, error) {
 	identity, err := c.Authenticate(ctx, r)
 	if err != nil {
+		if errors.Is(err, authn.ErrRequestForDedicatedTenant) {
+			s.log.Debug("Inside service.go. Forwarding request to dedicated ingress -  ", "identity", identity.OrgID)
+			return identity, err
+		}
 		s.errorLogFunc(ctx, err)("Failed to authenticate request", "client", c.Name(), "error", err)
 		return nil, err
 	}
@@ -419,40 +438,57 @@ func orgIDFromRequest(r *authn.Request) int64 {
 		return 0
 	}
 
-	orgID := orgIDFromQuery(r.HTTPRequest)
-	if orgID > 0 {
-		return orgID
+	// BMC Code change: Start to handle IMS tenant0
+	orgID, found := orgIDFromQuery(r.HTTPRequest)
+	if found {
+		return getOrgIdForTenant0(orgID)
 	}
 
-	return orgIDFromHeader(r.HTTPRequest)
+	orgID, found = orgIDFromHeader(r.HTTPRequest)
+
+	if found {
+		return getOrgIdForTenant0(orgID)
+	}
+	return orgID
+	// BMC Code change: End
 }
 
 // name of query string used to target specific org for request
 const orgIDTargetQuery = "targetOrgId"
 
-func orgIDFromQuery(req *http.Request) int64 {
+// BMC Code change: Added extra parameter to return bool
+func orgIDFromQuery(req *http.Request) (int64, bool) {
 	params := req.URL.Query()
 	if !params.Has(orgIDTargetQuery) {
-		return 0
+		return 0, false
 	}
 	id, err := strconv.ParseInt(params.Get(orgIDTargetQuery), 10, 64)
 	if err != nil {
-		return 0
+		return 0, false
 	}
-	return id
+	return id, true
 }
 
 // name of header containing org id for request
 const orgIDHeaderName = "X-Grafana-Org-Id"
 
-func orgIDFromHeader(req *http.Request) int64 {
+// BMC Code change: Added extra parameter to return bool
+func orgIDFromHeader(req *http.Request) (int64, bool) {
 	header := req.Header.Get(orgIDHeaderName)
 	if header == "" {
-		return 0
+		return 0, false
 	}
 	id, err := strconv.ParseInt(header, 10, 64)
 	if err != nil {
-		return 0
+		return 0, false
 	}
-	return id
+	return id, true
+}
+
+// BMC Code: Below function to map tenantO ID to org
+func getOrgIdForTenant0(tenantID int64) int64 {
+	if tenantID == setting.IMS_Tenant0 {
+		return setting.GF_Tenant0
+	}
+	return tenantID
 }

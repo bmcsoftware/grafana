@@ -4,6 +4,7 @@ import { useDebounce } from 'react-use';
 
 import { GrafanaTheme2, PanelPluginMeta, SelectableValue } from '@grafana/data';
 import { useStyles2, VerticalGroup, FilterInput } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
 import { FolderInfo } from 'app/types';
 
 import { FolderFilter } from '../../../../core/components/FolderFilter/FolderFilter';
@@ -62,7 +63,8 @@ export const LibraryPanelsSearch = ({
             <FilterInput
               value={searchQuery}
               onChange={setSearchQuery}
-              placeholder="Search by name or description"
+              // BMC Change: Next line
+              placeholder={t('bmcgrafana.search-inputs.name-description', 'Search by name or description')}
               width={0}
               escapeRegex={false}
             />
@@ -161,7 +163,15 @@ const SearchControls = React.memo(
 
     return (
       <div className={styles.container}>
-        {showSort && <SortPicker value={sortDirection} onChange={onSortChange} filter={['alpha-asc', 'alpha-desc']} />}
+        {showSort && (
+          <SortPicker
+            // BMC Change: Next line
+            placeholder={t('search.actions.sort-placeholder', 'Sort')}
+            value={sortDirection}
+            onChange={onSortChange}
+            filter={['alpha-asc', 'alpha-desc']}
+          />
+        )}
         {(showFolderFilter || showPanelFilter) && (
           <div className={styles.filterContainer}>
             {showFolderFilter && <FolderFilter onChange={folderFilterChanged} />}
