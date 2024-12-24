@@ -1,3 +1,5 @@
+import { Location } from 'history';
+
 import { locationUtil, NavModelItem } from '@grafana/data';
 import { config, reportInteraction } from '@grafana/runtime';
 import { t } from 'app/core/internationalization';
@@ -7,7 +9,7 @@ import appEvents from '../../../app_events';
 import { getFooterLinks } from '../../Footer/Footer';
 import { HelpModal } from '../../help/HelpModal';
 
-export const enrichHelpItem = (helpItem: NavModelItem) => {
+export const enrichHelpItem = (helpItem: NavModelItem, footerLinkData?: any) => {
   let menuItems = helpItem.children || [];
 
   if (helpItem.id === 'help') {
@@ -16,8 +18,9 @@ export const enrichHelpItem = (helpItem: NavModelItem) => {
     };
     helpItem.children = [
       ...menuItems,
-      ...getFooterLinks(),
-      ...getEditionAndUpdateLinks(),
+      // BMC code - Update footer data and Hide "open source" item from Help menu
+      ...getFooterLinks(footerLinkData),
+      // ...getEditionAndUpdateLinks(),
       {
         id: 'keyboard-shortcuts',
         text: t('nav.help/keyboard-shortcuts', 'Keyboard shortcuts'),
@@ -81,7 +84,11 @@ export const getActiveItem = (
 
   for (const link of navTree) {
     const linkWithoutParams = stripQueryParams(link.url);
-    const linkPathname = locationUtil.stripBaseFromUrl(linkWithoutParams);
+    // BMC code - inline change
+    const linkPathname = locationUtil
+      .stripBaseFromUrl(linkWithoutParams)
+      .replace(/^\/dashboards$/, '/')
+      .replace(/^\/dashboards/, '');
     if (linkPathname && link.id !== 'starred') {
       if (linkPathname === pathname) {
         // exact match
@@ -114,6 +121,25 @@ export const getActiveItem = (
   }
   return currentBestMatch;
 };
+
+export const isSearchActive = (location: Location<unknown>) => {
+  const query = new URLSearchParams(location.search);
+  return query.get('search') === 'open';
+};
+
+export function getNavModelItemKey(item: NavModelItem) {
+  return item.id ?? item.text;
+}
+// BMC code
+export const prepareLogoColor = (isSelected: Boolean) => {
+  const reportApp: any = document.querySelector('a[aria-label="Report Scheduler"] img') || { style: {} };
+  if (config.theme.isDark) {
+    reportApp.style['filter'] = `contrast(0) ${isSelected ? 'brightness(1.8)' : 'brightness(1.2)'}`;
+  } else {
+    reportApp.style['filter'] = `${isSelected ? 'inherit' : 'contrast(0.35)'}`;
+  }
+};
+// End
 
 export function getEditionAndUpdateLinks(): NavModelItem[] {
   const { buildInfo, licenseInfo } = config;

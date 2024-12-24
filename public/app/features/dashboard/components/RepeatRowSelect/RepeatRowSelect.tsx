@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import React, { useCallback, useMemo } from 'react';
 
 import { SelectableValue } from '@grafana/data';
@@ -21,16 +22,22 @@ export const RepeatRowSelect = ({ repeat, onChange, id }: Props) => {
     const options: Array<SelectableValue<string | null>> = variables.map((item) => {
       return { label: item.name, value: item.name };
     });
-
     if (options.length === 0) {
       options.unshift({
-        label: 'No template variables found',
+        // BMC Change: To enable localization for below text
+        label: t(
+          'bmcgrafana.dashboards.edit-panel.panel-options.repeat-options.no-template-variables-found',
+          'No template variables found'
+        ),
+        // BMC Change ends
         value: null,
       });
     }
 
     options.unshift({
-      label: 'Disable repeating',
+      // BMC Change: To enable localization for below text
+      label: t('bmcgrafana.dashboards.edit-panel.panel-options.repeat-options.disable-repeating', 'Disable repeating'),
+      // BMC Change ends
       value: null,
     });
 

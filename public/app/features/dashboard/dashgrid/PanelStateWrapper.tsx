@@ -32,6 +32,7 @@ import {
 } from '@grafana/ui';
 import config from 'app/core/config';
 import { profiler } from 'app/core/profiler';
+import { dashboardLoadTime } from 'app/core/services/dashboardLoadTime_srv';
 import { applyPanelTimeOverrides } from 'app/features/dashboard/utils/panel';
 import { getDatasourceSrv } from 'app/features/plugins/datasource_srv';
 import { applyFilterFromTable } from 'app/features/variables/adhoc/actions';
@@ -205,6 +206,15 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
   componentDidMount() {
     const { panel, dashboard } = this.props;
 
+    // BMC Code
+    // Time Context: Send the dashboard is in view count and dashboard name
+    dashboardLoadTime.setDashboardInfo({
+      id: dashboard.id,
+      name: dashboard.title,
+      panelIsInViewCount: dashboard.panels.filter((panel) => panel.isInView).length,
+      dashboardInEdit: dashboard.panelInEdit ? true : false,
+    });
+
     // Subscribe to panel events
     this.subs.add(panel.events.subscribe(RefreshEvent, this.onRefresh));
     this.subs.add(panel.events.subscribe(RenderEvent, this.onRender));
@@ -291,6 +301,10 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
   // So in this context we can only do a single call to setState
   onDataUpdate(data: PanelData) {
     const { dashboard, panel, plugin } = this.props;
+
+    // BMC Code
+    // Time Context: Send the dashboard state so can record the time
+    dashboardLoadTime.setDashboardPanelRendered(data.state);
 
     // Ignore this data update if we are now a non data panel
     if (plugin.meta.skipDataQuery) {

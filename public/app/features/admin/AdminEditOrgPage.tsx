@@ -5,6 +5,7 @@ import { useAsyncFn } from 'react-use';
 import { NavModelItem } from '@grafana/data';
 import { Field, Input, Button, Legend, Alert } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 import { GrafanaRouteComponentProps } from 'app/core/navigation/types';
 import { OrgUser, AccessControlAction, OrgRole } from 'app/types';
@@ -89,14 +90,19 @@ const AdminEditOrgPage = ({ match }: Props) => {
           <Legend>Edit organization</Legend>
           {orgState.value && (
             <form onSubmit={handleSubmit(onUpdateOrgName)} style={{ maxWidth: '600px' }}>
-              <Field label="Name" invalid={!!errors.orgName} error="Name is required" disabled={!canWriteOrg}>
+              <Field
+                label="Name"
+                invalid={!!errors.orgName}
+                error="Name is required"
+                disabled={config.buildInfo.env !== 'development' || !canWriteOrg}
+              >
                 <Input
                   {...register('orgName', { required: true })}
                   id="org-name-input"
                   defaultValue={orgState.value.name}
                 />
               </Field>
-              <Button type="submit" disabled={!canWriteOrg}>
+              <Button type="submit" disabled={config.buildInfo.env !== 'development' || !canWriteOrg}>
                 Update
               </Button>
             </form>

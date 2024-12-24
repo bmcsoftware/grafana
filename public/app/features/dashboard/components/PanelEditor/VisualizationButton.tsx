@@ -3,6 +3,7 @@ import React from 'react';
 
 import { selectors } from '@grafana/e2e-selectors';
 import { ToolbarButton, ButtonGroup } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
 import { useDispatch, useSelector } from 'app/types';
 
 import { PanelModel } from '../../state';
@@ -38,7 +39,9 @@ export const VisualizationButton = ({ panel }: Props) => {
       <ButtonGroup>
         <ToolbarButton
           className={styles.vizButton}
-          tooltip="Click to change visualization"
+          // BMC Change: To enable localization for below text
+          tooltip={t('bmcgrafana.dashboards.edit-panel.click-to-change-visualization', 'Click to change visualization')}
+          // BMC Change ends
           imgSrc={plugin.meta.info.logos.small}
           isOpen={isVizPickerOpen}
           onClick={onToggleOpen}
@@ -50,12 +53,24 @@ export const VisualizationButton = ({ panel }: Props) => {
           {plugin.meta.name}
         </ToolbarButton>
         <ToolbarButton
-          tooltip={isPanelOptionsVisible ? 'Close options pane' : 'Show options pane'}
+          // BMC Change: To enable localization for below text
+          tooltip={
+            isPanelOptionsVisible
+              ? t('bmcgrafana.dashboards.edit-panel.close-options-pane', 'Close options pane')
+              : t('bmcgrafana.dashboards.edit-panel.show-options-pane', 'Show options pane')
+          }
+          // BMC Change ends
           icon={isPanelOptionsVisible ? 'angle-right' : 'angle-left'}
           onClick={onToggleOptionsPane}
           variant="canvas"
           data-testid={selectors.components.PanelEditor.toggleVizOptions}
-          aria-label={isPanelOptionsVisible ? 'Close options pane' : 'Show options pane'}
+          // BMC Change: To enable localization for below text
+          aria-label={
+            isPanelOptionsVisible
+              ? t('bmcgrafana.dashboards.edit-panel.close-options-pane', 'Close options pane')
+              : t('bmcgrafana.dashboards.edit-panel.show-options-pane', 'Show options pane')
+          }
+          // BMC Change ends
         />
       </ButtonGroup>
     </div>

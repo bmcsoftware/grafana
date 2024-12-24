@@ -6,6 +6,7 @@ import { GrafanaTheme2 } from '@grafana/data';
 import { selectors as e2eSelectors } from '@grafana/e2e-selectors/src';
 import { LinkButton, RadioButtonGroup, useStyles2, FilterInput } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import config from 'app/core/config';
 import { contextSrv } from 'app/core/core';
 
 import { AccessControlAction, StoreState, UserFilter } from '../../types';
@@ -89,7 +90,8 @@ const UserListAdminPageUnConnected = ({
           {extraFilters.map((FilterComponent, index) => (
             <FilterComponent key={index} filters={filters} onChange={changeFilter} className={styles.filter} />
           ))}
-          {contextSrv.hasPermission(AccessControlAction.UsersCreate) && (
+          {/* BMC Code */}
+          {contextSrv.hasPermission(AccessControlAction.UsersCreate) && config.buildInfo.env === 'development' && (
             <LinkButton href="admin/users/create" variant="primary">
               New user
             </LinkButton>

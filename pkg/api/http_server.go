@@ -17,16 +17,17 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
 	"github.com/grafana/grafana/pkg/services/anonymous"
 	grafanaapiserver "github.com/grafana/grafana/pkg/services/apiserver"
 	"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request"
+	"github.com/grafana/grafana/pkg/services/usagedata"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/grafana/grafana/pkg/api/avatar"
 	"github.com/grafana/grafana/pkg/api/routing"
@@ -72,6 +73,8 @@ import (
 	"github.com/grafana/grafana/pkg/services/live/pushhttp"
 	"github.com/grafana/grafana/pkg/services/login"
 	loginAttempt "github.com/grafana/grafana/pkg/services/loginattempt"
+
+	// BMC Change: Next line for metadata story
 	"github.com/grafana/grafana/pkg/services/navtree"
 	"github.com/grafana/grafana/pkg/services/ngalert"
 	"github.com/grafana/grafana/pkg/services/notifications"
@@ -89,6 +92,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/queryhistory"
 	"github.com/grafana/grafana/pkg/services/quota"
 	"github.com/grafana/grafana/pkg/services/rendering"
+	"github.com/grafana/grafana/pkg/services/rmsmetadata"
 	"github.com/grafana/grafana/pkg/services/search"
 	"github.com/grafana/grafana/pkg/services/searchV2"
 	"github.com/grafana/grafana/pkg/services/searchusers"
@@ -217,6 +221,11 @@ type HTTPServer struct {
 	clientConfigProvider grafanaapiserver.DirectRestConfigProvider
 	namespacer           request.NamespaceMapper
 	anonService          anonymous.Service
+	// BMC Change: Start
+	rmsMetadataService rmsmetadata.Service
+	usagedataService   usagedata.Service
+	sqlStore           *sqlstore.SQLStore
+	// BMC Change: End
 }
 
 type ServerOptions struct {
@@ -259,6 +268,9 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	annotationRepo annotations.Repository, tagService tag.Service, searchv2HTTPService searchV2.SearchHTTPService, oauthTokenService oauthtoken.OAuthTokenService,
 	statsService stats.Service, authnService authn.Service, pluginsCDNService *pluginscdn.Service, promGatherer prometheus.Gatherer,
 	starApi *starApi.API, promRegister prometheus.Registerer, clientConfigProvider grafanaapiserver.DirectRestConfigProvider, anonService anonymous.Service,
+	// BMC Change: Next line for metadata story
+	rmsMetadataService rmsmetadata.Service,
+	usagedataService usagedata.Service,
 ) (*HTTPServer, error) {
 	web.Env = cfg.Env
 	m := web.New()
@@ -361,12 +373,24 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 		clientConfigProvider:         clientConfigProvider,
 		namespacer:                   request.GetNamespaceMapper(cfg),
 		anonService:                  anonService,
+		// BMC Change: Start
+		rmsMetadataService: rmsMetadataService,
+		usagedataService:   usagedataService,
+		sqlStore:           sqlStore,
+		// BMC Change: End
 	}
 	if hs.Listener != nil {
 		hs.log.Debug("Using provided listener")
 	}
 	hs.registerRoutes()
 
+	// BMC code
+	hs.log.Info("Registering Report Scheduler Api's")
+	hs.registerSchedulerRoutes()
+	hs.registerReportSchedulerPlugin()
+	hs.registerRMSMetadataRoutes()
+	hs.registerUsagedataRoutes()
+	// End
 	// Register access control scope resolver for annotations
 	hs.AccessControl.RegisterScopeAttributeResolver(AnnotationTypeScopeResolver(hs.annotationsRepo, features, dashboardService, folderService))
 
@@ -388,6 +412,8 @@ func (hs *HTTPServer) Run(ctx context.Context) error {
 	hs.context = ctx
 
 	hs.applyRoutes()
+	//Bmc code inline
+	hs.cacheOrgs(ctx)
 
 	// Remove any square brackets enclosing IPv6 addresses, a format we support for backwards compatibility
 	host := strings.TrimSuffix(strings.TrimPrefix(hs.Cfg.HTTPAddr, "["), "]")
@@ -753,6 +779,11 @@ func (hs *HTTPServer) apiHealthHandler(ctx *web.Context) {
 	if !hs.Cfg.AnonymousHideVersion {
 		data.Set("version", hs.Cfg.BuildVersion)
 		data.Set("commit", hs.Cfg.BuildCommit)
+		// BMC code
+		// author(kmejdi) - Add ade version from env variables
+		version := os.Getenv("RELEASE_VERSION")
+		data.Set("adeVersion", version)
+		// End
 		if hs.Cfg.EnterpriseBuildCommit != "NA" && hs.Cfg.EnterpriseBuildCommit != "" {
 			data.Set("enterpriseCommit", hs.Cfg.EnterpriseBuildCommit)
 		}
@@ -844,3 +875,25 @@ func (hs *HTTPServer) getDefaultCiphers(tlsVersion uint16, protocol string) []ui
 	}
 	return nil
 }
+
+// Bmc code starts
+func (hs *HTTPServer) cacheOrgs(ctx context.Context) {
+	hs.log.Info("Caching all tenant metadata on startup.")
+	cache := contexthandler.GetInstance()
+	result := make([]*org.OrgDTO, 0)
+	err := hs.SQLStore.WithDbSession(ctx, func(dbSess *db.Session) error {
+		sess := dbSess.Table("org")
+		err := sess.Find(&result)
+		return err
+	})
+	if err != nil {
+		hs.log.Error("Error occured while caching orgs", "err", err)
+		return
+	}
+	for _, item := range result {
+		cache.Set(strconv.FormatInt(item.ID, 10), item.Name)
+	}
+	hs.log.Info("Tenant cache updated. Count-", len(result))
+}
+
+// Bmc code ends

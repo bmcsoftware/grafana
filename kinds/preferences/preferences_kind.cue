@@ -32,6 +32,12 @@ lineage: schemas: [{
 
 			// Cookie preferences
 			cookiePreferences?: #CookiePreferences
+
+			// Format for dashboards, panels and reports timestamps
+			timeFormat?: string
+
+			// Toggle to set available query types for the tenant
+			enabledQueryTypes?: #EnabledQueryTypes
 		} @cuetsy(kind="interface")
 
 		#QueryHistoryPreference: {
@@ -44,5 +50,10 @@ lineage: schemas: [{
 			performance?: {}
 			functional?: {}
 		} @cuetsy(kind="interface")
+
+		#EnabledQueryTypes: {
+			enabledTypes?: [...string]
+			applyForAdmin?: bool
+		} @cuetsy(kind="interface") //0.0
 	}
 }]

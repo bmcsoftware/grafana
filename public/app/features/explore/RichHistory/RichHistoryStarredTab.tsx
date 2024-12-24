@@ -50,7 +50,8 @@ const getStyles = (theme: GrafanaTheme2) => {
       margin-bottom: ${theme.spacing(1)};
     `,
     sort: css`
-      width: 170px;
+      // BMC Change: To remove the width and make it dynamic
+      // width: 170px;
     `,
     footer: css`
       height: 60px;

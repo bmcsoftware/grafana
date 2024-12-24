@@ -94,7 +94,7 @@ module.exports = (env = {}) => {
             async: true, // don't block webpack emit
             typescript: {
               mode: 'write-references',
-              memoryLimit: 4096,
+              memoryLimit: 8192,
               diagnosticOptions: {
                 semantic: true,
                 syntactic: true,

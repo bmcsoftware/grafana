@@ -230,6 +230,8 @@ function copyModel(item: AlertQuery, settings: DataSourceInstanceSettings): Omit
         type: settings.type,
         uid: settings.uid,
       },
+      // BMC Code: Adding missing property to fix lint error
+      refId: '',
     },
     datasourceUid: settings.uid,
   };

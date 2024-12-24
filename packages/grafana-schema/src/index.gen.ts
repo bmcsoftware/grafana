@@ -125,8 +125,12 @@ export type { LibraryPanel } from './veneer/librarypanel.types';
 export type {
   Preferences,
   QueryHistoryPreference,
-  CookiePreferences
+  CookiePreferences,
+  EnabledQueryTypes
 } from './raw/preferences/x/preferences_types.gen';
+
+// Raw generated enums and default consts from preferences kind.
+export { defaultEnabledQueryTypes } from './raw/preferences/x/preferences_types.gen';
 
 // Raw generated types from PublicDashboard kind.
 export type { PublicDashboard } from './raw/publicdashboard/x/publicdashboard_types.gen';

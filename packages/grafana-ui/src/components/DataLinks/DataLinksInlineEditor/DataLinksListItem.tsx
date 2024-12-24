@@ -1,4 +1,5 @@
 import { css, cx } from '@emotion/css';
+import { t } from 'i18next';
 import React from 'react';
 
 import { DataFrame, DataLink, GrafanaTheme2 } from '@grafana/data';
@@ -26,23 +27,43 @@ export const DataLinksListItem = ({ link, onEdit, onRemove }: DataLinksListItemP
   const hasUrl = url.trim() !== '';
 
   const isCompactExploreUrl = isCompactUrl(url);
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.titleWrapper}>
         <div className={cx(styles.url, !hasUrl && styles.notConfigured, isCompactExploreUrl && styles.errored)}>
-          {hasTitle ? title : 'Data link title not provided'}
+          {/* BMC Change: To enable localization for below text */}
+          {hasTitle
+            ? title
+            : t('bmcgrafana.dashboards.edit-panel.data-links.link-title-not-provided', 'Data link title not provided')}
+          {/* BMC Change ends */}
         </div>
         <div className={styles.actionButtons}>
-          <IconButton name="pen" onClick={onEdit} tooltip="Edit data link title" />
-          <IconButton name="times" onClick={onRemove} tooltip="Remove data link title" />
+          {/* // BMC Change: To enable localization for below text */}
+          <IconButton
+            name="pen"
+            onClick={onEdit}
+            tooltip={t('bmcgrafana.dashboards.edit-panel.data-links.edit-link-title-tooltip', 'Edit data link title')}
+          />
+          <IconButton
+            name="times"
+            onClick={onRemove}
+            tooltip={t(
+              'bmcgrafana.dashboards.edit-panel.data-links.remove-link-title-tooltip',
+              'Remove data link title'
+            )}
+          />
+          {/* BMC Change ends */}
         </div>
       </div>
       <div
         className={cx(styles.url, !hasUrl && styles.notConfigured, isCompactExploreUrl && styles.errored)}
         title={url}
       >
-        {hasUrl ? url : 'Data link url not provided'}
+        {/* BMC Change: To enable localization for below text */}
+        {hasUrl
+          ? url
+          : t('bmcgrafana.dashboards.edit-panel.data-links.link-url-not-provided', 'Data link url not provided')}
+        {/* BMC Change ends */}
       </div>
       {isCompactExploreUrl && (
         <FieldValidationMessage>Explore data link may not work in the future. Please edit.</FieldValidationMessage>

@@ -5,7 +5,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Subscription } from 'rxjs';
 
 import { zIndex } from '@grafana/data/src/themes/zIndex';
-import { config } from '@grafana/runtime';
+import { config, locationService } from '@grafana/runtime';
 import { LayoutItemContext } from '@grafana/ui';
 import appEvents from 'app/core/app_events';
 import { GRID_CELL_HEIGHT, GRID_CELL_VMARGIN, GRID_COLUMN_COUNT } from 'app/core/constants';
@@ -31,7 +31,13 @@ export interface Props {
   hidePanelMenus?: boolean;
 }
 
-interface State {
+export interface State {
+  // BMC code
+  // author(kmejdi) - used for report scheduler PDF generation
+  simple: boolean;
+  orientation: string;
+  fullTable: boolean;
+  // End
   panelFilter?: RegExp;
 }
 
@@ -49,11 +55,29 @@ export class DashboardGrid extends PureComponent<Props, State> {
     super(props);
     this.state = {
       panelFilter: undefined,
+      // BMC code
+      // author(kmejdi) - used for report scheduler PDF generation
+      simple: false,
+      orientation: 'portrait',
+      fullTable: false,
+      // End
     };
   }
 
   componentDidMount() {
     const { dashboard } = this.props;
+    // BMC code
+    // author(kmejdi) - report scheduler related code
+    const simple = locationService.getSearch().has('simple');
+    const orientation = locationService.getSearch().get('orientation') ?? 'portrait';
+    const fullTable = locationService.getSearch().get('fullTable') === 'true';
+    this.setState({
+      ...this.state,
+      simple,
+      orientation,
+      fullTable,
+    });
+    // End
 
     if (config.featureToggles.panelFilterVariable) {
       // If panel filter variable is set on load then
@@ -88,6 +112,27 @@ export class DashboardGrid extends PureComponent<Props, State> {
     this.eventSubs.unsubscribe();
   }
 
+  // BMC code
+  // author(kmejdi) - used for report scheduler PDF generation
+  updatePanelsForReport(w: number, h: number, firstPanelLoaded = true) {
+    const { simple, orientation, fullTable } = this.state;
+    if (!simple) {
+      return { w, h };
+    }
+    if (!orientation || orientation !== 'landscape') {
+      return {
+        w: 24,
+        h: fullTable ? 20 : 12,
+      };
+    } else {
+      return {
+        w: 24,
+        h: firstPanelLoaded ? 22 : 25,
+      };
+    }
+  }
+  // End
+
   setPanelFilter(regex: string) {
     // Only set the panels filter if the systemPanelFilterVar variable
     // is a non-empty string
@@ -104,6 +149,11 @@ export class DashboardGrid extends PureComponent<Props, State> {
   buildLayout() {
     const layout: ReactGridLayout.Layout[] = [];
     this.panelMap = {};
+    // BMC code
+    // author(kmejdi) - used for report scheduler PDF generation
+    let firstPanelLoaded = true;
+    // End
+
     const { panelFilter } = this.state;
 
     let count = 0;
@@ -118,12 +168,23 @@ export class DashboardGrid extends PureComponent<Props, State> {
         continue;
       }
 
+      // BMC code
+      // author(kmejdi) - used for report scheduler PDF generation
+      const panelSize = this.updatePanelsForReport(panel.gridPos.w, panel.gridPos.h, firstPanelLoaded);
+      if (panel.type !== 'row') {
+        firstPanelLoaded = false;
+      }
+      // End
       const panelPos: ReactGridLayout.Layout = {
         i: panel.key,
         x: panel.gridPos.x,
         y: panel.gridPos.y,
-        w: panel.gridPos.w,
-        h: panel.gridPos.h,
+        // BMC code
+        // author(kmejdi) - used for report scheduler PDF generation
+        // w: panel.gridPos.w,
+        // h: panel.gridPos.h,
+        ...panelSize,
+        // End
       };
 
       if (panel.type === 'row') {

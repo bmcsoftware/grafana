@@ -4,6 +4,10 @@ export const ENGLISH_US = 'en-US';
 export const FRENCH_FRANCE = 'fr-FR';
 export const SPANISH_SPAIN = 'es-ES';
 export const GERMAN_GERMANY = 'de-DE';
+// BMC code - Canadian French
+export const FRENCH_CANADA = 'fr-CA';
+// BMC code - Canadian English
+export const ENGLISH_CANADA = 'en-CA';
 export const CHINESE_SIMPLIFIED = 'zh-Hans';
 export const PSEUDO_LOCALE = 'pseudo-LOCALE';
 
@@ -45,11 +49,25 @@ export const LANGUAGES: LanguageDefinitions[] = [
     loader: () => import('../../../locales/de-DE/grafana.json'),
   },
 
+  // BMC code - Canadian French
   {
-    code: CHINESE_SIMPLIFIED,
-    name: '中文（简体）',
-    loader: () => import('../../../locales/zh-Hans/grafana.json'),
+    code: FRENCH_CANADA,
+    name: 'Français (Canada)',
+    loader: () => import('../../../locales/fr-CA/grafana.json'),
   },
+
+  // BMC code - Canadian English
+  {
+    code: ENGLISH_CANADA,
+    name: 'English (Canada)',
+    loader: () => import('../../../locales/en-CA/grafana.json'),
+  },
+
+  // {
+  //   code: CHINESE_SIMPLIFIED,
+  //   name: '中文（简体）',
+  //   loader: () => import('../../../locales/zh-Hans/grafana.json'),
+  // },
 ];
 
 if (process.env.NODE_ENV === 'development') {

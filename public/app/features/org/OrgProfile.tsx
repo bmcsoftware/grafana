@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Input, Field, FieldSet, Button, Form } from '@grafana/ui';
-import { contextSrv } from 'app/core/core';
-import { AccessControlAction } from 'app/types';
+import { Input, Field, FieldSet, Form } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
+// import { contextSrv } from 'app/core/core';
+// import { AccessControlAction } from 'app/types';
 
 export interface Props {
   orgName: string;
@@ -14,17 +15,20 @@ interface FormDTO {
 }
 
 const OrgProfile = ({ onSubmit, orgName }: Props) => {
-  const canWriteOrg = contextSrv.hasPermission(AccessControlAction.OrgsWrite);
+  // BMC code - next line
+  //const canWriteOrg = contextSrv.hasPermission(AccessControlAction.OrgsWrite);
 
   return (
     <Form defaultValues={{ orgName }} onSubmit={({ orgName }: FormDTO) => onSubmit(orgName)}>
       {({ register }) => (
-        <FieldSet label="Organization profile" disabled={!canWriteOrg}>
-          <Field label="Organization name">
+        // BMC code - inline change
+        <FieldSet label={t('bmcgrafana.shared-preferences.org.title', 'Organization profile')} disabled>
+          <Field label={t('bmcgrafana.shared-preferences.org.org-name-text', 'Organization name')}>
             <Input id="org-name-input" type="text" {...register('orgName', { required: true })} />
           </Field>
 
-          <Button type="submit">Update organization name</Button>
+          {/* BMC code - next line */}
+          {/* <Button type="submit">Update organization name</Button> */}
         </FieldSet>
       )}
     </Form>

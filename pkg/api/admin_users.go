@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/grafana/grafana/pkg/middleware/cookies"
+	"github.com/grafana/grafana/pkg/setting"
+
 	"golang.org/x/sync/errgroup"
 
 	"github.com/grafana/grafana/pkg/api/dtos"
@@ -50,12 +53,30 @@ func (hs *HTTPServer) AdminCreateUser(c *contextmodel.ReqContext) response.Respo
 	form.Login = strings.TrimSpace(form.Login)
 
 	cmd := user.CreateUserCommand{
+		// BMC code
+		// Start Abhishek_06292020, Extended Create User API to additionally accept userid as optional input parameter
+		Id: form.Id,
+		// End
 		Login:    form.Login,
 		Email:    form.Email,
 		Password: form.Password,
 		Name:     form.Name,
 		OrgID:    form.OrgId,
 	}
+
+	// BMC Code start
+	if cmd.OrgID == setting.IMS_Tenant0 {
+		cmd.OrgID = setting.GF_Tenant0
+	}
+	// BMC Code ends
+
+	// ToDo_GF_10.4.2: Revalidate if below is needed or not
+	// if len(cmd.Login) == 0 {
+	// 	cmd.Login = cmd.Email
+	// 	if len(cmd.Login) == 0 {
+	// 		return response.Error(400, "Validation error, need specify either username or email", nil)
+	// 	}
+	// }
 
 	if len(cmd.Password) < 4 {
 		return response.Error(http.StatusBadRequest, "Password is missing or too short", nil)
@@ -68,7 +89,8 @@ func (hs *HTTPServer) AdminCreateUser(c *contextmodel.ReqContext) response.Respo
 		}
 
 		if errors.Is(err, user.ErrUserAlreadyExists) {
-			return response.Error(http.StatusPreconditionFailed, fmt.Sprintf("User with email '%s' or username '%s' already exists", form.Email, form.Login), err)
+			//BMC Code inline change
+			return response.Error(http.StatusPreconditionFailed, fmt.Sprintf("User with username '%s' already exists", form.Login), err)
 		}
 
 		return response.ErrOrFallback(http.StatusInternalServerError, "failed to create user", err)
@@ -403,6 +425,10 @@ func (hs *HTTPServer) AdminLogoutUser(c *contextmodel.ReqContext) response.Respo
 			return response.Error(http.StatusBadRequest, "You cannot logout yourself", nil)
 		}
 	}
+	//BMC Code - start
+	//Remove helix_jwt_token cookie on logout operation
+	cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+	//BMC Code - end
 
 	return hs.logoutUserFromAllDevicesInternal(c.Req.Context(), userID)
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { DataSourcePluginMeta } from '@grafana/data';
-import { LinkButton } from '@grafana/ui';
+// import { LinkButton } from '@grafana/ui';
 import { DataSourcePluginCategory } from 'app/types';
 
-import { ROUTES } from '../../connections/constants';
+// import { ROUTES } from '../../connections/constants';
 
 import { DataSourceTypeCardList } from './DataSourceTypeCardList';
 
@@ -17,7 +17,8 @@ export type Props = {
 };
 
 export function DataSourceCategories({ categories, onClickDataSourceType }: Props) {
-  const moreDataSourcesLink = `${ROUTES.AddNewConnection}?cat=data-source`;
+  // BMC Code: Commented next line.
+  // const moreDataSourcesLink = `${ROUTES.AddNewConnection}?cat=data-source`;
 
   return (
     <>
@@ -31,12 +32,17 @@ export function DataSourceCategories({ categories, onClickDataSourceType }: Prop
         </div>
       ))}
 
-      {/* Find more */}
-      <div className="add-data-source-more">
+      {/* 
+        // BMC code 
+        // Hide this option
+        // Find more
+        <div className="add-data-source-more">
         <LinkButton variant="secondary" href={moreDataSourcesLink} target="_self" rel="noopener">
           Find more data source plugins
         </LinkButton>
-      </div>
+        </div>
+        // End 
+      */}
     </>
   );
 }

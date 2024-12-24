@@ -2,6 +2,7 @@ import { css } from '@emotion/css';
 import React from 'react';
 
 import { ConfirmModal } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
 
 interface Props {
   varName: string;
@@ -13,15 +14,20 @@ interface Props {
 export function ConfirmDeleteModal({ varName, isOpen = false, onConfirm, onDismiss }: Props) {
   return (
     <ConfirmModal
-      title="Delete variable"
+      title={t(
+        'bmcgrafana.dashboards.settings.variables.variables-tab.delete.delete-variable-title',
+        'Delete variable'
+      )}
       isOpen={isOpen}
       onConfirm={onConfirm}
       onDismiss={onDismiss}
-      body={`
-      Are you sure you want to delete variable "${varName}"?
-    `}
+      body={t(
+        'bmcgrafana.dashboards.settings.variables.variables-tab.delete.body',
+        'Are you sure you want to delete variable "{{varName}}"?',
+        { varName }
+      )}
       modalClass={styles.modal}
-      confirmText="Delete"
+      confirmText={t('bmcgrafana.dashboards.settings.variables.variables-tab.delete.delete-confirm-text', 'Delete')}
     />
   );
 }

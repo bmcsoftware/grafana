@@ -248,11 +248,19 @@ func (hs *HTTPServer) Logout(c *contextmodel.ReqContext) {
 		authInfo, _ := hs.authInfoService.GetAuthInfo(c.Req.Context(), &loginservice.GetAuthInfoQuery{UserId: id})
 		if authInfo != nil && authInfo.AuthModule == loginservice.SAMLAuthModule {
 			c.Redirect(hs.Cfg.AppSubURL + "/logout/saml")
+			//BMC Code - start
+			//Remove helix_jwt_token cookie on logout operation
+			cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+			//BMC Code - end
 			return
 		}
 	}
 
 	redirect, err := hs.authnService.Logout(c.Req.Context(), c.SignedInUser, c.UserToken)
+	//BMC Code - start
+	//Remove helix_jwt_token cookie on logout operation
+	cookies.DeleteCookie(c.Resp, "helix_jwt_token", hs.CookieOptionsFromCfg)
+	//BMC Code - end
 	authn.DeleteSessionCookie(c.Resp, hs.Cfg)
 
 	if err != nil {

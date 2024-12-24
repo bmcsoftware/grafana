@@ -5,6 +5,8 @@ import {
   CustomVariableModel,
   DashboardVariableModel,
   DataSourceVariableModel,
+  DatePickerVariableModel,
+  OptimizeVariableModel,
   GroupByVariableModel,
   IntervalVariableModel,
   LoadingState,
@@ -198,3 +200,26 @@ export function createCustomVariable(input: Partial<CustomVariableModel> = {}): 
     ...input,
   };
 }
+
+// BMC code
+export function createDatePickerVariable(input: Partial<DatePickerVariableModel> = {}): DatePickerVariableModel {
+  return {
+    ...createBaseVariableModel('datepicker'),
+    originalQuery: null,
+    query: '',
+    current: createVariableOption('prom-prod'),
+    options: [],
+    ...input,
+  };
+}
+export function createOptimizeVariable(input: Partial<OptimizeVariableModel> = {}): OptimizeVariableModel {
+  return {
+    ...createBaseVariableModel('optimizepicker'),
+    originalQuery: null,
+    query: '',
+    current: createVariableOption('prom-prod'),
+    options: [],
+    ...input,
+  };
+}
+// End

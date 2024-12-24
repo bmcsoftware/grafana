@@ -7,6 +7,7 @@ import { selectors } from '@grafana/e2e-selectors';
 import { reportInteraction } from '@grafana/runtime';
 import { Button, useStyles2, Stack } from '@grafana/ui';
 import EmptyListCTA from 'app/core/components/EmptyListCTA/EmptyListCTA';
+import { t, Trans } from 'app/core/internationalization';
 
 import { VariablesDependenciesButton } from '../inspect/VariablesDependenciesButton';
 import { UsagesToNetwork, VariableUsageTree } from '../inspect/utils';
@@ -58,10 +59,19 @@ export function VariableEditorList({
                 aria-label={selectors.pages.Dashboard.Settings.Variables.List.table}
                 role="grid"
               >
+                {/* BMC Change: To enable localization for below text */}
                 <thead>
                   <tr>
-                    <th>Variable</th>
-                    <th>Definition</th>
+                    <th>
+                      <Trans i18nKey="bmcgrafana.dashboards.settings.variables.variables-tab.variable-editor-list.variable">
+                        Variable
+                      </Trans>
+                    </th>
+                    <th>
+                      <Trans i18nKey="bmcgrafana.dashboards.settings.variables.variables-tab.variable-editor-list.definition">
+                        Definition
+                      </Trans>
+                    </th>
                     <th colSpan={5} />
                   </tr>
                 </thead>
@@ -95,7 +105,9 @@ export function VariableEditorList({
                 onClick={onAdd}
                 icon="plus"
               >
-                New variable
+                <Trans i18nKey="bmcgrafana.dashboards.settings.variables.variables-tab.variable-editor-list.button-text">
+                  New variable
+                </Trans>
               </Button>
             </Stack>
           </Stack>
@@ -109,22 +121,24 @@ function EmptyVariablesList({ onAdd }: { onAdd: () => void }): ReactElement {
   return (
     <div>
       <EmptyListCTA
-        title="There are no variables yet"
+        title={t('bmcgrafana.dashboards.settings.variables.empty-list', 'There are no variables yet')}
         buttonIcon="calculator-alt"
-        buttonTitle="Add variable"
+        buttonTitle={t('bmcgrafana.dashboards.settings.variables.variables-tab.button-title', 'Add variable')}
         infoBox={{
-          __html: ` <p>
-                    Variables enable more interactive and dynamic dashboards. Instead of hard-coding things like server
-                    or sensor names in your metric queries you can use variables in their place. Variables are shown as
-                    list boxes at the top of the dashboard. These drop-down lists make it easy to change the data
-                    being displayed in your dashboard. Check out the
-                    <a class="external-link" href="https://grafana.com/docs/grafana/latest/variables/" target="_blank">
-                      Templates and variables documentation
-                    </a>
-                    for more information.
-                  </p>`,
+          __html: `<p>${t(
+            'bmcgrafana.dashboards.settings.variables.info-body',
+            'Variables enable more interactive and dynamic dashboards. Instead of hard-coding things like server or sensor names in your metric queries you can use variables in their place. Variables are shown as list boxes at the top of the dashboard. These drop-down lists make it easy to change the data being displayed in your dashboard. Check out the <0>Templates and variables documentation</0> for more information.'
+          )
+            .replace(
+              '<0>',
+              '<a class="external-link" href="https://grafana.com/docs/grafana/latest/variables/" target="_blank">'
+            )
+            .replace('</0>', '</a>')}</p>`,
         }}
-        infoBoxTitle="What do variables do?"
+        infoBoxTitle={t(
+          'bmcgrafana.dashboards.settings.variables.variables-tab.info-box-title',
+          'What do variables do?'
+        )}
         onClick={(event) => {
           event.preventDefault();
           onAdd();

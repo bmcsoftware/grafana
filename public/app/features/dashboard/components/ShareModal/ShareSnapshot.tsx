@@ -12,6 +12,7 @@ import { VariableRefresh } from '../../../variables/types';
 import { getDashboardSnapshotSrv } from '../../services/SnapshotSrv';
 
 import { ShareModalTabProps } from './types';
+import { updateURLOrigin } from './utils';
 
 interface Props extends ShareModalTabProps {}
 
@@ -108,6 +109,10 @@ export class ShareSnapshot extends PureComponent<Props, State> {
 
     try {
       const results = await getDashboardSnapshotSrv().create(cmdData);
+      // BMC code
+      results.deleteUrl = updateURLOrigin(results.deleteUrl);
+      results.url = updateURLOrigin(results.url);
+      // End
       this.setState({
         deleteUrl: results.deleteUrl,
         snapshotUrl: results.url,

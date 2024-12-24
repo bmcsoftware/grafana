@@ -1,5 +1,5 @@
 import { Action, KBarProvider } from 'kbar';
-import React, { ComponentType } from 'react';
+import React, { ComponentType, Suspense } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Redirect, Switch, RouteComponentProps } from 'react-router-dom';
 import { CompatRouter, CompatRoute } from 'react-router-dom-v5-compat';
@@ -19,7 +19,10 @@ import { GrafanaRoute } from './core/navigation/GrafanaRoute';
 import { RouteDescriptor } from './core/navigation/types';
 import { contextSrv } from './core/services/context_srv';
 import { ThemeProvider } from './core/utils/ConfigProvider';
+import { getFeatureStatus } from './features/dashboard/services/featureFlagSrv';
 import { LiveConnectionWarning } from './features/live/LiveConnectionWarning';
+import { isGrafanaAdmin } from './features/plugins/admin/permissions';
+const GainsightAgreement = React.lazy(() => import('./features/gainsight/GainsightAgreement'));
 
 interface AppWrapperProps {
   app: GrafanaApp;
@@ -117,6 +120,13 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
                           {bodyRenderHooks.map((Hook, index) => (
                             <Hook key={index.toString()} />
                           ))}
+                          {/* BMC code */}
+                          {getFeatureStatus('gainsight') && !isGrafanaAdmin() && (
+                            <Suspense fallback={<></>}>
+                              <GainsightAgreement isModal={true}></GainsightAgreement>
+                            </Suspense>
+                          )}
+                          {/* End */}
                         </AppChrome>
                       </CompatRouter>
                     </Router>

@@ -5,8 +5,9 @@ import { connect, ConnectedProps } from 'react-redux';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 
 import { locationService } from '@grafana/runtime';
-import { Modal, ConfirmModal, Button } from '@grafana/ui';
+import { Button, ConfirmModal, Modal } from '@grafana/ui';
 import { config } from 'app/core/config';
+import { t, Trans } from 'app/core/internationalization';
 import { DashboardModel, PanelModel } from 'app/features/dashboard/state';
 import { cleanUpDashboardAndVariables } from 'app/features/dashboard/state/actions';
 import { deleteDashboard } from 'app/features/manage-dashboards/state/actions';
@@ -46,9 +47,9 @@ const DeleteDashboardModalUnconnected = ({ hideModal, cleanUpDashboardAndVariabl
       body={modalBody}
       onConfirm={onConfirm}
       onDismiss={hideModal}
-      title="Delete"
+      title={t('bmcgrafana.dashboards.settings.delete', 'Delete')}
       icon="trash-alt"
-      confirmText="Delete"
+      confirmText={t('bmcgrafana.dashboards.settings.delete', 'Delete')}
     />
   );
 };
@@ -65,7 +66,11 @@ const getModalBody = (panels: PanelModel[], title: string) => {
     </>
   ) : (
     <>
-      <p>Do you want to delete this dashboard?</p>
+      <p>
+        <Trans i18nKey="bmcgrafana.dashboards.settings.confirm-delete-text">
+          Do you want to delete this dashboard?
+        </Trans>
+      </p>
       <p>{title}</p>
     </>
   );

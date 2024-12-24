@@ -271,7 +271,7 @@ const optionsPickerSlice = createSlice({
         }
       }
 
-      state.highlightIndex = 0;
+      state.highlightIndex = -1;
 
       if (needle !== '') {
         // top ranked match index

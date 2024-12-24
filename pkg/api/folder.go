@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"errors"
+	"github.com/grafana/grafana/pkg/services/msp"
 	"net/http"
 	"strconv"
 
@@ -19,7 +20,6 @@ import (
 	"github.com/grafana/grafana/pkg/services/folder"
 	"github.com/grafana/grafana/pkg/services/guardian"
 	"github.com/grafana/grafana/pkg/services/libraryelements/model"
-	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/search"
 	"github.com/grafana/grafana/pkg/util"
 	"github.com/grafana/grafana/pkg/web"
@@ -176,7 +176,6 @@ func (hs *HTTPServer) CreateFolder(c *contextmodel.ReqContext) response.Response
 	if err != nil {
 		return response.Err(err)
 	}
-
 	// TODO set ParentUID if nested folders are enabled
 	return response.JSON(http.StatusOK, folderDTO)
 }
@@ -196,13 +195,24 @@ func (hs *HTTPServer) setDefaultFolderPermissions(ctx context.Context, orgID int
 		permissions = append(permissions, accesscontrol.SetResourcePermissionCommand{
 			UserID: userID, Permission: dashboardaccess.PERMISSION_ADMIN.String(),
 		})
+
+		// BMC code - changes for MSP: provide default permissions to org0 team
+		// ToDo: Check for user object, it is changed to identity.Requester
+		if user.GetHasExternalOrg() {
+			permissions = append(permissions, accesscontrol.SetResourcePermissionCommand{
+				TeamID: msp.GetUnrestrictedTeamID(user.GetOrgID()), Permission: dashboardaccess.PERMISSION_EDIT.String(),
+			})
+		}
+		// BMC code ends
 	}
 
 	isNested := folder.ParentUID != ""
 	if !isNested || !hs.Features.IsEnabled(ctx, featuremgmt.FlagNestedFolders) {
 		permissions = append(permissions, []accesscontrol.SetResourcePermissionCommand{
-			{BuiltinRole: string(org.RoleEditor), Permission: dashboardaccess.PERMISSION_EDIT.String()},
-			{BuiltinRole: string(org.RoleViewer), Permission: dashboardaccess.PERMISSION_VIEW.String()},
+			// BMC code Start - Fix for DRJ71-4418 - Changes related to folder and Dashboard permission in 9.x
+			// {BuiltinRole: string(org.RoleEditor), Permission: dashboards.PERMISSION_EDIT.String()},
+			// {BuiltinRole: string(org.RoleViewer), Permission: dashboards.PERMISSION_VIEW.String()},
+			// End
 		}...)
 	}
 

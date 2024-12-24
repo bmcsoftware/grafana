@@ -26,5 +26,7 @@
 
   "queryOptions": {
     "minInterval": true
-  }
+  },
+
+  "state": "alpha"
 }

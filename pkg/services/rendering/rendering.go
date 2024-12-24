@@ -33,12 +33,17 @@ type RenderingService struct {
 	renderCSVAction   renderCSVFunc
 	sanitizeSVGAction sanitizeFunc
 	sanitizeURL       string
-	domain            string
-	inProgressCount   int32
-	version           string
-	versionMutex      sync.RWMutex
-	capabilities      []Capability
-	pluginAvailable   bool
+	// BMC code
+	customPDFAction customPDFFunc
+	customCSVAction customCSVFunc
+	customXLSAction customXLSFunc
+	// End
+	domain          string
+	inProgressCount int32
+	version         string
+	versionMutex    sync.RWMutex
+	capabilities    []Capability
+	pluginAvailable bool
 
 	perRequestRenderKeyProvider renderKeyProvider
 	Cfg                         *setting.Cfg
@@ -73,6 +78,19 @@ func ProvideService(cfg *setting.Cfg, features *featuremgmt.FeatureManager, remo
 	}
 
 	logger := log.New("rendering")
+
+	// BMC code
+	// ensure PDFsDir and XLSsDir exists
+	err := os.MkdirAll(cfg.PDFsDir, 0700)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create PDFs directory %q: %w", cfg.PDFsDir, err)
+	}
+
+	err = os.MkdirAll(cfg.XLSsDir, 0700)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create PDFs directory %q: %w", cfg.XLSsDir, err)
+	}
+	// End
 
 	// URL for HTTP sanitize API
 	var sanitizeURL string
@@ -168,6 +186,11 @@ func (rs *RenderingService) Run(ctx context.Context) error {
 		rs.renderAction = rs.renderViaHTTP
 		rs.renderCSVAction = rs.renderCSVViaHTTP
 		rs.sanitizeSVGAction = rs.sanitizeViaHTTP
+		// BMC code
+		rs.customPDFAction = rs.customPDFViaHTTP
+		rs.customCSVAction = rs.customCSVViaHTTP
+		rs.customXLSAction = rs.customXLSViaHTTP
+		// End
 
 		refreshTicker := time.NewTicker(remoteVersionRefreshInterval)
 
@@ -198,9 +221,9 @@ func (rs *RenderingService) Run(ctx context.Context) error {
 		return nil
 	}
 
+	// BMC code - inline change
 	rs.log.Debug("No image renderer found/installed. " +
-		"For image rendering support please install the grafana-image-renderer plugin. " +
-		"Read more at https://grafana.com/docs/grafana/latest/administration/image_rendering/")
+		"For image rendering support please install the grafana-image-renderer plugin.")
 
 	<-ctx.Done()
 	return nil
@@ -283,16 +306,17 @@ func (rs *RenderingService) render(ctx context.Context, renderType RenderType, o
 	}
 
 	if !rs.IsAvailable(ctx) {
+		// BMC code - inline change
 		rs.log.Warn("Could not render image, no image renderer found/installed. " +
-			"For image rendering support please install the grafana-image-renderer plugin. " +
-			"Read more at https://grafana.com/docs/grafana/latest/administration/image_rendering/")
+			"For image rendering support please install the grafana-image-renderer plugin.")
 		if opts.ErrorRenderUnavailable {
 			return nil, ErrRenderUnavailable
 		}
 		return rs.renderUnavailableImage(), nil
 	}
 
-	rs.log.Info("Rendering", "path", opts.Path)
+	// BMC code - inline change
+	rs.log.Info("Rendering", "path", opts.Path, "orgId", opts.OrgID)
 	if math.IsInf(opts.DeviceScaleFactor, 0) || math.IsNaN(opts.DeviceScaleFactor) || opts.DeviceScaleFactor == 0 {
 		opts.DeviceScaleFactor = 1
 	}
@@ -388,6 +412,16 @@ func (rs *RenderingService) getNewFilePath(rt RenderType) (string, error) {
 		ext = "png"
 		folder = rs.Cfg.ImagesDir
 	}
+	// BMC code
+	if rt == RenderPDF {
+		ext = "pdf"
+		folder = rs.Cfg.PDFsDir
+	}
+	if rt == RenderXLS {
+		ext = "xlsx"
+		folder = rs.Cfg.XLSsDir
+	}
+	// End
 
 	return filepath.Abs(filepath.Join(folder, fmt.Sprintf("%s.%s", rand, ext)))
 }

@@ -44,6 +44,7 @@ type Service interface {
 	DeleteExternalServiceRole(ctx context.Context, externalServiceID string) error
 	// SyncUserRoles adds provided roles to user
 	SyncUserRoles(ctx context.Context, orgID int64, cmd SyncUserRolesCommand) error
+	HasRequiredPermissions(ctx context.Context, orgID, userID int64, requiredRole string, requiredPermissions []string) (bool, error)
 }
 
 type RoleRegistry interface {

@@ -27,6 +27,9 @@ type QueryHistoryPreference struct {
 type Spec struct {
 	CookiePreferences *CookiePreferences `json:"cookiePreferences,omitempty"`
 
+	// BMC Change: Next Line
+	EnabledQueryTypes *EnabledQueryTypes `json:"enabledQueryTypes,omitempty"`
+
 	// UID for the home dashboard
 	HomeDashboardUID *string `json:"homeDashboardUID,omitempty"`
 
@@ -37,10 +40,19 @@ type Spec struct {
 	// Theme light, dark, empty is default
 	Theme *string `json:"theme,omitempty"`
 
+	// Format for dashboards, panels and reports timestamps
+	TimeFormat *string `json:"timeFormat,omitempty"`
+
 	// The timezone selection
 	// TODO: this should use the timezone defined in common
 	Timezone *string `json:"timezone,omitempty"`
 
 	// WeekStart day of the week (sunday, monday, etc)
 	WeekStart *string `json:"weekStart,omitempty"`
+}
+
+// EnabledQueryTypes defines model for EnabledQueryTypes.
+type EnabledQueryTypes struct {
+	ApplyForAdmin *bool    `json:"applyForAdmin,omitempty"`
+	EnabledTypes  []string `json:"enabledTypes,omitempty"`
 }

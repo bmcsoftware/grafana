@@ -2,6 +2,7 @@ import { NavModelItem, NavModel } from '@grafana/data';
 import { featureEnabled } from '@grafana/runtime';
 import { ProBadge } from 'app/core/components/Upgrade/ProBadge';
 import config from 'app/core/config';
+import { t } from 'app/core/internationalization';
 import { contextSrv } from 'app/core/services/context_srv';
 import { highlightTrial } from 'app/features/admin/utils';
 import { AccessControlAction, Team, TeamPermissionLevel } from 'app/types';
@@ -22,7 +23,7 @@ export function buildNavModel(team: Team): NavModelItem {
   const navModel: NavModelItem = {
     img: team.avatarUrl,
     id: 'team-' + team.id,
-    subTitle: 'Manage members and settings',
+    subTitle: t('bmcgrafana.users-and-access.teams.page-description', 'Manage members and settings'),
     url: '',
     text: team.name,
     children: [
@@ -32,7 +33,7 @@ export function buildNavModel(team: Team): NavModelItem {
         active: false,
         icon: 'sliders-v-alt',
         id: `team-settings-${team.id}`,
-        text: 'Settings',
+        text: t('bmcgrafana.users-and-access.headers.settings-text', 'Settings'),
         url: `org/teams/edit/${team.id}/settings`,
       },
     ],
@@ -49,7 +50,7 @@ export function buildNavModel(team: Team): NavModelItem {
       active: false,
       icon: 'users-alt',
       id: `team-members-${team.id}`,
-      text: 'Members',
+      text: t('bmcgrafana.users-and-access.headers.members-text', 'Members'),
       url: `org/teams/edit/${team.id}/members`,
     });
   }

@@ -4,6 +4,7 @@ import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautif
 
 import { GrafanaTheme2 } from '@grafana/data';
 import { Icon, IconButton, useStyles2 } from '@grafana/ui';
+import { t } from 'app/core/internationalization';
 
 import { LayerName } from './LayerName';
 import { LayerElement } from './types';
@@ -90,7 +91,9 @@ export const LayerDragDropList = <T extends LayerElement>({
 
                             <IconButton
                               name="trash-alt"
-                              tooltip="Remove"
+                              // BMC Change: To enable localization for below text
+                              tooltip={t('bmcgrafana.dashboards.edit-panel.remove-text', 'Remove')}
+                              // BMC Change ends
                               className={cx(style.actionIcon, style.dragIcon)}
                               onClick={() => onDelete(element)}
                             />

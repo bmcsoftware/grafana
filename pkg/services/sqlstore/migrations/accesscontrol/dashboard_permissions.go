@@ -356,7 +356,7 @@ func (m *managedFolderAlertActionsMigrator) Exec(sess *xorm.Session, mg *migrato
 	}
 
 	var permissions []ac.Permission
-	if err := sess.SQL("SELECT role_id, action, scope FROM permission WHERE role_id IN(?"+strings.Repeat(" ,?", len(ids)-1)+") AND scope LIKE 'folders:%'", ids...).Find(&permissions); err != nil {
+	if err := sess.SQL("SELECT role_id, action, scope FROM permission WHERE role_id IN(SELECT id FROM role WHERE name LIKE 'managed:%') AND scope LIKE 'folders:%'").Find(&permissions); err != nil {
 		return err
 	}
 
@@ -468,7 +468,7 @@ func (m *managedFolderAlertActionsRepeatMigrator) Exec(sess *xorm.Session, mg *m
 	}
 
 	var permissions []ac.Permission
-	if err := sess.SQL("SELECT role_id, action, scope FROM permission WHERE role_id IN(?"+strings.Repeat(" ,?", len(ids)-1)+") AND scope LIKE 'folders:%'", ids...).Find(&permissions); err != nil {
+	if err := sess.SQL("SELECT role_id, action, scope FROM permission WHERE role_id IN(SELECT id FROM role WHERE name LIKE 'managed:%') AND scope LIKE 'folders:%'").Find(&permissions); err != nil {
 		return err
 	}
 
@@ -582,7 +582,7 @@ func (m *managedFolderLibraryPanelActionsMigrator) Exec(sess *xorm.Session, mg *
 	}
 
 	var permissions []ac.Permission
-	if err := sess.SQL("SELECT role_id, action, scope FROM permission WHERE role_id IN(?"+strings.Repeat(" ,?", len(ids)-1)+") AND scope LIKE 'folders:%'", ids...).Find(&permissions); err != nil {
+	if err := sess.SQL("SELECT role_id, action, scope FROM permission WHERE role_id IN(SELECT id FROM role WHERE name LIKE 'managed:%') AND scope LIKE 'folders:%'").Find(&permissions); err != nil {
 		return err
 	}
 

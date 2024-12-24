@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { useDialog } from '@react-aria/dialog';
 import { FocusScope } from '@react-aria/focus';
 import { useOverlay } from '@react-aria/overlays';
-import React, { memo, createRef, useState, useEffect } from 'react';
+import React, { memo, createRef, useState, useEffect, useMemo } from 'react';
 
 import {
   rangeUtil,
@@ -23,7 +23,7 @@ import { ToolbarButton } from '../ToolbarButton';
 import { Tooltip } from '../Tooltip/Tooltip';
 
 import { TimePickerContent } from './TimeRangePicker/TimePickerContent';
-import { quickOptions } from './options';
+import { getQuickOptions } from './options';
 
 /** @public */
 export interface TimeRangePickerProps {
@@ -72,7 +72,10 @@ export function TimeRangePicker(props: TimeRangePickerProps) {
     isOnCanvas,
     onToolbarTimePickerClick,
   } = props;
-
+  // BMC Change: Next hook
+  const quickOptions = useMemo(() => {
+    return getQuickOptions();
+  }, []);
   const onChange = (timeRange: TimeRange) => {
     props.onChange(timeRange);
     setOpen(false);

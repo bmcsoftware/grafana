@@ -358,4 +358,10 @@ export const Pages = {
   ProfilePage: {
     url: '/profile',
   },
+  // BMC code :
+  Reports: {
+    url: '/reports',
+    reports: (title: string) => `Report search item ${title}`,
+  },
+  // End
 };

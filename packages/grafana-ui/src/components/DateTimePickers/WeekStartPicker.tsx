@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { SelectableValue } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
+import { t } from '../../utils/i18n';
 import { Select } from '../Select/Select';
 
 export interface Props {
@@ -15,16 +16,22 @@ export interface Props {
   inputId?: string;
 }
 
-const weekStarts: Array<SelectableValue<string>> = [
-  { value: '', label: 'Default' },
-  { value: 'saturday', label: 'Saturday' },
-  { value: 'sunday', label: 'Sunday' },
-  { value: 'monday', label: 'Monday' },
-];
+// BMC Change: Next function
+const getWeekStarts = (): Array<SelectableValue<string>> => {
+  return [
+    { value: '', label: t('common.locale.default', 'Default') },
+    { value: 'saturday', label: t('bmcgrafana.grafana-ui.weekdays.saturday', 'Saturday') },
+    { value: 'sunday', label: t('bmcgrafana.grafana-ui.weekdays.sunday', 'Sunday') },
+    { value: 'monday', label: t('bmcgrafana.grafana-ui.weekdays.monday', 'Monday') },
+  ];
+};
 
 export const WeekStartPicker = (props: Props) => {
   const { onChange, width, autoFocus = false, onBlur, value, disabled = false, inputId } = props;
-
+  // BMC Change: Next Hook
+  const weekStarts = useMemo(() => {
+    return getWeekStarts();
+  }, []);
   const onChangeWeekStart = useCallback(
     (selectable: SelectableValue<string>) => {
       if (selectable.value !== undefined) {

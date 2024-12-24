@@ -116,11 +116,16 @@ export class QueryVariableEditorUnConnected extends PureComponent<Props, State> 
   };
 
   onIncludeAllChange = (event: FormEvent<HTMLInputElement>) => {
-    this.props.onPropChange({ propName: 'includeAll', propValue: event.currentTarget.checked });
+    this.props.onPropChange({ propName: 'includeAll', propValue: event.currentTarget.checked, updateOptions: true });
   };
 
   onAllValueChange = (event: FormEvent<HTMLInputElement>) => {
     this.props.onPropChange({ propName: 'allValue', propValue: event.currentTarget.value });
+  };
+
+  // BMC Cod: below function
+  onIncludeOnlyAvailable = (event: FormEvent<HTMLInputElement>) => {
+    this.props.onPropChange({ propName: 'discardForAll', propValue: event.currentTarget.checked, updateOptions: true });
   };
 
   render() {
@@ -151,6 +156,9 @@ export class QueryVariableEditorUnConnected extends PureComponent<Props, State> 
         onMultiChange={this.onMultiChange}
         onIncludeAllChange={this.onIncludeAllChange}
         onAllValueChange={this.onAllValueChange}
+        // BMC Code: Below all Props
+        onIncludeOnlyAvailable={this.onIncludeOnlyAvailable}
+        discardForAll={variable.discardForAll}
       />
     );
   }
