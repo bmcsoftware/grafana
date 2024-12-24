@@ -30,7 +30,13 @@ const (
 	DS_ES_OPEN_DISTRO = "grafana-es-open-distro-datasource"
 	DS_ES_OPENSEARCH  = "grafana-opensearch-datasource"
 	DS_AZURE_MONITOR  = "grafana-azure-monitor-datasource"
-	DS_TESTDATA       = "grafana-testdata-datasource"
+
+	// BMC code
+	DS_BMC_HELIX = "bmchelix-ade-datasource"
+	DS_BMC_JSON  = "json-datasource"
+	DS_BMC_CSV   = "bmc-csv-datasource"
+	// End
+	DS_TESTDATA = "grafana-testdata-datasource"
 	// CustomHeaderName is the prefix that is used to store the name of a custom header.
 	CustomHeaderName = "httpHeaderName"
 	// CustomHeaderValue is the prefix that is used to store the value of a custom header.
@@ -224,6 +230,10 @@ type GetDataSourcesQuery struct {
 	OrgID           int64
 	DataSourceLimit int
 	User            *user.SignedInUser
+	//BMC Code
+	ITOMMSPSubTenant bool
+	Names            []string
+	Type             string
 }
 
 type GetAllDataSourcesQuery struct{}

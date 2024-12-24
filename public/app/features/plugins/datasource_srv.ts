@@ -19,6 +19,7 @@ import {
 import { ExpressionDatasourceRef, isExpressionReference } from '@grafana/runtime/src/utils/DataSourceWithBackend';
 import appEvents from 'app/core/app_events';
 import config from 'app/core/config';
+import { getTimeSrv } from 'app/features/dashboard/services/TimeSrv';
 import {
   dataSource as expressionDatasource,
   instanceSettings as expressionInstanceSettings,
@@ -184,8 +185,14 @@ export class DatasourceSrv implements DataSourceService {
         anyInstance.type = instanceSettings.type;
         anyInstance.meta = instanceSettings.meta;
         anyInstance.uid = instanceSettings.uid;
+
         (instance as any).getRef = DataSourceApi.prototype.getRef;
       }
+      // BMC Code: Inject timeSrv for bmchelix-ade-datasource
+      if (instance.type === 'bmchelix-ade-datasource') {
+        (instance as any).timeSrv = getTimeSrv();
+      }
+      // BMC Code: Ends
 
       // store in instance cache
       this.datasources[key] = instance;

@@ -35,6 +35,14 @@ export class SystemDateFormatsState {
     if (settings.useBrowserLocale) {
       this.useBrowserLocale();
     }
+    // BMC Change: Below else block
+    // We have `useBrowserLocale` enabled for all stacks by default
+    // And if this flag is not enabled,
+    // that means custom date format is set thru preferences.
+    // In that case fullDateMS should be same as fullDate
+    else {
+      this.fullDateMS = settings.fullDate;
+    }
   }
 
   useBrowserLocale() {

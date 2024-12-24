@@ -3,6 +3,7 @@ import React from 'react';
 import { selectors } from '@grafana/e2e-selectors';
 import { reportInteraction } from '@grafana/runtime';
 import { Button, ButtonVariant, ComponentSize, ModalsController } from '@grafana/ui';
+import { Trans } from 'app/core/internationalization';
 import { DashboardModel } from 'app/features/dashboard/state';
 
 import { SaveDashboardDrawer } from './SaveDashboardDrawer';
@@ -30,7 +31,8 @@ export const SaveDashboardButton = ({ dashboard, onSaveSuccess, size }: SaveDash
             }}
             aria-label={selectors.pages.Dashboard.Settings.General.saveDashBoard}
           >
-            Save dashboard
+            {/* BMC Change: Next line */}
+            <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.save-text'}>Save dashboard</Trans>
           </Button>
         );
       }}
@@ -60,7 +62,7 @@ export const SaveDashboardAsButton = ({ dashboard, onClick, onSaveSuccess, varia
             variant={variant}
             aria-label={selectors.pages.Dashboard.Settings.General.saveAsDashBoard}
           >
-            Save as
+            <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.save-as-text'}>Save as</Trans>
           </Button>
         );
       }}

@@ -293,6 +293,15 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 			MaxIdleConns:    hs.Cfg.SqlDatasourceMaxIdleConnsDefault,
 			ConnMaxLifetime: hs.Cfg.SqlDatasourceMaxConnLifetimeDefault,
 		},
+		// BMC code
+		EnvType:                  setting.EnvType,
+		BulkLimit:                setting.BulkLimit,
+		MapBoxAccessToken:        setting.MapBoxAccessToken,
+		BulkExportLimit:          setting.BulkExportLimit,
+		BhdVersion:               setting.BHD_Version,
+		EmailAttachmentSizeLimit: setting.EmailAttachmentSizeLimit,
+		CSVDelimiter:             setting.CSVDelimiter,
+		// End
 	}
 
 	if hs.Cfg.UnifiedAlerting.StateHistory.Enabled {
@@ -363,6 +372,15 @@ func (hs *HTTPServer) getFSDataSources(c *contextmodel.ReqContext, availablePlug
 	orgDataSources := make([]*datasources.DataSource, 0)
 	if c.SignedInUser.GetOrgID() != 0 {
 		query := datasources.GetDataSourcesQuery{OrgID: c.SignedInUser.GetOrgID(), DataSourceLimit: hs.Cfg.DataSourceLimit}
+
+		//BMC Code : Start => MSP Tenant Check
+		//len(strings.TrimSpace(c.SignedInUser.SubTenantId)) != 0) => checks if its ITOM MSP subtenant
+		//((len(c.SignedInUser.MspOrgs) > 0) && !c.SignedInUser.IsUnrestrictedUser) => check if its MSP Parent tenant. It could be ITSM parent tenant as well
+		// So after fetching teams check team type as well. All this check can be avoided if jwt can differentiate between ITOM and ITSM MSP
+		if c.SignedInUser.OrgRole != "Admin" && ((len(strings.TrimSpace(c.SignedInUser.SubTenantId)) != 0) || ((len(c.SignedInUser.MspOrgs) > 0) && !c.SignedInUser.IsUnrestrictedUser)) {
+			query = hs.buildMSPDSQuery(c)
+		}
+		//BMC Code : End
 		dataSources, err := hs.DataSourcesService.GetDataSources(c.Req.Context(), &query)
 		if err != nil {
 			return nil, err

@@ -1,6 +1,7 @@
 import { css, cx } from '@emotion/css';
 import React, { PureComponent, useRef, useState } from 'react';
 
+import { config } from '@grafana/runtime';
 import { Button, ConfirmButton, ConfirmModal, Input, LegacyInputStatus, Stack } from '@grafana/ui';
 import { contextSrv } from 'app/core/core';
 import { AccessControlAction, UserDTO } from 'app/types';
@@ -46,7 +47,8 @@ export function UserProfile({
 
   const handleUserDisable = () => onUserDisable(user.id);
 
-  const handleUserEnable = () => onUserEnable(user.id);
+  // BMC Change: Next line
+  //const handleUserEnable = () => onUserEnable(user.id);
 
   const onUserNameChange = (newValue: string) => {
     onUserUpdate({
@@ -119,7 +121,8 @@ export function UserProfile({
           </table>
         </div>
         <Stack gap={2}>
-          {canDelete && (
+          {/* BMC Change inline */}
+          {canDelete && config.buildInfo.env === 'development' && (
             <>
               <Button variant="destructive" onClick={showDeleteUserModal(true)} ref={deleteUserRef}>
                 Delete user
@@ -135,13 +138,24 @@ export function UserProfile({
             </>
           )}
           {user.isDisabled && canEnable && (
-            <Button variant="secondary" onClick={handleUserEnable}>
+            /* BMC code - inline change. Disable button for server admin */
+            <Button
+              variant="secondary"
+              // onClick={handleUserEnable}
+              disabled
+            >
               Enable user
             </Button>
           )}
           {!user.isDisabled && canDisable && (
             <>
-              <Button variant="secondary" onClick={showDisableUserModal(true)} ref={disableUserRef}>
+              {/* BMC code - inline change. Disable button for server admin */}
+              <Button
+                variant="secondary"
+                // onClick={showDisableUserModal(true)}
+                ref={disableUserRef}
+                disabled
+              >
                 Disable user
               </Button>
               <ConfirmModal
@@ -274,11 +288,13 @@ export class UserProfileRow extends PureComponent<UserProfileRowProps, UserProfi
           )}
         </td>
         <td>
+          {/* BMC code - inline change. Disable button for server admin */}
           <ConfirmButton
             confirmText="Save"
-            onClick={this.onEditClick}
+            // onClick={this.onEditClick}
             onConfirm={this.onSave}
             onCancel={this.onCancelClick}
+            disabled={true}
           >
             Edit
           </ConfirmButton>

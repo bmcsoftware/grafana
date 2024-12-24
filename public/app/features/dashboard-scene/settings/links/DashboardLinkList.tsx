@@ -5,6 +5,7 @@ import { GrafanaTheme2 } from '@grafana/data';
 import { DashboardLink } from '@grafana/schema';
 import { Button, DeleteButton, HorizontalGroup, Icon, IconButton, TagList, useStyles2 } from '@grafana/ui';
 import EmptyListCTA from 'app/core/components/EmptyListCTA/EmptyListCTA';
+import { t, Trans } from 'app/core/internationalization';
 
 interface DashboardLinkListProps {
   links: DashboardLink[];
@@ -26,18 +27,32 @@ export function DashboardLinkList({
   const styles = useStyles2(getStyles);
   const isEmptyList = links.length === 0;
 
+  /*BMC Change using t or Trans : To enable localization for below text*/
+
   if (isEmptyList) {
     return (
       <div>
         <EmptyListCTA
           onClick={onNew}
-          title="There are no dashboard links added yet"
+          title={t(
+            // BMC Change: Next line
+            'bmcgrafana.dashboards.settings.links.dashboard-link-list.title-text',
+            'There are no dashboard links added yet'
+          )}
           buttonIcon="link"
-          buttonTitle="Add dashboard link"
-          infoBoxTitle="What are dashboard links?"
+          buttonTitle={t(
+            // BMC Change: Next line
+            'bmcgrafana.dashboards.settings.links.dashboard-link-list.buttontitle-text',
+            'Add dashboard link'
+          )}
+          infoBoxTitle={t(
+            // BMC Change: Next line
+            'bmcgrafana.dashboards.settings.links.dashboard-link-list.infoboxtitle-text',
+            'What are dashboard links?'
+          )}
           infoBox={{
-            __html:
-              '<p>Dashboard Links allow you to place links to other dashboards and web sites directly below the dashboard header.</p>',
+            // BMC Change: Next line
+            __html: `<p>${t('bmcgrafana.dashboards.settings.links.dashboard-link-list.html-text', 'Dashboard Links allow you to place links to other dashboards and web sites directly below the dashboard header.')}</p>`,
           }}
         />
       </div>
@@ -49,8 +64,16 @@ export function DashboardLinkList({
       <table role="grid" className="filter-table filter-table--hover">
         <thead>
           <tr>
-            <th>Type</th>
-            <th>Info</th>
+            {/* BMC Change: Next line */}
+            <Trans i18nKey="bmcgrafana.dashboards.settings.links.dashboard-link-list.table.type">
+              <th>Type</th>{' '}
+            </Trans>
+
+            {/* BMC Change: Next line */}
+            <Trans i18nKey="bmcgrafana.dashboards.settings.links.dashboard-link-list.table.info">
+              {' '}
+              <th>Info</th>{' '}
+            </Trans>
             <th colSpan={3} />
           </tr>
         </thead>
@@ -69,30 +92,51 @@ export function DashboardLinkList({
               </td>
               <td style={{ width: '1%' }} role="gridcell">
                 {idx !== 0 && (
-                  <IconButton name="arrow-up" onClick={() => onOrderChange(idx, -1)} tooltip="Move link up" />
+                  <IconButton
+                    name="arrow-up"
+                    onClick={() => onOrderChange(idx, -1)}
+                    // BMC Change: Next line
+                    tooltip={t(
+                      'bmcgrafana.dashboards.settings.links.dashboard-linked-list.tooltip.arrow-up',
+                      'Move link up'
+                    )}
+                  />
                 )}
               </td>
               <td style={{ width: '1%' }} role="gridcell">
                 {links.length > 1 && idx !== links.length - 1 ? (
-                  <IconButton name="arrow-down" onClick={() => onOrderChange(idx, 1)} tooltip="Move link down" />
+                  <IconButton
+                    name="arrow-down"
+                    onClick={() => onOrderChange(idx, 1)}
+                    // BMC Change: Next line
+                    tooltip={t(
+                      'bmcgrafana.dashboards.settings.links.dashboard-linked-list.tooltip.arrow-down',
+                      'Move link down'
+                    )}
+                  />
                 ) : null}
               </td>
               <td style={{ width: '1%' }} role="gridcell">
-                <IconButton name="copy" onClick={() => onDuplicate(link)} tooltip="Copy link" />
+                <IconButton
+                  name="copy"
+                  onClick={() => onDuplicate(link)}
+                  // BMC Change: Next line
+                  tooltip={t(
+                    'bmcgrafana.dashboards.settings.links.dashboard-linked-list.tooltip.copy-link',
+                    'Copy link'
+                  )}
+                />
               </td>
               <td style={{ width: '1%' }} role="gridcell">
-                <DeleteButton
-                  aria-label={`Delete link with title "${link.title}"`}
-                  size="sm"
-                  onConfirm={() => onDelete(idx)}
-                />
+                <DeleteButton aria-label={link.title} size="sm" onConfirm={() => onDelete(idx)} />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       <Button className={styles.newLinkButton} icon="plus" onClick={onNew}>
-        New link
+        {/* BMC Change: Next line */}
+        <Trans i18nKey="bmcgrafana.dashboards.settings.links.dashboard-link-list.new-link">New link</Trans>
       </Button>
     </>
   );

@@ -1,5 +1,6 @@
 import { css, cx } from '@emotion/css';
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react';
+import { t } from 'i18next';
 import Prism, { Grammar, LanguageMap } from 'prismjs';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import usePrevious from 'react-use/lib/usePrevious';
@@ -76,7 +77,12 @@ export const DataLinkInput = memo(
     value,
     onChange,
     suggestions,
-    placeholder = 'http://your-grafana.com/d/000000010/annotations',
+    // BMC Change: To enable localization for below text
+    placeholder = t(
+      'bmcgrafana.dashboards.edit-panel.panel-options.link-editor.url-placeholder',
+      'http://your-grafana.com/d/000000010/annotations'
+    ),
+    // BMC Change ends
   }: DataLinkInputProps) => {
     const editorRef = useRef<Editor>(null);
     const styles = useStyles2(getStyles);

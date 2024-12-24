@@ -35,6 +35,15 @@ type SignedInUser struct {
 	// IDToken is a signed token representing the identity that can be forwarded to plugins and external services.
 	// Will only be set when featuremgmt.FlagIdForwarding is enabled.
 	IDToken string `json:"-" xorm:"-"`
+
+	// Bmc code - start
+	HasExternalOrg     bool
+	IsUnrestrictedUser bool
+	MspOrgs            []string
+	BHDRoles           []int64
+	SubTenantId        string
+	IsDedicatedInst    bool
+	// Bmc code end
 }
 
 func (u *SignedInUser) ShouldUpdateLastSeenAt() bool {
@@ -238,3 +247,26 @@ func (u *SignedInUser) GetAuthenticatedBy() string {
 func (u *SignedInUser) GetIDToken() string {
 	return u.IDToken
 }
+
+// BMC Change: Starts
+func (u *SignedInUser) GetHasExternalOrg() bool {
+	return u.HasExternalOrg
+}
+
+func (u *SignedInUser) GetIsUnrestrictedUser() bool {
+	return u.IsUnrestrictedUser
+}
+
+func (u *SignedInUser) GetMspOrgs() []string {
+	return u.MspOrgs
+}
+
+func (u *SignedInUser) GetBHDRoles() []int64 {
+	return u.BHDRoles
+}
+
+func (u *SignedInUser) GetIsDedicatedIst() bool {
+	return u.IsDedicatedInst
+}
+
+// BMC Change: Ends

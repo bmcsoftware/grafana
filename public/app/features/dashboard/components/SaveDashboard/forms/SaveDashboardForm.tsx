@@ -6,6 +6,7 @@ import { selectors } from '@grafana/e2e-selectors';
 import { config } from '@grafana/runtime';
 import { Dashboard } from '@grafana/schema';
 import { Button, Checkbox, Form, TextArea, useStyles2, Stack } from '@grafana/ui';
+import { Trans, t } from 'app/core/internationalization';
 import { DashboardModel } from 'app/features/dashboard/state';
 
 import { GenAIDashboardChangesButton } from '../../GenAI/GenAIDashboardChangesButton';
@@ -71,7 +72,10 @@ export const SaveDashboardForm = ({
                     saveTimerange: !options.saveTimerange,
                   })
                 }
-                label="Save current time range as dashboard default"
+                label={t(
+                  'bmcgrafana.dashboards.save-dashboard.curr-time-as-default',
+                  'Save current time range as dashboard default'
+                )}
                 aria-label={selectors.pages.SaveDashboardModal.saveTimerange}
               />
             )}
@@ -84,7 +88,10 @@ export const SaveDashboardForm = ({
                     saveVariables: !options.saveVariables,
                   })
                 }
-                label="Save current variable values as dashboard default"
+                label={t(
+                  'bmcgrafana.dashboards.save-dashboard.curr-var-as-default',
+                  'Save current variable values as dashboard default'
+                )}
                 aria-label={selectors.pages.SaveDashboardModal.saveVariables}
               />
             )}
@@ -112,7 +119,10 @@ export const SaveDashboardForm = ({
                   });
                   setMessage(e.currentTarget.value);
                 }}
-                placeholder="Add a note to describe your changes."
+                placeholder={t(
+                  'bmcgrafana.dashboards.save-dashboard.description-placeholder-text',
+                  'Add a note to describe your changes.'
+                )}
                 autoFocus
                 rows={5}
               />
@@ -120,7 +130,7 @@ export const SaveDashboardForm = ({
 
             <Stack alignItems="center">
               <Button variant="secondary" onClick={onCancel} fill="outline">
-                Cancel
+                <Trans i18nKey={'bmc.common.cancel'}>Cancel</Trans>
               </Button>
               <Button
                 type="submit"
@@ -128,9 +138,15 @@ export const SaveDashboardForm = ({
                 icon={saving ? 'spinner' : undefined}
                 aria-label={selectors.pages.SaveDashboardModal.save}
               >
-                {isLoading ? 'Saving...' : 'Save'}
+                {isLoading
+                  ? t('bmcgrafana.dashboards.save-dashboard.saving-text', 'Saving...')
+                  : t('common.save', 'Save')}
               </Button>
-              {!saveModel.hasChanges && <div>No changes to save</div>}
+              {!saveModel.hasChanges && (
+                <div>
+                  <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.no-changes'}>No changes to save</Trans>
+                </div>
+              )}
             </Stack>
           </Stack>
         );

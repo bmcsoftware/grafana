@@ -1,13 +1,60 @@
 import { css } from '@emotion/css';
+// BMC Change: Next Import
+import moment from 'moment';
 import React, { useCallback } from 'react';
-import Calendar from 'react-calendar';
+// BMC Change: Next line
+import { Calendar, CalendarProps } from 'react-calendar';
 
-import { GrafanaTheme2, dateTimeParse, DateTime, TimeZone, getZone } from '@grafana/data';
+import { GrafanaTheme2, dateTimeParse, DateTime, TimeZone, getZone, days } from '@grafana/data';
+// BMC Change: Next Import
+// eslint-disable-next-line no-restricted-imports
+import { config } from '@grafana/runtime';
 
 import { useStyles2 } from '../../../themes';
 import { Icon } from '../../Icon/Icon';
 
 import { TimePickerCalendarProps } from './TimePickerCalendar';
+
+// BMC Change: Starts
+/**
+ * This function determines start day of the week,
+ * based on the locale set in moment on application bootstrap
+ * @returns number
+ */
+function getStartDayOfWeek() {
+  return days[moment().startOf('w').day()];
+}
+
+/**
+ * React calendar doesn't support setting start day of the week.
+ * So attempting to set respective start day of the week thru calendarType
+ *
+ * This function determines the calendarType based on the start day of the week,
+ * as seen in switch statement below
+ * In case of browser it determines the start day based on the browser locale.
+ * Default case is setting start day as Monday.
+ * @returns CalendarType
+ */
+function getCalendarTypeFromWeekStart(weekStart: string) {
+  switch (weekStart.toLowerCase()) {
+    case 'monday':
+      return 'iso8601';
+    case 'sunday':
+      return 'hebrew';
+    case 'saturday':
+      return 'islamic';
+    case 'browser':
+      return getCalendarTypeFromWeekStart(getStartDayOfWeek());
+    default:
+      return 'iso8601';
+  }
+}
+
+function getCalendarType() {
+  const weekStart = config.bootData.user.weekStart ?? '';
+  return getCalendarTypeFromWeekStart(weekStart) as CalendarProps['calendarType'];
+}
+// BMC Change: Ends
 
 export function Body({ onChange, from, to, timeZone }: TimePickerCalendarProps) {
   const value = inputToValue(from, to, new Date(), timeZone);
@@ -16,6 +63,8 @@ export function Body({ onChange, from, to, timeZone }: TimePickerCalendarProps) 
 
   return (
     <Calendar
+      // BMC Change: Next line
+      calendarType={getCalendarType()}
       selectRange={true}
       next2Label={null}
       prev2Label={null}
@@ -25,7 +74,8 @@ export function Body({ onChange, from, to, timeZone }: TimePickerCalendarProps) 
       nextLabel={<Icon name="angle-right" />}
       prevLabel={<Icon name="angle-left" />}
       onChange={onCalendarChange}
-      locale="en"
+      // BMC Change: Next line
+      locale={config.bootData.user.language ?? 'en'}
     />
   );
 }

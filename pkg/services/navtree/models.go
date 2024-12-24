@@ -16,6 +16,8 @@ const (
 	WeightDashboard
 	WeightExplore
 	WeightAlerting
+	// BMC code - next line
+	WeightReport
 	WeightAlertsAndIncidents
 	WeightTestingAndSynthetics
 	WeightMonitoring
@@ -142,6 +144,8 @@ func (root *NavTreeRoot) ApplyAdminIA() {
 		generalNodeLinks = AppendIfNotNil(generalNodeLinks, root.FindById("global-orgs"))
 		generalNodeLinks = AppendIfNotNil(generalNodeLinks, root.FindById("feature-toggles"))
 		generalNodeLinks = AppendIfNotNil(generalNodeLinks, root.FindById("storage"))
+		// BMC Code: Next line, Adding RMS Config under general node
+		generalNodeLinks = AppendIfNotNil(generalNodeLinks, root.FindById("rms-config"))
 
 		generalNode := &NavLink{
 			Text:     "General",
@@ -174,6 +178,8 @@ func (root *NavTreeRoot) ApplyAdminIA() {
 		accessNodeLinks = AppendIfNotNil(accessNodeLinks, root.FindById("standalone-plugin-page-/a/grafana-auth-app"))
 		accessNodeLinks = AppendIfNotNil(accessNodeLinks, root.FindById("serviceaccounts"))
 		accessNodeLinks = AppendIfNotNil(accessNodeLinks, root.FindById("apikeys"))
+		// BMC Code: Next line, adding Roles under access nodes
+		accessNodeLinks = AppendIfNotNil(accessNodeLinks, root.FindById("roles"))
 
 		usersNode := &NavLink{
 			Text:     "Users and access",

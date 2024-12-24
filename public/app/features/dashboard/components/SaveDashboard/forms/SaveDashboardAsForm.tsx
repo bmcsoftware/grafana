@@ -3,6 +3,7 @@ import React, { ChangeEvent } from 'react';
 import { config } from '@grafana/runtime';
 import { Button, Input, Switch, Form, Field, InputControl, HorizontalGroup, Label, TextArea } from '@grafana/ui';
 import { FolderPicker } from 'app/core/components/Select/FolderPicker';
+import { Trans, t } from 'app/core/internationalization';
 import { DashboardModel } from 'app/features/dashboard/state';
 import { validationSrv } from 'app/features/manage-dashboards/services/ValidationSrv';
 
@@ -65,14 +66,21 @@ export const SaveDashboardAsForm = ({
 
   const validateDashboardName = (getFormValues: () => SaveDashboardAsFormDTO) => async (dashboardName: string) => {
     if (dashboardName && dashboardName === getFormValues().$folder.title?.trim()) {
-      return 'Dashboard name cannot be the same as folder name';
+      // BMC Change: Next line
+      return t(
+        'bmcgrafana.dashboards.save-dashboard.errors.dash-folder-same-name',
+        'Dashboard name cannot be the same as folder name'
+      );
     }
 
     try {
       await validationSrv.validateNewDashboardName(getFormValues().$folder.uid ?? 'general', dashboardName);
       return true;
     } catch (e) {
-      return e instanceof Error ? e.message : 'Dashboard name is invalid';
+      return e instanceof Error
+        ? e.message
+        : // BMC Change: Next line
+          t('bmcgrafana.dashboards.save-dashboard.errors.dash-name-invalid', 'Dashboard name is invalid');
     }
   };
 
@@ -111,7 +119,10 @@ export const SaveDashboardAsForm = ({
               <Field
                 label={
                   <HorizontalGroup justify="space-between">
-                    <Label htmlFor="title">Title</Label>
+                    <Label htmlFor="title">
+                      {/* BMC Change: Next line */}
+                      <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.title-text'}>Title</Trans>
+                    </Label>
                     {config.featureToggles.dashgpt && isNew && (
                       <GenAIDashTitleButton onGenerate={(title) => field.onChange(title)} dashboard={dashboard} />
                     )}
@@ -139,7 +150,10 @@ export const SaveDashboardAsForm = ({
               <Field
                 label={
                   <HorizontalGroup justify="space-between">
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="description">
+                      {/* BMC Change: Next line */}
+                      <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.description-text'}>Description</Trans>
+                    </Label>
                     {config.featureToggles.dashgpt && isNew && (
                       <GenAIDashDescriptionButton
                         onGenerate={(description) => field.onChange(description)}
@@ -162,7 +176,8 @@ export const SaveDashboardAsForm = ({
             control={control}
             name="description"
           />
-          <Field label="Folder">
+          {/* BMC Change: Next line */}
+          <Field label={t('dashboard-settings.general.folder-label', 'Folder')}>
             <InputControl
               render={({ field: { ref, ...field } }) => (
                 <FolderPicker
@@ -180,16 +195,19 @@ export const SaveDashboardAsForm = ({
             />
           </Field>
           {!isNew && (
-            <Field label="Copy tags">
+            // BMC Change: Next line
+            <Field label={t('bmcgrafana.dashboards.save-dashboard.copy-tags-text', 'Copy tags')}>
               <Switch {...register('copyTags')} />
             </Field>
           )}
           <HorizontalGroup>
             <Button type="button" variant="secondary" onClick={onCancel} fill="outline">
-              Cancel
+              <Trans i18nKey={'bmc.common.cancel'}>Cancel</Trans>
             </Button>
             <Button disabled={isLoading} type="submit" aria-label="Save dashboard button">
-              {isLoading ? 'Saving...' : 'Save'}
+              {isLoading
+                ? t('bmcgrafana.dashboards.save-dashboard.saving-text', 'Saving...')
+                : t('common.save', 'Save')}
             </Button>
           </HorizontalGroup>
         </>
