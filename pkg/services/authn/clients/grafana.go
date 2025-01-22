@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/subtle"
 	"errors"
-	"net/mail"
 
 	"github.com/grafana/grafana/pkg/services/authn"
 	"github.com/grafana/grafana/pkg/services/login"
@@ -47,10 +46,11 @@ func (c *Grafana) AuthenticateProxy(ctx context.Context, r *authn.Request, usern
 	switch c.cfg.AuthProxyHeaderProperty {
 	case "username":
 		identity.Login = username
-		addr, err := mail.ParseAddress(username)
-		if err == nil {
-			identity.Email = addr.Address
-		}
+		// BMC Code: Commented out below block
+		// addr, err := mail.ParseAddress(username)
+		// if err == nil {
+		// 	identity.Email = addr.Address
+		// }
 	case "email":
 		identity.Login = username
 		identity.Email = username

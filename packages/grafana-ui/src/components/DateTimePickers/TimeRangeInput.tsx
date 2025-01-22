@@ -1,5 +1,6 @@
 import { css, cx } from '@emotion/css';
-import React, { FormEvent, MouseEvent, useState } from 'react';
+import { t } from 'i18next';
+import React, { FormEvent, MouseEvent, useMemo, useState } from 'react';
 
 import { dateTime, getDefaultTimeRange, GrafanaTheme2, TimeRange, TimeZone } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
@@ -11,7 +12,7 @@ import { getInputStyles } from '../Input/Input';
 
 import { TimePickerContent } from './TimeRangePicker/TimePickerContent';
 import { TimeRangeLabel } from './TimeRangePicker/TimeRangeLabel';
-import { quickOptions } from './options';
+import { getQuickOptions } from './options';
 import { isValidTimeRange } from './utils';
 
 export interface TimeRangeInputProps {
@@ -39,7 +40,7 @@ export const TimeRangeInput = ({
   clearable,
   hideTimeZone = true,
   timeZone = 'browser',
-  placeholder = 'Select time range',
+  placeholder = t('bmcgrafana.grafana-ui.date-time-pickers.time-range-input-text', 'Select time range'),
   isReversed = true,
   hideQuickRanges = false,
   disabled = false,
@@ -47,7 +48,10 @@ export const TimeRangeInput = ({
 }: TimeRangeInputProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const styles = useStyles2(getStyles, disabled);
-
+  // BMC Change: Next hook
+  const quickOptions = useMemo(() => {
+    return getQuickOptions();
+  }, []);
   const onOpen = (event: FormEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();

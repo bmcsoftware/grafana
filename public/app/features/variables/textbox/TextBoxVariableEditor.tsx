@@ -1,6 +1,7 @@
 import React, { FormEvent, ReactElement, useCallback } from 'react';
 
 import { selectors } from '@grafana/e2e-selectors';
+import { t, Trans } from 'app/core/internationalization';
 
 import { VariableLegend } from '../../dashboard-scene/settings/variables/components/VariableLegend';
 import { VariableTextField } from '../../dashboard-scene/settings/variables/components/VariableTextField';
@@ -24,11 +25,16 @@ export function TextBoxVariableEditor({ onPropChange, variable: { query } }: Pro
 
   return (
     <>
-      <VariableLegend>Text options</VariableLegend>
+      <VariableLegend>
+        <Trans i18nKey="bmcgrafana.dashboards.settings.variables.editor.types.text-box.title">Text options</Trans>
+      </VariableLegend>
       <VariableTextField
         value={query}
-        name="Default value"
-        placeholder="default value, if any"
+        name={t('bmcgrafana.dashboards.settings.variables.editor.types.text-box.default-value', 'Default value')}
+        placeholder={t(
+          'bmcgrafana.dashboards.settings.variables.editor.types.text-box.placeholder',
+          'default value, if any'
+        )}
         onChange={onChange}
         onBlur={onBlur}
         width={30}

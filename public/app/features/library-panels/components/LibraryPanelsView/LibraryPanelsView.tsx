@@ -4,6 +4,7 @@ import { useDebounce } from 'react-use';
 
 import { GrafanaTheme2, LoadingState } from '@grafana/data';
 import { Pagination, Stack, useStyles2 } from '@grafana/ui';
+import { Trans } from 'app/core/internationalization';
 
 import { LibraryElementDTO } from '../../types';
 import { LibraryPanelCard } from '../LibraryPanelCard/LibraryPanelCard';
@@ -83,7 +84,10 @@ export const LibraryPanelsView = ({
           <LibraryPanelCard.Skeleton showSecondaryActions={showSecondaryActions} />
         </>
       ) : libraryPanels.length < 1 ? (
-        <p className={styles.noPanelsFound}>No library panels found.</p>
+        <p className={styles.noPanelsFound}>
+          {/* BMC Change: Next line */}
+          <Trans i18nKey="bmcgrafana.library-panels.no-panels-found">No library panels found.</Trans>
+        </p>
       ) : (
         libraryPanels?.map((item, i) => (
           <LibraryPanelCard
