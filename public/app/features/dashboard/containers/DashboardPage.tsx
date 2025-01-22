@@ -14,6 +14,7 @@ import { createErrorNotification } from 'app/core/copy/appNotification';
 import { getKioskMode } from 'app/core/navigation/kiosk';
 import { GrafanaRouteComponentProps } from 'app/core/navigation/types';
 import { getNavModel } from 'app/core/selectors/navModel';
+import { dashboardLoadTime } from 'app/core/services/dashboardLoadTime_srv';
 import { PanelModel } from 'app/features/dashboard/state';
 import { dashboardWatcher } from 'app/features/live/dashboard/dashboardWatcher';
 import { AngularDeprecationNotice } from 'app/features/plugins/angularDeprecation/AngularDeprecationNotice';
@@ -108,6 +109,10 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
 
   initDashboard() {
     const { dashboard, match, queryParams } = this.props;
+
+    // BMC code
+    // Start dashboard load time
+    dashboardLoadTime.reset();
 
     if (dashboard) {
       this.closeDashboard();

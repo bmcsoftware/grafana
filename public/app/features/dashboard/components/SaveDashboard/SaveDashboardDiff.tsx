@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import { useAsync } from 'react-use';
 
 import { Box, Spinner, Stack } from '@grafana/ui';
+import { Trans } from 'app/core/internationalization';
 import { Diffs } from 'app/features/dashboard-scene/settings/version-history/utils';
 
 import { DiffGroup } from '../../../dashboard-scene/settings/version-history/DiffGroup';
@@ -53,7 +54,11 @@ export const SaveDashboardDiff = ({ diff, oldValue, newValue }: SaveDashboardDif
   }
 
   if (value.count < 1) {
-    return <div>No changes in this dashboard</div>;
+    return (
+      <div>
+        <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.no-changes-dash'}>No changes in this dashboard</Trans>
+      </div>
+    );
   }
 
   return (
@@ -62,7 +67,9 @@ export const SaveDashboardDiff = ({ diff, oldValue, newValue }: SaveDashboardDif
       {value.showDiffs && value.diffs}
 
       <Box paddingTop={2}>
-        <h4>Full JSON diff</h4>
+        <h4>
+          <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.full-json-diff'}>Full JSON diff</Trans>
+        </h4>
         {value.jsonView}
       </Box>
     </Stack>

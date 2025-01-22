@@ -1,6 +1,7 @@
 import { each, has } from 'lodash';
 
 import { RawTimeRange, TimeRange, TimeZone, IntervalValues, RelativeTimeRange, TimeOption } from '../types/time';
+import { t } from '../utils/i18n';
 
 import * as dateMath from './datemath';
 import { timeZoneAbbrevation, dateTimeFormat, dateTimeFormatTimeAgo } from './formatter';
@@ -17,82 +18,268 @@ const spans: { [key: string]: { display: string; section?: number } } = {
   y: { display: 'year' },
 };
 
-const rangeOptions: TimeOption[] = [
-  { from: 'now/d', to: 'now/d', display: 'Today' },
-  { from: 'now/d', to: 'now', display: 'Today so far' },
-  { from: 'now/w', to: 'now/w', display: 'This week' },
-  { from: 'now/w', to: 'now', display: 'This week so far' },
-  { from: 'now/M', to: 'now/M', display: 'This month' },
-  { from: 'now/M', to: 'now', display: 'This month so far' },
-  { from: 'now/y', to: 'now/y', display: 'This year' },
-  { from: 'now/y', to: 'now', display: 'This year so far' },
+const getRangeOptions = (): TimeOption[] => [
+  { from: 'now/d', to: 'now/d', display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.today', 'Today') },
+  {
+    from: 'now/d',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.today-so-far', 'Today so far'),
+  },
+  { from: 'now/w', to: 'now/w', display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-week', 'This week') },
+  {
+    from: 'now/w',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-week-so-far', 'This week so far'),
+  },
+  { from: 'now/M', to: 'now/M', display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-month', 'This month') },
+  {
+    from: 'now/M',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-month-so-far', 'This month so far'),
+  },
+  { from: 'now/y', to: 'now/y', display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-year', 'This year') },
+  {
+    from: 'now/y',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-year-so-far', 'This year so far'),
+  },
 
-  { from: 'now-1d/d', to: 'now-1d/d', display: 'Yesterday' },
+  {
+    from: 'now-1d/d',
+    to: 'now-1d/d',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.yesterday', 'Yesterday'),
+  },
   {
     from: 'now-2d/d',
     to: 'now-2d/d',
-    display: 'Day before yesterday',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.day-before-yesterday', 'Day before yesterday'),
   },
   {
     from: 'now-7d/d',
     to: 'now-7d/d',
-    display: 'This day last week',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-day-last-week', 'This day last week'),
   },
-  { from: 'now-1w/w', to: 'now-1w/w', display: 'Previous week' },
-  { from: 'now-1M/M', to: 'now-1M/M', display: 'Previous month' },
-  { from: 'now-1Q/fQ', to: 'now-1Q/fQ', display: 'Previous fiscal quarter' },
-  { from: 'now-1y/y', to: 'now-1y/y', display: 'Previous year' },
-  { from: 'now-1y/fy', to: 'now-1y/fy', display: 'Previous fiscal year' },
+  {
+    from: 'now-1w/w',
+    to: 'now-1w/w',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.prev-week', 'Previous week'),
+  },
+  {
+    from: 'now-1M/M',
+    to: 'now-1M/M',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.prev-month', 'Previous month'),
+  },
+  {
+    from: 'now-1Q/fQ',
+    to: 'now-1Q/fQ',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.prev-fiscal-quarter', 'Previous fiscal quarter'),
+  },
+  {
+    from: 'now-1y/y',
+    to: 'now-1y/y',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.prev-year', 'Previous year'),
+  },
+  {
+    from: 'now-1y/fy',
+    to: 'now-1y/fy',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.prev-fiscal-year', 'Previous fiscal year'),
+  },
 
-  { from: 'now-5m', to: 'now', display: 'Last 5 minutes' },
-  { from: 'now-15m', to: 'now', display: 'Last 15 minutes' },
-  { from: 'now-30m', to: 'now', display: 'Last 30 minutes' },
-  { from: 'now-1h', to: 'now', display: 'Last 1 hour' },
-  { from: 'now-3h', to: 'now', display: 'Last 3 hours' },
-  { from: 'now-6h', to: 'now', display: 'Last 6 hours' },
-  { from: 'now-12h', to: 'now', display: 'Last 12 hours' },
-  { from: 'now-24h', to: 'now', display: 'Last 24 hours' },
-  { from: 'now-2d', to: 'now', display: 'Last 2 days' },
-  { from: 'now-7d', to: 'now', display: 'Last 7 days' },
-  { from: 'now-30d', to: 'now', display: 'Last 30 days' },
-  { from: 'now-90d', to: 'now', display: 'Last 90 days' },
-  { from: 'now-6M', to: 'now', display: 'Last 6 months' },
-  { from: 'now-1y', to: 'now', display: 'Last 1 year' },
-  { from: 'now-2y', to: 'now', display: 'Last 2 years' },
-  { from: 'now-5y', to: 'now', display: 'Last 5 years' },
-  { from: 'now/fQ', to: 'now', display: 'This fiscal quarter so far' },
-  { from: 'now/fQ', to: 'now/fQ', display: 'This fiscal quarter' },
-  { from: 'now/fy', to: 'now', display: 'This fiscal year so far' },
-  { from: 'now/fy', to: 'now/fy', display: 'This fiscal year' },
+  {
+    from: 'now-5m',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-5-min', 'Last 5 minutes'),
+  },
+  {
+    from: 'now-15m',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-15-min', 'Last 15 minutes'),
+  },
+  {
+    from: 'now-30m',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-30-min', 'Last 30 minutes'),
+  },
+  {
+    from: 'now-1h',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-1-hour', 'Last 1 hour'),
+  },
+  {
+    from: 'now-3h',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-3-hour', 'Last 3 hours'),
+  },
+  {
+    from: 'now-6h',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-6-hour', 'Last 6 hours'),
+  },
+  {
+    from: 'now-12h',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-12-hour', 'Last 12 hours'),
+  },
+  {
+    from: 'now-24h',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-24-hour', 'Last 24 hours'),
+  },
+  { from: 'now-2d', to: 'now', display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-2-day', 'Last 2 days') },
+  { from: 'now-7d', to: 'now', display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-7-day', 'Last 7 days') },
+  {
+    from: 'now-30d',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-30-day', 'Last 30 days'),
+  },
+  {
+    from: 'now-90d',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-90-day', 'Last 90 days'),
+  },
+  {
+    from: 'now-6M',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-6-month', 'Last 6 months'),
+  },
+  {
+    from: 'now-1y',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-1-year', 'Last 1 year'),
+  },
+  {
+    from: 'now-2y',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-2-year', 'Last 2 years'),
+  },
+  {
+    from: 'now-5y',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.last-5-year', 'Last 5 years'),
+  },
+  {
+    from: 'now/fQ',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-fiscal-quarter-so-far', 'This fiscal quarter so far'),
+  },
+  {
+    from: 'now/fQ',
+    to: 'now/fQ',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-fiscal-quarter', 'This fiscal quarter'),
+  },
+  {
+    from: 'now/fy',
+    to: 'now',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-fiscal-year-so-far', 'This fiscal year so far'),
+  },
+  {
+    from: 'now/fy',
+    to: 'now/fy',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.this-fiscal-year', 'This fiscal year'),
+  },
 ];
 
-const hiddenRangeOptions: TimeOption[] = [
-  { from: 'now', to: 'now+1m', display: 'Next minute' },
-  { from: 'now', to: 'now+5m', display: 'Next 5 minutes' },
-  { from: 'now', to: 'now+15m', display: 'Next 15 minutes' },
-  { from: 'now', to: 'now+30m', display: 'Next 30 minutes' },
-  { from: 'now', to: 'now+1h', display: 'Next hour' },
-  { from: 'now', to: 'now+3h', display: 'Next 3 hours' },
-  { from: 'now', to: 'now+6h', display: 'Next 6 hours' },
-  { from: 'now', to: 'now+12h', display: 'Next 12 hours' },
-  { from: 'now', to: 'now+24h', display: 'Next 24 hours' },
-  { from: 'now', to: 'now+2d', display: 'Next 2 days' },
-  { from: 'now', to: 'now+7d', display: 'Next 7 days' },
-  { from: 'now', to: 'now+30d', display: 'Next 30 days' },
-  { from: 'now', to: 'now+90d', display: 'Next 90 days' },
-  { from: 'now', to: 'now+6M', display: 'Next 6 months' },
-  { from: 'now', to: 'now+1y', display: 'Next year' },
-  { from: 'now', to: 'now+2y', display: 'Next 2 years' },
-  { from: 'now', to: 'now+5y', display: 'Next 5 years' },
+const getHiddenRangeOptions = (): TimeOption[] => [
+  {
+    from: 'now',
+    to: 'now+1m',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-min', 'Next minute'),
+  },
+  {
+    from: 'now',
+    to: 'now+5m',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-5-min', 'Next 5 minutes'),
+  },
+  {
+    from: 'now',
+    to: 'now+15m',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-15-min', 'Next 15 minutes'),
+  },
+  {
+    from: 'now',
+    to: 'now+30m',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-30-min', 'Next 30 minutes'),
+  },
+  {
+    from: 'now',
+    to: 'now+1h',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-hour', 'Next hour'),
+  },
+  {
+    from: 'now',
+    to: 'now+3h',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-3-hour', 'Next 3 hours'),
+  },
+  {
+    from: 'now',
+    to: 'now+6h',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-6-hour', 'Next 6 hours'),
+  },
+  {
+    from: 'now',
+    to: 'now+12h',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-12-hour', 'Next 12 hours'),
+  },
+  {
+    from: 'now',
+    to: 'now+24h',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-24-hour', 'Next 24 hours'),
+  },
+  {
+    from: 'now',
+    to: 'now+2d',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-2-day', 'Next 2 days'),
+  },
+  {
+    from: 'now',
+    to: 'now+7d',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-7-day', 'Next 7 days'),
+  },
+  {
+    from: 'now',
+    to: 'now+30d',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-30-day', 'Next 30 days'),
+  },
+  {
+    from: 'now',
+    to: 'now+90d',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-90-day', 'Next 90 days'),
+  },
+  {
+    from: 'now',
+    to: 'now+6M',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-6-month', 'Next 6 months'),
+  },
+  {
+    from: 'now',
+    to: 'now+1y',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-year', 'Next year'),
+  },
+  {
+    from: 'now',
+    to: 'now+2y',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-2-year', 'Next 2 years'),
+  },
+  {
+    from: 'now',
+    to: 'now+5y',
+    display: t('bmcgrafana.grafana-ui.date-time.quick-ranges.hidden.next-5-year', 'Next 5 years'),
+  },
 ];
 
 const rangeIndex: Record<string, TimeOption> = {};
-each(rangeOptions, (frame) => {
-  rangeIndex[frame.from + ' to ' + frame.to] = frame;
-});
-each(hiddenRangeOptions, (frame) => {
-  rangeIndex[frame.from + ' to ' + frame.to] = frame;
-});
+
+function initializeRangeIndex() {
+  if (Object.keys(rangeIndex).length > 0) {
+    return;
+  }
+  each(getRangeOptions(), (frame) => {
+    rangeIndex[frame.from + ' to ' + frame.to] = frame;
+  });
+  each(getHiddenRangeOptions(), (frame) => {
+    rangeIndex[frame.from + ' to ' + frame.to] = frame;
+  });
+}
 
 // handles expressions like
 // 5m
@@ -101,6 +288,8 @@ each(hiddenRangeOptions, (frame) => {
 // now/d
 // if no to <expr> then to now is assumed
 export function describeTextRange(expr: string): TimeOption {
+  // BMC Change: Next line to initialize range index
+  initializeRangeIndex();
   const isLast = expr.indexOf('+') !== 0;
   if (expr.indexOf('now') === -1) {
     expr = (isLast ? 'now-' : 'now') + expr;
@@ -151,6 +340,8 @@ export function describeTextRange(expr: string): TimeOption {
  * @alpha
  */
 export function describeTimeRange(range: RawTimeRange, timeZone?: TimeZone): string {
+  // BMC Change: Next line to initialize range index
+  initializeRangeIndex();
   const option = rangeIndex[range.from.toString() + ' to ' + range.to.toString()];
 
   if (option) {

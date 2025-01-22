@@ -2,18 +2,24 @@ package pluginproxy
 
 import (
 	"bytes"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/grafana/grafana/pkg/infra/metrics"
+	"github.com/grafana/grafana/pkg/models/roletype"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
+	"github.com/grafana/grafana/pkg/api/bmc/external"
 	"github.com/grafana/grafana/pkg/api/datasource"
 	"github.com/grafana/grafana/pkg/infra/httpclient"
 	glog "github.com/grafana/grafana/pkg/infra/log"
@@ -31,6 +37,8 @@ import (
 var (
 	logger = glog.New("data-proxy-log")
 	client = newHTTPClient()
+	//BMC code
+	imsServiceURL = os.Getenv("IMS_SERVICE_URL")
 )
 
 type DataSourceProxy struct {
@@ -47,6 +55,48 @@ type DataSourceProxy struct {
 	tracer             tracing.Tracer
 	features           featuremgmt.FeatureToggles
 }
+
+// BMC Code : Start
+type JsonWebToken struct {
+	JsonWebToken string `json:"json_web_token"`
+}
+
+type Filter struct {
+	Field     string   `json:"field"`
+	Values    []string `json:"values"`
+	FieldType string   `json:"fieldType"`
+}
+
+type Filters struct {
+	Filters []Filter `json:"filters"`
+}
+
+type Record struct {
+	OrgID       string `json:"org_id"`
+	Name        string `json:"name"`
+	Description string `json:"description,omitempty"`
+	LeafNode    bool   `json:"leaf_node"`
+	OrgNamePath string `json:"org_name_path"`
+	Source      string `json:"source"`
+	Type        string `json:"type"`
+	DefaultOrg  bool   `json:"default_org"`
+	Status      string `json:"status"`
+	SubTenantID string `json:"sub_tenant_id,omitempty"`
+}
+
+type Metadata struct {
+	Page           int `json:"page"`
+	RecordsPerPage int `json:"records_per_page"`
+	PageCount      int `json:"page_count"`
+	TotalCount     int `json:"total_count"`
+}
+
+type Response struct {
+	Records  []Record `json:"records"`
+	Metadata Metadata `json:"_metadata"`
+}
+
+//BMC Code : End
 
 type httpClient interface {
 	Do(req *http.Request) (*http.Response, error)
@@ -82,6 +132,10 @@ func newHTTPClient() httpClient {
 		Timeout:   30 * time.Second,
 		Transport: &http.Transport{Proxy: http.ProxyFromEnvironment},
 	}
+}
+
+func isPlatformQuery(proxy *DataSourceProxy) bool {
+	return strings.Contains(proxy.proxyPath, "api/arsys") || strings.Contains(proxy.proxyPath, "rx/application/chat/helixgpt")
 }
 
 func (proxy *DataSourceProxy) HandleRequest() {
@@ -126,6 +180,11 @@ func (proxy *DataSourceProxy) HandleRequest() {
 				Header:        http.Header{},
 				Request:       resp.Request,
 			}
+		} else {
+			// BMC code
+			//Add Data usage metric
+			metric := metrics.MDataSourceProxyResDataSize.WithLabelValues(strconv.FormatInt(proxy.ctx.OrgID, 10), strconv.FormatInt(proxy.ds.ID, 10))
+			metric.Add(float64(resp.ContentLength))
 		}
 		return nil
 	}
@@ -170,10 +229,56 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 	req.URL.Scheme = proxy.targetUrl.Scheme
 	req.URL.Host = proxy.targetUrl.Host
 	req.Host = proxy.targetUrl.Host
-
-	reqQueryVals := req.URL.Query()
-
 	ctxLogger := logger.FromContext(req.Context())
+	// BMC code
+	// change for multiple url configuration in source plugin
+	// Obtain JWT Token value in local variable - Fix for DRJ71_4295
+	HelixJwtToken := req.Header.Get("X-Jwt-Token")
+	_, err := proxy.searchTenantByName(proxy.ds.Name, proxy.ctx.OrgID)
+	if (isPlatformQuery(proxy)) && proxy.ds.JsonData != nil {
+		s, err := proxy.ds.JsonData.Map()
+		if s != nil && len(s) > 0 && err == nil {
+			pUrl := s["platformURL"].(string)
+			if pUrl != "" {
+				parsedUrl, _ := url.Parse(pUrl)
+				req.URL.Scheme = parsedUrl.Scheme
+				req.URL.Host = parsedUrl.Host
+				req.Host = parsedUrl.Host
+				proxy.targetUrl = parsedUrl
+			}
+		} else {
+			logger.Error("Datasource url for converged platfrom is not configured correctly.")
+			return
+		}
+	} else if proxy.isITOMApi(proxy.proxyPath) && proxy.ctx.SubTenantId != "" {
+		ctxLogger.Debug("ITOM MSP subtenant", "SubTenantId", proxy.ctx.SubTenantId)
+		//If msearch call and if itom msp?
+		token, err := external.ExchangeIMSToken(proxy.ctx.SubTenantId, HelixJwtToken)
+		if err != nil {
+			ctxLogger.Error("Error while exchanging token for ITOM MSP subtenant", "error", err)
+			return
+		}
+		HelixJwtToken = token
+		ctxLogger.Debug("Token exchange done for ITOM MSP subtenant", "SubTenantId", proxy.ctx.SubTenantId)
+
+	} else if proxy.isITOMApi(proxy.proxyPath) && proxy.ctx.MspOrgs != nil && proxy.ds.Name != "BMC Helix" && proxy.ds.Type == "bmchelix-ade-datasource" {
+		subTenantId, err := proxy.searchTenantByName(proxy.ds.Name, proxy.ctx.OrgID)
+		if err != nil {
+			ctxLogger.Error("Error while fetching subtenant info using datasource name", "proxy.ds.Name", proxy.ds.Name, "error", err)
+		}
+		if subTenantId != "" {
+			ctxLogger.Debug("Found subtenant id for datasource", "proxy.ds.Name", proxy.ds.Name, "subTenantId", subTenantId)
+			token, err := external.ExchangeIMSToken(subTenantId, HelixJwtToken)
+			if err != nil {
+				ctxLogger.Error("Error while exchanging token for ITOM MSP subtenant", "error", err)
+				return
+			}
+			HelixJwtToken = token
+			ctxLogger.Debug("Token exchange done for ITOM MSP subtenant", "SubTenantId", subTenantId)
+		}
+	}
+	// End
+	reqQueryVals := req.URL.Query()
 
 	switch proxy.ds.Type {
 	case datasources.DS_INFLUXDB_08:
@@ -222,10 +327,78 @@ func (proxy *DataSourceProxy) director(req *http.Request) {
 		req.Header.Set("Authorization", util.GetBasicAuthHeader(proxy.ds.BasicAuthUser,
 			password))
 	}
+	//BMC Code (ateli) - start
+	//Fix for DRJ71_4295 - Removing X-Jwt-Token from headers if request comes for third party domain
 
+	parts := strings.Split(proxy.targetUrl.Host, ".")
+	domain := parts[len(parts)-2] + "." + parts[len(parts)-1]
+	if domain != "bmc.com" || domain != "onbmc.com" {
+		req.Header.Set("X-Jwt-Token", "")
+	}
+
+	if proxy.proxyPath == "api/usagedata" && proxy.ds.Type == datasources.DS_BMC_JSON {
+		// vishaln - DRJ71-13468 - Auth check for individual params
+		authenticated := false
+
+		APIValuesAndRequiredPermissions := map[string]roletype.RoleType{
+			// Viewer role needed for these
+			"plugininfo": roletype.RoleViewer,
+
+			// Admin role needed for these
+			"usercount":                roletype.RoleAdmin,
+			"orgdashboardsstats":       roletype.RoleAdmin,
+			"individualdashboardstats": roletype.RoleAdmin,
+			"schedule":                 roletype.RoleAdmin,
+			"dashboardhitcount":        roletype.RoleAdmin,
+			"dashboardloadtime":        roletype.RoleAdmin,
+		}
+
+		predefinedQuery := req.URL.Query()["predefinedQuery"]
+
+		if len(predefinedQuery) > 0 {
+			reqdRole, ok := APIValuesAndRequiredPermissions[predefinedQuery[0]]
+			if ok && proxy.ctx.HasRole(reqdRole) {
+				authenticated = true
+			}
+		}
+
+		if !authenticated {
+			ctxLogger.Error(fmt.Sprintf("not authorized to call %v", predefinedQuery), req.URL.RawPath, "error")
+			return
+		}
+
+		// DRJ71-13174 - ymulthan, vishaln
+		username := proxy.cfg.AdminUser
+		password := proxy.cfg.AdminPassword
+
+		if username != "" && password != "" {
+
+			// Combine username and password in the format "username:password"
+			auth := username + ":" + password
+
+			// Encode the auth string to base64
+			encodedAuth := base64.StdEncoding.EncodeToString([]byte(auth))
+			req.URL.Scheme = "http"
+			req.URL.Host = "127.0.0.1" + ":" + proxy.cfg.HTTPPort
+			req.Header.Set("X-DS-Authorization", "")
+			req.Header.Set("Authorization", "Basic "+encodedAuth)
+			req.Header.Set("X-Jwt-Token", "")
+		}
+	}
+	//BMC Code (ateli) - end
 	dsAuth := req.Header.Get("X-DS-Authorization")
 	if len(dsAuth) > 0 {
 		req.Header.Del("X-DS-Authorization")
+		// BMC code
+		// Send the rsso auth proxy token to external API - starts
+		if HelixJwtToken != "" {
+			if (isPlatformQuery(proxy)) {
+				dsAuth = "IMS-JWT " + HelixJwtToken
+			} else {
+				dsAuth = "Bearer " + HelixJwtToken
+			}
+		}
+		// End
 		req.Header.Set("Authorization", dsAuth)
 	}
 
@@ -368,3 +541,74 @@ func (proxy *DataSourceProxy) checkWhiteList() bool {
 
 	return true
 }
+
+// BMC Code : Start
+func (proxy *DataSourceProxy) isITOMApi(proxyPath string) bool {
+	itomUrl := []string{}
+	itomUrl = append(itomUrl, "api/v1/catalogproxy")
+	itomUrl = append(itomUrl, "api/v1/datamartservice")
+	itomUrl = append(itomUrl, "audit-api/api")
+	itomUrl = append(itomUrl, "cloudsecurity/api")
+	itomUrl = append(itomUrl, "events-service/api")
+	itomUrl = append(itomUrl, "logs-service/api")
+	itomUrl = append(itomUrl, "metrics-query-service/api")
+	itomUrl = append(itomUrl, "managed-object-service/api")
+	itomUrl = append(itomUrl, "smart-graph-api/api")
+	for _, url := range itomUrl {
+		if strings.Contains(proxyPath, url) {
+			return true
+		}
+	}
+	return false
+}
+
+func (proxy *DataSourceProxy) searchTenantByName(dsName string, tenantId int64) (string, error) {
+	serviceAccountToken, err := external.GetServiceAccountToken(tenantId)
+	if err != nil {
+		return "", errors.New("Failed to get service account token")
+	}
+
+	if serviceAccountToken == "" {
+		return "", errors.New("JWT token is not set")
+	}
+	if dsName == "" {
+		return "", errors.New("Tenant Name is missing")
+	}
+	url := imsServiceURL + "/ims/api/v1/organizations/search"
+	method := "POST"
+
+	filters := Filters{Filters: []Filter{{Field: "name", Values: []string{dsName}, FieldType: "string"}}}
+	payload, err := json.Marshal(filters)
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(payload))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+serviceAccountToken)
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		logger.Info("org search api call failed", "dsName", dsName, "res.StatusCode", res.StatusCode)
+		return "", fmt.Errorf("unauthorized")
+	}
+
+	response := Response{}
+	err = json.NewDecoder(res.Body).Decode(&response)
+	if err != nil {
+		return "", err
+	}
+	for _, record := range response.Records {
+		if record.Name == dsName && record.SubTenantID != "" {
+			return record.SubTenantID, nil
+		}
+	}
+	return "", nil
+}
+
+//BMC Code : End

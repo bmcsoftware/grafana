@@ -21,7 +21,8 @@ func NewFakeService() *FakeService {
 	return &FakeService{}
 }
 
-func (s *FakeService) CreateTeam(name, email string, orgID int64) (team.Team, error) {
+// BMC code - inline change
+func (s *FakeService) CreateTeam(name, email string, orgID int64, Id int64) (team.Team, error) {
 	return s.ExpectedTeam, s.ExpectedError
 }
 

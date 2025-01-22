@@ -5,6 +5,7 @@ import Skeleton from 'react-loading-skeleton';
 import { DataSourceSettings, GrafanaTheme2 } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { Card, LinkButton, Stack, Tag, useStyles2 } from '@grafana/ui';
+import { Trans } from 'app/core/internationalization';
 
 import { useDataSourcesRoutes } from '../state';
 import { trackCreateDashboardClicked, trackExploreClicked } from '../tracking';
@@ -50,7 +51,8 @@ export function DataSourcesListCard({ dataSource, hasWriteRights, hasExploreRigh
             });
           }}
         >
-          Build a dashboard
+          {/* BMC Change: Next line */}
+          <Trans i18nKey={'bmcgrafana.datesource.configuration.build-dashboard'}>Build a dashboard</Trans>
         </LinkButton>
 
         {/* Explore */}
@@ -70,7 +72,8 @@ export function DataSourcesListCard({ dataSource, hasWriteRights, hasExploreRigh
               });
             }}
           >
-            Explore
+            {/* BMC Change: Next line */}
+            <Trans i18nKey={'nav.explore.title'}>Explore</Trans>
           </LinkButton>
         )}
       </Card.Tags>

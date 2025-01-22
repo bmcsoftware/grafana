@@ -1,6 +1,8 @@
 import { DataQuery } from '@grafana/data';
 import { Dashboard, DataSourceRef } from '@grafana/schema';
+import { Preference } from 'app/core/services/ims_srv';
 import { DashboardModel } from 'app/features/dashboard/state/DashboardModel';
+import { CustomConfiguration } from 'app/features/org/state/configuration';
 
 export interface DashboardDTO {
   redirectUri?: string;
@@ -128,4 +130,8 @@ export interface DashboardState {
   initPhase: DashboardInitPhase;
   initialDatasource?: DataSourceRef['uid'];
   initError: DashboardInitError | null;
+  // BMC code start
+  gainSightUserPreferences?: Preference[];
+  configurableLinks?: CustomConfiguration;
+  // BMC code end
 }

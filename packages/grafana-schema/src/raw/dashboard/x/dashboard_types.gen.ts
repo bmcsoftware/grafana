@@ -1184,5 +1184,6 @@ export const defaultDashboard: Partial<Dashboard> = {
   panels: [],
   schemaVersion: 36,
   tags: [],
-  timezone: 'browser',
+  // BMC Change below: To honor user / org selected timezone
+  timezone: '',
 };
