@@ -2,6 +2,7 @@ import { css } from '@emotion/css';
 import { useState } from 'react';
 
 import { GrafanaTheme2 } from '@grafana/data';
+import { config } from '@grafana/runtime';
 import { ConfirmButton, RadioButtonGroup, Icon, useStyles2 } from '@grafana/ui';
 import { contextSrv } from 'app/core/core';
 import { ExternalUserTooltip } from 'app/features/admin/UserOrgs';
@@ -65,7 +66,8 @@ export function UserPermissions({ isGrafanaAdmin, isExternalUser, lockMessage, o
               </td>
             )}
             <td>
-              {canChangePermissions && (
+              {/* BMC Change inline */}
+              {config.buildInfo.env === 'development' && canChangePermissions && (
                 <ConfirmButton
                   onClick={onChangeClick}
                   onConfirm={handleGrafanaAdminChange}

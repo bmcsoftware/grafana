@@ -16,6 +16,7 @@ import { updateNavIndex } from 'app/core/actions';
 import { getConfig } from 'app/core/config';
 import { appEvents } from 'app/core/core';
 import { useBusEvent } from 'app/core/hooks/useBusEvent';
+import { t } from 'app/core/internationalization';
 import { ID_PREFIX, setStarred } from 'app/core/reducers/navBarTree';
 import { removeNavIndex } from 'app/core/reducers/navModel';
 import { getBackendSrv } from 'app/core/services/backend_srv';
@@ -155,17 +156,20 @@ export function DashList(props: PanelProps<Options>) {
 
   const dashboardGroups: DashboardGroup[] = [
     {
-      header: 'Starred dashboards',
+      // BMC Change: Next line
+      header: t('bmcgrafana.plugins.dashboard-list.starred-dash-header', 'Starred dashboards'),
       dashboards: starredDashboards,
       show: showStarred,
     },
     {
-      header: 'Recently viewed dashboards',
+      // BMC Change: Next line
+      header: t('bmcgrafana.plugins.dashboard-list.recent-viewed-header', 'Recently viewed dashboards'),
       dashboards: recentDashboards,
       show: showRecentlyViewed,
     },
     {
-      header: 'Search',
+      // BMC Change: Next line
+      header: t('bmcgrafana.plugins.dashboard-list.search', 'Search'),
       dashboards: searchedDashboards,
       show: showSearch,
     },
@@ -192,7 +196,16 @@ export function DashList(props: PanelProps<Options>) {
                 {showFolderNames && dash.folderTitle && <div className={css.dashlistFolder}>{dash.folderTitle}</div>}
               </div>
               <IconButton
-                tooltip={dash.isStarred ? `Unmark "${dash.title}" as favorite` : `Mark "${dash.title}" as favorite`}
+                tooltip={
+                  // BMC Change: Next condition
+                  dash.isStarred
+                    ? t('bmcgrafana.plugins.dashboard-list.unmark-fav', 'Unmark "{{dashTitle}}" as favorite', {
+                        dashTitle: dash.title,
+                      })
+                    : t('bmcgrafana.plugins.dashboard-list.mark-fav', 'Mark "{{dashTitle}}" as favorite', {
+                        dashTitle: dash.title,
+                      })
+                }
                 name={dash.isStarred ? 'favorite' : 'star'}
                 iconType={dash.isStarred ? 'mono' : 'default'}
                 onClick={(e) => toggleDashboardStar(e, dash)}

@@ -223,9 +223,11 @@ func (hs *HTTPServer) UpdateUserActiveOrg(c *contextmodel.ReqContext) response.R
 
 func (hs *HTTPServer) handleUpdateUser(ctx context.Context, cmd user.UpdateUserCommand) response.Response {
 	// external user -> user data cannot be updated
+	// Bmc code - start , We want to allow user update for External users as well
 	if response := hs.errOnExternalUser(ctx, cmd.UserID); response != nil {
 		return response
 	}
+	// Bmc code end
 
 	if len(cmd.Login) == 0 {
 		cmd.Login = cmd.Email

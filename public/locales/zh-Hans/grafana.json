@@ -1,5 +1,140 @@
 {
-  "_comment": "",
+  "_comment": "此文件是英文字符串的真实来源。在代码库中编辑此文件以更改复数形式和 UI 的其他短语。",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "",
+      "import": {
+        "import-all-failed": "",
+        "no-import": ""
+      },
+      "import-all": "",
+      "import-failed": "",
+      "import-success": "",
+      "select-datasource": "",
+      "set-parameters": ""
+    },
+    "calc-fields": {
+      "a-z": "",
+      "aggregated": "",
+      "all": "",
+      "clone": "",
+      "confirm-delete": "",
+      "connection-error": "",
+      "custom": "",
+      "delete": "",
+      "details": "",
+      "edit": "",
+      "edit-field": "",
+      "eg": "",
+      "failed": "",
+      "failure": "",
+      "filter-by-type": "",
+      "form-name": "",
+      "is-aggregate": "",
+      "is-aggregate-description": "",
+      "module": "",
+      "module-name": "",
+      "name": "",
+      "name-placeholder": "",
+      "new-field": "",
+      "no-calc-fields": "",
+      "not-found": "",
+      "ootb": "",
+      "query-info": "",
+      "query-not-validated": "",
+      "save": "",
+      "search-by-name": "",
+      "select-form": "",
+      "select-module": "",
+      "sort-asc": "",
+      "sort-asc-descripton": "",
+      "sort-dsc": "",
+      "sort-dsc-descripton": "",
+      "sort-placeholder": "",
+      "sql-query": "",
+      "subtitle": "",
+      "title": "",
+      "unknown-failure": "",
+      "update": "",
+      "validate": "",
+      "validation-success": ""
+    },
+    "common": {
+      "cancel": "",
+      "download": ""
+    },
+    "contact-support": "",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "",
+        "reset-filters": "",
+        "reset-filters-failure": "",
+        "save-filters": "",
+        "save-filters-failure": "",
+        "save-filters-success": ""
+      }
+    },
+    "date-picker": {
+      "description": "",
+      "name": ""
+    },
+    "export": {
+      "generation-failed": "",
+      "grid": "",
+      "landscape": "",
+      "layout": "",
+      "orientation": "",
+      "portrait": "",
+      "reduce-selection": "",
+      "save-as": "",
+      "simple": "",
+      "success": "",
+      "type": "",
+      "view": ""
+    },
+    "manage-dashboards": {
+      "drop-click": "",
+      "import-failed": "",
+      "serialization-failed": "",
+      "upload-json": ""
+    },
+    "org-custom-config": {
+      "community": "",
+      "documentation": "",
+      "invalid-url": "",
+      "support": "",
+      "video": ""
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "",
+        "invalid-url": "",
+        "url": ""
+      },
+      "bmc-welcome": {
+        "communities": "",
+        "community-description": "",
+        "dashboards": "",
+        "documentation": "",
+        "documentation-description": "",
+        "video-description": "",
+        "videos": ""
+      }
+    },
+    "route-error": "",
+    "search": {
+      "comfirm-export": "",
+      "export": "",
+      "export-failed": "",
+      "export-success": ""
+    },
+    "share-modal": {
+      "loading": ""
+    },
+    "toggle-feature": {
+      "manage-features": ""
+    }
+  },
   "access-control": {
     "add-permission": {
       "role-label": "角色",
@@ -1347,11 +1482,11 @@
       "title": "前端"
     },
     "global-orgs": {
-      "subtitle": "在同一服务器上运行的 Grafana 的孤立实例",
+      "subtitle": "在同一服务器上运行的 BMC Helix Dashboards 的孤立实例",
       "title": "组织"
     },
     "global-users": {
-      "subtitle": "在 Grafana 中管理用户",
+      "subtitle": "在 BMC Helix Dashboards 中管理用户",
       "title": "用户"
     },
     "grafana-quaderno": {
@@ -2022,7 +2157,6 @@
       "rendered-image": "直接链接至渲染后的图像",
       "save-alert": "仪表板未保存",
       "save-dashboard": "要渲染面板图像，需要先保存仪表板。",
-      "shorten-url": "缩短网址",
       "time-range-description": "将当前相对时间范围转换为绝对时间范围",
       "time-range-label": "锁定时间范围"
     },
@@ -2255,7 +2389,6 @@
   "user-orgs": {
     "current-org-button": "当前",
     "name-column": "姓名",
-    "role-column": "角色",
     "select-org-button": "选择组织",
     "title": "组织"
   },

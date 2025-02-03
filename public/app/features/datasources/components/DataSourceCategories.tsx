@@ -1,10 +1,10 @@
 import { css } from '@emotion/css';
 
 import { DataSourcePluginMeta, GrafanaTheme2 } from '@grafana/data';
-import { LinkButton, useStyles2 } from '@grafana/ui';
+import { useStyles2 } from '@grafana/ui';
 import { DataSourcePluginCategory } from 'app/types';
 
-import { ROUTES } from '../../connections/constants';
+// import { ROUTES } from '../../connections/constants';
 
 import { DataSourceTypeCardList } from './DataSourceTypeCardList';
 
@@ -17,7 +17,8 @@ export type Props = {
 };
 
 export function DataSourceCategories({ categories, onClickDataSourceType }: Props) {
-  const moreDataSourcesLink = `${ROUTES.AddNewConnection}?cat=data-source`;
+  // BMC Code: Commented next line.
+  // const moreDataSourcesLink = `${ROUTES.AddNewConnection}?cat=data-source`;
   const styles = useStyles2(getStyles);
 
   return (
@@ -33,11 +34,13 @@ export function DataSourceCategories({ categories, onClickDataSourceType }: Prop
       ))}
 
       {/* Find more */}
-      <div className={styles.more}>
+      {/* BMC Change: Starts */}
+      {/* <div className={styles.more}>
         <LinkButton variant="secondary" href={moreDataSourcesLink} target="_self" rel="noopener">
           Find more data source plugins
         </LinkButton>
-      </div>
+      </div> */}
+      {/* BMC Change: Ends */}
     </>
   );
 }

@@ -1,0 +1,1461 @@
+{
+  "_comment": "Diese Datei nicht händisch bearbeiten oder diese Source-Phrasen in Crowdin aktualisieren. Die Code-Source ist die Quelle der Wahrheit für englische Strings",
+  "bmc": {
+    "bulk-operations": {
+      "datsource-not-found": "Keine Datenquellen des Typs {{pluginName}} gefunden",
+      "import": {
+        "import-all-failed": "Import aller Dashboards fehlgeschlagen",
+        "no-import": "Keine Dashboards importiert"
+      },
+      "import-all": "Alle importieren",
+      "import-failed": "Folgende Dashboards konnten nicht importiert werden",
+      "import-success": "Alle Dashboards erfolgreich importiert",
+      "select-datasource": "Eine {{pluginName}} Datenquelle auswählen",
+      "set-parameters": "erforderlichen Parameter für die ausgewählten Dashboards festlegen",
+      "specify-constant": "Eine String-Konstante angeben"
+    },
+    "calc-fields": {
+      "a-z": "A-Z",
+      "aggregated": "Aggregiert",
+      "all": "Alle",
+      "clone": "Klonen",
+      "confirm-delete": "Möchten Sie das/die ausgewählte/-n berechnete/-n Feld/-er löschen",
+      "connection-error": "Verbindung mit BMC Helix ITSM nicht konfiguriert",
+      "custom": "Benutzerdefiniert",
+      "delete": "Löschen",
+      "details": "Details zu berechneten Feldern",
+      "edit": "Bearbeiten",
+      "edit-field": "Berechnetes Feld bearbeiten",
+      "eg": "Z. B.",
+      "failed": "Abrufen berechneter Felder fehlgeschlagen",
+      "failure": "Fehler",
+      "filter-by-type": "Nach Typ filtern (Standardwert: Alle)",
+      "form-name": "Formularname",
+      "is-aggregate": "Ist aggregiert",
+      "is-aggregate-description": "Aktivieren Sie diese Option, wenn Ihre Abfrage Funktionen zur Aggregation enthält.",
+      "module": "Modul",
+      "module-name": "Modulname",
+      "name": "Name",
+      "name-placeholder": "Geben Sie den Namen des berechneten Felds ein",
+      "new-field": "Neues berechnetes Feld",
+      "no-calc-fields": "Sie haben noch keine berechneten Felder erstellt.",
+      "not-found": "Es wurden keine berechneten Felder gefunden, die mit Ihrer Abfrage übereinstimmen.",
+      "ootb": "Standardmäßig",
+      "query-info": "Die Abfrage muss einspaltig sein",
+      "query-not-validated": "Abfrage nicht validiert",
+      "save": "Speichern",
+      "search-by-name": "Berechnete Felder nach Namen suchen",
+      "select-form": "Formular auswählen",
+      "select-module": "Modul auswählen",
+      "sort-asc": "Alphabetisch (A–Z)",
+      "sort-asc-descripton": "Ergebnisse in alphabetisch aufsteigender Reihenfolge sortieren",
+      "sort-dsc": "Alphabetisch (Z–A)",
+      "sort-dsc-descripton": "Ergebnisse in alphabetisch absteigender Reihenfolge sortieren",
+      "sort-placeholder": "Sortierung (Standard {{label}})",
+      "sql-query": "SQL-Abfrage",
+      "subtitle": "Berechnete Felder für ITSM-Service erstellen und verwalten",
+      "title": "Berechnete Felder",
+      "unknown-failure": "Unbekannter Fehler",
+      "update": "Aktualisieren",
+      "validate": "Validieren",
+      "validation-success": "Abfrage erfolgreich validiert"
+    },
+    "common": {
+      "cancel": "Abbrechen",
+      "dashboards": "Dashboards",
+      "delete": "Löschen",
+      "download": "Herunterladen",
+      "edit": "Bearbeiten",
+      "loading": "Ladevorgang...",
+      "name": "Name",
+      "save": "Speichern",
+      "type": "Typ"
+    },
+    "contact-support": "<0>Erstellen Sie einen Snapshot der unten angegebenen Fehlerdetails und senden Sie ihn an den</0><1>BMC Support.</1>",
+    "dashboard": {
+      "toolbar": {
+        "manage-reports": "Geplante Berichte verwalten",
+        "reset-filters": "Filter zurücksetzen",
+        "reset-filters-failure": "Filterwerte konnten nicht zurückgesetzt werden.",
+        "save-filters": "Gespeicherte Filter",
+        "save-filters-failure": "Filterwerte konnten nicht gespeichert werden.",
+        "save-filters-success": "Filterwerte erfolgreich gespeichert."
+      }
+    },
+    "dashboard-import": {
+      "import-text": "Importieren",
+      "options": "Optionen",
+      "overwrite": "Überschreiben",
+      "panel-import": "Bereichsimport",
+      "panel-import-alert": "Der Importvorgang hat einen {{vqb}}-Bereich. Exportieren Sie erneut aus der gewünschten Umgebung; andernfalls sind zum Anzeigen der Auswahl manuelle Eingriffe nötig.",
+      "sub-title": "Dashboard aus Datei oder Dashboard-JSON importieren",
+      "title": "Dashboard importieren"
+    },
+    "date-picker": {
+      "description": "Eine Datumsbereichvariable definieren, mit der Benutzer einen beliebigen Datumsbereich auswählen können",
+      "name": "Datumsbereich"
+    },
+    "export": {
+      "csvdelimiter": "Trennzeichen",
+      "generation-failed": "Bericht konnte nicht erstellt werden, versuchen Sie es später erneut",
+      "grid": "Raster",
+      "landscape": "Querformat",
+      "layout": "Layout",
+      "orientation": "Ausrichtung",
+      "portrait": "Hochformat",
+      "reduce-selection": "Reduzieren Sie die ausgewählten Variablenwerte für {{variableQuery}} und versuchen Sie es später erneut",
+      "save-as": "{{target}} als {{type}} speichern",
+      "simple": "Einfach",
+      "success": "Bericht erfolgreich erstellt",
+      "tableScaling": "Tabellenskalierung",
+      "type": "Typ",
+      "view": "Anzeigen"
+    },
+    "features-list": {
+      "date-function-resolution-for-service-management": "Datumsfunktionslösung für Service Management",
+      "enable-ootb-views-for-visual-query-builder": "OOTB-Ansichten für Visual Query Builder aktivieren",
+      "export-complete-table-in-pdf": "Gesamte Tabelle in PDF exportieren",
+      "skip-ootb-dashboards-during-upgrade": "OOTB-Dashboards während Upgrade überspringen",
+      "skip-ootb-dashboards-during-upgrade-confirm-dialog": {
+        "confirm-button": "Aktivieren",
+        "desc": "Löschen Sie die nicht erforderlichen Ordner der standardmäßigen Dashboards, bevor Sie diese Funktion aktivieren",
+        "title": "Funktion umschalten"
+      },
+      "snapshot": "Snapshot"
+    },
+    "manage-dashboards": {
+      "drop-click": "Hier per Drag-and-Drop ablegen oder zum Durchsuchen klicken",
+      "import-failed": "Import fehlgeschlagen",
+      "serialization-failed": "JSON -> JS-Serialisierung fehlgeschlagen",
+      "upload-json": "Dashboard-JSON-Datei(en) hochladen"
+    },
+    "nav": {
+      "apps": {
+        "reports": {
+          "history": "Historie",
+          "settings": "Einstellungen"
+        }
+      },
+      "rms": {
+        "subtitle": "Eine Anwendung, um Ansichten für Visual Query Builder zu erstellen oder zu ändern",
+        "title": "Berichterstattung für Metadata Studio"
+      },
+      "roles": {
+        "subtitle": "Organisationsübergreifend Rollen verwalten",
+        "title": "Rollen"
+      }
+    },
+    "org-custom-config": {
+      "community": "Community",
+      "documentation": "Dokumentation",
+      "errors": {
+        "query-type-mandatory": "Mindestens ein Abfragetyp sollte aktiviert sein"
+      },
+      "support": "Support",
+      "video": "Video"
+    },
+    "panel": {
+      "bmc-video": {
+        "enter-video": "Eingebettetes Video eingeben",
+        "invalid-url": "Keine gültige URL",
+        "url": "Video-URL"
+      },
+      "bmc-welcome": {
+        "communities": "Communitys",
+        "community-description": "Community-Beschreibung",
+        "default-community-description": "Verbinden. Freigeben. Ermitteln. Diskutieren Sie mit Kollegen und Experten über BMC-Produkte und -Lösungen.",
+        "default-documentation-description": "Lesen Sie die Produktdokumentation, um alle Funktionen für die Berichterstellung und ihre Nutzung zu verstehen.",
+        "default-video-description": "Auf dem YouTube-Kanal von BMC finden Sie Videoanleitungen, Überblicke und Demos von BMC-Produkten und -Lösungen.",
+        "documentation": "Dokumentation",
+        "documentation-description": "Beschreibung der Dokumentation",
+        "video-description": "Videobeschreibung",
+        "videos": "Videos"
+      }
+    },
+    "rbac": {
+      "common": {
+        "all": "Alle",
+        "assigned": "Zugewiesen",
+        "menu": "Menü",
+        "name": "Name"
+      },
+      "permissions": {
+        "admin": {
+          "datasource-manage": "Datenquellen verwalten",
+          "datasource-manage-desc": "kann Datenquellen verwalten",
+          "reports-manage": "Berichtsplanung verwalten",
+          "reports-manage-desc": "kann alle Berichte verwalten",
+          "title": "Administration"
+        },
+        "calc-fields": {
+          "create-desc": "kann berechnete Felder erstellen oder aktualisieren",
+          "view-desc": "kann berechnete Felder ansehen"
+        },
+        "common": {
+          "create": "Erstellen",
+          "view": "Anzeigen"
+        },
+        "dashboards": {
+          "create-desc": "kann Dashboards erstellen",
+          "download-desc": "kann Dashboard als PDF/XLSX/CSV herunterladen",
+          "view-desc": "kann zulässige Dashboards ansehen"
+        },
+        "datasource": {
+          "explore": "Ermitteln",
+          "explore-desc": "kann Ermittlungsmodus für Datenquellen nutzen"
+        },
+        "datasources": {
+          "title": "Datenquellen"
+        },
+        "folders": {
+          "create-desc": "kann Ordner erstellen",
+          "title": "Ordner",
+          "view-desc": "kann zulässige Ordner ansehen"
+        },
+        "list": "Liste der Berechtigungen",
+        "reports": {
+          "access": "Zugriff",
+          "access-desc": "kann Berichte ansehen und erstellen",
+          "history-read": "Verlauf anzeigen",
+          "history-read-desc": "kann den Berichtsverlaufsabschnitt ansehen",
+          "settings-read": "Einstellungen anzeigen",
+          "settings-read-desc": "kann Berichtseinstellungen ansehen",
+          "title": "Berichte"
+        },
+        "servicemanagement-querytypes": {
+          "sql": "SQL",
+          "sql-desc": "kann SQL-Abfrage bearbeiten",
+          "title": "Abfragetypen für das Service Management"
+        },
+        "title": "Berechtigungen"
+      },
+      "roles": {
+        "actions": "Aktionen",
+        "create": "Erstellen",
+        "custom": "Benutzerdefiniert",
+        "delete": "Rolle löschen",
+        "delete-confirmation": "Möchten Sie diese Rolle wirklich löschen?",
+        "delete-role": "Rolle löschen",
+        "description": "Beschreibung",
+        "edit": "Rolle bearbeiten",
+        "manage-permissions": "Berechtigungen verwalten",
+        "manage-teams": "Teams verwalten",
+        "manage-users": "Benutzer verwalten",
+        "name-required": "Rollenname ist erforderlich",
+        "new": "Neue Rolle",
+        "search": "Suchrollen",
+        "system": "System",
+        "update": "Aktualisieren"
+      },
+      "teams": {
+        "none-assigned": "Keine Teams zugewiesen",
+        "none-found": "Keine Teams gefunden",
+        "search": "Nach Teamnamen suchen",
+        "team": "Team",
+        "title": "Teams"
+      },
+      "users": {
+        "email": "E-Mail",
+        "login": "Anmeldung",
+        "none-assigned": "Keine Benutzer zugewiesen",
+        "none-found": "Keine Benutzer gefunden",
+        "team": "Benutzer",
+        "title": "Benutzer"
+      }
+    },
+    "rms": {
+      "description": "Reporting Metadata Studio ist eine Windows-Anwendung auf der Grundlage von Pentaho Metadata Editor. Sie wird zum Erstellen angepasster Ansichten bzw. Ändern oder Kopieren einer Standardansicht verwendet. Weitere Informationen finden Sie in der Onlinedokumentation.",
+      "download": {
+        "error": "Herunterladen nicht möglich"
+      },
+      "headers": {
+        "env-details": "Umgebungsdetails"
+      }
+    },
+    "route-error": "Hoppla … Ein unerwarteter Fehler ist aufgetreten.",
+    "search": {
+      "comfirm-export": "Möchten Sie das/die {{dashCount}} ausgewählte/-n Dashboard/-s exportieren?",
+      "export": "Exportieren",
+      "export-status": "Exportstatus"
+    },
+    "share-modal": {
+      "loading": "Ladevorgang"
+    },
+    "shared-preferences": {
+      "datetime-format": {
+        "description": "Dadurch wird das Standardformat für die in Dashboards, Bereichen und Berichten verwendete Uhrzeit geändert.",
+        "label": "Datums-/Uhrzeitformat"
+      },
+      "fields": {
+        "apply-admins": "Auf Admins anwenden",
+        "enabled-query-types": "Abfragetypen für das Service Management verwalten",
+        "query-type-label": "Abfragetyp",
+        "query-type-placeholder": "Abfragetyp auswählen"
+      }
+    },
+    "toggle-feature": {
+      "manage-features": "Dashboard-Funktionen verwalten"
+    },
+    "variables": {
+      "query-editor": {
+        "continue": "Weiter",
+        "enable-editor": "Abfrageeditor aktivieren",
+        "modal-close-confirmation": "Die aktuelle Abfrage geht verloren. Möchten Sie fortfahren?",
+        "modal-close-title": "Nicht gespeicherte Änderungen",
+        "query-text": "Abfrage",
+        "service-management-note": "Hinweis: Gilt nur für den Abfragetyp für das Service Management."
+      }
+    }
+  },
+  "bmcgrafana": {
+    "connections": {
+      "redirect-notice": "<0>Datenquellen haben ein neues Zuhause! Sie können neue Datenquellen ermitteln oder bestehende auf der Verbindungsseite verwalten, die über das Hauptmenü abrufbar ist.</0><1>Gehe zu Verbindungen</1>"
+    },
+    "dashboard": {
+      "inspect-data": {
+        "loading": "Ladevorgang",
+        "no-data": "Keine Daten"
+      },
+      "panel-copied": "Bereich kopiert. Klicken Sie zum Einfügen auf das Symbol **Bereich hinzufügen**.",
+      "remove-panel": {
+        "confirm-button-text": "Entfernen",
+        "confirmation-text": "Soll dieser Bereich wirklich entfernt werden?",
+        "title": "Bereich entfernen"
+      }
+    },
+    "dashboard-import": {
+      "change-uid": "UID ändern",
+      "datasource-validation": "Eine Datenquelle ist erforderlich",
+      "existing-library-panels": "Vorhandene Bibliotheksbereiche",
+      "existing-library-panels-desc": "Liste der vorhandenen Bibliotheksbereiche. Diese Bereiche sind vom Import nicht betroffen.",
+      "folder": "Ordner",
+      "name-validation-text": "Name ist erforderlich",
+      "needs-value": "Wert wird benötigt",
+      "new-library-panels": "Neue Bibliotheksbereiche",
+      "new-library-panels-desc": "Liste der neuen Bibliotheksbereiche, die importiert werden.",
+      "select-view": "Ansicht auswählen",
+      "uid": "Eindeutiger Kennzeichner (UID)",
+      "uid-desc": "Der eindeutige Kennzeichner (UID) eines Dashboards kann zur eindeutigen Identifizierung eines Dashboards zwischen mehreren Grafana-Installationen verwendet werden. Die UID ermöglicht konsistente URLs für den Zugriff auf Dashboards, sodass eine Änderung des Titels eines Dashboards keine als Lesezeichen gespeicherte Links zu diesem Dashboard unterbricht.",
+      "view-selection-tooltip": "Die vorausgewählte Ansicht nicht ändern",
+      "view-selection-validation": "Eine Ansichtsauswahl ist erforderlich"
+    },
+    "dashboards": {
+      "edit-panel": {
+        "actual": "Tatsächlich",
+        "actual-description": "Die gleiche Größe wie auf dem Dashboard anwenden",
+        "apply": "Übernehmen",
+        "apply-tooltip": "Änderungen übernehmen und zum Dashboard zurückkehren",
+        "axis": {
+          "centered-zero-text": "Auf Null zentriert",
+          "color": {
+            "series-text": "Serie",
+            "text-text": "Text"
+          },
+          "color-text": "Farbe",
+          "grid-lines": {
+            "auto-text": "Automatisch",
+            "off-text": "Aus",
+            "on-text": "Ein"
+          },
+          "grid-lines-text": "Rasterlinien anzeigen",
+          "label-placeholder": "Optionaler Text",
+          "label-text": "Bezeichnung",
+          "placement-text": "Platzierung",
+          "scale": {
+            "linear-text": "Linear",
+            "logarithmic": {
+              "log-base-text": "Protokollbasis"
+            },
+            "Logarithmic-text": "Logarithmisch",
+            "symlog": {
+              "linear-threshold-placeholder": "1",
+              "linear-threshold-text": "Linearer Grenzwert"
+            },
+            "Symlog-text": "Symlog"
+          },
+          "scale-text": "Maßstab",
+          "show-border-text": "Grenze anzeigen",
+          "soft-max-description": "Siehe: Standardoptionen > Max.",
+          "soft-max-text": "Soft Max.",
+          "soft-min-placeholder": "Siehe: Standardoptionen > Min.",
+          "soft-min-text": "Soft Min.",
+          "text": "Achse",
+          "width-placeholder": "Automatisch",
+          "width-text": "Breite"
+        },
+        "based-on-current-data": "Basierend auf aktuellen Daten",
+        "click-to-change-visualization": "Zum Ändern der Visualisierung klicken",
+        "close-options-pane": "Optionen-Bereich schließen",
+        "close-text": "Schließen",
+        "create-library-panel-text": "Bibliotheksbereich erstellen",
+        "create-new-library-panel-button": "Neuen Bibliotheksbereich erstellen",
+        "data-links": {
+          "edit-link-title-tooltip": "Datenlink-Titel bearbeiten",
+          "link-title-not-provided": "Datenlink-Titel nicht angegeben",
+          "link-url-not-provided": "Datenlink-URL nicht angegeben",
+          "remove-link-title-tooltip": "Datenlink-Titel entfernen"
+        },
+        "discard": "Verwerfen",
+        "discard-tooltip": "Alle Changes rückgängig machen",
+        "fill": "Ausfüllen",
+        "fill-description": "Allen verfügbaren Platz nutzen",
+        "legend": {
+          "mode": "Modus",
+          "mode-list": "Liste",
+          "mode-table": "Tabelle",
+          "placement": "Platzierung",
+          "placement-bottom-text": "Unten",
+          "text": "Legende",
+          "values-description": "Wählen Sie in der Legende anzuzeigende Werte oder Berechnungen aus",
+          "values-text": "Werte",
+          "visibility": "Sichtbarkeit",
+          "width": "Breite"
+        },
+        "library-panels-description": "Wiederverwendbare Bereiche, die Sie zwischen mehreren Dashboards teilen können",
+        "library-panels-text": "Bibliotheksbereiche",
+        "overrides": {
+          "button": {
+            "none": "Keine",
+            "right": "Rechts"
+          }
+        },
+        "panel-links": {
+          "add-link": {
+            "edit-link": "Link bearbeiten"
+          },
+          "add-link-text": "Link hinzufügen"
+        },
+        "panel-options": {
+          "link-editor": {
+            "open-in-new-tab-label": "In neuem Tab öffnen",
+            "title-placeholder": "Details anzeigen",
+            "url-placeholder": "http://your-grafana.com/d/000000010/annotations",
+            "url-text": "URL"
+          },
+          "panel-links": "Bereichslinks",
+          "repeat-by-variabe": "Anhand von Variable wiederholen",
+          "repeat-by-variable-description": "Wiederholen Sie diesen Bereich für jeden Wert in der ausgewählten Variable. Das ist im Bearbeitungsmodus nicht sichtbar. Sie müssen zum Dashboard zurückkehren und dann die Variable aktualisieren oder das Dashboard neu laden.",
+          "repeat-options": {
+            "disable-repeating": "Wiederholen deaktivieren",
+            "no-template-variables-found": "Keine Vorlagenvariablen gefunden"
+          },
+          "repeat-options-title": "Wiederholungsoptionen",
+          "transparent-background-text": "Transparenter Hintergrund"
+        },
+        "query": {
+          "add-query-button": "Abfrage hinzufügen",
+          "data-source-help-title": "Datenquelle Hilfe",
+          "data-source-text": "Datenquelle",
+          "edit-query-name-title": "Abfragename bearbeiten",
+          "empty-query-edit-warning": "Ein leerer Abfragename ist nicht zulässig",
+          "expression-button": "Ausdruck ",
+          "query-already-exist-warning": "Abfragename bereits vorhanden",
+          "query-inspector-button": "Query Inspector",
+          "query-options": {
+            "hide-time-info": "Zeitinfo ausblenden",
+            "interval": "Intervall",
+            "interval-tooltip": "Das evaluierte Intervall, dass an die Datenquelle gesendet und in <1>$__interval</1> und <4>$__interval_ms</4> verwendet wird. Der Wert ist nicht genau gleich mit <7>Zeitbereich/max. Datenpunkte</7>, er approximiert eine Serie von magischen Zahlen.",
+            "max-data-points": "Max. Datenpunkte",
+            "max-data-points-tooltip": "Die maximalen Datenpunkte je Serie. Wird direkt von einigen Datenquellen und zur Berechnung des automatischen Intervalls verwendet. Bei Streaming von Daten wird dieser Wert für den kontinuierlichen Puffer verwendet.",
+            "min-interval": "Mindestintervall",
+            "min-interval-placeholder": "Keine Grenze",
+            "min-interval-tooltip": "Eine niedrigere Grenze für das Intervall. Empfohlen wird eine Festlegung auf die Schreibfrequenz, z. B. <2>1m</2>, wenn Ihre Daten jede Minute geschrieben werden. Der Standardwert kann für die meisten Datenquellen in den Datenquelleneinstellungen festgelegt werden.",
+            "query-options-title": "Abfrageoptionen",
+            "relative-time": "Relative Zeit",
+            "relative-time-placeholder": "1h",
+            "relative-time-tooltip": "Überschreibt den relativen Zeitbereich für einzelne Bereiche, wodurch sie sich davon unterscheiden, was in der Dashboard-Zeitauswahl oben rechts im Dashboard ausgewählt wird. Um z. B. die letzten 5 Minuten festzulegen, sollte die relative Zeit <1>jetzt-5m</1> und <3>5m</3> oder Variablen wie <5>$_relativeTime</5> sein.",
+            "time-range-max-points": "Zeitbereich/max. Datenpunkte",
+            "time-shift": "Zeitverschiebung",
+            "time-shift-placeholder": "1h",
+            "time-shift-tooltip": "Überschreibt den Zeitbereich für einzelne Bereiche, indem die Start- und Endzeit relativ zur Zeitauswahl verschoben wird. Um z. B. die letzte 1h zu konfigurieren, sollte die Zeitverschiebung <1>jetzt-1h</1> und <4>1h</4> oder Variablen wie <6>$_timeShift</6> sein.",
+            "width-of-panel": "Breite des Bereichs"
+          },
+          "question-circle-description": "Datenquellen-Hilfe öffnen"
+        },
+        "remove-text": "Entfernen",
+        "save-tooltip": "Änderungen übernehmen und Dashboard speichern",
+        "search-for-text": "Suchen nach…",
+        "search-options": "Suchoptionen",
+        "show-options-pane": "Optionsbereich anzeigen",
+        "suggestions-text": "Vorschläge",
+        "table-view-switch": "Tabellenansicht",
+        "tooltip": {
+          "hover-proximity": "Cursornähe",
+          "hover-proximity-description": "Wie nah der Cursor einem Punkt sein muss, um die QuickInfo anzuzeigen, in Pixeln",
+          "max-height": "Max. Höhe",
+          "max-width": "Max. Breite",
+          "mode-all": "Alle",
+          "mode-hidden": "Ausgeblendet",
+          "mode-single": "Einzeln",
+          "text": "QuickInfo",
+          "tooltip-mode": "QuickInfo-Modus",
+          "values-sort-order": "Sortierreihenfolge für Werte",
+          "values-sort-order-ascending": "Aufsteigend",
+          "values-sort-order-descending": "Absteigend"
+        },
+        "visualizations-text": "Visualisierungen",
+        "widgets-text": "Widgets"
+      },
+      "save-dashboard": {
+        "cant-save-provisioned": "Dieses Dashboard kann nicht in den BMC Helix Dashboards gespeichert werden, da es aus einer anderen Quelle bereitgestellt wurde. Kopieren Sie die JSON oder speichern Sie sie unten in einer Datei, dann können Sie Ihr Dashboard in der Provisioning-Quelle aktualisieren.",
+        "change-details": "Details",
+        "changes-text": "Änderungen",
+        "close-text": "Schließen",
+        "copy-json": "JSON in Zwischenablage kopieren",
+        "copy-tags-text": "Kennzeichnungen kopieren",
+        "curr-time-as-default": "Aktuellen Zeitrahmen als Standard für Dashboard speichern",
+        "curr-var-as-default": "Aktuelle Variablenwerte als Standard für Dashboard speichern",
+        "description-placeholder-text": "Ergänzen Sie eine Anmerkung zur Beschreibung Ihrer Änderungen.",
+        "description-text": "Beschreibung",
+        "error": "Fehler beim Speichern von Dashboard",
+        "errors": {
+          "dash-folder-same-name": "Name des Dashboards darf nicht mit dem Ordnernamen übereinstimmen",
+          "dash-name-invalid": "Name des Dashboards ist ungültig"
+        },
+        "full-json-diff": "Vollständige JSON-Diff",
+        "no-changes": "Keine zu speichernden Änderungen",
+        "no-changes-dash": "Keine Änderungen in diesem Dashboard",
+        "provisioned-text": "Bereitgestelltes Dashboard",
+        "save-as-text": "Speichern unter",
+        "save-copy": "Dashboard-Kopie speichern",
+        "save-json": "JSON in Datei speichern",
+        "save-text": "Dashboard speichern",
+        "saving-text": "Wird gespeichert...",
+        "title-text": "Titel"
+      },
+      "settings": {
+        "annotation": {
+          "anno-name-builtin": "(Integriert)",
+          "anno-name-disabled": "(Deaktiviert)",
+          "button-title": "Anmerkungsabfrage hinzufügen",
+          "data-source": "Datenquelle",
+          "edit-form": {
+            "all-panels-desc": "Die Anmerkungsdaten an alle Bereiche senden, die Anmerkungen unterstützen",
+            "all-panels-except-desc": "Keine Anmerkungsdaten an die folgenden Bereiche senden",
+            "all-panels-except-label": "Alle Bereiche außer",
+            "all-panels-label": "Alle Bereiche",
+            "apply-btn": "Übernehmen",
+            "choose-panels-placeholder": "Bereiche auswählen",
+            "color-desc": "Für Anmerkungsevents zu verwendende Markierungen",
+            "color-label": "Farbe",
+            "data-source-label": "Datenquelle",
+            "delete-btn": "Löschen",
+            "enabled-desc": "Wenn aktiviert, wird die Anmerkungsabfrage bei jeder Aktualisierung des Dashboards durchgeführt",
+            "enabled-label": "Aktiviert",
+            "hidden-desc": "Die Anmerkungsabfragen können oben im Dashboard ein- und ausgeschaltet werden. Wenn diese Option aktiviert ist, wird die Umschaltfunktion ausgeblendet.",
+            "hidden-label": "Ausgeblendet",
+            "name-label": "Name",
+            "new-annotation": "Neue Anmerkung",
+            "preview-btn": "Vorschau im Dashboard",
+            "query-editor": {
+              "filter-by": {
+                "dashboard-desc": "Abfrage für Events, die auf diesem Dashboard erstellt wurden, und Darstellung in den Bereichen, in denen sie erstellt wurden",
+                "dashboard-label": "Dashboard",
+                "tags-desc": "Damit werden alle Anmerkungsevents abgerufen, die dem Kennzeichnungsfilter entsprechen",
+                "tags-label": "Kennzeichnungen"
+              },
+              "filter-by-label": "Filtern nach",
+              "match-any-desc": "Wenn Sie diese Option aktivieren, werden Anmerkungen zurückgegeben, die mit einer der unten angegebenen Kennzeichnungen übereinstimmen",
+              "match-any-label": "Mit beliebigen übereinstimmen",
+              "max-limit-label": "Maximalgrenze",
+              "query-type": {
+                "annotation-desc": "Anmerkungen oder Alarme anzeigen, die von Grafana verwaltet werden",
+                "annotation-label": "Anmerkungen und Alarme",
+                "time-region-desc": "Eine sich wiederholende Zeitregion konfigurieren",
+                "time-region-label": "Zeitregionen"
+              },
+              "query-type-label": "Abfragetyp",
+              "tag-field-desc": "<0>Legen Sie eine Liste der übereinstimmenden Kennzeichnungen fest. Zum Festlegen einer Schlüssel- und Wertkennzeichung nutzen Sie die Syntax „key:value“.</0>"
+            },
+            "query-heading": "Abfrage",
+            "selected-panels-desc": "Anmerkungen an ausdrücklich gelistete Bereiche senden",
+            "selected-panels-label": "Ausgewählte Bereiche",
+            "showin-label": "Anzeigen in"
+          },
+          "info-body": "Anmerkungen ermöglichen die Integration von Eventdaten in Ihren Diagrammen. Sie sind als vertikale Linien\n          und Symbole auf allen Diagrammbereichen visualisiert. Wenn Sie mit dem Mauszeiger über ein Anmerkungssymbol fahren, können Sie Eventtext &amp;-Kennzeichnungen für\n          das Event abrufen. Sie können Anmerkungsevents direkt von Grafana hinzufügen, indem Sie STRG oder CMD gedrückt halten + auf das Diagramm klicken (oder\n          Ziehbereich). Diese werden in der Anmerkungsdatenbank von Grafana gespeichert.",
+          "info-body-doc-link": "In der <0>Anmerkungsdokumentation</0> finden Sie weitere Informationen.",
+          "info-title": "Was sind die Anmerkungsabfragen?",
+          "move-down": "Nach unten verschieben",
+          "move-up": "Nach oben verschieben",
+          "new-query-button": "Neue Abfrage",
+          "query-name": "Abfragename",
+          "title": "Es wurden noch keine benutzerdefinierten Anmerkungsabfragen hinzugefügt"
+        },
+        "confirm-delete-text": "Möchten Sie dieses Dashboard wirklich löschen?",
+        "delete": "Löschen",
+        "general": {
+          "default-label": "Voreinstellung",
+          "editable-label": "Bearbeitbar",
+          "read-only-label": "Schreibgeschützt",
+          "share-tooltip-label": "QuickInfo geteilt",
+          "shared-crosshair-label": "Fadenkreuz geteilt"
+        },
+        "links": {
+          "dashboard-link-form": {
+            "button": {
+              "go-back": "Zurück zur Liste"
+            },
+            "field": {
+              "label-icon": "Symbol",
+              "label-include-current-template-variable-values": "Aktuelle Variablenwerte der Vorlage einbeziehen",
+              "label-include-current-time-range": "Aktuellen Zeitrahmen einbeziehen",
+              "label-open-link-in-new-tab": "Link in neuem Tab öffnen",
+              "label-options": "Optionen",
+              "label-show-dropdown": "Als Dropdown anzeigen",
+              "label-title": "Titel",
+              "label-tooltip": "QuickInfo",
+              "label-type": "Typ",
+              "label-url": "URL",
+              "label-withtags": "Mit Kennzeichnungen",
+              "link-type-link": "Link",
+              "link-type-options": "Dashboards"
+            }
+          },
+          "dashboard-link-list": {
+            "buttontitle-text": "Dashboard-Link hinzufügen",
+            "html-text": "Mit Dashboard-Links können Sie Links zu anderen Dashboards und Websites direkt unter der Kopfzeile des Dashboards platzieren.",
+            "infoboxtitle-text": "Was sind Dashboard-Links?",
+            "new-link": "Neuer Link",
+            "table": {
+              "info": " <1>Info</1>  ",
+              "type": "<0>Typ</0> "
+            },
+            "title-text": "Es wurden noch keine Dashboard-Links hinzugefügt"
+          },
+          "dashboard-linked-list": {
+            "tooltip": {
+              "arrow-down": "Link nach unten verschieben",
+              "arrow-up": "Link nach oben verschieben",
+              "copy-link": "Link kopieren"
+            }
+          },
+          "description-edit-link": "Spezifischen Link Ihres Dashboards bearbeiten",
+          "tags-input": {
+            "placeholder-new-tag": "Neue Kennzeichnung (Schlüssel zum Hinzufügen eingeben)"
+          },
+          "title-edit-link": "Link bearbeiten",
+          "title-new-link": "Neuer Link"
+        },
+        "variables": {
+          "editor": {
+            "button": {
+              "apply": "Übernehmen",
+              "delete": "Löschen",
+              "run-query": "Abfrage starten"
+            },
+            "custom-all": "Alle Werte benutzerdefiniert",
+            "custom-all-placeholder": "leer = auto",
+            "exlude-variable": "Variable ausschließen",
+            "exlude-variable-desc": "Auswählen, um Variable aus der Abfrage auszuschließen",
+            "include-all": "Alle-einbeziehen-Option",
+            "include-all-desc": "Aktiviert eine Option, die alle Variablenwerte einbezieht",
+            "multi-value": "Mehrere Werte",
+            "multi-value-desc": "Ermöglicht die gleichzeitige Auswahl von mehreren Werten",
+            "select-variable-type": {
+              "ad-hoc-filters": {
+                "description": "Fügen Sie Schlüssel-/Wertfilter im laufenden Betrieb hinzu.",
+                "name": "Ad-hoc-Filter"
+              },
+              "constant": {
+                "description": "Definieren Sie eine verborgene konstante Variable, die für Messgrößen-Präfixe in Dashboards nützlich ist, die Sie gemeinsam verwenden möchten.",
+                "name": "Konstant"
+              },
+              "custom": {
+                "description": "Variablenwerte händisch definieren",
+                "name": "Benutzerdefiniert"
+              },
+              "data-source": {
+                "description": "Ermöglicht Ihnen das dynamische Umschalten der Datenquelle für mehrere Bereiche.",
+                "name": "Datenquelle"
+              },
+              "interval": {
+                "description": "Ein Zeitspannenintervall definieren",
+                "name": "Intervall"
+              },
+              "query": {
+                "description": "Variable Werte werden aus einer Datenquellenabfrage abgerufen",
+                "name": "Abfrage"
+              },
+              "textbox": {
+                "description": "Definieren Sie eine Textfeldvariable, in die Benutzer eine beliebige Zeichenfolge eingeben können",
+                "name": "Textfeld"
+              }
+            },
+            "select-variable-type-text": "Variablentyp auswählen",
+            "selection-options": "Auswahloptionen",
+            "types": {
+              "ad-hoc": {
+                "data-source-placeholder": "Datenquelle auswählen",
+                "data-source-text": "Datenquelle",
+                "title": "Ad-hoc-Optionen"
+              },
+              "constant": {
+                "placeholder": "Ihr Messgrößen-Präfix",
+                "title": "Konstantenoptionen",
+                "value": "Wert"
+              },
+              "custom": {
+                "desc": "Durch Kommas getrennte Werte",
+                "title": "Angepasste Optionen"
+              },
+              "data-source": {
+                "name-filter": "Instanznamensfilter",
+                "name-filter-desc1": "Regex-Filter für die in der Liste der Variablenwerte auszuwählenden Datenquelleninstanzen. Für alle leer belassen.",
+                "name-filter-desc2": "Beispiel: ",
+                "title": "Datenquellenoptionen",
+                "type": "Typ"
+              },
+              "date-range": {
+                "title": "Zeitrahmen auswählen"
+              },
+              "internal": {
+                "auto-option-description": "Dynamisch berechnet das Intervall, indem der Zeitrahmen durch die spezifizierte Anzahl geteilt wird",
+                "auto-option-name": "Auto-Option",
+                "min-interval-description": "Der berechnete Wert fällt nicht unter diesen Grenzwert",
+                "min-interval-name": "Mindestintervall",
+                "preview-values": "Vorschau der Werte",
+                "step-count-description": "Wie oft der aktuelle Zeitrahmen geteilt werden soll, um den Wert zu berechnen",
+                "step-count-name": "Schrittzählung",
+                "title": "Intervalloptionen",
+                "values": "Werte"
+              },
+              "query": {
+                "data-source": "Datenquelle",
+                "editor-placeholder": "Abfrage von Messgrößenname oder Kennzeichnung",
+                "query-options": "Abfrageoptionen",
+                "query-text": "Abfrage",
+                "refresh": "Aktualisieren",
+                "refresh-desc": "Wann die Werte dieser Variable aktualisiert werden sollen",
+                "refresh-options": {
+                  "on-dash-load": "Auf Dashboard laden",
+                  "on-time-change": "Pünktlichen Zeitrahmen ändern"
+                },
+                "regex-editor-text": "<0>Optional, wenn Sie einen Teil eines Seriennamens oder eines metrischen Knotensegments extrahieren möchten.<1></1>Benannte Erfassungsgruppen können verwendet werden, um den Anzeigetext und den Wert zu trennen (<3>siehe Beispiele</3>).</0>",
+                "sort": "Sortieren",
+                "sort-desc": "Wie die Werte dieser Variable zu sortieren sind",
+                "sort-options": {
+                  "alpha-asc": "Alphabetisch (A–Z)",
+                  "alpha-case-insensitive-asc": "Alphabetisch (keine Groß-/Kleinschreibung, A–Z)",
+                  "alpha-case-insensitive-dsc": "Alphabetisch (keine Groß-/Kleinschreibung, Z–A)",
+                  "alpha-dsc": "Alphabetisch (Z–A)",
+                  "disabled": "Deaktiviert",
+                  "natural-asc": "Natürlich (aufsteigend)",
+                  "natural-dsc": "Natürlich (absteigend)",
+                  "number-asc": "Numerisch (aufsteigend)",
+                  "number-dsc": "Numerisch (absteigend)"
+                }
+              },
+              "text-box": {
+                "default-value": "Standardwert",
+                "placeholder": "Standardwert, sofern vorhanden",
+                "title": "Textoptionen"
+              }
+            },
+            "variable-hide-select": {
+              "label": "Auf Dashboard anzeigen",
+              "label-value": "Bezeichnung und Wert",
+              "nothing": "Keine",
+              "value": "Wert"
+            },
+            "variable-text-field": {
+              "description": {
+                "name": "Beschreibung",
+                "placeholder": "Beschreibungstext"
+              },
+              "label": {
+                "description": "Optionaler Anzeigename",
+                "placeholder": "Bezeichnungsname",
+                "text": "Bezeichnung"
+              },
+              "name": {
+                "description": "Der Name der Vorlagenvariable. (Max. 50 Zeichen)",
+                "placeholder": "Variablenname",
+                "text": "Name"
+              }
+            }
+          },
+          "empty-list": "Es sind noch keine Variablen vorhanden",
+          "info-body": "Variablen ermöglichen interaktivere und dynamischere Dashboards. Anstatt z. B. Server- oder Sensornamen in Messgrößenabfragen fest zu kodieren, können Sie stattdessen Variablen nutzen. Variablen werden als Listenfelder oben auf dem Dashboard angezeigt. Diese Dropdown-Listen erleichtern es, die in Ihrem Dashboard angezeigten Daten zu ändern. In der <0>Dokumentation zu Variablen und Vorlagen</0> finden Sie weitere Informationen.",
+          "variables-tab": {
+            "button-title": "Variable hinzufügen",
+            "delete": {
+              "body": "Möchten Sie die Variable \"{{varName}}\" wirklich löschen?",
+              "delete-confirm-text": "Löschen",
+              "delete-variable-title": "Variable löschen"
+            },
+            "info-box-title": "Welche Aufgabe haben Variablen?",
+            "variable-editor-list": {
+              "button-text": "Neue Variable",
+              "definition": "Definition",
+              "variable": "Variable"
+            },
+            "variable-editor-list-row": {
+              "copy-title": "Variable duplizieren",
+              "exclamation-triangle-title": "Diese Variable wird nicht von einer Variable oder einem Dashboard referenziert.",
+              "show-usage": "Nutzungen anzeigen",
+              "show-usage-modal-title": "Nutzungen anzeigen für: ${{id}}",
+              "trash-alt-title": "Variable entfernen"
+            },
+            "variables-unknown-table": {
+              "decription": "Keine umbenannten oder fehlenden Variablen gefunden.",
+              "info-circle-description": "Klicken Sie, um eine Liste mit allen Variablenreferenzen anzuzeigen, die umbenannt wurden oder im Dashboard fehlen.",
+              "title": "Umbenannte oder fehlende Variablen"
+            }
+          }
+        },
+        "versions": {
+          "buttons": {
+            "compare-versions": "Versionen vergleichen",
+            "more-versions": "Weitere Versionen anzeigen"
+          },
+          "comparision": {
+            "comparing-text": "Vergleichen",
+            "latest-text": "Neueste",
+            "restore-base-version": "Version {{baseVersion}} wiederherstellen",
+            "version-from-details": "<bold>Version {{baseVersion}}</bold> aktualisiert von {{baseCreatedBy}} {{baseAgeString}} {{baseMsg}}",
+            "version-to-details": "<bold>Version {{newVersion}}</bold> aktualisiert von {{newCreatedBy}} {{newAgeString}} {{newMsg}}",
+            "view-json-diff": "JSON-Diff anzeigen"
+          },
+          "loading-msgs": {
+            "changes": "Änderungen werden abgerufen&hellip;",
+            "history-list": "Verlaufsliste wird abgerufen&hellip;",
+            "more-entries": "Mehr Einträge werden abgerufen&hellip;"
+          },
+          "tags": {
+            "latest": "Neueste",
+            "restore": "Wiederherstellen"
+          },
+          "version-list": {
+            "headers": {
+              "date-text": "Datum",
+              "notes-text": "Anmerkungen",
+              "updated-by-text": "Aktualisiert durch",
+              "version-text": "Version"
+            }
+          }
+        }
+      },
+      "unsaved-modal": {
+        "confirmation-text": "Möchten Sie Ihre Änderungen speichern?",
+        "discard": "Verwerfen",
+        "title": "Nicht gespeicherte Änderungen"
+      }
+    },
+    "datesource": {
+      "configuration": {
+        "build-dashboard": "Ein Dashboard erstellen",
+        "sort-asc": "Nach A–Z sortieren",
+        "sort-desc": "Nach Z–A sortieren"
+      }
+    },
+    "explore": {
+      "outline": "Skizzieren",
+      "to-dashboard": {
+        "choose-dashboard-text": "Wählen Sie aus, in welchem Dashboard der Bereich erstellt werden soll.",
+        "choose-dashboard-type-text": "Wählen Sie aus, wo der Bereich hinzugefügt werden soll.",
+        "dashboard-text": "Dashboard",
+        "errors": {
+          "add-panel-err": "Fehler beim Hinzufügen des Bereichs",
+          "field-mandatory": "Dieses Feld ist erforderlich.",
+          "general": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+          "navigation-to-dashboard": "Konnte nicht zum ausgewählten Dashboard navigieren. Bitte versuchen Sie es erneut.",
+          "panel-to-dashboard-err": "Bereich konnte nicht zu Dashboard hinzugefügt werden. Bitte versuchen Sie es erneut.",
+          "unable-fetch-dash-info": "Dashboard-Informationen konnten nicht abgerufen werden. Bitte versuchen Sie es erneut."
+        },
+        "existing-dashboard-text": "Vorhandenes Dashboard",
+        "new-dashboard-text": "Neues Dashboard",
+        "open-dash-text": "Dashboard öffnen",
+        "open-new-tab-text": "In neuem Tab öffnen",
+        "panel-to-dashboard": "Bereich zu Dashboard hinzufügen",
+        "target-dashboard-text": "Zieldashboard",
+        "to-existing-dashboard-title": "Bereich zu vorhandenem Dashboard hinzufügen",
+        "to-new-dashboard-title": "Bereich zu neuem Dashboard hinzufügen"
+      }
+    },
+    "grafana-data": {
+      "timezone": {
+        "browser-time": "Browserzeit",
+        "coord-universal-time": "Koordinierte Weltzeit"
+      }
+    },
+    "grafana-ui": {
+      "confirm-button": {
+        "cancel-label": "Abbrechen"
+      },
+      "confirmation-model": {
+        "confirmation-text": "\"{{confirmPromptText}}\" eingeben, um zu bestätigen"
+      },
+      "date-time": {
+        "month": {
+          "apr": "April",
+          "aug": "August",
+          "dec": "Dezember",
+          "feb": "Februar",
+          "jan": "Januar",
+          "jul": "Juli",
+          "jun": "Juni",
+          "mar": "März",
+          "may": "Mai",
+          "nov": "November",
+          "oct": "Oktober",
+          "sep": "September"
+        },
+        "quick-ranges": {
+          "day-before-yesterday": "Vorgestern",
+          "hidden": {
+            "next-12-hour": "Nächste 12 Stunden",
+            "next-15-min": "Nächste 15 Minuten",
+            "next-2-day": "Nächste 2 Tage",
+            "next-2-year": "Nächste 2 Jahre",
+            "next-24-hour": "Nächste 24 Stunden",
+            "next-3-hour": "Nächste 3 Stunden",
+            "next-30-day": "Nächste 30 Tage",
+            "next-30-min": "Nächste 30 Minuten",
+            "next-5-min": "Nächste 5 Minuten",
+            "next-5-year": "Nächste 5 Jahre",
+            "next-6-hour": "Nächste 6 Stunden",
+            "next-6-month": "Nächste 6 Monate",
+            "next-7-day": "Nächste 7 Tage",
+            "next-90-day": "Nächste 90 Tage",
+            "next-hour": "Nächste Stunde",
+            "next-min": "Nächste Minute",
+            "next-year": "Nächstes Jahr"
+          },
+          "last-1-hour": "In der letzten 1 Stunde",
+          "last-1-year": "Letztes 1 Jahr",
+          "last-12-hour": "In den letzten 12 Stunden",
+          "last-15-min": "Letzte 15 Minuten",
+          "last-2-day": "Letzte 2 Tage",
+          "last-2-year": "Letzte 2 Jahre",
+          "last-24-hour": "In den letzten 24 Stunden",
+          "last-3-hour": "In den letzten 3 Stunden",
+          "last-30-day": "Letzte 30 Tage",
+          "last-30-min": "Letzte 30 Minuten",
+          "last-5-min": "Letzte 5 Minuten",
+          "last-5-year": "Letzte 5 Jahre",
+          "last-6-hour": "In den letzten 6 Stunden",
+          "last-6-month": "Letzte 6 Monate",
+          "last-7-day": "Letzte 7 Tage",
+          "last-90-day": "Letzte 90 Tage",
+          "prev-fiscal-quarter": "Vorheriges Geschäftsquartal",
+          "prev-fiscal-year": "Vorheriges Geschäftsjahr",
+          "prev-month": "Vorheriger Monat",
+          "prev-week": "Vorherige Woche",
+          "prev-year": "Vorheriges Jahr",
+          "this-day-last-week": "Dieser Tag der letzten Woche",
+          "this-fiscal-quarter": "Dieses Geschäftsquartal",
+          "this-fiscal-quarter-so-far": "Bisheriges Geschäftsquartal",
+          "this-fiscal-year": "Dieses Geschäftsjahr",
+          "this-fiscal-year-so-far": "Bisheriges Geschäftsjahr",
+          "this-month": "Diesen Monat",
+          "this-month-so-far": "Bisheriger Monat",
+          "this-week": "Diese Woche",
+          "this-week-so-far": "Bisherige Woche",
+          "this-year": "Dieses Jahr",
+          "this-year-so-far": "Bisheriges Jahr",
+          "today": "Heute",
+          "today-so-far": "Heute bisher",
+          "yesterday": "Gestern"
+        }
+      },
+      "date-time-pickers": {
+        "time-range-input-text": "Zeitrahmen auswählen"
+      },
+      "delete-button": {
+        "confirm-text": "Löschen"
+      },
+      "tags-input": {
+        "button-add": "Hinzufügen"
+      },
+      "weekdays": {
+        "friday": "Freitag",
+        "monday": "Montag",
+        "saturday": "Samstag",
+        "sunday": "Sonntag",
+        "thursday": "Donnerstag",
+        "tuesday": "Dienstag",
+        "wednesday": "Mittwoch"
+      }
+    },
+    "library-panels": {
+      "delete": {
+        "cannot-delete-text": "Dieser Bibliotheksbereich kann nicht gelöscht werden, weil er mit {{message}} Dashboard(s) verbunden ist. Entfernen Sie den Bibliotheksbereich aus den unten aufgelisteten Dashboards und versuchen Sie es erneut.",
+        "confirmation-text": "Möchten Sie diesen Bereich wirklich löschen?",
+        "dashboard-name-title": "Dashboard-Name",
+        "delete-text": "Löschen",
+        "loading-text": "Bibliotheksbereich wird geladen...",
+        "title": "Bibliotheksbereich löschen"
+      },
+      "no-panels-found": "Keine Bibliotheksbereiche gefunden.",
+      "panel-types-not-found": "Keine Bereichstypen gefunden",
+      "unlink": {
+        "body": "Wenn Sie die Verknüpfung dieses Bereichs aufheben, können Sie ihn ohne Auswirkung auf andere Dashboards bearbeiten. Sobald Sie jedoch eine Änderung vorgenommen haben, können Sie nicht mehr zum ursprünglichen wiederverwendbaren Bereich zurückkehren.",
+        "confirmation-text": "Ja, Link aufheben",
+        "title": "Möchten Sie die Verknüpfung dieses Bereichs wirklich aufheben?"
+      }
+    },
+    "manage-dashboards": {
+      "specify-constant": "Eine String-Konstante angeben"
+    },
+    "page-loader": {
+      "text": "Ladevorgang"
+    },
+    "page-not-found": {
+      "load-error": "Hoppla, leider konnten wir diese Seite nicht laden.",
+      "load-error-subtext": "<0>Diese Seite wurde möglicherweise entfernt, ihr Name wurde geändert oder sie ist vorübergehend nicht verfügbar.</0><1>Rufen Sie die <1>Homepage</1> auf oder kontaktieren Sie den <3>BMC Support</3>.</1>"
+    },
+    "plugins": {
+      "dashboard-list": {
+        "mark-fav": "\"{{dashTitle}}\" als Favorit markieren",
+        "recent-viewed-header": "Vor kurzem aufgerufene Dashboards",
+        "search": "Suchen",
+        "starred-dash-header": "Mit Stern gekennzeichnete Dashboards",
+        "unmark-fav": "Markierung von \"{{dashTitle}}\" als Favorit aufheben"
+      }
+    },
+    "search-inputs": {
+      "clear-types": "Typen entfernen",
+      "filter-folder": "Nach Ordner filtern",
+      "filter-type": "Nach Typ filtern",
+      "folder-not-found": "Nach Ordner filtern",
+      "name-description": "Nach Name oder Beschreibung suchen",
+      "name-type": "Nach Name oder Typ suchen"
+    },
+    "shared-preferences": {
+      "confirm-modal": {
+        "body": "Dadurch werden die Einstellungen für die gesamte Organisation aktualisiert. Möchten Sie die Einstellungen wirklich aktualisieren?",
+        "title": "Aktualisierung der Einstellungen bestätigen"
+      },
+      "org": {
+        "org-name-text": "Name der Organisation",
+        "title": "Profil der Organisation"
+      },
+      "profile": {
+        "team": {
+          "loading-text": "Teams werden geladen..."
+        }
+      }
+    },
+    "snapshots": {
+      "delete-modal": {
+        "confirmation-text": "Möchten Sie „{{snapshotName}}“ wirklich löschen?",
+        "delete": "Löschen"
+      }
+    },
+    "team-permissions": {
+      "add-member": "Mitglied hinzufügen",
+      "no-members-message": "Es gibt keine Mitglieder in diesem Team oder Sie haben nicht die Berechtigung, die aktuellen Mitglieder aufzulisten."
+    },
+    "time-region-editor": {
+      "change-timezone-btn": "Zeitzone ändern",
+      "dashboard-timezone": "Dashboard-Zeitzone",
+      "everyday-placeholder": "Jeden Tag",
+      "from-label": "Von",
+      "timezone-label": "Zeitzone",
+      "to-label": "Bis"
+    },
+    "top-search-bar": {
+      "go-to-home": "Zurück zur Startseite"
+    },
+    "users-and-access": {
+      "headers": {
+        "edit-team-text": "Team bearbeiten",
+        "email-text": "E-Mail",
+        "last-active-text": "Letzte aktive",
+        "login-text": "Anmeldung",
+        "members-text": "Mitglieder",
+        "name-text": "Name",
+        "settings-text": "Einstellungen"
+      },
+      "search-teams-placeholder-text": "Nach Teams suchen",
+      "search-user-placeholder-text": "Benutzer nach Login, E-Mail-Adresse oder Name suchen",
+      "team": {
+        "details": {
+          "email-description-text": "Diese Angabe ist optional und dient in erster Linie dazu, den Avatar des Teamprofils festzulegen (über Gravatar-Service).",
+          "title": "Teamdetails"
+        }
+      },
+      "teams": {
+        "page-description": "Mitglieder und Einstellungen verwalten",
+        "title": "Teams"
+      }
+    }
+  },
+  "plugins": {
+    "reports": {
+      "history": {
+        "back-button": "Zurück",
+        "created-by": "Erstellt von",
+        "dashboard": "Dashboard",
+        "delete": "Löschen",
+        "delete-report": "Bericht löschen",
+        "delete-report-error": "Sie haben keine Berechtigung zum Löschen dieses Berichts",
+        "disable": "Deaktivieren",
+        "download": "Herunterladen",
+        "edit": "Bearbeiten",
+        "edit-report": "Bericht bearbeiten",
+        "edit-report-error": "Sie haben keine Berechtigung zum Bearbeiten dieses Berichts",
+        "enable": "Aktivieren",
+        "extra-info": {
+          "created-at": "Erstellt um",
+          "last-run": "Letzte Ausführung um",
+          "next-run": "Nächste Ausführung um",
+          "updated-at": "Aktualisiert um"
+        },
+        "failure-reason": "Grund für letzten Ausfall",
+        "fetch-history-error": "Abruf des Berichtsverlaufs fehlgeschlagen",
+        "filter": "Filtern",
+        "filter-type": "Bericht nach Typ filtern",
+        "go-to-dashboard": "Gehe zu Dashboard",
+        "go-to-folder": "Gehe zu Ordner",
+        "last-run": "Letzte Ausführung",
+        "learn-more": "Weitere Informationen",
+        "no-recipients-found": "Keine Empfänger gefunden",
+        "no-records": "Noch keine Records für ausgeführte Berichte registriert",
+        "no-report-more-info": "ProTip: Sie sehen weitere Informationen zu Berichtsplänen. ",
+        "no-report-splash": "Einen Bericht planen oder ausführen, um Verlaufsdaten zu sehen.",
+        "re-run-now": "Jetzt erneut ausführen",
+        "recipeints-title": " - Empfänger",
+        "report-id": "Berichts-ID",
+        "report-text": "Bericht",
+        "run-now": "Bericht jetzt ausführen",
+        "run-now-error": "Sie haben keine Berechtigung zum Ausführen dieses Berichts",
+        "search": "Suchen",
+        "search-placeholder": "Suche nach Berichtsnamen",
+        "show-last-10": "Letzte 10 Pläne anzeigen",
+        "sort": {
+          "asc": "Alphabetisch (A–Z)",
+          "default": "Standard A-Z",
+          "desc": "Alphabetisch (Z–A)",
+          "title": "Sortieren"
+        },
+        "state": {
+          "failure": "Fehler",
+          "filter-by": "Bericht nach Zustand filtern",
+          "pending": "Ausstehend",
+          "success": "Erfolg",
+          "title": "Zustand"
+        },
+        "toggle-permission-error": "Sie haben keine Berechtigung zum {{action}} dieses Berichts",
+        "total-failures": "Fehler gesamt",
+        "total-runs": "Ausführungen gesamt",
+        "view-recipients": "Empfänger anzeigen",
+        "view-recipients-error": "Sie haben keine Berechtigungen zur Anzeige von Empfängern"
+      },
+      "manage-reports": {
+        "basic-settings": {
+          "colon": "Doppelpunkt",
+          "comma": "Komma",
+          "dashboard-required": "Dashboard ist erforderlich.",
+          "dashboard-text": "Dashboard",
+          "delimiter": "Trennzeichen",
+          "description": "Beschreibung",
+          "ftp-directory": "FTP-Serververzeichnis",
+          "ftp-directory-required": "Serververzeichnis ist erforderlich.",
+          "ftp-server-required": "FTP-Serverauswahl ist erforderlich.",
+          "ftp-servers": "FTP-Server",
+          "no-ftp-connections": "Keine FTP-Verbindungen gefunden",
+          "pipe": "Umleiten",
+          "report-desc-length": "Beschreibung ist zu lang.",
+          "report-name": "Name",
+          "report-name-length": "Berichtsname ist zu lang.",
+          "report-name-required": "Berichtsname ist erforderlich.",
+          "report-type": "Berichtstyp",
+          "schedule-type": "Planungstyp",
+          "schedule-type-desc": "Auswählen, ob der Bericht gesendet/gespeichert wird unter",
+          "semicolon": "Semikolon",
+          "title": "Grundeinstellungen",
+          "view-dashboard": "(Dashboard anzeigen)"
+        },
+        "cancel": "Abbrechen",
+        "dashboards-text": "Dashboards",
+        "date-time": {
+          "month": {
+            "apr": "April",
+            "aug": "August",
+            "dec": "Dezember",
+            "feb": "Februar",
+            "jan": "Januar",
+            "jul": "Juli",
+            "jun": "Juni",
+            "mar": "März",
+            "may": "Mai",
+            "nov": "November",
+            "oct": "Oktober",
+            "sep": "September"
+          },
+          "quick-ranges": {
+            "day-before-yesterday": "Vorgestern",
+            "default": "Voreinstellung",
+            "last-1-hour": "In der letzten 1 Stunde",
+            "last-1-year": "Letztes 1 Jahr",
+            "last-12-hour": "In den letzten 12 Stunden",
+            "last-15-min": "Letzte 15 Minuten",
+            "last-2-day": "Letzte 2 Tage",
+            "last-2-year": "Letzte 2 Jahre",
+            "last-24-hour": "In den letzten 24 Stunden",
+            "last-3-hour": "In den letzten 3 Stunden",
+            "last-30-day": "Letzte 30 Tage",
+            "last-30-min": "Letzte 30 Minuten",
+            "last-5-min": "Letzte 5 Minuten",
+            "last-5-year": "Letzte 5 Jahre",
+            "last-6-hour": "In den letzten 6 Stunden",
+            "last-6-month": "Letzte 6 Monate",
+            "last-7-day": "Letzte 7 Tage",
+            "last-90-day": "Letzte 90 Tage",
+            "prev-fiscal-quarter": "Vorheriges Geschäftsquartal",
+            "prev-fiscal-year": "Vorheriges Geschäftsjahr",
+            "prev-month": "Vorheriger Monat",
+            "prev-week": "Vorherige Woche",
+            "prev-year": "Vorheriges Jahr",
+            "this-day-last-week": "Dieser Tag der letzten Woche",
+            "this-fiscal-quarter": "Dieses Geschäftsquartal",
+            "this-fiscal-quarter-so-far": "Bisheriges Geschäftsquartal",
+            "this-fiscal-year": "Dieses Geschäftsjahr",
+            "this-fiscal-year-so-far": "Bisheriges Geschäftsjahr",
+            "this-month": "Diesen Monat",
+            "this-month-so-far": "Bisheriger Monat",
+            "this-week": "Diese Woche",
+            "this-week-so-far": "Bisherige Woche",
+            "this-year": "Dieses Jahr",
+            "this-year-so-far": "Bisheriges Jahr",
+            "today": "Heute",
+            "today-so-far": "Heute bisher",
+            "yesterday": "Gestern"
+          },
+          "weekdays": {
+            "friday": "Freitag",
+            "monday": "Montag",
+            "saturday": "Samstag",
+            "sunday": "Sonntag",
+            "thursday": "Donnerstag",
+            "tuesday": "Dienstag",
+            "wednesday": "Mittwoch"
+          }
+        },
+        "filter-settings": {
+          "dashboard-variables": "Dashboard-Variablen",
+          "dashboard-variables-description": "Bericht mit den im Formular angegebenen Dashboard-Variablen generieren. Wenn der Filter auf „Standard“ eingestellt ist, verwendet der Bericht die gespeicherten Dashboard-Variablen. Wenn er auf „Benutzerdefiniert“ eingestellt ist, verwendet er die aktuellen Dashboard-Variablen der Sitzung.",
+          "time-range": "Zeitraum",
+          "time-range-description": "Bericht mit dem im Formular angegebenen Zeitraum generieren. Wenn der benutzerdefinierte Zeitraum „Standard“ ist, wird der Zeitraum vom Dashboard des Berichts verwendet.",
+          "title": "Filtereinstellungen",
+          "use-current-variable": "Aktuelle Variablen verwenden",
+          "use-current-variable-description": "Die kürzlich ausgewählten Variablen des Dashboards",
+          "use-default-variable": "Standard-Variablen verwenden",
+          "use-default-variable-description": "Standard-Dashboard-Variablen",
+          "use-saved-variable": "Gespeicherte Variablen verwenden",
+          "use-saved-variable-description": "Die bereits im Bericht gespeicherten Variablen"
+        },
+        "frequency": {
+          "daily": "Täglich",
+          "hourly": "Stündlich",
+          "monthly": "Monatlich",
+          "weekly": "Wöchentlich",
+          "yearly": "Jährlich"
+        },
+        "layout": {
+          "grid": "Raster",
+          "sample": "Einfach"
+        },
+        "mail-settings": {
+          "add-recipeint": "Neuen Empfänger hinzufügen",
+          "custom-message": "Kundenmeldung",
+          "recipient-search": "Zum Suchen oder Hinzufügen eines anderen Empfängers etwas eingeben",
+          "recipients": "Empfänger",
+          "recipients-required": "Empfänger ist erforderlich",
+          "subject": "Betreff",
+          "subject-options": {
+            "current-date": "Aktuelles Datum",
+            "description ": "Beschreibung ",
+            "report-name": "Berichtsname",
+            "startdate": "Startdatum"
+          },
+          "subject-options-end-date": "Enddatum",
+          "title": "E-Mail-Einstellungen",
+          "type-message-placeholder": "Geben Sie hier Ihre Nachricht ein…"
+        },
+        "orientations": {
+          "landscape": "Querformat",
+          "portrait": "Hochformat"
+        },
+        "preview": "Vorschau",
+        "save": "Speichern",
+        "schedule-settings": {
+          "append-date": "Daten an Dateinamen anfügen",
+          "append-file": "Zeit an Dateinamen anfügen",
+          "at-hours": "In Stunden (z. B. : 1, 5, 20-23)",
+          "at-minutes": "In Minuten (gültige Werte sind 0-59)",
+          "every-hour": "Jede Stunde",
+          "frequency": "Häufigkeit",
+          "hours-invalid": "Ungültiges Stundenformat",
+          "hours-required": "Bei dieser Häufigkeit sind Stunden erforderlich",
+          "month-days": "Tage im Monat (z. B. : 1, 3, 5, 20-27)",
+          "month-days-everyday": "Jeden Tag im Monat",
+          "month-days-invalid": "Ungültiges Format für Tage im Monat",
+          "month-days-required": "Bei dieser Häufigkeit sind Tage im Monat erforderlich",
+          "months": "Monate",
+          "months-placeholder": "Jeden Monat im Jahr",
+          "months-required": "Bei dieser Häufigkeit sind Monate erforderlich",
+          "time-invalid": "Zeitformat ist ungültig. Das erforderliche Format ist „mm“, und gültige Werte sind 0-59",
+          "timezone": "Zeitzone",
+          "title": "Zeitplan",
+          "week-days": "Wochentage",
+          "week-days-required": "Bei dieser Häufigkeit sind Wochentage erforderlich",
+          "weekdays-placeholder": "Jeden Tag der Woche"
+        },
+        "send-test-email": "Test-E-Mail senden",
+        "style-settings": {
+          "layout": "Layout",
+          "orientation": "Ausrichtung",
+          "pdf-styling": "PDF-Stil",
+          "table-scaling": "Tabellenskalierung",
+          "table-scaling-description": "Wählen Sie eine Option zur Anpassung der Breite der Tabellenspalten aus."
+        },
+        "table-scaling": {
+          "dynamic": "Dynamisch",
+          "fixed": "Fest"
+        }
+      },
+      "nav": {
+        "subtitle": "Über E-Mail oder FTP verteilte Berichte erstellen und verwalten",
+        "title": "Geplante Berichte"
+      },
+      "report-list": {
+        "alphabetically-a-z": "Alphabetisch (A–Z)",
+        "alphabetically-z-a": "Alphabetisch (Z–A)",
+        "back-button": "Zurück",
+        "clone-button": "Klonen",
+        "delete-modal": {
+          "delete": "Löschen",
+          "delete-reports-body": "Durch diese Aktion werden folgende Inhalte gelöscht:",
+          "delete-reports-description": "Geplante Berichte: ",
+          "delete-scheduled-reports": "Geplante Berichte löschen"
+        },
+        "disable-modal": {
+          "disable": "Deaktivieren",
+          "disable-reports": "Berichte deaktivieren",
+          "disable-reports-description": "Möchten Sie die ausgewählten Berichte deaktivieren?"
+        },
+        "enable-modal": {
+          "enable": "Aktivieren",
+          "enable-reports": "Berichte aktivieren",
+          "enable-reports-description": "Möchten Sie die ausgewählten Berichte aktivieren?"
+        },
+        "every-na": "Jede nicht zutreffend",
+        "filter-report-tooltip": "Bericht nach Planungstyp filtern",
+        "go-to-folder": "Gehe zu Ordner",
+        "history-modal": {
+          "title": "{{historyTitle}}"
+        },
+        "history-page": "Historie",
+        "last-run-tooltip": "Letzte Ausführung um {{lastRun}}",
+        "last-sent": "Zuletzt gesendet:",
+        "more-info-modal": {
+          "advanced-info": "Erweiterte Info zu Bericht",
+          "created-at": "Erstellt um",
+          "created-by": "Erstellt von",
+          "last-execution": "Letzte Ausführung um",
+          "next-execution": "Nächste Ausführung um",
+          "updated-at": "Aktualisiert um"
+        },
+        "no-report-found": "Keine Berichte gefunden",
+        "report-history-modal": {
+          "download": "Herunterladen",
+          "Elapsed-time": "Vergangene Zeit",
+          "Info": "Info",
+          "started-at": "Gestartet um",
+          "status": "Status"
+        },
+        "report-page": "Berichte",
+        "run-now-modal": {
+          "email-type-description": "Dadurch werden E-Mails an alle Empfänger gesendet, die im geplanten Bericht konfiguriert wurden.",
+          "ftp-type-description": "Dadurch wird der Bericht auf den konfigurierten FTP-Server hochgeladen.",
+          "run-now": "Jetzt ausführen",
+          "title": "Sind Sie sicher?"
+        },
+        "schedule-type-placeholder": "Planungstyp",
+        "scheduled-report-button": "Neuer geplanter Bericht",
+        "scheduled-type": {
+          "email": "E-Mail",
+          "ftp": "FTP"
+        },
+        "search-placeholder": "Suche nach Berichtsnamen",
+        "settings-page": "Einstellungen",
+        "status-active": "Aktiv",
+        "status-inactive": "Inaktiv",
+        "update-modal": {
+          "update": "Aktualisieren",
+          "update-description": "Diese Aktion wird Ihren Bericht aktualisieren"
+        },
+        "view-last-scheduled-reports": "Die letzten 10 geplanten Berichte anzeigen",
+        "view-more-info": "Mehr Informationen anzeigen"
+      },
+      "settings": {
+        "custom-input": {
+          "add-button": "Hinzufügen"
+        },
+        "email-security": {
+          "allow-external-internal-users-tooltip": "Interne und externe Benutzer zulassen.",
+          "allow-internal-users-tooltip": "Nur interne Benutzer zulassen.",
+          "domain-already-in-list": "{{value}} ist bereits auf der Liste.",
+          "domains-for-external-users": "Zugelassene Domänen für externe Benutzer",
+          "domains-for-external-users-placeholder": "domain.xyz",
+          "domains-for-external-users-tooltip": "Indem die Liste leer gelassen wird, werden standardmäßig alle Domänen aktiviert.",
+          "not-valid-domain": "{{value}} ist keine gültige Domäne.",
+          "only-internal-users": "Nur interne Benutzer",
+          "title": "E-Mail-Sicherheit"
+        },
+        "ftp": {
+          "actions": "Aktionen",
+          "cancel-button": "Abbrechen",
+          "connections": {
+            "delete": "Löschen",
+            "edit": "Bearbeiten",
+            "set-as-default": "Als Standard einrichten"
+          },
+          "connections-text": "FTP-Verbindungen",
+          "delete-ftp": "FTP löschen",
+          "delete-ftp-body": "Möchten Sie die FTP-Konfiguration wirklich löschen?",
+          "delete-ftp-server": "FTP-Server löschen",
+          "edit-connections": "FTP-Verbindung verarbeiten",
+          "ftp": "FTP",
+          "new-connection-text": "Neue FTP-Verbindung",
+          "password": "Kennwort",
+          "password-placeholder": "Kennwort",
+          "port": "Port",
+          "port-placeholder": "Port",
+          "protocol": "Protokoll",
+          "server": "Server",
+          "server-placeholder": "Ihre.ftp.adresse",
+          "sftp": "SFTP",
+          "submit-button": "Senden",
+          "user": "Benutzer",
+          "user-placeholder": "Benutzer",
+          "username": "Benutzername"
+        },
+        "report-branding": {
+          "date-time-format": {
+            "custom": "Benutzerdefiniert",
+            "description": "Aktuelles Datumsformat: ",
+            "placeholder": "z. B. TT.MM.JJJJ, HH:mm:ss Z z",
+            "title": "Datums- und Zeitformat"
+          },
+          "drop-file-here": "Datei hier ablegen",
+          "footer-text": "Fußzeilentext",
+          "footer-text-error": "Ungültiger Fußzeilentext",
+          "footer-text-placeholder": "BMC Software Inc.",
+          "footer-text-url": "Fußzeilentext URL",
+          "footer-text-url-error": "Ungültiger Fußzeilentext URL",
+          "footer-text-url-placeholder": "https://ihre.website",
+          "logo-url": "Firmenlogo URL",
+          "logo-url-description": "Das in der Kopf- und Fußzeile des Dokuments angezeigte Logo.",
+          "logo-url-error": "Logo-URL ist nicht gültig",
+          "logo-url-placeholder": "https://ihre.website/logo.png",
+          "title": "Branding des Berichts"
+        },
+        "reset-button": "Zurücksetzen",
+        "submit-button": "Senden"
+      }
+    }
+  }
+}

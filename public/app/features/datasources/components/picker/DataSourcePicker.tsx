@@ -13,7 +13,7 @@ import { reportInteraction } from '@grafana/runtime';
 import { DataQuery, DataSourceRef } from '@grafana/schema';
 import { Button, CustomScrollbar, Icon, Input, ModalsController, Portal, useStyles2 } from '@grafana/ui';
 import config from 'app/core/config';
-import { Trans } from 'app/core/internationalization';
+import { Trans, t } from 'app/core/internationalization';
 import { useKeyNavigationListener } from 'app/features/search/hooks/useSearchKeyboardSelection';
 import { defaultFileUploadQuery, GrafanaQuery } from 'app/plugins/datasource/grafana/types';
 
@@ -58,7 +58,9 @@ export interface DataSourcePickerProps {
   uploadFile?: boolean;
   filter?: (ds: DataSourceInstanceSettings) => boolean;
 }
-
+{
+  /*BMC Change: To enable localization for below text*/
+}
 export function DataSourcePicker(props: DataSourcePickerProps) {
   const {
     current,
@@ -68,7 +70,10 @@ export function DataSourcePicker(props: DataSourcePickerProps) {
     inputId,
     noDefault = false,
     disabled = false,
-    placeholder = 'Select data source',
+    placeholder = t(
+      'bmcgrafana.dashboards.settings.variables.editor.types.ad-hoc.data-source-placeholder',
+      'Select data source'
+    ),
     ...restProps
   } = props;
 

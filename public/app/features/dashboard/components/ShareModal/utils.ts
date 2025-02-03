@@ -71,6 +71,11 @@ export function buildBaseUrl() {
   return baseUrl;
 }
 
+// BMC code
+export function buildHostUrl() {
+  return `${window.location.protocol}//${window.location.host}${config.appSubUrl}`;
+}
+// End
 export async function buildShareUrl(
   useCurrentTimeRange: boolean,
   selectedTheme?: string,
@@ -162,6 +167,17 @@ export function getLocalTimeZone() {
 
   return '&tz=' + encodeURIComponent(options.timeZone);
 }
+// BMC code
+export function updateURLOrigin(url: string) {
+  let parser = document.createElement('a');
+  parser.href = url;
+  if (parser.origin.localeCompare(window.location.origin) !== 0) {
+    const updatedURL = url.replace(parser.origin, window.location.origin);
+    return updatedURL;
+  }
+  return url;
+}
+// End
 
 export const getTrackingSource = (
   panel?: PanelModel | SceneObjectRef<VizPanel> | { timeFrom?: string; id: number }

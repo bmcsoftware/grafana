@@ -251,6 +251,13 @@ function getHeaderLine(key: string, fields: Field[], config: CSVConfig): string 
 }
 
 function getLocaleDelimiter(): string {
+  // BMC Code: Start
+  const urlParams = new URLSearchParams(window.location.search);
+  const delimiter = urlParams.get('csvDelimiter');
+  if (delimiter && ((window as any).grafanaBootData.settings.csvDelimiters ?? []).includes(delimiter)) {
+    return delimiter;
+  }
+  // BMC Code: end
   const arr = ['x', 'y'];
   if (arr.toLocaleString) {
     return arr.toLocaleString().charAt(1);
@@ -273,8 +280,21 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
   });
   let csv = config.useExcelHeader ? `sep=${config.delimiter}${config.newline}` : '';
 
+  // BMC Code: Start
+  const urlParams = new URLSearchParams(window.location.search);
+  const enableOverrides = urlParams.get('enableOverrides');
+  const fullTable = urlParams.get('fullTable');
+  const rowsLimit = Number(urlParams.get('limit') || '5000');
+  // BMC Code: end
+
   for (let s = 0; s < data.length; s++) {
     const series = data[s];
+    // BMC Code: Start
+    let atleastOneColumnFilled = {
+      header: false,
+      data: false,
+    };
+    // BMC Code: end
     const { fields } = series;
 
     // ignore frames with no fields
@@ -291,34 +311,106 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
         getHeaderLine('dateFormat', fields, config);
     } else if (config.headerStyle === CSVHeaderStyle.name) {
       for (let i = 0; i < fields.length; i++) {
-        if (i > 0) {
+        // BMC Code: Start
+        // Filtering hidden columns
+        if (fields[i].config.custom && fields[i].config.custom.hidden) {
+          continue;
+        }
+        // BMC Code: end
+        if (i > 0 && atleastOneColumnFilled.header) {
           csv += config.delimiter;
         }
-        csv += `"${getFieldDisplayName(fields[i], series).replace(/"/g, '""')}"`;
+        // BMC Code: Start
+        // Apply delimiter only after first column (header) has been filled
+        atleastOneColumnFilled.header = true;
+
+        if (enableOverrides === 'true') {
+          const metaStr = getMetaTagForField(fields[i]);
+          csv += `"${getFieldDisplayName(fields[i], series).replace(/"/g, '""')}[@meta@]${metaStr}"`;
+        } else {
+          csv += `"${getFieldDisplayName(fields[i], series).replace(/"/g, '""')}"`;
+        }
+        // BMC Code: end
       }
       csv += config.newline;
     }
 
-    const length = fields[0].values.length;
+    // BMC Code: Start
+    // Adding default limit of 5k records for PDF full table download to avoid high memory usage
+    // and limit can be updated from the generator side through environment variable.
+    let length = fields[0].values.length;
+    if (length > rowsLimit && fullTable === 'true') {
+      length = rowsLimit;
+    }
+    // BMC Code: end
 
     if (length > 0) {
       const writers = fields.map((field) => makeFieldWriter(field, config!));
       for (let i = 0; i < length; i++) {
         for (let j = 0; j < fields.length; j++) {
-          if (j > 0) {
+          // BMC Code: Start
+          // Filtering hidden columns
+          if (fields[j].config.custom && fields[j].config.custom.hidden) {
+            continue;
+          }
+          // BMC Code: end
+          if (j > 0 && atleastOneColumnFilled.data) {
             csv = csv + config.delimiter;
           }
+
+          // BMC Code: Start
+          // Apply delimiter only after first column (value) has been filled
+          atleastOneColumnFilled.data = true;
+          // BMC Code: end
 
           let v = fields[j].values[i];
           // For FieldType frame, use value if it exists to prevent exporting [object object]
           if (fields[j].type === FieldType.frame && fields[j].values[i].value) {
             v = fields[j].values[i].value;
           }
-          if (v !== null) {
-            csv = csv + writers[j](v);
+          if (v !== null || enableOverrides === 'true') {
+            let str = writers[j](v);
+
+            // BMC Code: start
+            // Add cell styling and hyperlink as meta tags in value
+            if (enableOverrides === 'true') {
+              str = v === null && fields[j]?.type === FieldType.time ? '' : str;
+              str = getCellStyleWithValue(fields[j], str, i, config);
+            }
+            // BMC Code: end
+
+            // Avoid csv injection
+            // and a regression fix for #DRJ71-5603
+            // and fix for special characters in date format
+            str = str.replace(' ', ' ');
+            str = str.replace('\u202F', ' ');
+
+            if (str.startsWith('=')) {
+              csv += str.replace('=', ' =');
+              continue;
+            }
+            if (str.startsWith('"=')) {
+              csv += str.replace('"=', '" =');
+              continue;
+            }
+
+            if (str.startsWith('"@')) {
+              csv += str.replace('"@', '" @');
+              continue;
+            }
+            if (str.startsWith('@')) {
+              csv += str.replace('@', ' @');
+              continue;
+            }
+            // BMC Change: end
+            csv += str;
           }
         }
 
+        // BMC Code: Start
+        // Apply delimiter only after first column (value) has been filled, rechecking this condition for every row
+        atleastOneColumnFilled.data = false;
+        // BMC Code: end
         if (i !== length - 1) {
           csv = csv + config.newline;
         }
@@ -331,4 +423,119 @@ export function toCSV(data: DataFrame[], config?: CSVConfig): string {
   }
 
   return csv;
+}
+
+const getMetaTagForField = (field: Field<any>): string => {
+  const isBarcodeOrQR = field.config.custom?.type === 'barcode' || field.config.custom?.type === 'qrcode';
+  const headerInfo = {
+    type: isBarcodeOrQR ? field.config.custom.type : field.type,
+    align: field.config.custom?.align ? field.config.custom?.align : field.config.custom?.alignment,
+    colorType: field.config.custom?.cellOptions?.type,
+    width: field.config?.custom?.width && field.config?.custom?.width !== 150 ? field.config?.custom?.width : undefined,
+    format: field.config?.unit,
+  };
+
+  // Store header info in a string
+  const meta = [];
+  switch (headerInfo.type) {
+    case 'barcode':
+      meta.push('t=b');
+      break;
+    case 'time':
+      meta.push('t=t');
+      break;
+    case 'number':
+      meta.push('t=n');
+      break;
+    default:
+      meta.push('t=s'); // default is string
+  }
+  switch (headerInfo.align) {
+    case 'center':
+      meta.push('al=c');
+      break; // center
+    case 'left':
+      meta.push('al=l');
+      break; // left
+    case 'right':
+      meta.push('al=r');
+      break; // right
+    default:
+      meta.push('al=a'); // auto
+  }
+  switch (headerInfo.colorType) {
+    case 'color-text':
+      meta.push('ct=t');
+      break; // text
+    case 'color-background':
+      meta.push('ct=b');
+      break; // background
+  }
+  if (headerInfo.width) {
+    meta.push(`w=${headerInfo.width}`);
+  }
+  if (headerInfo.format) {
+    meta.push(`fmt=${headerInfo.format.replaceAll(' ', '{{bmc_space}}')}`); // data format
+  }
+
+  return meta.join(' ');
+};
+
+const getCellStyleWithValue = (field: Field<any>, v: any, valueRowIndex: number, config: CSVConfig): string => {
+  let str = v;
+  let hasQuotes = false;
+  try {
+    if (str.startsWith('"') && str.endsWith('"')) {
+      str = str.slice(1);
+      str = str.slice(0, -1);
+      hasQuotes = true;
+    }
+
+    // Store cell info in a string
+    const meta = [];
+    if (field.display?.(v)?.color !== '') {
+      meta.push(`c=${field.display?.(v)?.color}`);
+    }
+
+    const link = field.getLinks?.({ valueRowIndex });
+    const length = link?.length ?? 0;
+    if (length > 0) {
+      const val = writeValueBMC(link![length - 1].href, config);
+      if (val.hasQuotes) {
+        hasQuotes = true;
+      }
+      meta.push(`u=${val.str}`);
+    }
+
+    const metaStr = meta.join(' ');
+    if (hasQuotes) {
+      return `"${str}[@meta@]${metaStr}"`;
+    }
+
+    return `${v}[@meta@]${metaStr}`;
+  } catch (error) {
+    console.error('Error while getting cell style string', error);
+  }
+  return v;
+};
+
+/**
+ * This function handles substring which needs escaping for double quotes
+ * And also returns a boolean flag to determine,
+ * whether to wrap parent string in leading and trailing double quote
+ * @returns {string, boolean}
+ */
+function writeValueBMC(substr: unknown, config: CSVConfig): { str: string; hasQuotes: boolean } {
+  if (substr === null || substr === undefined) {
+    return { str: '', hasQuotes: false };
+  }
+  const str = substr.toString();
+  if (str.includes('"')) {
+    // Escape the double quote characters
+    return { str: str.replace(/"/gi, '""'), hasQuotes: true };
+  }
+  if (str.includes('\n') || (config.delimiter && str.includes(config.delimiter))) {
+    return { str, hasQuotes: true };
+  }
+  return { str, hasQuotes: false };
 }

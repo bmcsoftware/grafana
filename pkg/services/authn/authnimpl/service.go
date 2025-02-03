@@ -14,13 +14,16 @@ import (
 
 	"github.com/grafana/grafana/pkg/apimachinery/errutil"
 	"github.com/grafana/grafana/pkg/apimachinery/identity"
+	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/network"
 	"github.com/grafana/grafana/pkg/infra/tracing"
 	"github.com/grafana/grafana/pkg/infra/usagestats"
+	"github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/auth"
 	"github.com/grafana/grafana/pkg/services/authn"
 	"github.com/grafana/grafana/pkg/services/authn/clients"
+	"github.com/grafana/grafana/pkg/services/team"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/web"
@@ -53,6 +56,10 @@ func ProvideIdentitySynchronizer(s *Service) authn.IdentitySynchronizer {
 func ProvideService(
 	cfg *setting.Cfg, tracer tracing.Tracer,
 	sessionService auth.UserTokenService, usageStats usagestats.Service, registerer prometheus.Registerer,
+	// BMC Code: Rest all args, adding db service, team Service
+	db db.DB,
+	teamService team.Service,
+	teamPermissionsService accesscontrol.TeamPermissionsService,
 ) *Service {
 	s := &Service{
 		log:                    log.New("authn.service"),
@@ -110,7 +117,10 @@ func (s *Service) Authenticate(ctx context.Context, r *authn.Request) (*authn.Id
 				if errors.Is(err, authn.ErrTokenNeedsRotation) {
 					return nil, err
 				}
-
+				if errors.Is(err, authn.ErrRequestForDedicatedTenant) {
+					s.log.Debug("Inside Authenticate func. Forwarding request to dedicated ingress -  ", "identity", identity.OrgID)
+					return identity, err
+				}
 				authErr = errors.Join(authErr, err)
 				// try next
 				continue
@@ -137,6 +147,11 @@ func (s *Service) authenticate(ctx context.Context, c authn.Client, r *authn.Req
 
 	identity, err := c.Authenticate(ctx, r)
 	if err != nil {
+		// BMC Change: Next block for dedicated request
+		if errors.Is(err, authn.ErrRequestForDedicatedTenant) {
+			s.log.Debug("Inside service.go. Forwarding request to dedicated ingress -  ", "identity", identity.OrgID)
+			return identity, err
+		}
 		span.SetStatus(codes.Error, "authenticate failed on client")
 		span.RecordError(err)
 		s.errorLogFunc(ctx, err)("Failed to authenticate request", "client", c.Name(), "error", err)
@@ -429,40 +444,57 @@ func orgIDFromRequest(r *authn.Request) int64 {
 		return 0
 	}
 
-	orgID := orgIDFromQuery(r.HTTPRequest)
-	if orgID > 0 {
-		return orgID
+	// BMC Code change: Start to handle IMS tenant0
+	orgID, found := orgIDFromQuery(r.HTTPRequest)
+	if found {
+		return getOrgIdForTenant0(orgID)
 	}
 
-	return orgIDFromHeader(r.HTTPRequest)
+	orgID, found = orgIDFromHeader(r.HTTPRequest)
+
+	if found {
+		return getOrgIdForTenant0(orgID)
+	}
+	return orgID
+	// BMC Code change: End
 }
 
 // name of query string used to target specific org for request
 const orgIDTargetQuery = "targetOrgId"
 
-func orgIDFromQuery(req *http.Request) int64 {
+// BMC Code change: Added extra parameter to return bool
+func orgIDFromQuery(req *http.Request) (int64, bool) {
 	params := req.URL.Query()
 	if !params.Has(orgIDTargetQuery) {
-		return 0
+		return 0, false
 	}
 	id, err := strconv.ParseInt(params.Get(orgIDTargetQuery), 10, 64)
 	if err != nil {
-		return 0
+		return 0, false
 	}
-	return id
+	return id, true
 }
 
 // name of header containing org id for request
 const orgIDHeaderName = "X-Grafana-Org-Id"
 
-func orgIDFromHeader(req *http.Request) int64 {
+// BMC Code change: Added extra parameter to return bool
+func orgIDFromHeader(req *http.Request) (int64, bool) {
 	header := req.Header.Get(orgIDHeaderName)
 	if header == "" {
-		return 0
+		return 0, false
 	}
 	id, err := strconv.ParseInt(header, 10, 64)
 	if err != nil {
-		return 0
+		return 0, false
 	}
-	return id
+	return id, true
+}
+
+// BMC Code: Below function to map tenantO ID to org
+func getOrgIdForTenant0(tenantID int64) int64 {
+	if tenantID == setting.IMS_Tenant0 {
+		return setting.GF_Tenant0
+	}
+	return tenantID
 }

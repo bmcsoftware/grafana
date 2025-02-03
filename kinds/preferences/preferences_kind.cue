@@ -33,6 +33,12 @@ lineage: schemas: [{
 			// Cookie preferences
 			cookiePreferences?: #CookiePreferences
 
+			// BMC Change - Format for dashboards, panels and reports timestamps
+			timeFormat?: string
+
+			// BMC Change - Toggle to set available query types for the tenant
+			enabledQueryTypes?: #EnabledQueryTypes
+			
 			// Navigation preferences
 			navbar?: #NavbarPreference
 		} @cuetsy(kind="interface")
@@ -48,6 +54,11 @@ lineage: schemas: [{
 			functional?: {}
 		} @cuetsy(kind="interface")
 
+		#EnabledQueryTypes: {
+			enabledTypes?: [...string]
+			applyForAdmin?: bool
+		} @cuetsy(kind="interface") //0.0
+		
 		#NavbarPreference: {
 			bookmarkUrls: [...string]
 		} @cuetsy(kind="interface")

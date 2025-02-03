@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { OrgRole } from '@grafana/data';
 import { selectors as e2eSelectors } from '@grafana/e2e-selectors';
+import { config } from '@grafana/runtime';
 import {
   Avatar,
   Box,
@@ -22,6 +23,8 @@ import { UserRolePicker } from 'app/core/components/RolePicker/UserRolePicker';
 import { fetchRoleOptions, updateUserRoles } from 'app/core/components/RolePicker/api';
 import { TagBadge } from 'app/core/components/TagFilter/TagBadge';
 import { contextSrv } from 'app/core/core';
+import { t } from 'app/core/internationalization';
+import { isGrafanaAdmin } from 'app/features/plugins/admin/permissions';
 import { AccessControlAction, OrgUser, Role } from 'app/types';
 
 import { OrgRolePicker } from '../OrgRolePicker';
@@ -83,6 +86,7 @@ export const OrgUsersTable = ({
   }, [orgId]);
 
   const columns: Array<Column<OrgUser>> = useMemo(
+    // BMC Code: To split the array and push the respective columns on check
     () => [
       {
         id: 'avatarUrl',
@@ -91,25 +95,29 @@ export const OrgUsersTable = ({
       },
       {
         id: 'login',
-        header: 'Login',
+        // BMC Change: Next line inline
+        header: t('bmcgrafana.users-and-access.headers.login-text', 'Login'),
         cell: ({ cell: { value } }: Cell<'login'>) => <div>{value}</div>,
         sortType: 'string',
       },
       {
         id: 'email',
-        header: 'Email',
+        // BMC Change: Next line inline
+        header: t('bmcgrafana.users-and-access.headers.email-text', 'Email'),
         cell: ({ cell: { value } }: Cell<'email'>) => value,
         sortType: 'string',
       },
       {
         id: 'name',
-        header: 'Name',
+        // BMC Change: Next line inline
+        header: t('bmcgrafana.users-and-access.headers.name-text', 'Name'),
         cell: ({ cell: { value } }: Cell<'name'>) => value,
         sortType: 'string',
       },
       {
         id: 'lastSeenAtAge',
-        header: 'Last active',
+        // BMC Change: Next line inline
+        header: t('bmcgrafana.users-and-access.headers.last-active-text', 'Last active'),
         cell: ({ cell: { value } }: Cell<'lastSeenAtAge'>) => {
           return <>{value && <>{value === '10 years' ? <Text color={'disabled'}>Never</Text> : value}</>}</>;
         },
@@ -151,6 +159,7 @@ export const OrgUsersTable = ({
             />
           );
         },
+        visible: () => config.buildInfo.env === 'development',
       },
       {
         id: 'info',
@@ -192,6 +201,7 @@ export const OrgUsersTable = ({
         cell: ({ cell: { value } }: Cell<'authLabels'>) => (
           <>{Array.isArray(value) && value.length > 0 && <TagBadge label={value[0]} removeIcon={false} count={0} />}</>
         ),
+        visible: () => config.buildInfo.env === 'development',
       },
       {
         id: 'isDisabled',
@@ -216,6 +226,8 @@ export const OrgUsersTable = ({
             )
           );
         },
+        // BMC Code: Next line
+        visible: () => config.buildInfo.env === 'development' || isGrafanaAdmin(),
       },
     ],
     [rolesLoading, orgId, roleOptions, onUserRolesChange, onRoleChange]

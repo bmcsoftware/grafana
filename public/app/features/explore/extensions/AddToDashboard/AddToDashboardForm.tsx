@@ -6,6 +6,7 @@ import { locationUtil, SelectableValue } from '@grafana/data';
 import { config, locationService, reportInteraction } from '@grafana/runtime';
 import { Alert, Button, Field, Modal, RadioButtonGroup } from '@grafana/ui';
 import { DashboardPicker } from 'app/core/components/Select/DashboardPicker';
+import { t, Trans } from 'app/core/internationalization';
 import { contextSrv } from 'app/core/services/context_srv';
 import { removeDashboardToFetchFromLocalStorage } from 'app/features/dashboard/state/initDashboard';
 import { AccessControlAction, useSelector } from 'app/types';
@@ -79,13 +80,15 @@ export function AddToDashboardForm(props: Props): ReactElement {
   const saveTargets: Array<SelectableValue<SaveTarget>> = [];
   if (canCreateDashboard) {
     saveTargets.push({
-      label: 'New dashboard',
+      // BMC Change: Next line
+      label: t('bmcgrafana.explore.to-dashboard.new-dashboard-text', 'New dashboard'),
       value: SaveTarget.NewDashboard,
     });
   }
   if (canWriteDashboard) {
     saveTargets.push({
-      label: 'Existing dashboard',
+      // BMC Change: Next line
+      label: t('bmcgrafana.explore.to-dashboard.existing-dashboard-text', 'Existing dashboard'),
       value: SaveTarget.ExistingDashboard,
     });
   }
@@ -119,13 +122,31 @@ export function AddToDashboardForm(props: Props): ReactElement {
     } catch (error) {
       switch (error) {
         case AddToDashboardError.FETCH_DASHBOARD:
-          setSubmissionError({ error, message: 'Could not fetch dashboard information. Please try again.' });
+          setSubmissionError({
+            error,
+            // BMC Change: Next line
+            message: t(
+              'bmcgrafana.explore.to-dashboard.errors.unable-fetch-dash-info',
+              'Could not fetch dashboard information. Please try again.'
+            ),
+          });
           break;
         case AddToDashboardError.SET_DASHBOARD_LS:
-          setSubmissionError({ error, message: 'Could not add panel to dashboard. Please try again.' });
+          setSubmissionError({
+            error,
+            // BMC Change: Next line
+            message: t(
+              'bmcgrafana.explore.to-dashboard.errors.panel-to-dashboard-err',
+              'Could not add panel to dashboard. Please try again.'
+            ),
+          });
           break;
         default:
-          setSubmissionError({ error: GenericError.UNKNOWN, message: 'Something went wrong. Please try again.' });
+          setSubmissionError({
+            error: GenericError.UNKNOWN,
+            // BMC Change: Next line
+            message: t('bmcgrafana.explore.to-dashboard.errors.general', 'Something went wrong. Please try again.'),
+          });
       }
       return;
     }
@@ -141,7 +162,11 @@ export function AddToDashboardForm(props: Props): ReactElement {
     if (!didTabOpen) {
       setSubmissionError({
         error: GenericError.NAVIGATION,
-        message: 'Could not navigate to the selected dashboard. Please try again.',
+        // BMC Change: Next line
+        message: t(
+          'bmcgrafana.explore.to-dashboard.errors.navigation-to-dashboard',
+          'Could not navigate to the selected dashboard. Please try again.'
+        ),
       });
       removeDashboardToFetchFromLocalStorage();
       return;
@@ -159,7 +184,15 @@ export function AddToDashboardForm(props: Props): ReactElement {
         <Controller
           control={control}
           render={({ field: { ref, ...field } }) => (
-            <Field label="Target dashboard" description="Choose where to add the panel.">
+            <Field
+              // BMC Change: Next line
+              label={t('bmcgrafana.explore.to-dashboard.target-dashboard-text', 'Target dashboard')}
+              // BMC Change: Next line
+              description={t(
+                'bmcgrafana.explore.to-dashboard.choose-dashboard-type-text',
+                'Choose where to add the panel.'
+              )}
+            >
               <RadioButtonGroup options={saveTargets} {...field} id="e2d-save-target" />
             </Field>
           )}
@@ -174,8 +207,13 @@ export function AddToDashboardForm(props: Props): ReactElement {
             <Controller
               render={({ field: { ref, value, onChange, ...field } }) => (
                 <Field
-                  label="Dashboard"
-                  description="Select in which dashboard the panel will be created."
+                  // BMC Change: Next line
+                  label={t('bmcgrafana.explore.to-dashboard.dashboard-text', 'Dashboard')}
+                  // BMC Change: Next line
+                  description={t(
+                    'bmcgrafana.explore.to-dashboard.choose-dashboard-text',
+                    'Select in which dashboard the panel will be created.'
+                  )}
                   error={errors.dashboardUid?.message}
                   invalid={!!errors.dashboardUid}
                 >
@@ -190,20 +228,31 @@ export function AddToDashboardForm(props: Props): ReactElement {
               control={control}
               name="dashboardUid"
               shouldUnregister
-              rules={{ required: { value: true, message: 'This field is required.' } }}
+              rules={{
+                required: {
+                  value: true,
+                  // BMC Change: Next line
+                  message: t('bmcgrafana.explore.to-dashboard.errors.field-mandatory', 'This field is required.'),
+                },
+              }}
             />
           );
         })()}
 
       {submissionError && (
-        <Alert severity="error" title="Error adding the panel">
+        <Alert
+          severity="error"
+          // BMC Change: Next line
+          title={t('bmcgrafana.explore.to-dashboard.errors.add-panel-err', 'Error adding the panel')}
+        >
           {submissionError.message}
         </Alert>
       )}
 
       <Modal.ButtonRow>
         <Button type="reset" onClick={onClose} fill="outline" variant="secondary">
-          Cancel
+          {/* BMC Change: Next line */}
+          <Trans i18nKey={'bmc.common.cancel'}>Cancel</Trans>
         </Button>
         <Button
           type="submit"
@@ -211,10 +260,12 @@ export function AddToDashboardForm(props: Props): ReactElement {
           onClick={handleSubmit(partial(onSubmit, true))}
           icon="external-link-alt"
         >
-          Open in new tab
+          {/* BMC Change: Next line */}
+          <Trans i18nKey={'bmcgrafana.explore.to-dashboard.open-new-tab-text'}>Open in new tab</Trans>
         </Button>
         <Button type="submit" variant="primary" onClick={handleSubmit(partial(onSubmit, false))} icon="apps">
-          Open dashboard
+          {/* BMC Change: Next line */}
+          <Trans i18nKey={'bmcgrafana.explore.to-dashboard.open-dash-text'}>Open dashboard</Trans>
         </Button>
       </Modal.ButtonRow>
     </form>

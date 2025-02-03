@@ -54,6 +54,7 @@ type Service interface {
 	DeleteExternalServiceRole(ctx context.Context, externalServiceID string) error
 	// SyncUserRoles adds provided roles to user
 	SyncUserRoles(ctx context.Context, orgID int64, cmd SyncUserRolesCommand) error
+	HasRequiredPermissions(ctx context.Context, orgID, userID int64, requiredRole string, requiredPermissions []string) (bool, error)
 }
 
 //go:generate  mockery --name Store --structname MockStore --outpkg actest --filename store_mock.go --output ./actest/
@@ -67,6 +68,11 @@ type Store interface {
 	DeleteTeamPermissions(ctx context.Context, orgID, teamID int64) error
 	SaveExternalServiceRole(ctx context.Context, cmd SaveExternalServiceRoleCommand) error
 	DeleteExternalServiceRole(ctx context.Context, externalServiceID string) error
+
+	// BMC Code - Next line
+	GetBHDPermissionsByRoles(ctx context.Context, bhdRoles []int64) ([]Permission, error)
+	GetBHDRoleIdByUserId(ctx context.Context, orgID, userID int64) ([]int64, error)
+	ValidateUserId(ctx context.Context, orgID, userID int64) error
 }
 
 type RoleRegistry interface {

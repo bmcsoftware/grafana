@@ -5,6 +5,8 @@ import { Input, Field, Button, FieldSet, Stack } from '@grafana/ui';
 import { TeamRolePicker } from 'app/core/components/RolePicker/TeamRolePicker';
 import { useRoleOptions } from 'app/core/components/RolePicker/hooks';
 import { SharedPreferences } from 'app/core/components/SharedPreferences/SharedPreferences';
+import { config } from 'app/core/config';
+import { t } from 'app/core/internationalization';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction, Team } from 'app/types';
 
@@ -47,10 +49,11 @@ export const TeamSettings = ({ team, updateTeam }: Props) => {
   return (
     <Stack direction={'column'} gap={3}>
       <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: '600px' }}>
-        <FieldSet label="Team details">
+        <FieldSet label={t('bmcgrafana.users-and-access.team.details.title', 'Team details')}>
           <Field
-            label="Name"
-            disabled={!canWriteTeamSettings}
+            // BMC Change - Next couple line inline
+            label={t('bmcgrafana.users-and-access.headers.name-text', 'Name')}
+            disabled={!canWriteTeamSettings || config.buildInfo.env !== 'development'}
             required
             invalid={!!errors.name}
             error="Name is required"
@@ -60,20 +63,30 @@ export const TeamSettings = ({ team, updateTeam }: Props) => {
 
           {contextSrv.licensedAccessControlEnabled() && canListRoles && (
             <Field label="Role">
-              <TeamRolePicker teamId={team.id} roleOptions={roleOptions} disabled={!canUpdateRoles} maxWidth="100%" />
+              <TeamRolePicker 
+                teamId={team.id}
+                roleOptions={roleOptions}
+                disabled={!canUpdateRoles || config.buildInfo.env !== 'development'}
+                maxWidth="100%" />
             </Field>
           )}
 
           <Field
-            label="Email"
-            description="This is optional and is primarily used to set the team profile avatar (via gravatar service)."
-            disabled={!canWriteTeamSettings}
+            label={t('bmcgrafana.users-and-access.headers.email-text', 'Email')}
+            description={t(
+              'bmcgrafana.users-and-access.team.details.email-description-text',
+              'This is optional and is primarily used to set the team profile avatar (via gravatar service).'
+            )}
+            // BMC Change - Next Inline
+            disabled={!canWriteTeamSettings || config.buildInfo.env !== 'development'}
           >
             <Input {...register('email')} placeholder="team@email.com" type="email" id="email-input" />
           </Field>
-          <Button type="submit" disabled={!canWriteTeamSettings}>
-            Update
-          </Button>
+          {config.buildInfo.env === 'development' && (
+            <Button type="submit" disabled={!canWriteTeamSettings}>
+              Update
+            </Button>
+          )}
         </FieldSet>
       </form>
       <SharedPreferences resourceUri={`teams/${team.id}`} disabled={!canWriteTeamSettings} preferenceType="team" />

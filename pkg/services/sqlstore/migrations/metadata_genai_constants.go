@@ -1,0 +1,8 @@
+package migrations
+
+const (
+	IncidentManagementDescription = "Incident Management in ITIL-based Service Management products focuses on restoring normal operations quickly by managing incidents through a structured schema. Key elements include Incident ID, Title/Description, Status, Priority, Impact, Urgency, Assigned Group, Resolution Details, and SLAs. It ensures efficient incident resolution, minimizing business disruption and maintaining service quality."
+	ChangeManagementDescription   = "Change Management in IT Service Management (ITSM) is a structured approach to handling changes in IT services, infrastructure, or processes to minimize risks and disruptions while ensuring that the changes deliver the desired outcomes."
+	ProblemManagementDescription  = "The Problem Management View in Helix ITSM provides a real-time overview of active, pending, and resolved problems, tracking trends, root cause analysis, and SLA compliance. It helps IT teams efficiently manage and resolve problems by visualizing problem status, aging, and related incidents."
+	DigitalWorkplaceDescription   = "The Digital Workplace View in Helix ITSM provides a real-time overview of user experiences, including active, pending, and resolved service requests, incidents, and system performance. It tracks trends, user satisfaction, and SLA compliance, helping IT teams efficiently manage and optimize the digital workspace. The view visualizes service health, aging incidents, and user engagement, enabling proactive management of end-user issues and enhancing overall service delivery. By providing actionable insights, it ensures a seamless, productive digital experience for users while reducing service disruptions and improving support efficiency."
+)

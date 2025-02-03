@@ -33,6 +33,14 @@ type StaticRequester struct {
 	IDToken       string
 	IDTokenClaims *authnlib.Claims[authnlib.IDTokenClaims]
 	CacheKey      string
+	// BMC Change: Starts
+	HasExternalOrg     bool
+	IsUnrestrictedUser bool
+	MspOrgs            []string
+	BHDRoles           []int64
+	SubTenantId        string
+	IsDedicatedInst    bool
+	// BMC Change: Ends
 }
 
 // GetRawIdentifier implements Requester.
@@ -211,3 +219,26 @@ func (u *StaticRequester) GetIDToken() string {
 func (u *StaticRequester) GetIDClaims() *authnlib.Claims[authnlib.IDTokenClaims] {
 	return u.IDTokenClaims
 }
+
+// BMC Change: Starts
+func (i *StaticRequester) GetHasExternalOrg() bool {
+	return i.HasExternalOrg
+}
+
+func (i *StaticRequester) GetIsUnrestrictedUser() bool {
+	return i.IsUnrestrictedUser
+}
+
+func (i *StaticRequester) GetMspOrgs() []string {
+	return i.MspOrgs
+}
+
+func (i *StaticRequester) GetBHDRoles() []int64 {
+	return i.BHDRoles
+}
+
+func (i *StaticRequester) GetIsDedicatedIst() bool {
+	return i.IsDedicatedInst
+}
+
+// BMC Change: Ends

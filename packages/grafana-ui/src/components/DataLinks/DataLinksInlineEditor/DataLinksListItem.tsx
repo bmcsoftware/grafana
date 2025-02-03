@@ -1,4 +1,5 @@
 import { css, cx } from '@emotion/css';
+import { t } from 'i18next';
 import { Draggable } from '@hello-pangea/dnd';
 
 import { DataFrame, DataLink, GrafanaTheme2 } from '@grafana/data';
@@ -28,7 +29,6 @@ export const DataLinksListItem = ({ link, onEdit, onRemove, index, itemKey }: Da
   const hasUrl = url.trim() !== '';
 
   const isCompactExploreUrl = isCompactUrl(url);
-
   return (
     <Draggable key={itemKey} draggableId={itemKey} index={index}>
       {(provided) => (
@@ -41,13 +41,21 @@ export const DataLinksListItem = ({ link, onEdit, onRemove, index, itemKey }: Da
           >
             <div className={styles.linkDetails}>
               <div className={cx(styles.url, !hasUrl && styles.notConfigured, isCompactExploreUrl && styles.errored)}>
-                {hasTitle ? title : 'Data link title not provided'}
+                {/* BMC Change: To enable localization for below text */}
+                {hasTitle
+                  ? title
+                  : t('bmcgrafana.dashboards.edit-panel.data-links.link-title-not-provided', 'Data link title not provided')}
+                {/* BMC Change ends */}
               </div>
               <div
                 className={cx(styles.url, !hasUrl && styles.notConfigured, isCompactExploreUrl && styles.errored)}
                 title={url}
               >
-                {hasUrl ? url : 'Data link url not provided'}
+                {/* BMC Change: To enable localization for below text */}
+                {hasUrl
+                  ? url
+                  : t('bmcgrafana.dashboards.edit-panel.data-links.link-url-not-provided', 'Data link url not provided')}
+                {/* BMC Change ends */}
               </div>
               {isCompactExploreUrl && (
                 <FieldValidationMessage>
@@ -56,8 +64,24 @@ export const DataLinksListItem = ({ link, onEdit, onRemove, index, itemKey }: Da
               )}
             </div>
             <div className={styles.icons}>
-              <IconButton name="pen" onClick={onEdit} className={styles.icon} tooltip="Edit data link" />
-              <IconButton name="trash-alt" onClick={onRemove} className={styles.icon} tooltip="Remove data link" />
+              {/* // BMC Change: To enable localization for below text */}
+              <IconButton 
+                name="pen"
+                onClick={onEdit}
+                className={styles.icon}
+                tooltip={t(
+                  'bmcgrafana.dashboards.edit-panel.data-links.edit-link-title-tooltip',
+                  'Edit data link title'
+                )} />
+              <IconButton 
+                name="trash-alt"
+                onClick={onRemove}
+                className={styles.icon}
+                tooltip={t(
+                  'bmcgrafana.dashboards.edit-panel.data-links.remove-link-title-tooltip',
+                  'Remove data link title'
+                )} />
+              {/* BMC Change ends */}
               <div className={styles.dragIcon} {...provided.dragHandleProps}>
                 <Icon name="draggabledots" size="lg" />
               </div>

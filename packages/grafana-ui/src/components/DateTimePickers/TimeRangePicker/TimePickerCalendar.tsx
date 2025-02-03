@@ -70,6 +70,10 @@ export interface TimePickerCalendarProps {
   isReversed?: boolean;
 }
 
+// BMC Code: Next function
+// Reverted this change from old grafana version to support DRJ71-7631
+const stopPropagation = (event: React.MouseEvent<HTMLDivElement>) => event.stopPropagation();
+
 function TimePickerCalendar(props: TimePickerCalendarProps) {
   const theme = useTheme2();
   const { modalBackdrop } = useStyles2(getModalStyles);
@@ -100,8 +104,9 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {
 
   const calendar = (
     <section
-      className={styles.calendar}
+      className={styles.calendar + ' override'}
       ref={ref}
+      onClick={stopPropagation}
       {...overlayProps}
       {...dialogProps}
       data-testid={selectors.components.TimePicker.calendar.label}
