@@ -1,6 +1,7 @@
 package authnimpl
 
 import (
+	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/remotecache"
 	"github.com/grafana/grafana/pkg/infra/tracing"
@@ -20,6 +21,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/quota"
 	"github.com/grafana/grafana/pkg/services/rendering"
+	"github.com/grafana/grafana/pkg/services/team"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
 )
@@ -38,6 +40,9 @@ func ProvideRegistration(
 	socialService social.Service, cache *remotecache.RemoteCache,
 	ldapService service.LDAP, settingsProviderService setting.Provider,
 	tracer tracing.Tracer,
+	db db.DB,
+	teamService team.Service,
+	teamPermissionsService accesscontrol.TeamPermissionsService,
 ) Registration {
 	logger := log.New("authn.registration")
 
@@ -78,7 +83,7 @@ func ProvideRegistration(
 	}
 
 	if cfg.AuthProxy.Enabled && len(proxyClients) > 0 {
-		proxy, err := clients.ProvideProxy(cfg, cache, proxyClients...)
+		proxy, err := clients.ProvideProxy(cfg, cache, orgService, proxyClients...)
 		if err != nil {
 			logger.Error("Failed to configure auth proxy", "err", err)
 		} else {
@@ -100,7 +105,13 @@ func ProvideRegistration(
 	}
 
 	// FIXME (jguer): move to User package
-	userSync := sync.ProvideUserSync(userService, userProtectionService, authInfoService, quotaService, tracer)
+	// BMC Code: Next line to inject db and team and team permission services
+	userSync := sync.ProvideUserSync(userService, userProtectionService, authInfoService, quotaService, tracer, db, teamService, teamPermissionsService)
+	// BMC Code: Starts , Adding post auth hooks
+	authnSvc.RegisterPostAuthHook(userSync.CheckIfUserSynced, 40)
+	authnSvc.RegisterPostAuthHook(userSync.TeamSync, 50)
+	authnSvc.RegisterPostAuthHook(userSync.BHDRoleUpdate, 101)
+	// BMC Code: Ends
 	orgSync := sync.ProvideOrgSync(userService, orgService, accessControlService, cfg, tracer)
 	authnSvc.RegisterPostAuthHook(userSync.SyncUserHook, 10)
 	authnSvc.RegisterPostAuthHook(userSync.EnableUserHook, 20)

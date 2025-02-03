@@ -1,12 +1,9 @@
 import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react';
 import { defaultsDeep } from 'lodash';
-import { lastValueFrom } from 'rxjs';
 
 import { AppEvents } from '@grafana/data';
-import { BackendSrvRequest, getBackendSrv } from '@grafana/runtime';
+import { BackendSrvRequest } from '@grafana/runtime';
 import appEvents from 'app/core/app_events';
-
-import { logMeasurement } from '../Analytics';
 
 export type ExtendedBackendSrvRequest = BackendSrvRequest & {
   /**
@@ -52,33 +49,37 @@ export const backendSrvBaseQuery =
   (): BaseQueryFn<ExtendedBackendSrvRequest> =>
   async ({ successMessage, errorMessage, body, ...requestOptions }) => {
     try {
-      const modifiedRequestOptions: BackendSrvRequest = {
-        ...requestOptions,
-        ...(body && { data: body }),
-        ...(successMessage && { showSuccessAlert: false }),
-        ...(errorMessage && { showErrorAlert: false }),
-      };
+      // BMC Change: Disable the alerting api call
+      console.warn('Suppressed alert api call');
+      // const modifiedRequestOptions: BackendSrvRequest = {
+      //   ...requestOptions,
+      //   ...(body && { data: body }),
+      //   ...(successMessage && { showSuccessAlert: false }),
+      //   ...(errorMessage && { showErrorAlert: false }),
+      // };
 
-      const requestStartTs = performance.now();
+      // const requestStartTs = performance.now();
 
-      const { data, ...meta } = await lastValueFrom(getBackendSrv().fetch(modifiedRequestOptions));
+      // const { data, ...meta } = await lastValueFrom(getBackendSrv().fetch(modifiedRequestOptions));
 
-      logMeasurement(
-        'backendSrvBaseQuery',
-        {
-          loadTimeMs: performance.now() - requestStartTs,
-        },
-        {
-          url: requestOptions.url,
-          method: requestOptions.method ?? 'GET',
-          responseStatus: meta.statusText,
-        }
-      );
+      // logMeasurement(
+      //   'backendSrvBaseQuery',
+      //   {
+      //     loadTimeMs: performance.now() - requestStartTs,
+      //   },
+      //   {
+      //     url: requestOptions.url,
+      //     method: requestOptions.method ?? 'GET',
+      //     responseStatus: meta.statusText,
+      //   }
+      // );
 
-      if (successMessage && requestOptions.showSuccessAlert !== false) {
-        appEvents.emit(AppEvents.alertSuccess, [successMessage]);
-      }
-      return { data, meta };
+      // if (successMessage && requestOptions.showSuccessAlert !== false) {
+      //   appEvents.emit(AppEvents.alertSuccess, [successMessage]);
+      // }
+      // Mock response
+      return { data: { status: 'success', data: { groups: [] } }, meta: undefined };
+      // BMC Change: Ends
     } catch (error) {
       if (errorMessage && requestOptions.showErrorAlert !== false) {
         appEvents.emit(AppEvents.alertError, [errorMessage]);

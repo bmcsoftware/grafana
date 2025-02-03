@@ -7,6 +7,7 @@ import { GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../themes';
+import { t } from '../../utils/i18n';
 import { Button, ButtonVariant } from '../Button';
 import { Field } from '../Forms/Field';
 import { Input } from '../Input/Input';
@@ -95,8 +96,17 @@ export const ConfirmContent = ({
         {confirmPromptText ? (
           <div className={styles.confirmationInput}>
             <Stack alignItems="flex-start">
-              <Field disabled={disabled}>
-                <Input placeholder={`Type "${confirmPromptText}" to confirm`} onChange={onConfirmationTextChange} />
+              {/* BMC Change: Next line to take full width */}
+              <Field disabled={disabled} style={{ flexGrow: 1 }}>
+                {/* BMC Change: Localized placeholder*/}
+                <Input
+                  placeholder={t(
+                    'bmcgrafana.grafana-ui.confirmation-model.confirmation-text',
+                    'Type "{{confirmPromptText}}" to confirm',
+                    { confirmPromptText }
+                  )}
+                  onChange={onConfirmationTextChange}
+                />
               </Field>
             </Stack>
           </div>

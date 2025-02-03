@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { DataFrame, DataLink, VariableSuggestion } from '@grafana/data';
 
+import { Trans } from '../../../utils/i18n';
 import { Button } from '../../Button';
 import { Modal } from '../../Modal/Modal';
 import { DataLinkEditor } from '../DataLinkEditor';
@@ -36,14 +37,18 @@ export const DataLinkEditorModalContent = ({
       />
       <Modal.ButtonRow>
         <Button variant="secondary" onClick={() => onCancel(index)} fill="outline">
-          Cancel
+          {/*BMC Change: To enable localization for below text*/}
+          <Trans i18nKey="bmc.common.cancel">Cancel</Trans>
+          {/* BMC Change ends */}
         </Button>
         <Button
           onClick={() => {
             onSave(index, dirtyLink);
           }}
         >
-          Save
+          {/*BMC Change: To enable localization for below text*/}
+          <Trans i18nKey="bmc.calc-fields.save">Save</Trans>
+          {/* BMC Change ends */}
         </Button>
       </Modal.ButtonRow>
     </>

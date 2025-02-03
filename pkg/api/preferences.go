@@ -94,7 +94,7 @@ func (hs *HTTPServer) UpdateUserPreferences(c *contextmodel.ReqContext) response
 		return response.Error(http.StatusInternalServerError, "Failed to update user preferences", err)
 	}
 
-	return prefapi.UpdatePreferencesFor(c.Req.Context(), hs.DashboardService,
+	return prefapi.UpdatePreferencesFor(c, hs.DashboardService,
 		hs.preferenceService, c.SignedInUser.GetOrgID(), userID, 0, &dtoCmd)
 }
 
@@ -156,6 +156,9 @@ func (hs *HTTPServer) patchPreferencesFor(ctx context.Context, orgID, userID, te
 		QueryHistory:      dtoCmd.QueryHistory,
 		CookiePreferences: dtoCmd.Cookies,
 		Navbar:            dtoCmd.Navbar,
+		// BMC code
+		TimeFormat:        dtoCmd.TimeFormat,
+		EnabledQueryTypes: dtoCmd.EnabledQueryTypes,
 	}
 
 	if err := hs.preferenceService.Patch(ctx, &patchCmd); err != nil {
@@ -194,7 +197,7 @@ func (hs *HTTPServer) UpdateOrgPreferences(c *contextmodel.ReqContext) response.
 		return response.Error(http.StatusBadRequest, "bad request data", err)
 	}
 
-	return prefapi.UpdatePreferencesFor(c.Req.Context(), hs.DashboardService, hs.preferenceService, c.SignedInUser.GetOrgID(), 0, 0, &dtoCmd)
+	return prefapi.UpdatePreferencesFor(c, hs.DashboardService, hs.preferenceService, c.SignedInUser.GetOrgID(), 0, 0, &dtoCmd)
 }
 
 // swagger:route PATCH /org/preferences org_preferences patchOrgPreferences

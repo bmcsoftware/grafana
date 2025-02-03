@@ -6,6 +6,7 @@ import { GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes';
 import { ComponentSize } from '../../types/size';
+import { Trans } from '../../utils/i18n';
 import { Button, ButtonVariant } from '../Button';
 
 export interface Props {
@@ -115,7 +116,7 @@ export const ConfirmButton = ({
             {confirmText}
           </Button>
           <Button size={size} fill="text" onClick={onClickCancel}>
-            Cancel
+            <Trans i18nKey={'bmcgrafana.grafana-ui.confirm-button.cancel-label'}>Cancel</Trans>
           </Button>
         </span>
       </div>

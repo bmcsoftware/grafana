@@ -79,7 +79,8 @@ function getDefaultImageForVariant(variant: Props['variant']) {
       return <GrotNotFound width={300} />;
     }
     case 'completed': {
-      return <SVG src={GrotCompleted} width={300} />;
+      // BMC Change: Next line inline
+      return <SVG src={GrotCompleted} width={0} height={0} />;
     }
     default: {
       throw new Error(`Unknown variant: ${variant}`);

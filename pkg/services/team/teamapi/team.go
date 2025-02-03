@@ -34,7 +34,8 @@ func (tapi *TeamAPI) createTeam(c *contextmodel.ReqContext) response.Response {
 		return response.Error(http.StatusBadRequest, "bad request data", err)
 	}
 
-	t, err := tapi.teamService.CreateTeam(c.Req.Context(), cmd.Name, cmd.Email, c.SignedInUser.GetOrgID())
+	// BMC code - added optional parameter for Id and IsMspTeam
+	t, err := tapi.teamService.CreateTeam(c.Req.Context(), cmd.Name, cmd.Email, c.SignedInUser.GetOrgID(), cmd.Id, cmd.Type, cmd.IsMspTeam)
 	if err != nil {
 		if errors.Is(err, team.ErrTeamNameTaken) {
 			return response.Error(http.StatusConflict, "Team name taken", err)
@@ -281,7 +282,8 @@ func (tapi *TeamAPI) updateTeamPreferences(c *contextmodel.ReqContext) response.
 		return response.Error(http.StatusBadRequest, "teamId is invalid", err)
 	}
 
-	return prefapi.UpdatePreferencesFor(c.Req.Context(), tapi.ds, tapi.preferenceService, c.SignedInUser.GetOrgID(), 0, teamId, &dtoCmd)
+	// BMC Code: Next line, instead c.Req.context(), passing reqContext
+	return prefapi.UpdatePreferencesFor(c, tapi.ds, tapi.preferenceService, c.SignedInUser.GetOrgID(), 0, teamId, &dtoCmd)
 }
 
 // swagger:parameters updateTeamPreferences

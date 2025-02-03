@@ -96,7 +96,7 @@ var (
 			Description:    "Correlations page",
 			Stage:          FeatureStageGeneralAvailability,
 			Owner:          grafanaExploreSquad,
-			Expression:     "true", // enabled by default
+			Expression:     "false", // BMC Change // enabled by default
 			AllowSelfServe: true,
 		},
 		{
@@ -234,7 +234,7 @@ var (
 			Description: "Enable folder nesting",
 			Stage:       FeatureStageGeneralAvailability,
 			Owner:       grafanaSearchAndStorageSquad,
-			Expression:  "true", // enabled by default
+			Expression:  "false", // BMC Change inline // enabled by default
 		},
 		{
 			Name:        "alertingBacktesting",
@@ -928,7 +928,7 @@ var (
 			Name:         "exploreMetrics",
 			Description:  "Enables the new Explore Metrics core app",
 			Stage:        FeatureStageGeneralAvailability,
-			Expression:   "true", // enabled by default
+			Expression:   "false", // BMC Change // enabled by default
 			FrontendOnly: true,
 			Owner:        grafanaDashboardsSquad,
 		},
@@ -1332,6 +1332,7 @@ var (
 			Stage:           FeatureStageExperimental,
 			Owner:           grafanaAlertingSquad,
 			RequiresRestart: true,
+			Expression:      "false",
 		},
 		{
 			Name:        "dashboardRestoreUI",

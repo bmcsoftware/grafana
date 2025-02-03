@@ -612,6 +612,10 @@ func (d *dashboardStore) deleteDashboard(cmd *dashboards.DeleteDashboardCommand,
 		{SQL: "DELETE FROM dashboard_version WHERE dashboard_id = ?", args: []any{dashboard.ID}},
 		{SQL: "DELETE FROM dashboard_provisioning WHERE dashboard_id = ?", args: []any{dashboard.ID}},
 		{SQL: "DELETE FROM dashboard_acl WHERE dashboard_id = ?", args: []any{dashboard.ID}},
+		// BMC code
+		{SQL: "DELETE from report_scheduler where id = (select report_scheduler_id from report_data where dashboard_id = ?)", args: []any{dashboard.ID}},
+		{SQL: "DELETE FROM report_data WHERE dashboard_id = ?", args: []any{dashboard.ID}},
+		// End
 	}
 
 	if dashboard.IsFolder {

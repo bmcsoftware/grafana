@@ -133,6 +133,17 @@ func (authz *AuthService) dashboardsWithVisibleAnnotations(ctx context.Context, 
 		})
 	}
 
+	if query.DashboardUID != "" {
+		filters = append(filters, searchstore.DashboardFilter{
+			UIDs: []string{query.DashboardUID},
+		})
+	}
+	if query.DashboardID != 0 {
+		filters = append(filters, searchstore.DashboardIDFilter{
+			IDs: []int64{query.DashboardID},
+		})
+	}
+
 	sb := &searchstore.Builder{Dialect: authz.db.GetDialect(), Filters: filters, Features: authz.features}
 	// This is a limit for a batch size, not for the end query result.
 	var limit int64 = 1000

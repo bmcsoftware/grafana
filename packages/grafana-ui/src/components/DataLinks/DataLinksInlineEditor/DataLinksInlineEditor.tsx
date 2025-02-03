@@ -1,4 +1,5 @@
 import { css } from '@emotion/css';
+import { t } from 'i18next';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { cloneDeep } from 'lodash';
 import { ReactNode, useEffect, useState } from 'react';
@@ -6,6 +7,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { DataFrame, DataLink, GrafanaTheme2, VariableSuggestion } from '@grafana/data';
 
 import { useStyles2 } from '../../../themes';
+import { Trans } from '../../../utils/i18n';
 import { Button } from '../../Button';
 import { Modal } from '../../Modal/Modal';
 
@@ -140,7 +142,9 @@ export const DataLinksInlineEditor = ({
 
       {isEditing && editIndex !== null && (
         <Modal
-          title="Edit link"
+          // BMC Change: To enable localization for below text
+          title={t('bmcgrafana.dashboards.edit-panel.panel-links.add-link.edit-link', 'Edit link')}
+          // BMC Change ends
           isOpen={true}
           closeOnBackdropClick={false}
           onDismiss={() => {
@@ -159,7 +163,9 @@ export const DataLinksInlineEditor = ({
       )}
 
       <Button size="sm" icon="plus" onClick={onDataLinkAdd} variant="secondary" className={styles.button}>
-        Add link
+        {/*BMC Change: To enable localization for below text*/}
+          <Trans i18nKey="bmcgrafana.dashboards.edit-panel.panel-links.add-link-text">Add link</Trans>
+        {/* BMC Change ends */}
       </Button>
     </>
   );

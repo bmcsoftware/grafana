@@ -103,9 +103,14 @@ export class UnthemedDashboardRow extends Component<DashboardRowProps> {
 
     return (
       <div
-        className={cx(styles.dashboardRow, {
-          [styles.dashboardRowCollapsed]: collapsed,
-        })}
+        className={cx(
+          styles.dashboardRow,
+          {
+            [styles.dashboardRowCollapsed]: collapsed,
+          },
+          // BMC Change: Next line to add class name of dashboard row
+          'dashboard-row'
+        )}
         data-testid="dashboard-row-container"
       >
         <button

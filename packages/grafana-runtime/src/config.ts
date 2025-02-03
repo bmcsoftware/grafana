@@ -65,6 +65,9 @@ export class GrafanaBootConfig implements GrafanaConfig {
   feedbackLinksEnabled = true;
   disableLoginForm = false;
   defaultDatasource = ''; // UID
+  // BMC code :
+  FeatureFlagEnabled = true;
+  // End
   angularSupportEnabled = false;
   authProxyEnabled = false;
   exploreEnabled = false;

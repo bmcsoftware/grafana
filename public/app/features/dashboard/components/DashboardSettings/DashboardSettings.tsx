@@ -8,7 +8,7 @@ import { locationService } from '@grafana/runtime';
 import { Button, Stack, Text, ToolbarButtonRow } from '@grafana/ui';
 import { AppChromeUpdate } from 'app/core/components/AppChrome/AppChromeUpdate';
 import { Page } from 'app/core/components/Page/Page';
-import { t } from 'app/core/internationalization';
+import { t, Trans } from 'app/core/internationalization';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction } from 'app/types';
 import { DashboardMetaChangedEvent } from 'app/types/events';
@@ -65,7 +65,8 @@ export function DashboardSettings({ dashboard, editview, pageNav, sectionNav }: 
       size={size}
       onClick={onClose}
     >
-      Close
+      {/* BMC Change: Next line */}
+      <Trans i18nKey={'bmcgrafana.dashboards.save-dashboard.close-text'}>Close</Trans>
     </Button>,
     canSaveAs && (
       <SaveDashboardAsButton

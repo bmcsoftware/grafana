@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+
 import {
   FieldConfigEditorBuilder,
   FieldType,
@@ -21,13 +23,17 @@ export function addAxisConfig(
   defaultConfig: AxisConfig,
   hideScale?: boolean
 ) {
-  const category = ['Axis'];
+  // BMC Change: To enable localization for below text
+  const category = [t('bmcgrafana.dashboards.edit-panel.axis.text', 'Axis')];
+  // BMC Change ends
 
   // options for axis appearance
   builder
     .addRadio({
       path: 'axisPlacement',
-      name: 'Placement',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.placement-text', 'Placement'),
+      // BMC Change ends
       category,
       defaultValue: graphFieldOptions.axisPlacement[0].value,
       settings: {
@@ -36,11 +42,15 @@ export function addAxisConfig(
     })
     .addTextInput({
       path: 'axisLabel',
-      name: 'Label',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.label-text', 'Label'),
+      // BMC Change ends
       category,
       defaultValue: '',
       settings: {
-        placeholder: 'Optional text',
+        // BMC Change: To enable localization for below text
+        placeholder: t('bmcgrafana.dashboards.edit-panel.axis.label-placeholder', 'Optional text'),
+        // BMC Change ends
         expandTemplateVars: true,
       },
       showIf: (c) => c.axisPlacement !== AxisPlacement.Hidden,
@@ -49,43 +59,60 @@ export function addAxisConfig(
     })
     .addNumberInput({
       path: 'axisWidth',
-      name: 'Width',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.width-text', 'Width'),
+      // BMC Change ends
       category,
       settings: {
-        placeholder: 'Auto',
+        // BMC Change: To enable localization for below text
+        placeholder: t('bmcgrafana.dashboards.edit-panel.axis.width-placeholder', 'Auto'),
+        // BMC Change ends
       },
       showIf: (c) => c.axisPlacement !== AxisPlacement.Hidden,
     })
     .addRadio({
       path: 'axisGridShow',
-      name: 'Show grid lines',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.grid-lines-text', 'Show grid lines'),
+      // BMC Change ends
       category,
       defaultValue: undefined,
       settings: {
         options: [
-          { value: undefined, label: 'Auto' },
-          { value: true, label: 'On' },
-          { value: false, label: 'Off' },
+          // BMC Change: To enable localization for below text
+          { value: undefined, label: t('bmcgrafana.dashboards.edit-panel.axis.grid-lines.auto-text', 'Auto') },
+          { value: true, label: t('bmcgrafana.dashboards.edit-panel.axis.grid-lines.on-text', 'On') },
+          { value: false, label: t('bmcgrafana.dashboards.edit-panel.axis.grid-lines.off-text', 'Off') },
+          // BMC Change ends
         ],
       },
       showIf: (c) => c.axisPlacement !== AxisPlacement.Hidden,
     })
     .addRadio({
       path: 'axisColorMode',
-      name: 'Color',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.color-text', 'Color'),
+      // BMC Change ends
       category,
       defaultValue: AxisColorMode.Text,
       settings: {
         options: [
-          { value: AxisColorMode.Text, label: 'Text' },
-          { value: AxisColorMode.Series, label: 'Series' },
+          // BMC Change: To enable localization for below text
+          { value: AxisColorMode.Text, label: t('bmcgrafana.dashboards.edit-panel.axis.color.text-text', 'Text') },
+          {
+            value: AxisColorMode.Series,
+            label: t('bmcgrafana.dashboards.edit-panel.axis.color.series-text', 'Series'),
+          },
+          // BMC Change ends
         ],
       },
       showIf: (c) => c.axisPlacement !== AxisPlacement.Hidden,
     })
     .addBooleanSwitch({
       path: 'axisBorderShow',
-      name: 'Show border',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.show-border-text', 'Show border'),
+      // BMC Change ends
       category,
       defaultValue: false,
       showIf: (c) => c.axisPlacement !== AxisPlacement.Hidden,
@@ -96,7 +123,9 @@ export function addAxisConfig(
     .addCustomEditor<void, ScaleDistributionConfig>({
       id: 'scaleDistribution',
       path: 'scaleDistribution',
-      name: 'Scale',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.scale-text', 'Scale'),
+      // BMC Change ends
       category,
       editor: ScaleDistributionEditor,
       override: ScaleDistributionEditor,
@@ -106,46 +135,58 @@ export function addAxisConfig(
     })
     .addBooleanSwitch({
       path: 'axisCenteredZero',
-      name: 'Centered zero',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.centered-zero-text', 'Centered zero'),
+      // BMC Change ends
       category,
       defaultValue: false,
       showIf: (c) => c.scaleDistribution?.type !== ScaleDistribution.Log,
     })
     .addNumberInput({
       path: 'axisSoftMin',
-      name: 'Soft min',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.soft-min-text', 'Soft min'),
+      // BMC Change ends
       defaultValue: defaultConfig.axisSoftMin,
       category,
       settings: {
-        placeholder: 'See: Standard options > Min',
+        // BMC Change: To enable localization for below text
+        placeholder: t('bmcgrafana.dashboards.edit-panel.axis.soft-min-placeholder', 'See: Standard options > Min'),
+        // BMC Change ends
       },
     })
     .addNumberInput({
       path: 'axisSoftMax',
-      name: 'Soft max',
+      // BMC Change: To enable localization for below text
+      name: t('bmcgrafana.dashboards.edit-panel.axis.soft-max-text', 'Soft max'),
+      // BMC Change ends
       defaultValue: defaultConfig.axisSoftMax,
       category,
       settings: {
-        placeholder: 'See: Standard options > Max',
+        // BMC Change: To enable localization for below text
+        placeholder: t('bmcgrafana.dashboards.edit-panel.axis.soft-max-description', 'See: Standard options > Max'),
+        // BMC Change ends
       },
     });
 }
-
-const DISTRIBUTION_OPTIONS: Array<SelectableValue<ScaleDistribution>> = [
-  {
-    label: 'Linear',
-    value: ScaleDistribution.Linear,
-  },
-  {
-    label: 'Logarithmic',
-    value: ScaleDistribution.Log,
-  },
-  {
-    label: 'Symlog',
-    value: ScaleDistribution.Symlog,
-  },
-];
-
+// BMC Change: Function to enable localization for below text
+export const getDISTRIBUTION_OPTIONS = (): Array<SelectableValue<ScaleDistribution>> => {
+  return [
+    {
+      label: t('bmcgrafana.dashboards.edit-panel.axis.scale.linear-text', 'Linear'),
+      value: ScaleDistribution.Linear,
+    },
+    {
+      label: t('bmcgrafana.dashboards.edit-panel.axis.scale.Logarithmic-text', 'Logarithmic'),
+      value: ScaleDistribution.Log,
+    },
+    {
+      label: t('bmcgrafana.dashboards.edit-panel.axis.scale.Symlog-text', 'Symlog'),
+      value: ScaleDistribution.Symlog,
+    },
+  ];
+};
+// BMC change ends
 const LOG_DISTRIBUTION_OPTIONS: Array<SelectableValue<number>> = [
   {
     label: '2',
@@ -156,7 +197,6 @@ const LOG_DISTRIBUTION_OPTIONS: Array<SelectableValue<number>> = [
     value: 10,
   },
 ];
-
 /**
  * @internal
  */
@@ -168,7 +208,9 @@ export const ScaleDistributionEditor = ({ value, onChange }: StandardEditorProps
       <div style={{ marginBottom: 16 }}>
         <RadioButtonGroup
           value={type}
-          options={DISTRIBUTION_OPTIONS}
+          // BMC Change: Function call for localized text
+          options={getDISTRIBUTION_OPTIONS()}
+          // BMC Change ends
           onChange={(v) => {
             onChange({
               ...value,
@@ -179,7 +221,9 @@ export const ScaleDistributionEditor = ({ value, onChange }: StandardEditorProps
         />
       </div>
       {(type === ScaleDistribution.Log || type === ScaleDistribution.Symlog) && (
-        <Field label="Log base">
+        // BMC Change: To enable localization for below text
+        <Field label={t('bmcgrafana.dashboards.edit-panel.axis.scale.logarithmic.log-base-text', 'Log base')}>
+          {/* BMC Change ends */}
           <Select
             options={LOG_DISTRIBUTION_OPTIONS}
             value={log}
@@ -193,9 +237,13 @@ export const ScaleDistributionEditor = ({ value, onChange }: StandardEditorProps
         </Field>
       )}
       {type === ScaleDistribution.Symlog && (
-        <Field label="Linear threshold">
+        // BMC Change: To enable localization for below text
+        <Field
+          label={t('bmcgrafana.dashboards.edit-panel.axis.scale.symlog.linear-threshold-text', 'Linear threshold')}
+        >
           <Input
-            placeholder="1"
+            placeholder={t('bmcgrafana.dashboards.edit-panel.axis.scale.symlog.linear-threshold-placeholder', '1')}
+            // BMC Change ends
             value={value?.linearThreshold}
             onChange={(v) => {
               onChange({

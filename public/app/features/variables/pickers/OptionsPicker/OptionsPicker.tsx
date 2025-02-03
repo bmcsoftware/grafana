@@ -143,7 +143,7 @@ export const optionPickerFactory = <Model extends VariableWithOptions | Variable
     };
 
     renderOptions(picker: OptionsPickerState) {
-      const { id } = this.props.variable;
+      const { id, options = [] } = this.props.variable;
       return (
         <ClickOutsideWrapper onClick={this.onHideOptions}>
           <VariableInput
@@ -155,6 +155,8 @@ export const optionPickerFactory = <Model extends VariableWithOptions | Variable
             aria-controls={`options-${id}`}
           />
           <VariableOptions
+            // BMC Change: Next Line
+            totalOptions={options.length}
             values={picker.options}
             onToggle={this.onToggleOption}
             onToggleAll={this.onToggleAllOptions}

@@ -1,17 +1,18 @@
 import { css } from '@emotion/css';
 import { cloneDeep } from 'lodash';
-import { memo } from 'react';
+import { memo, FC } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 import { GrafanaTheme2, locationUtil, textUtil } from '@grafana/data';
 import { Dropdown, ToolbarButton, useStyles2 } from '@grafana/ui';
 import { config } from 'app/core/config';
 import { contextSrv } from 'app/core/core';
-import { useSelector } from 'app/types';
+import { t } from 'app/core/internationalization';
+import { StoreState, useSelector } from 'app/types';
 
 import { Branding } from '../../Branding/Branding';
 import { enrichHelpItem } from '../MegaMenu/utils';
-import { NewsContainer } from '../News/NewsContainer';
 import { OrganizationSwitcher } from '../OrganizationSwitcher/OrganizationSwitcher';
 import { QuickAdd } from '../QuickAdd/QuickAdd';
 import { TOP_BAR_LEVEL_HEIGHT } from '../types';
@@ -21,13 +22,23 @@ import { TopNavBarMenu } from './TopNavBarMenu';
 import { TopSearchBarCommandPaletteTrigger } from './TopSearchBarCommandPaletteTrigger';
 import { TopSearchBarSection } from './TopSearchBarSection';
 
-export const TopSearchBar = memo(function TopSearchBar() {
+// BMC code start
+const connector = connect((state: StoreState) => {
+  return { configurableLinks: state.dashboard.configurableLinks };
+}, {});
+
+type Props = ConnectedProps<typeof connector>;
+// BMC code start
+
+// BMC code next line: create unconnected component
+const TopSearchBarUnconnected: FC<Props> = memo(function TopSearchBar({ configurableLinks }) {
   const styles = useStyles2(getStyles);
   const navIndex = useSelector((state) => state.navIndex);
   const location = useLocation();
 
   const helpNode = cloneDeep(navIndex['help']);
-  const enrichedHelpNode = helpNode ? enrichHelpItem(helpNode) : undefined;
+  // BMC Change: Next line inline
+  const enrichedHelpNode = helpNode ? enrichHelpItem(helpNode, configurableLinks) : undefined;
   const profileNode = navIndex['profile'];
 
   let homeUrl = config.appSubUrl || '/';
@@ -38,7 +49,7 @@ export const TopSearchBar = memo(function TopSearchBar() {
   return (
     <div className={styles.layout}>
       <TopSearchBarSection>
-        <a className={styles.logo} href={homeUrl} title="Go to home">
+        <a className={styles.logo} href={homeUrl} title={t('bmcgrafana.top-search-bar.go-to-home', 'Go to home')}>
           <Branding.MenuLogo className={styles.img} />
         </a>
         <OrganizationSwitcher />
@@ -55,7 +66,8 @@ export const TopSearchBar = memo(function TopSearchBar() {
             <ToolbarButton iconOnly icon="question-circle" aria-label="Help" />
           </Dropdown>
         )}
-        {config.newsFeedEnabled && <NewsContainer />}
+        {/* BMC code - next line. Hide News feeds */}
+        {/* {config.newsFeedEnabled && <NewsContainer />} */}
         {!contextSrv.user.isSignedIn && <SignInLink />}
         {profileNode && (
           <Dropdown overlay={() => <TopNavBarMenu node={profileNode} />} placement="bottom-end">
@@ -71,6 +83,9 @@ export const TopSearchBar = memo(function TopSearchBar() {
     </div>
   );
 });
+
+// BMC code next line: Create redux connected component
+export const TopSearchBar = connector(TopSearchBarUnconnected);
 
 const getStyles = (theme: GrafanaTheme2) => ({
   layout: css({
