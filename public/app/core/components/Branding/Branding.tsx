@@ -10,7 +10,11 @@ export interface BrandComponentProps {
 }
 
 export const LoginLogo: FC<BrandComponentProps & { logo?: string }> = ({ className, logo }) => {
-  return <img className={className} src={`${logo ? logo : 'public/img/grafana_icon.svg'}`} alt="Grafana" />;
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/09/2023
+  // Replaced with bmc icon
+  return <img className={className} src={`${logo ? logo : 'public/img/dashboard_icon.svg'}`} alt="Dashboard" />;
+  // END
 };
 
 const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
@@ -43,7 +47,11 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 };
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
-  return <img className={className} src="public/img/grafana_icon.svg" alt="Grafana" />;
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/09/2023
+  // Replaced with bmc icon
+  return <img className={className} src="public/img/dashboard_icon.svg" alt="Dashboard" />;
+  // END
 };
 
 const LoginBoxBackground = () => {
@@ -59,8 +67,12 @@ export class Branding {
   static LoginBackground = LoginBackground;
   static MenuLogo = MenuLogo;
   static LoginBoxBackground = LoginBoxBackground;
-  static AppTitle = 'Grafana';
-  static LoginTitle = 'Welcome to Grafana';
+  // @Copyright 2023 BMC Software, Inc.
+  // Date - 06/09/2023
+  // Replaced text Grafana with Dashboard
+  static AppTitle = 'AMI Dashboard';
+  static LoginTitle = 'Welcome to AMI Dashboard';
+  // END
   static GetLoginSubTitle = (): null | string => {
     return null;
   };

@@ -42,11 +42,16 @@ export class PanelHeaderMenu extends PureComponent<Props> {
   };
 
   render() {
+    // @Copyright 2023 BMC Software, Inc.
+    // Date - 06/09/2023
+    // Show only view option for panel menu
+    const filteredItems = this.props.items.filter((item) => item.text === 'View');
     return (
       <div className={classnames('panel-menu-container', 'dropdown', 'open', this.props.className)}>
-        {this.renderItems(this.props.items)}
+        {this.renderItems(filteredItems)}
       </div>
     );
+    // END
   }
 }
 

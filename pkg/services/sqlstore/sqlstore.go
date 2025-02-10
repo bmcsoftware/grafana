@@ -230,6 +230,22 @@ func (ss *SQLStore) ensureMainOrgAndAdminUser(test bool) error {
 				return fmt.Errorf("failed to create admin user: %s", err)
 			}
 
+			// @Copyright 2023 BMC Software, Inc.
+			// Date - 06/09/2023
+			// Created user with view role
+
+			if _, err := ss.createUser(ctx, sess, user.CreateUserCommand{
+				Login:          "viewer",
+				Email:          "viewer@localhost",
+				Password:       ss.Cfg.AdminPassword,
+				IsAdmin:        false,
+				DefaultOrgRole: "Viewer",
+			}); err != nil {
+				return fmt.Errorf("Failed to create viewer user: %s", err)
+			}
+
+			// END
+
 			ss.log.Info("Created default admin", "user", ss.Cfg.AdminUser)
 		}
 

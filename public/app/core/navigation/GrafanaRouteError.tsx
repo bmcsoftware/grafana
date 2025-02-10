@@ -3,7 +3,12 @@ import React, { ErrorInfo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { locationUtil, PageLayoutType } from '@grafana/data';
-import { Button, ErrorWithStack, stylesFactory } from '@grafana/ui';
+// @Copyright 2023 BMC Software, Inc.
+// Date - 06/09/2023
+// Commented unused import
+// import { Button, ErrorWithStack, stylesFactory } from '@grafana/ui';
+// END
+import { ErrorWithStack, stylesFactory } from '@grafana/ui';
 
 import { Page } from '../components/Page/Page';
 
@@ -32,15 +37,22 @@ export function GrafanaRouteError({ error, errorInfo }: Props) {
           <div>
             <h2>Unable to find application file</h2>
             <br />
-            <h2 className="page-heading">Grafana has likely been updated. Please try reloading the page.</h2>
+
+            {/*
+            // @Copyright 2023 BMC Software, Inc.
+            // Date - 06/09/2023
+            // Replaced text from Grafana to Dashboard and hide Reload button */}
+            <h2 className="page-heading">Dashboard has likely been updated. Please try reloading the page.</h2>
+
             <br />
-            <div className="gf-form-group">
+            {/* <div className="gf-form-group">
               <Button size="md" variant="secondary" icon="repeat" onClick={() => window.location.reload()}>
                 Reload
               </Button>
             </div>
-            <ErrorWithStack title={'Error details'} error={error} errorInfo={errorInfo} />
+            <ErrorWithStack title={'Error details'} error={error} errorInfo={errorInfo} /> */}
           </div>
+          /* // END */
         )}
         {!isChunkLoadingError && (
           <ErrorWithStack title={'An unexpected error happened'} error={error} errorInfo={errorInfo} />
