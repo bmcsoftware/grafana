@@ -3,7 +3,12 @@ import React, { ErrorInfo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { GrafanaTheme2, locationUtil, PageLayoutType } from '@grafana/data';
-import { Button, ErrorWithStack, useStyles2 } from '@grafana/ui';
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2024
+// Commented unused import
+// import { Button, ErrorWithStack, useStyles2 } from '@grafana/ui';
+// END
+import { useStyles2 } from '@grafana/ui';
 
 import { Page } from '../components/Page/Page';
 
@@ -33,13 +38,21 @@ export function GrafanaRouteError({ error, errorInfo }: Props) {
           <div>
             <h2>Unable to find application file</h2>
             <br />
-            <h2 className="page-heading">Grafana has likely been updated. Please try reloading the page.</h2>
+            {/*
+            // @Copyright 2024 BMC Software, Inc.
+            // Date - 02/02/2024
+            // Replaced text from Grafana to Dashboard and hide Reload button
+            */}
+            <h2 className="page-heading">Dashboard has likely been updated. Please try reloading the page.</h2>
             <br />
+            {/*
             <Button size="md" variant="secondary" icon="repeat" onClick={() => window.location.reload()}>
               Reload
             </Button>
             <ErrorWithStack title={'Error details'} error={error} errorInfo={errorInfo} />
+            */}
           </div>
+          // END
         )}
         {!isChunkLoadingError && (
           <ErrorWithStack title={'An unexpected error happened'} error={error} errorInfo={errorInfo} />

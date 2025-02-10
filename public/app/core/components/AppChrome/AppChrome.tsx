@@ -14,7 +14,11 @@ import { MegaMenu as DockedMegaMenu } from './DockedMegaMenu/MegaMenu';
 import { MegaMenu } from './MegaMenu/MegaMenu';
 import { NavToolbar } from './NavToolbar/NavToolbar';
 import { SectionNav } from './SectionNav/SectionNav';
-import { TopSearchBar } from './TopBar/TopSearchBar';
+// @Copyright 2024 BMC Software, Inc.
+// Date - 02/02/2024
+// Commented unused imports
+// import { TopSearchBar } from './TopSearchBar';
+// END
 import { TOP_BAR_LEVEL_HEIGHT } from './types';
 
 export interface Props extends PropsWithChildren<{}> {}
@@ -65,7 +69,12 @@ export function AppChrome({ children }: Props) {
             Skip to main content
           </LinkButton>
           <div className={cx(styles.topNav)}>
+            {/*
+            // @Copyright 2024 BMC Software, Inc.
+            // Date - 02/02/2024
+            // Hide searchbar
             {!searchBarHidden && <TopSearchBar />}
+            */}
             <NavToolbar
               searchBarHidden={searchBarHidden}
               sectionNav={state.sectionNav.node}
@@ -114,7 +123,11 @@ const getStyles = (theme: GrafanaTheme2) => {
     content: css({
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: TOP_BAR_LEVEL_HEIGHT * 2,
+      // @Copyright 2024 BMC Software, Inc.
+      // Date - 02/02/2024
+      // Adjusted padding
+      paddingTop: TOP_BAR_LEVEL_HEIGHT * 1,
+      // End
       flexGrow: 1,
       height: '100%',
     }),

@@ -113,8 +113,11 @@ function getMessageFor(
   if (needsTimeField && !dataSummary.hasTimeField) {
     return 'Data is missing a time field';
   }
-
-  return 'Cannot visualize data';
+  // @Copyright 2024 BMC Software, Inc.
+  // Date - 02/02/2024
+  // Updated message on the panel
+  return fieldConfig?.defaults.noValue ?? 'No data';
+  // End
 }
 
 const getStyles = (theme: GrafanaTheme2) => {

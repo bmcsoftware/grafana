@@ -223,6 +223,10 @@ const EmptyRecentList = memo(() => {
         <span>{emptyRecentListText}</span>
       </div>
       <Trans i18nKey="time-picker.content.empty-recent-list-docs">
+        {/*
+        // @Copyright 2024 BMC Software, Inc.
+        // Date - 02/02/2024
+        // Commented documentation link
         <div>
           <a
             className={styles.link}
@@ -233,6 +237,7 @@ const EmptyRecentList = memo(() => {
           </a>
           <span> to find out more about how to enter custom time ranges.</span>
         </div>
+        */}
       </Trans>
     </div>
   );
