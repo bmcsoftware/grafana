@@ -7,9 +7,13 @@ import { selectors } from '@grafana/e2e-selectors';
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles } from '../../themes/mixins';
 import { IconName } from '../../types';
-import { Icon } from '../Icon/Icon';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 02/26/2025
+// Commented unused code
+// import { Icon } from '../Icon/Icon';
+// import { Link } from '../Link/Link';
+// End
 import { IconButton } from '../IconButton/IconButton';
-import { Link } from '../Link/Link';
 import { ToolbarButtonRow } from '../ToolbarButton/ToolbarButtonRow';
 
 export interface Props {
@@ -70,26 +74,36 @@ export const PageToolbar = memo(
       className
     );
 
-    const titleEl = (
-      <>
-        <span className={styles.truncateText}>{title}</span>
-        {section && (
-          <span className={styles.pre}>
-            {' / '}
-            {section}
-          </span>
-        )}
-      </>
-    );
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 02/26/2025
+    // Commented unused code
+    // const titleEl = (
+    //   <>
+    //     <span className={styles.truncateText}>{title}</span>
+    //     {section && (
+    //       <span className={styles.pre}>
+    //         {' / '}
+    //         {section}
+    //       </span>
+    //     )}
+    //   </>
+    // );
+    // END
 
     return (
       <nav className={mainStyle} aria-label={ariaLabel}>
         <div className={styles.leftWrapper}>
+          {/* 
+          // @Copyright 2025 BMC Software, Inc.
+          // Date - 02/26/2025
+          // Hide page icon
           {pageIcon && !onGoBack && (
             <div className={styles.pageIcon}>
               <Icon name={pageIcon} size="lg" aria-hidden />
             </div>
-          )}
+          )} 
+          // END 
+          */}
           {onGoBack && (
             <div className={styles.pageIcon}>
               <IconButton
@@ -103,6 +117,10 @@ export const PageToolbar = memo(
             </div>
           )}
           <nav aria-label="Search links" className={styles.navElement}>
+            {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 02/26/2025
+            // Hide the links which are not required
             {parent && parentHref && (
               <>
                 <Link
@@ -147,7 +165,9 @@ export const PageToolbar = memo(
                   </div>
                 ))}
               </div>
-            )}
+            )} 
+            // END
+            */}
           </nav>
         </div>
         <ToolbarButtonRow alignment={buttonOverflowAlignment}>
@@ -190,6 +210,11 @@ const getStyles = (theme: GrafanaTheme2) => {
       display: 'flex',
       flexWrap: 'nowrap',
       maxWidth: '70%',
+      // @Copyright 2025 BMC Software, Inc.
+      // Date - 02/26/2025
+      // Adjusted height for toolbar */
+      height: '40px',
+      // END
     }),
     pageIcon: css({
       display: 'none',

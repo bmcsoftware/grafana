@@ -88,7 +88,11 @@ export const VizLegendListItem = <T = unknown,>({
         onClick={onClick}
         className={styles.label}
       >
-        {item.label}
+        {/*  // @Copyright 2025 BMC Software, Inc.
+            // Date - 02/26/2025
+            // Formatted the panel legend */}
+        {(item.label.startsWith('"') && item.label.endsWith('"')) ? item.label.substring(1, item.label.length - 1) : item.label}
+        {/* // END */}
       </button>
 
       {item.getDisplayValues && <VizLegendStatsList stats={item.getDisplayValues()} />}

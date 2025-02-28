@@ -50,197 +50,202 @@ export function setupKeyboardShortcuts(scene: DashboardScene) {
     }),
   });
 
-  // Panel share
-  if (config.featureToggles.newDashboardSharingComponent) {
-    keybindings.addBinding({
-      key: 'p u',
-      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-        const drawer = new ShareDrawer({
-          shareView: shareDashboardType.link,
-          panelRef: vizPanel.getRef(),
-        });
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 02/26/2025
+  // Removed the keyboard shortcuts.
+  // // Panel share
+  // if (config.featureToggles.newDashboardSharingComponent) {
+  //   keybindings.addBinding({
+  //     key: 'p u',
+  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+  //       const drawer = new ShareDrawer({
+  //         shareView: shareDashboardType.link,
+  //         panelRef: vizPanel.getRef(),
+  //       });
 
-        scene.showModal(drawer);
-      }),
-    });
-    keybindings.addBinding({
-      key: 'p e',
-      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-        const drawer = new ShareDrawer({
-          shareView: shareDashboardType.embed,
-          panelRef: vizPanel.getRef(),
-        });
+  //       scene.showModal(drawer);
+  //     }),
+  //   });
+  //   keybindings.addBinding({
+  //     key: 'p e',
+  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+  //       const drawer = new ShareDrawer({
+  //         shareView: shareDashboardType.embed,
+  //         panelRef: vizPanel.getRef(),
+  //       });
 
-        scene.showModal(drawer);
-      }),
-    });
+  //       scene.showModal(drawer);
+  //     }),
+  //   });
 
-    if (
-      contextSrv.isSignedIn &&
-      config.snapshotEnabled &&
-      contextSrv.hasPermission(AccessControlAction.SnapshotsCreate)
-    ) {
-      keybindings.addBinding({
-        key: 'p s',
-        onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-          const drawer = new ShareDrawer({
-            shareView: shareDashboardType.snapshot,
-            panelRef: vizPanel.getRef(),
-          });
+  //   if (
+  //     contextSrv.isSignedIn &&
+  //     config.snapshotEnabled &&
+  //     contextSrv.hasPermission(AccessControlAction.SnapshotsCreate)
+  //   ) {
+  //     keybindings.addBinding({
+  //       key: 'p s',
+  //       onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+  //         const drawer = new ShareDrawer({
+  //           shareView: shareDashboardType.snapshot,
+  //           panelRef: vizPanel.getRef(),
+  //         });
 
-          scene.showModal(drawer);
-        }),
-      });
-    }
-  } else {
-    keybindings.addBinding({
-      key: 'p s',
-      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-        scene.showModal(new ShareModal({ panelRef: vizPanel.getRef() }));
-      }),
-    });
-  }
+  //         scene.showModal(drawer);
+  //       }),
+  //     });
+  //   }
+  // } else {
+  //   keybindings.addBinding({
+  //     key: 'p s',
+  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+  //       scene.showModal(new ShareModal({ panelRef: vizPanel.getRef() }));
+  //     }),
+  //   });
+  // }
 
-  // Panel inspect
-  keybindings.addBinding({
-    key: 'i',
-    onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-      locationService.push(getInspectUrl(vizPanel));
-    }),
-  });
+  // // Panel inspect
+  // keybindings.addBinding({
+  //   key: 'i',
+  //   onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+  //     locationService.push(getInspectUrl(vizPanel));
+  //   }),
+  // });
 
-  // Got to Explore for panel
-  keybindings.addBinding({
-    key: 'p x',
-    onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-      const url = await tryGetExploreUrlForPanel(vizPanel);
-      if (url) {
-        locationService.push(url);
-      }
-    }),
-  });
+  // // Got to Explore for panel
+  // keybindings.addBinding({
+  //   key: 'p x',
+  //   onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+  //     const url = await tryGetExploreUrlForPanel(vizPanel);
+  //     if (url) {
+  //       locationService.push(url);
+  //     }
+  //   }),
+  // });
 
-  // Toggle legend
-  keybindings.addBinding({
-    key: 'p l',
-    onTrigger: withFocusedPanel(scene, toggleVizPanelLegend),
-  });
+  // // Toggle legend
+  // keybindings.addBinding({
+  //   key: 'p l',
+  //   onTrigger: withFocusedPanel(scene, toggleVizPanelLegend),
+  // });
 
-  // Refresh
-  keybindings.addBinding({
-    key: 'd r',
-    onTrigger: () => sceneGraph.getTimeRange(scene).onRefresh(),
-  });
+  // // Refresh
+  // keybindings.addBinding({
+  //   key: 'd r',
+  //   onTrigger: () => sceneGraph.getTimeRange(scene).onRefresh(),
+  // });
 
-  // Zoom out
-  keybindings.addBinding({
-    key: 't z',
-    onTrigger: () => {
-      handleZoomOut(scene);
-    },
-  });
+  // // Zoom out
+  // keybindings.addBinding({
+  //   key: 't z',
+  //   onTrigger: () => {
+  //     handleZoomOut(scene);
+  //   },
+  // });
 
-  keybindings.addBinding({
-    key: 'ctrl+z',
-    onTrigger: () => {
-      handleZoomOut(scene);
-    },
-  });
+  // keybindings.addBinding({
+  //   key: 'ctrl+z',
+  //   onTrigger: () => {
+  //     handleZoomOut(scene);
+  //   },
+  // });
 
-  // Relative -> Absolute time range
-  keybindings.addBinding({
-    key: 't a',
-    onTrigger: () => {
-      const timePicker = dashboardSceneGraph.getTimePicker(scene);
-      timePicker?.toAbsolute();
-    },
-  });
+  // // Relative -> Absolute time range
+  // keybindings.addBinding({
+  //   key: 't a',
+  //   onTrigger: () => {
+  //     const timePicker = dashboardSceneGraph.getTimePicker(scene);
+  //     timePicker?.toAbsolute();
+  //   },
+  // });
 
-  keybindings.addBinding({
-    key: 't left',
-    onTrigger: () => {
-      handleTimeRangeShift(scene, 'left');
-    },
-  });
+  // keybindings.addBinding({
+  //   key: 't left',
+  //   onTrigger: () => {
+  //     handleTimeRangeShift(scene, 'left');
+  //   },
+  // });
 
-  keybindings.addBinding({
-    key: 't right',
-    onTrigger: () => {
-      handleTimeRangeShift(scene, 'right');
-    },
-  });
+  // keybindings.addBinding({
+  //   key: 't right',
+  //   onTrigger: () => {
+  //     handleTimeRangeShift(scene, 'right');
+  //   },
+  // });
 
-  if (canEdit) {
-    // Panel edit
-    keybindings.addBinding({
-      key: 'e',
-      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-        const sceneRoot = vizPanel.getRoot();
-        if (sceneRoot instanceof DashboardScene) {
-          const panelId = getPanelIdForVizPanel(vizPanel);
-          if (!scene.state.editPanel) {
-            const url = locationUtil.stripBaseFromUrl(getEditPanelUrl(panelId));
-            locationService.push(url);
-          }
-        }
-      }),
-    });
+  // if (canEdit) {
+  //   // Panel edit
+  //   keybindings.addBinding({
+  //     key: 'e',
+  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+  //       const sceneRoot = vizPanel.getRoot();
+  //       if (sceneRoot instanceof DashboardScene) {
+  //         const panelId = getPanelIdForVizPanel(vizPanel);
+  //         if (!scene.state.editPanel) {
+  //           const url = locationUtil.stripBaseFromUrl(getEditPanelUrl(panelId));
+  //           locationService.push(url);
+  //         }
+  //       }
+  //     }),
+  //   });
 
-    // Dashboard settings
-    keybindings.addBinding({
-      key: 'd s',
-      onTrigger: scene.onOpenSettings,
-    });
+  //   // Dashboard settings
+  //   keybindings.addBinding({
+  //     key: 'd s',
+  //     onTrigger: scene.onOpenSettings,
+  //   });
 
-    // Open save drawer
-    keybindings.addBinding({
-      key: 'mod+s',
-      onTrigger: () => scene.openSaveDrawer({}),
-    });
+  //   // Open save drawer
+  //   keybindings.addBinding({
+  //     key: 'mod+s',
+  //     onTrigger: () => scene.openSaveDrawer({}),
+  //   });
 
-    // delete panel
-    keybindings.addBinding({
-      key: 'p r',
-      onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
-        if (scene.state.isEditing) {
-          onRemovePanel(scene, vizPanel);
-        }
-      }),
-    });
+  //   // delete panel
+  //   keybindings.addBinding({
+  //     key: 'p r',
+  //     onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
+  //       if (scene.state.isEditing) {
+  //         onRemovePanel(scene, vizPanel);
+  //       }
+  //     }),
+  //   });
 
-    // duplicate panel
-    keybindings.addBinding({
-      key: 'p d',
-      onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
-        if (scene.state.isEditing) {
-          scene.duplicatePanel(vizPanel);
-        }
-      }),
-    });
+  //   // duplicate panel
+  //   keybindings.addBinding({
+  //     key: 'p d',
+  //     onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
+  //       if (scene.state.isEditing) {
+  //         scene.duplicatePanel(vizPanel);
+  //       }
+  //     }),
+  //   });
 
-    // collapse all rows
-    keybindings.addBinding({
-      key: 'd shift+c',
-      onTrigger: () => {
-        if (scene.state.body instanceof DefaultGridLayoutManager) {
-          scene.state.body.collapseAllRows();
-        }
-      },
-    });
+  //   // collapse all rows
+  //   keybindings.addBinding({
+  //     key: 'd shift+c',
+  //     onTrigger: () => {
+  //       if (scene.state.body instanceof DefaultGridLayoutManager) {
+  //         scene.state.body.collapseAllRows();
+  //       }
+  //     },
+  //   });
 
-    // expand all rows
-    keybindings.addBinding({
-      key: 'd shift+e',
-      onTrigger: () => {
-        if (scene.state.body instanceof DefaultGridLayoutManager) {
-          scene.state.body.expandAllRows();
-        }
-      },
-    });
-  }
+  //   // expand all rows
+  //   keybindings.addBinding({
+  //     key: 'd shift+e',
+  //     onTrigger: () => {
+  //       if (scene.state.body instanceof DefaultGridLayoutManager) {
+  //         scene.state.body.expandAllRows();
+  //       }
+  //     },
+  //   });
+  // }
 
   // toggle all panel legends (TODO)
   // toggle all exemplars (TODO)
+
+  // END
 
   return () => {
     keybindings.removeAll();

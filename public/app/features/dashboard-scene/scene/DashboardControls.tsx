@@ -160,11 +160,17 @@ function getStyles(theme: GrafanaTheme2) {
       alignItems: 'flex-start',
       flex: '100%',
       gap: theme.spacing(1),
-      padding: theme.spacing(2),
       flexDirection: 'row',
       flexWrap: 'nowrap',
       position: 'relative',
       width: '100%',
+      // @Copyright 2025 BMC Software, Inc.
+      // Date - 02/26/2025
+      // Adjusted the dashboard control styles.
+      padding:'4px 0 8px 16px',
+      background:'white',
+      boxShadow:'rgba(0, 0, 0, 0.04) 0px 4px 8px',
+      // END
       marginLeft: 'auto',
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column-reverse',
