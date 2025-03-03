@@ -154,7 +154,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       gap: '8px',
       boxSizing: 'border-box',
       flexDirection: 'column',
-      padding: theme.spacing(0, 2, 2, 2),
+      padding: theme.spacing(2),
     }),
     bodyEditing: css({
       position: 'absolute',
@@ -181,7 +181,6 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       [theme.breakpoints.up('md')]: {
         position: 'sticky',
         zIndex: theme.zIndex.activePanel,
-        background: theme.colors.background.canvas,
         // @Copyright 2025 BMC Software, Inc.
         // Date - 02/26/2025
         // Adjusted dashboard controls positioning.
