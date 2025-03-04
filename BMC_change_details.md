@@ -1,4 +1,4 @@
-# **_Change details in Grafana v11.3.0_**
+# **_Change details in Grafana v11.5.2_**
 
 # **_Rebranding:_**
 
@@ -21,8 +21,6 @@
 - …/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker -> ‘TimePickerContent.tsx’
 - …/packages/grafana-ui/src/components/RefreshPicker -> 'RefreshPicker.tsx'
 - …/pkg/api -> ‘index.go’
-- …/public/sass/base -> ‘\_icons.scss’
-- …/public/sass/components -> '\_panel_header.scss'
 
 #### Error Pages
 
@@ -53,22 +51,17 @@
 
 ### Dashboard & Dashboard Panel
 
-- …/public/app/features/dashboard/components/DashNav -> ‘DashNav.tsx’
+- …/public/app/features/dashboard-scene/edit-pane -> 'DashboardEditPaneSplitter.tsx'
 - …/public/app/features/dashboard-scene/scene -> 'DashboardControls.tsx'
-- …/public/app/features/dashboard-scene/scene -> 'DashboardSceneRenderer.tsx'
-- …/public/app/features/dashboard/components/DashboardLoading -> ‘DashboardLoading.tsx’
-- …/public/app/features/dashboard/dashgrid/PanelHeader -> ‘PanelHeaderCorner.tsx’, ‘PanelHeaderMenu.tsx’, ‘PanelHeaderMenuItem.tsx’
+- …/public/app/features/dashboard/dashgrid/PanelHeader -> ‘PanelHeaderCorner.tsx’
 - …/public/app/features/dashboard-scene/scene -> 'PanelMenuBehavior.tsx'
 - …/public/app/features/dashboard-scene/scene -> 'keyboardShortcuts.ts'
 - …/public/app/features/dashboard-scene/serialization -> 'transformSaveModelToScene.ts'
 - …/packages/grafana-ui/src/components/Menu ->  'MenuItem.tsx'
 - …/public/app/core/components/AppChrome -> 'AppChrome.tsx'
 - …/public/app/features/dashboard/utils -> 'getPanelMenu.ts'
-- …/packages/grafana-ui/src/components/VizLegend -> 'VizLegendListItem.tsx'
 - …/public/app/features/panel/components -> 'PanelDataErrorView.tsx’
-- …/public/app/core/components/AppChrome -> 'AppChrome.tsx’, 'NavToolbar.tsx’
-- …/public/app/core/services -> 'keybindingSrv.ts'
-- …/public/app/plugins/panel/graph -> ‘graph.ts’
+- …/public/app/core/components/AppChrome -> 'AppChrome.tsx’
 
 ### Page layout
 - …/packages/grafana-ui/src/components/PageLayout -> 'PageToolbar.tsx’
@@ -81,7 +74,7 @@
 
 ### Graph Legend Customization - to remove double quote from names
 
-- …/public/app/plugins/panel/graph/Legend -> ‘LegendSeriesItem.tsx’
+- …/packages/grafana-ui/src/components/VizLegend -> 'VizLegendListItem.tsx'
 
 ### Add user with viewer role
 
