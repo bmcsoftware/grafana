@@ -1,8 +1,13 @@
 import { css, keyframes } from '@emotion/css';
 
 import { GrafanaTheme2 } from '@grafana/data';
-import { locationService } from '@grafana/runtime';
-import { Button, HorizontalGroup, Spinner, useStyles2, VerticalGroup } from '@grafana/ui';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 02/26/2025
+// Commented unused import
+// import { locationService } from '@grafana/runtime';
+// import { Button, HorizontalGroup, Spinner, useStyles2, VerticalGroup } from '@grafana/ui';
+// END
+import { HorizontalGroup, Spinner, useStyles2, VerticalGroup } from '@grafana/ui';
 import { DashboardInitPhase } from 'app/types';
 
 export interface Props {
@@ -11,9 +16,13 @@ export interface Props {
 
 export const DashboardLoading = ({ initPhase }: Props) => {
   const styles = useStyles2(getStyles);
-  const cancelVariables = () => {
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 02/26/2025
+  // Commented unused functions
+  /* const cancelVariables = () => {
     locationService.push('/');
-  };
+  }; */
+  // END
 
   return (
     <div className={styles.dashboardLoading}>
@@ -22,11 +31,17 @@ export const DashboardLoading = ({ initPhase }: Props) => {
           <HorizontalGroup align="center" justify="center" spacing="xs">
             <Spinner inline={true} /> {initPhase}
           </HorizontalGroup>{' '}
+          {/* 
+          // @Copyright 2025 BMC Software, Inc.
+          // Date - 02/26/2025
+          // Remove button
           <HorizontalGroup align="center" justify="center">
             <Button variant="secondary" size="md" icon="repeat" onClick={cancelVariables}>
               Cancel loading dashboard
             </Button>
-          </HorizontalGroup>
+          </HorizontalGroup> 
+          // END
+          */}
         </VerticalGroup>
       </div>
     </div>
