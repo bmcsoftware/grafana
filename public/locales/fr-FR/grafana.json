@@ -3277,7 +3277,7 @@
       "forwards-time-aria-label": "Avancer la plage de temps",
       "to": "à",
       "zoom-out-button": "Dézoomer la plage de temps",
-      "zoom-out-tooltip": "Dézoomer la plage de temps <1></1> CTRL+Z"
+      "zoom-out-tooltip": "Dézoomer la plage de temps"
     },
     "time-range": {
       "apply": "",
