@@ -8,9 +8,13 @@ import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles } from '../../themes/mixins';
 import { IconName } from '../../types';
 import { t } from '../../utils/i18n';
-import { Icon } from '../Icon/Icon';
 import { IconButton } from '../IconButton/IconButton';
-import { Link } from '../Link/Link';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 02/26/2025
+// Commented unused code
+// import { Icon } from '../Icon/Icon';
+// import { Link } from '../Link/Link';
+// END
 import { ToolbarButtonRow } from '../ToolbarButton/ToolbarButtonRow';
 
 export interface Props {
@@ -71,17 +75,21 @@ export const PageToolbar = memo(
       className
     );
 
-    const titleEl = (
-      <>
-        <span className={styles.truncateText}>{title}</span>
-        {section && (
-          <span className={styles.pre}>
-            {' / '}
-            {section}
-          </span>
-        )}
-      </>
-    );
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 02/26/2025
+    // Commented unused code
+    // const titleEl = (
+    //   <>
+    //     <span className={styles.truncateText}>{title}</span>
+    //     {section && (
+    //       <span className={styles.pre}>
+    //         {' / '}
+    //         {section}
+    //       </span>
+    //     )}
+    //   </>
+    // );
+    // END
 
     const goBackLabel = t('grafana-ui.page-toolbar.go-back', 'Go back (Esc)');
     const searchParentFolderLabel = t(
@@ -95,11 +103,17 @@ export const PageToolbar = memo(
     return (
       <nav className={mainStyle} aria-label={ariaLabel}>
         <div className={styles.leftWrapper}>
+          {/* 
+          // @Copyright 2025 BMC Software, Inc.
+          // Date - 02/26/2025
+          // Hide page icon
           {pageIcon && !onGoBack && (
             <div className={styles.pageIcon}>
               <Icon name={pageIcon} size="lg" aria-hidden />
             </div>
-          )}
+          )} 
+          // END
+          */}
           {onGoBack && (
             <div className={styles.pageIcon}>
               <IconButton
@@ -112,53 +126,59 @@ export const PageToolbar = memo(
               />
             </div>
           )}
-          <nav aria-label={searchLinksLabel} className={styles.navElement}>
-            {parent && parentHref && (
-              <>
-                <Link
-                  aria-label={searchParentFolderLabel}
-                  className={cx(styles.titleText, styles.parentLink, styles.titleLink, styles.truncateText)}
-                  href={parentHref}
-                >
-                  {parent} <span className={styles.parentIcon}></span>
-                </Link>
-                {titleHref && (
-                  <span className={cx(styles.titleText, styles.titleDivider)} aria-hidden>
-                    {'/'}
-                  </span>
-                )}
-              </>
-            )}
-
-            {(title || Boolean(leftItems?.length)) && (
-              <div className={styles.titleWrapper}>
-                {title && (
-                  <h1 className={styles.h1Styles}>
-                    {titleHref ? (
-                      <Link
-                        aria-label={searchDashboardNameLabel}
-                        className={cx(styles.titleText, styles.titleLink)}
-                        href={titleHref}
-                      >
-                        {titleEl}
-                      </Link>
-                    ) : (
-                      <div className={styles.titleText}>{titleEl}</div>
-                    )}
-                  </h1>
-                )}
-
-                {leftItems?.map((child, index) => (
-                  <div
-                    className={cx(styles.leftActionItem, { [styles.forceShowLeftActionItems]: forceShowLeftItems })}
-                    key={index}
+          {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/09/2025
+            // Hide the links which are not required
+            <nav aria-label={searchLinksLabel} className={styles.navElement}>
+              {parent && parentHref && (
+                <>
+                  <Link
+                    aria-label={searchParentFolderLabel}
+                    className={cx(styles.titleText, styles.parentLink, styles.titleLink, styles.truncateText)}
+                    href={parentHref}
                   >
-                    {child}
-                  </div>
-                ))}
-              </div>
-            )}
-          </nav>
+                    {parent} <span className={styles.parentIcon}></span>
+                  </Link>
+                  {titleHref && (
+                    <span className={cx(styles.titleText, styles.titleDivider)} aria-hidden>
+                      {'/'}
+                    </span>
+                  )}
+                </>
+              )}
+
+              {(title || Boolean(leftItems?.length)) && (
+                <div className={styles.titleWrapper}>
+                  {title && (
+                    <h1 className={styles.h1Styles}>
+                      {titleHref ? (
+                        <Link
+                          aria-label={searchDashboardNameLabel}
+                          className={cx(styles.titleText, styles.titleLink)}
+                          href={titleHref}
+                        >
+                          {titleEl}
+                        </Link>
+                      ) : (
+                        <div className={styles.titleText}>{titleEl}</div>
+                      )}
+                    </h1>
+                  )}
+
+                  {leftItems?.map((child, index) => (
+                    <div
+                      className={cx(styles.leftActionItem, { [styles.forceShowLeftActionItems]: forceShowLeftItems })}
+                      key={index}
+                    >
+                      {child}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </nav> 
+            // END
+          */}
         </div>
         <ToolbarButtonRow alignment={buttonOverflowAlignment}>
           {Children.toArray(children).filter(Boolean)}
@@ -200,6 +220,11 @@ const getStyles = (theme: GrafanaTheme2) => {
       display: 'flex',
       flexWrap: 'nowrap',
       maxWidth: '70%',
+      // @Copyright 2025 BMC Software, Inc.
+      // Date - 06/09/2025
+      // Adjusted height for toolbar */
+      height: '40px',
+      // END
     }),
     pageIcon: css({
       display: 'none',
