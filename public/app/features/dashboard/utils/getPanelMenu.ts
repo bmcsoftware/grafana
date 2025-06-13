@@ -110,7 +110,7 @@ export function getPanelMenu(
 
   if (!panel.isEditing) {
      // @Copyright 2025 BMC Software, Inc.
-    // Date - 06/09/2025
+    // Date - 06/13/2025
     // Remove shortcut from menu
     menu.push({
       text: t('panel.header-menu.view', `View`),
@@ -327,7 +327,7 @@ export function getPanelMenu(
   }
 
   // @Copyright 2025 BMC Software, Inc.
-  // Date - 06/09/2025
+  // Date - 06/13/2025
   // Show only view option for panel menu
   // return menu;
   return menu.filter((item) => item.text === 'View');

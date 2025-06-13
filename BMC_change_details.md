@@ -16,7 +16,6 @@
 - …/public/app/plugins/panel/welcome -> ‘Welcome.tsx’
 - …/public/app/features/datasources/state -> ‘buildCategories.ts’
 - …/public/app/features/admin -> LicenseChrome.tsx’
-- …/packages/grafana-ui/src/components/InfoBox -> ‘InfoBox.story.tsx’
 - …/packages/grafana-ui/src/components/DateTimePickers -> ‘TimeRangePicker.tsx’
 - …/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker -> ‘TimePickerContent.tsx’
 - …/packages/grafana-ui/src/components/RefreshPicker -> 'RefreshPicker.tsx'
@@ -60,7 +59,6 @@
 - …/packages/grafana-ui/src/components/Menu ->  'MenuItem.tsx'
 - …/public/app/core/components/AppChrome -> 'AppChrome.tsx'
 - …/public/app/features/dashboard/utils -> 'getPanelMenu.ts'
-- …/public/app/features/panel/components -> 'PanelDataErrorView.tsx’
 - …/public/app/core/components/AppChrome -> 'AppChrome.tsx’
 
 ### Page layout

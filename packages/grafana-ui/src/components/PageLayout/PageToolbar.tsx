@@ -10,7 +10,7 @@ import { IconName } from '../../types';
 import { t } from '../../utils/i18n';
 import { IconButton } from '../IconButton/IconButton';
 // @Copyright 2025 BMC Software, Inc.
-// Date - 02/26/2025
+// Date - 06/13/2025
 // Commented unused code
 // import { Icon } from '../Icon/Icon';
 // import { Link } from '../Link/Link';
@@ -76,7 +76,7 @@ export const PageToolbar = memo(
     );
 
     // @Copyright 2025 BMC Software, Inc.
-    // Date - 02/26/2025
+    // Date - 06/13/2025
     // Commented unused code
     // const titleEl = (
     //   <>
@@ -105,7 +105,7 @@ export const PageToolbar = memo(
         <div className={styles.leftWrapper}>
           {/* 
           // @Copyright 2025 BMC Software, Inc.
-          // Date - 02/26/2025
+          // Date - 06/13/2025
           // Hide page icon
           {pageIcon && !onGoBack && (
             <div className={styles.pageIcon}>
@@ -128,7 +128,7 @@ export const PageToolbar = memo(
           )}
           {/* 
             // @Copyright 2025 BMC Software, Inc.
-            // Date - 06/09/2025
+            // Date - 06/13/2025
             // Hide the links which are not required
             <nav aria-label={searchLinksLabel} className={styles.navElement}>
               {parent && parentHref && (
@@ -221,7 +221,7 @@ const getStyles = (theme: GrafanaTheme2) => {
       flexWrap: 'nowrap',
       maxWidth: '70%',
       // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/09/2025
+      // Date - 06/13/2025
       // Adjusted height for toolbar */
       height: '40px',
       // END

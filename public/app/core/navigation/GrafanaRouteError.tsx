@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom-v5-compat';
 import { GrafanaTheme2, locationUtil, PageLayoutType } from '@grafana/data';
 // @Copyright 2025 BMC Software, Inc.
 
-// Date - 06/09/2025
+// Date - 06/13/2025
 // Commented unused import
 // import { Button } from '@grafana/ui';
 // END
@@ -44,7 +44,7 @@ export function GrafanaRouteError({ error, errorInfo }: Props) {
             <br />
             {/*
             // @Copyright 2025 BMC Software, Inc.
-            // Date - 06/09/2025
+            // Date - 06/13/2025
             // Replaced text from Grafana to Dashboard and hide Reload button
             */}
             <h2 className="page-heading">

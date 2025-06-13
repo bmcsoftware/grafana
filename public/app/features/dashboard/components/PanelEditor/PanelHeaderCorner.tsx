@@ -120,7 +120,7 @@ function PanelInfoCorner({ infoMode, content, onClick }: PanelInfoCornerProps) {
     <Tooltip content={content} placement="top-start" theme={theme} interactive>
       {/* 
         // @Copyright 2025 BMC Software, Inc.
-        // Date - 06/09/2025
+        // Date - 06/13/2025
         // Remove click event from panel header
         <button type="button" className={styles.infoCorner} onClick={onClick} aria-label={ariaLabel}> 
       */}

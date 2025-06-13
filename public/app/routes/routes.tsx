@@ -4,7 +4,7 @@ import { PageNotFound } from 'app/core/components/PageNotFound/PageNotFound';
 import config from 'app/core/config';
 /*
  # @Copyright 2025 BMC Software, Inc.
- # Date - 06/09/2025
+ # Date - 06/13/2025
  # Commented unused imports
 */
 // import { Navigate, useLocation, useParams } from 'react-router-dom-v5-compat';
@@ -34,7 +34,7 @@ const isDevEnv = config.buildInfo.env === 'development';
 export const extraRoutes: RouteDescriptor[] = [];
 
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/09/2025
+// Date - 06/13/2025
 // Removed/commented all the routes which are not required
 export function getAppRoutes(): RouteDescriptor[] {
   return [
@@ -573,7 +573,7 @@ export function getAppRoutes(): RouteDescriptor[] {
 
 
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/09/2025
+// Date - 06/13/2025
 // Commented unused functions.
 // export function getSupportBundleRoutes(cfg = config): RouteDescriptor[] {
 //   if (!cfg.supportBundlesEnabled) {

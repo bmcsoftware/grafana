@@ -106,7 +106,7 @@ export class RefreshPicker extends PureComponent<Props> {
       <ButtonGroup className="refresh-picker">
         {/* 
           // @Copyright 2025 BMC Software, Inc.
-          // Date - 06/09/2025
+          // Date - 06/13/2025
           // Added custom refresh tooltip 
         */}
         <ToolbarButton

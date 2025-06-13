@@ -165,7 +165,7 @@ function getStyles(theme: GrafanaTheme2) {
       position: 'relative',
       width: '100%',
       // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/09/2025
+      // Date - 06/13/2025
       // Adjusted the dashboard control styles.
       padding:'4px 0 8px 16px',
       background:'white',

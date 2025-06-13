@@ -32,11 +32,11 @@
     <script nonce="[[.Nonce]]">
       performance.mark('frontend_boot_css_time_seconds');
       // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/09/2025
+      // Date - 06/13/2025
       // Allow the dashboard from only Iframe
-      // if (window.self === window.top && window.location.pathname !== '/dashboard/not-found') {
-      //     window.location.href = "/dashboard/not-found";
-      // }
+      if (window.self === window.top && window.location.pathname !== '/dashboard/not-found') {
+          window.location.href = "/dashboard/not-found";
+      }
       // End
     </script>
 
@@ -214,7 +214,7 @@
         <div class="preloader__bounce">
           <!--
           @Copyright 2025 BMC Software, Inc.
-          Date - 06/09/2025
+          Date - 06/13/2025
           Updated preloader aria-label.
         -->
           <div class="preloader__logo" aria-live="polite" role="status" aria-label="Loading AMI OI Dashboard"></div>
@@ -223,7 +223,7 @@
       </div>
        <!--
           @Copyright 2025 BMC Software, Inc.
-          Date - 06/09/2025
+          Date - 06/13/2025
           Added Preloader Text.
         -->
         <div class="preloader__text">Loading AMI OI Dashboard</div>
@@ -232,7 +232,7 @@
         <main>
           <!--
             @Copyright 2025 BMC Software, Inc.
-            Date - 06/09/2025
+            Date - 06/13/2025
             Commented text
           -->
           <h1>If you're seeing this Grafana has failed to load its application files</h1>

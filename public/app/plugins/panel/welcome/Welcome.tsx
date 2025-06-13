@@ -17,7 +17,7 @@ export const WelcomeBanner = () => {
     <div className={styles.container}>
       {/*
         // @Copyright 2025 BMC Software, Inc.
-        // Date - 06/09/2025
+        // Date - 06/13/2025
         // Replace text `Grafana` with `AMI Dashboard` 
       */}
       <h1 className={styles.title}>Welcome to AMI Dashboard</h1>

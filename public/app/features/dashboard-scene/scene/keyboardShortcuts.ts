@@ -7,7 +7,7 @@ import { dashboardSceneGraph } from '../utils/dashboardSceneGraph';
 import { DashboardScene } from './DashboardScene';
 import { getViewPanelUrl } from '../utils/urlBuilders';
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/09/2025
+// Date - 06/13/2025
 // Commented unused import
 // import { config } from '@grafana/runtime';
 // import { contextSrv } from 'app/core/services/context_srv';
@@ -63,7 +63,7 @@ export function setupKeyboardShortcuts(scene: DashboardScene) {
   });
 
   // @Copyright 2025 BMC Software, Inc.
-  // Date - 06/09/2025
+  // Date - 06/13/2025
   // Removed the keyboard shortcuts.
   // Panel share
   // if (config.featureToggles.newDashboardSharingComponent) {

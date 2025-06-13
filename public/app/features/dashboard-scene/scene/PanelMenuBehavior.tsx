@@ -75,7 +75,7 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
     }
 
     // @Copyright 2025 BMC Software, Inc.
-    // Date - 06/09/2025
+    // Date - 06/13/2025
     // Made optional menu item hidden.
 
     // if (dashboard.canEditDashboard() && dashboard.state.editable && !isReadOnlyRepeat && !isEditingPanel) {

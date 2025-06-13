@@ -216,7 +216,7 @@ func (ss *SQLStore) ensureMainOrgAndAdminUser(test bool) error {
 			}
 
 			// @Copyright 2025 BMC Software, Inc.
-			// Date - 06/09/2025
+			// Date - 06/13/2025
 			// Created user with view role
 			if _, err := ss.createUser(ctx, sess, user.CreateUserCommand{
 				Login:          "viewer",

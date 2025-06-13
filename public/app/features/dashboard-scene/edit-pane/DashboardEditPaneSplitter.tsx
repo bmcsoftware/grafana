@@ -33,7 +33,7 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
         <div className={styles.canvasWrappperOld}>
           {/*
             // @Copyright 2025 BMC Software, Inc.
-            // Date - 06/09/2025
+            // Date - 06/13/2025
             // Hide Unused toolbar actions.
             <NavToolbarActions dashboard={dashboard} /> 
             // END
@@ -137,7 +137,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       overflow: 'unset',
     }),
     // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/09/2025
+      // Date - 06/13/2025
       // Added a sticky header.
       stickyHeader: css({
         position: 'fixed',
@@ -164,7 +164,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       boxSizing: 'border-box',
       flexDirection: 'column',
       // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/09/2025
+      // Date - 06/13/2025
       // Update top padding.
       padding: theme.spacing(2),
     }),
@@ -186,7 +186,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
     }),
     controlsWrapperSticky: css({
       // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/09/2025
+      // Date - 06/13/2025
       // Added bottom spacing.
       marginBottom: theme.spacing(2),
       // END
@@ -194,7 +194,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
         position: 'sticky',
         zIndex: theme.zIndex.activePanel,
         // @Copyright 2025 BMC Software, Inc.
-        // Date - 06/09/2025
+        // Date - 06/13/2025
         // Adjusted dashboard controls positioning.
         top: 0,
         // END

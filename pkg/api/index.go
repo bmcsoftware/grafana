@@ -137,12 +137,12 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 		NavTree:                             navTree,
 		Nonce:                               c.RequestNonce,
 		// @Copyright 2025 BMC Software, Inc.
-		// Date - 06/09/2025
+		// Date - 06/13/2025
 		// Replaced with bmc icon
-		LoadingLogo: 						 "public/img/dashboard_icon.svg",
+		LoadingLogo: "public/img/dashboard_icon.svg",
 		// END
-		IsDevelopmentEnv:                    hs.Cfg.Env == setting.Dev,
-		Assets:                              assets,
+		IsDevelopmentEnv: hs.Cfg.Env == setting.Dev,
+		Assets:           assets,
 	}
 
 	if hs.Cfg.CSPEnabled {
