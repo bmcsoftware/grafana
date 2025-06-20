@@ -39,7 +39,12 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
             // END
           */}
           <div className={styles.controlsWrapperSticky}>{controls}</div>
+          {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/13/2025
+            // Add Sticky header. */}
           <div className={styles.stickyHeader}></div>
+          {/* // END */}
           <div className={styles.body}>{body}</div>
         </div>
       </NativeScrollbar>
@@ -94,7 +99,12 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
         >
           <NavToolbarActions dashboard={dashboard} />
           <div className={cx(!isEditing && styles.controlsWrapperSticky)}>{controls}</div>
+          {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/13/2025
+            // Add Sticky header. */}
           <div className={styles.stickyHeader}></div>
+          {/* // END */}
           <div className={styles.bodyWrapper}>
             <div className={cx(styles.body, isEditing && styles.bodyEditing)} ref={onBodyRef}>
               {body}
@@ -167,6 +177,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       // Date - 06/13/2025
       // Update top padding.
       padding: theme.spacing(2),
+      // END
     }),
     bodyEditing: css({
       position: 'absolute',

@@ -5,10 +5,9 @@ import {
   PanelMenuItem,
   PanelPlugin,
   PluginExtensionPanelContext,
-  PluginExtensionPoints,
   urlUtil,
 } from '@grafana/data';
-import { config, getPluginLinkExtensions, locationService } from '@grafana/runtime';
+import { locationService } from '@grafana/runtime';
 import { LocalValueVariable, sceneGraph, SceneGridRow, VizPanel, VizPanelMenu } from '@grafana/scenes';
 import { DataQuery, OptionsWithLegend } from '@grafana/schema';
 import appEvents from 'app/core/app_events';
@@ -22,22 +21,32 @@ import { getScenePanelLinksSupplier } from 'app/features/panel/panellinks/linkSu
 import { dispatch } from 'app/store/store';
 import { isInCloneChain } from '../utils/clone';
 import { DashboardInteractions } from '../utils/interactions';
-import { contextSrv } from 'app/core/services/context_srv';
-import { getCreateAlertInMenuAvailability } from 'app/features/alerting/unified/utils/access-control';
-import { getTrackingSource, shareDashboardType } from 'app/features/dashboard/components/ShareModal/utils';
-import { createExtensionSubMenu } from 'app/features/plugins/extensions/utils';
+import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor } from '../utils/utils';
+import { getInspectUrl, getViewPanelUrl, tryGetExploreUrlForPanel } from '../utils/urlBuilders';
 import { ShowConfirmModalEvent } from 'app/types/events';
-import { addDataTrailPanelAction } from 'app/features/trails/Integrations/dashboardIntegration';
-import { AccessControlAction } from 'app/types';
-
-import { ShareDrawer } from '../sharing/ShareDrawer/ShareDrawer';
-import { ShareModal } from '../sharing/ShareModal';
-import { getEditPanelUrl, getInspectUrl, getViewPanelUrl, tryGetExploreUrlForPanel } from '../utils/urlBuilders';
-import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor, isLibraryPanel } from '../utils/utils';
-
 import { DashboardScene } from './DashboardScene';
-import { VizPanelLinks, VizPanelLinksMenu } from './PanelLinks';
-import { UnlinkLibraryPanelModal } from './UnlinkLibraryPanelModal';
+import { VizPanelLinks, VizPanelLinksMenu } from './PanelLinks';   
+// @Copyright 2025 BMC Software, Inc.
+// Date - 06/13/2025
+// Remove unused import.
+// import {
+//   PluginExtensionPoints
+// } from '@grafana/data';
+// import { contextSrv } from 'app/core/services/context_srv';
+// import { getCreateAlertInMenuAvailability } from 'app/features/alerting/unified/utils/access-control';
+// import { config, getPluginLinkExtensions } from '@grafana/runtime';
+// import { getTrackingSource, shareDashboardType } from 'app/features/dashboard/components/ShareModal/utils';
+// import { createExtensionSubMenu } from 'app/features/plugins/extensions/utils';
+// import { addDataTrailPanelAction } from 'app/features/trails/Integrations/dashboardIntegration';
+// import { AccessControlAction } from 'app/types';
+
+// import { ShareDrawer } from '../sharing/ShareDrawer/ShareDrawer';
+// import { ShareModal } from '../sharing/ShareModal';
+// import { getEditPanelUrl} from '../utils/urlBuilders';
+// import { isLibraryPanel } from '../utils/utils';
+
+// import { UnlinkLibraryPanelModal } from './UnlinkLibraryPanelModal';
+// END
 
 /**
  * Behavior is called when VizPanelMenu is activated (ie when it's opened).
