@@ -3860,13 +3860,13 @@
       "range-error": "« De » ne peut pas être ultérieur à « À »",
       "to-input": "À"
     },
-    "range-picker": {
+  "range-picker": {
       "backwards-time-aria-label": "Reculer la plage de temps",
       "current-time-selected": "Plage de temps sélectionnée : {{currentTimeRange}}",
       "forwards-time-aria-label": "Avancer la plage de temps",
       "to": "à",
       "zoom-out-button": "Dézoomer la plage de temps",
-      "zoom-out-tooltip": "Dézoomer la plage de temps <1></1> CTRL+Z"
+      "zoom-out-tooltip": "Dézoomer la plage de temps"
     },
     "time-range": {
       "apply": "",

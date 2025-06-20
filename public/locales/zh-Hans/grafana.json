@@ -3852,7 +3852,7 @@
       "forwards-time-aria-label": "向前移动时间范围",
       "to": "至",
       "zoom-out-button": "缩放时间范围",
-      "zoom-out-tooltip": "时间范围缩放 <1></1> CTRL+Z"
+      "zoom-out-tooltip": "时间范围缩放"
     },
     "time-range": {
       "apply": "",

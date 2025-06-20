@@ -109,12 +109,16 @@ export function getPanelMenu(
   const menu: PanelMenuItem[] = [];
 
   if (!panel.isEditing) {
+     // @Copyright 2025 BMC Software, Inc.
+    // Date - 06/13/2025
+    // Remove shortcut from menu
     menu.push({
       text: t('panel.header-menu.view', `View`),
       iconClassName: 'eye',
       onClick: onViewPanel,
-      shortcut: 'v',
+      shortcut: '',
     });
+    // END
   }
 
   if (dashboard.canEditPanel(panel) && !panel.isEditing) {
@@ -322,5 +326,10 @@ export function getPanelMenu(
     });
   }
 
-  return menu;
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 06/13/2025
+  // Show only view option for panel menu
+  // return menu;
+  return menu.filter((item) => item.text === 'View');
+  // END
 }

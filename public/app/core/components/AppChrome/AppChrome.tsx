@@ -31,7 +31,11 @@ export function AppChrome({ children }: Props) {
 
   const dockedMenuBreakpoint = theme.breakpoints.values.xl;
   const dockedMenuLocalStorageState = store.getBool(DOCKED_LOCAL_STORAGE_KEY, true);
-  const menuDockedAndOpen = !state.chromeless && state.megaMenuDocked && state.megaMenuOpen;
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 06/13/2025
+  // Always hide docked menu
+  const menuDockedAndOpen = false;
+  // END
   const scopesDashboardsState = useScopesDashboardsState();
   const isScopesDashboardsOpen = Boolean(
     scopesDashboardsState?.isEnabled && scopesDashboardsState?.isPanelOpened && !scopesDashboardsState?.isReadOnly
@@ -86,25 +90,31 @@ export function AppChrome({ children }: Props) {
         'main-view--chrome-hidden': state.chromeless,
       })}
     >
-      {!state.chromeless && (
-        <>
-          <LinkButton className={styles.skipLink} href="#pageContent">
-            <Trans i18nKey="app-chrome.skip-content-button">Skip to main content</Trans>
-          </LinkButton>
-          {menuDockedAndOpen && (
-            <MegaMenu className={styles.dockedMegaMenu} onClose={() => chrome.setMegaMenuOpen(false)} />
-          )}
-          <header className={cx(styles.topNav, menuDockedAndOpen && styles.topNavMenuDocked)}>
-            <SingleTopBar
-              sectionNav={state.sectionNav.node}
-              pageNav={state.pageNav}
-              onToggleMegaMenu={handleMegaMenu}
-              onToggleKioskMode={chrome.onToggleKioskMode}
-            />
-            {state.actions && <SingleTopBarActions>{state.actions}</SingleTopBarActions>}
-          </header>
-        </>
-      )}
+      {/* 
+        // @Copyright 2025 BMC Software, Inc.
+        // Date - 06/13/2025
+        // Commented Grafana Header
+        {!state.chromeless && (
+          <>
+            <LinkButton className={styles.skipLink} href="#pageContent">
+              <Trans i18nKey="app-chrome.skip-content-button">Skip to main content</Trans>
+            </LinkButton>
+            {menuDockedAndOpen && (
+              <MegaMenu className={styles.dockedMegaMenu} onClose={() => chrome.setMegaMenuOpen(false)} />
+            )}
+            <header className={cx(styles.topNav, menuDockedAndOpen && styles.topNavMenuDocked)}>
+              <SingleTopBar
+                sectionNav={state.sectionNav.node}
+                pageNav={state.pageNav}
+                onToggleMegaMenu={handleMegaMenu}
+                onToggleKioskMode={chrome.onToggleKioskMode}
+              />
+              {state.actions && <SingleTopBarActions>{state.actions}</SingleTopBarActions>}
+            </header>
+          </>
+        )} 
+        // END
+      */}
       <div className={contentClass}>
         <div className={styles.panes}>
           {!state.chromeless && (
@@ -141,7 +151,11 @@ const getStyles = (theme: GrafanaTheme2, hasActions: boolean) => {
     content: css({
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: hasActions ? TOP_BAR_LEVEL_HEIGHT * 2 : TOP_BAR_LEVEL_HEIGHT,
+      // @Copyright 2025 BMC Software, Inc.
+      // Date - 06/13/2025
+      // Adjusted padding
+      paddingTop: 0,
+      // END
       flexGrow: 1,
       height: 'auto',
     }),

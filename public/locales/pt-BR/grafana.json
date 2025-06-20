@@ -3866,7 +3866,7 @@
       "forwards-time-aria-label": "Avançar intervalo de tempo",
       "to": "para",
       "zoom-out-button": "Diminuir o intervalo de tempo",
-      "zoom-out-tooltip": "Redução de intervalo de tempo <1></1> CTRL+Z"
+      "zoom-out-tooltip": "Redução de intervalo de tempo"
     },
     "time-range": {
       "apply": "",

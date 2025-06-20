@@ -56,8 +56,12 @@ export function LicenseChrome({ header, editionNotice, subheader, children }: Pr
           }}
         >
           <img
-            src="public/img/grafana_icon.svg"
-            alt="Grafana"
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/13/2025
+            // Replaced with bmc icon
+            src="public/img/dashboard_icon.svg"
+            alt="Dashboard"
+            // END
             width="80px"
             style={{ position: 'absolute', left: '23px', top: '20px' }}
           />
