@@ -177,9 +177,11 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
         data-testid={selectors.pages.Dashboard.Controls}
         className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
       >
-        <Stack>
-          <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
-        </Stack>
+        {!state.chromeless && (
+          <Stack>
+            <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
+          </Stack>
+        )}
         {!hideTimeControls && (
           <Stack justifyContent={'flex-end'}>
             <timePicker.Component model={timePicker} />
@@ -215,8 +217,8 @@ function getStyles(theme: GrafanaTheme2) {
       justifyContent: 'space-between',
       flex: '100%',
       gap: theme.spacing(1),
-      padding: theme.spacing(2),
-      background: 'transparent',
+      padding: '0px 16px',
+      background: 'white',
       flexDirection: 'row',
       flexWrap: 'nowrap',
       position: 'relative',
@@ -238,7 +240,7 @@ function getStyles(theme: GrafanaTheme2) {
       label: 'filter-control',
       display: 'flex',
       position: 'absolute',
-      top: '11vh',
+      top: '6vh',
       alignItems: 'flex-start',
       flex: '100%',
       padding: theme.spacing(2),

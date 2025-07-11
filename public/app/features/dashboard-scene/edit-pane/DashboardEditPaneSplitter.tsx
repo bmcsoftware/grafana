@@ -135,8 +135,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       label: 'canvas-wrapper-old',
       display: 'flex',
       flexDirection: 'column',
-      flexGrow: 1,
-      marginTop: '42px'
+      flexGrow: 1
     }),
     canvasWithSplitter: css({
       overflow: 'unset',
