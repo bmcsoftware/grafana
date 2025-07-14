@@ -176,7 +176,6 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       // @Copyright 2025 BMC Software, Inc.
       // Date - 06/13/2025
       // Update top padding and margin.
-      marginTop: '7vh',
       padding: theme.spacing(2),
       // END
     }),

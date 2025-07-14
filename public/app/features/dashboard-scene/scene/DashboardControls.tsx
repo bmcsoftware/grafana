@@ -172,7 +172,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   }
 
   return (
-    <div className={styles.controlContainer}>
+    <div className={styles.controlContainer} style={ !hideVariableControls ? { marginBottom: '5vh'} : {}}>
       <div
         data-testid={selectors.pages.Dashboard.Controls}
         className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
