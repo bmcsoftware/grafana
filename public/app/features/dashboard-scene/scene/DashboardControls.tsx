@@ -122,6 +122,16 @@ export class DashboardControls extends SceneObjectBase<DashboardControlsState> {
 
     return !(hideVariables && hideLinks && hideTimePicker);
   }
+
+    public hideVariables(): boolean {
+    const hasVariables = sceneGraph
+    .getVariables(this)
+    ?.state.variables.some((v) => v.state.hide !== VariableHide.hideVariable);
+    const hasAnnotations = sceneGraph.getDataLayers(this).some((d) => d.state.isEnabled && !d.state.isHidden);
+    const hideVariables = this.state.hideVariableControls || (!hasAnnotations && !hasVariables);
+    
+    return hideVariables;
+  }
 }
 
 function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardControls>) {
@@ -172,7 +182,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   }
 
   return (
-    <div className={styles.controlContainer} style={ !hideVariableControls ? { marginBottom: '5vh'} : {}}>
+    <div className={styles.controlContainer} style={ !model.hideVariables() ? { marginBottom: '5vh'} : {}}>
       <div
         data-testid={selectors.pages.Dashboard.Controls}
         className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}

@@ -196,11 +196,6 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       background: theme.colors.background.primary,
     }),
     controlsWrapperSticky: css({
-      // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/13/2025
-      // Added bottom spacing.
-      marginBottom: theme.spacing(2),
-      // END
       [theme.breakpoints.up('md')]: {
         position: 'sticky',
         zIndex: theme.zIndex.activePanel,
