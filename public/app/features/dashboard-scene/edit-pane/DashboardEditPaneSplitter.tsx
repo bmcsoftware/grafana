@@ -135,7 +135,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       label: 'canvas-wrapper-old',
       display: 'flex',
       flexDirection: 'column',
-      flexGrow: 1,
+      flexGrow: 1
     }),
     canvasWithSplitter: css({
       overflow: 'unset',
@@ -175,7 +175,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       flexDirection: 'column',
       // @Copyright 2025 BMC Software, Inc.
       // Date - 06/13/2025
-      // Update top padding.
+      // Update top padding and margin.
       padding: theme.spacing(2),
       // END
     }),
