@@ -2,7 +2,12 @@ import { css } from '@emotion/css';
 
 import { GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
-import { EmptyState, TextLink, useStyles2 } from '@grafana/ui';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 06/13/2025
+// Commented unused import
+// import { TextLink } from '@grafana/ui';
+// END
+import { EmptyState, useStyles2 } from '@grafana/ui';
 import { Trans } from 'app/core/internationalization';
 
 export interface Props {
@@ -21,10 +26,16 @@ export function EntityNotFound({ entity = 'Page' }: Props) {
       <EmptyState message={`${entity} not found`} variant="not-found">
         <Trans i18nKey="entity-not-found.description">
           We&apos;re looking but can&apos;t seem to find this {{ lowerCaseEntity }}. Try returning{' '}
-          <TextLink href="/">home</TextLink> or seeking help on the{' '}
-          <TextLink href="https://community.grafana.com" external>
-            community site.
-          </TextLink>
+          {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/13/2025
+            // Commented text
+            <TextLink href="/">home</TextLink> or seeking help on the{' '}
+            <TextLink href="https://community.grafana.com" external>
+              community site.
+            </TextLink> 
+            // END
+          */}
         </Trans>
       </EmptyState>
     </div>
