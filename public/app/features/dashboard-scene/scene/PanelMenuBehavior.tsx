@@ -4,56 +4,66 @@ import {
   LinkModel,
   PanelMenuItem,
   PanelPlugin,
-  PluginExtensionLink,
   PluginExtensionPanelContext,
-  PluginExtensionPoints,
-  PluginExtensionTypes,
   urlUtil,
 } from '@grafana/data';
 import { t } from '@grafana/i18n';
-import { config, locationService } from '@grafana/runtime';
+import { locationService } from '@grafana/runtime';
 import { LocalValueVariable, sceneGraph, SceneGridRow, VizPanel, VizPanelMenu } from '@grafana/scenes';
 import { DataQuery, OptionsWithLegend } from '@grafana/schema';
 import appEvents from 'app/core/app_events';
 import { createErrorNotification } from 'app/core/copy/appNotification';
 import { notifyApp } from 'app/core/reducers/appNotification';
-import { contextSrv } from 'app/core/services/context_srv';
 import { getMessageFromError } from 'app/core/utils/errors';
-import { getCreateAlertInMenuAvailability } from 'app/features/alerting/unified/utils/access-control';
 import { scenesPanelToRuleFormValues } from 'app/features/alerting/unified/utils/rule-form';
-import { getTrackingSource, shareDashboardType } from 'app/features/dashboard/components/ShareModal/utils';
 import { InspectTab } from 'app/features/inspector/types';
 import { getScenePanelLinksSupplier } from 'app/features/panel/panellinks/linkSuppliers';
-import { createPluginExtensionsGetter } from 'app/features/plugins/extensions/getPluginExtensions';
-import { pluginExtensionRegistries } from 'app/features/plugins/extensions/registry/setup';
-import { GetPluginExtensions } from 'app/features/plugins/extensions/types';
-import { createExtensionSubMenu } from 'app/features/plugins/extensions/utils';
 import { dispatch } from 'app/store/store';
-import { AccessControlAction } from 'app/types/accessControl';
-import { ShowConfirmModalEvent } from 'app/types/events';
 
-import { ShareDrawer } from '../sharing/ShareDrawer/ShareDrawer';
-import { ShareModal } from '../sharing/ShareModal';
 import { isInCloneChain } from '../utils/clone';
 import { DashboardInteractions } from '../utils/interactions';
-import { getEditPanelUrl, getInspectUrl, getViewPanelUrl, tryGetExploreUrlForPanel } from '../utils/urlBuilders';
-import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor, isLibraryPanel } from '../utils/utils';
+import { getInspectUrl, getViewPanelUrl, tryGetExploreUrlForPanel } from '../utils/urlBuilders';
+import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor } from '../utils/utils';
 
 import { DashboardScene } from './DashboardScene';
-import { VizPanelLinks, VizPanelLinksMenu } from './PanelLinks';
-import { UnlinkLibraryPanelModal } from './UnlinkLibraryPanelModal';
 
-let getPluginExtensions: GetPluginExtensions;
+// @Copyright 2025 BMC Software, Inc.
+// Date - 06/13/2025
+// Remove unused import.
+// import {
+//   PluginExtensionPoints
+//   PluginExtensionLink,
+//   PluginExtensionTypes,
+// } from '@grafana/data';
+// import { config } from '@grafana/runtime';
+// import { contextSrv } from 'app/core/services/context_srv';
+// import { getCreateAlertInMenuAvailability } from 'app/features/alerting/unified/utils/access-control';
+// import { getTrackingSource, shareDashboardType } from 'app/features/dashboard/components/ShareModal/utils';
+// import { createExtensionSubMenu } from 'app/features/plugins/extensions/utils';
+// import { AccessControlAction } from 'app/types/accessControl';
+// import { ShowConfirmModalEvent } from 'app/types/events';
+// import { createPluginExtensionsGetter } from 'app/features/plugins/extensions/getPluginExtensions';
+// import { pluginExtensionRegistries } from 'app/features/plugins/extensions/registry/setup';
+// import { GetPluginExtensions } from 'app/features/plugins/extensions/types';
 
-function setupGetPluginExtensions() {
-  if (getPluginExtensions) {
-    return getPluginExtensions;
-  }
+// import { ShareDrawer } from '../sharing/ShareDrawer/ShareDrawer';
+// import { ShareModal } from '../sharing/ShareModal';
+// import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor, isLibraryPanel } from '../utils/utils';
+// import { VizPanelLinks, VizPanelLinksMenu } from './PanelLinks';
+// import { VizPanelLinks, VizPanelLinksMenu } from './PanelLinks';
+// import { UnlinkLibraryPanelModal } from './UnlinkLibraryPanelModal';
+  
+// let getPluginExtensions: GetPluginExtensions;
 
-  getPluginExtensions = createPluginExtensionsGetter(pluginExtensionRegistries);
+// function setupGetPluginExtensions() {
+//   if (getPluginExtensions) {
+//     return getPluginExtensions;
+//   }
 
-  return getPluginExtensions;
-}
+//   getPluginExtensions = createPluginExtensionsGetter(pluginExtensionRegistries);
+
+//   return getPluginExtensions;
+// }
 
 // Define the category for metrics drilldown links
 const METRICS_DRILLDOWN_CATEGORY = 'metrics-drilldown';
@@ -93,286 +103,290 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
       });
     }
 
-    if (dashboard.canEditDashboard() && dashboard.state.editable && !isReadOnlyRepeat && !isEditingPanel) {
-      // We could check isEditing here but I kind of think this should always be in the menu,
-      // and going into panel edit should make the dashboard go into edit mode is it's not already
-      items.push({
-        text: t('panel.header-menu.edit', `Edit`),
-        iconClassName: 'edit',
-        shortcut: 'e',
-        href: getEditPanelUrl(getPanelIdForVizPanel(panel)),
-      });
-    }
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 06/13/2025
+    // Made optional menu item hidden.
+    // if (dashboard.canEditDashboard() && dashboard.state.editable && !isReadOnlyRepeat && !isEditingPanel) {
+    //   // We could check isEditing here but I kind of think this should always be in the menu,
+    //   // and going into panel edit should make the dashboard go into edit mode is it's not already
+    //   items.push({
+    //     text: t('panel.header-menu.edit', `Edit`),
+    //     iconClassName: 'edit',
+    //     shortcut: 'e',
+    //     href: getEditPanelUrl(getPanelIdForVizPanel(panel)),
+    //   });
+    // }
 
-    if (config.featureToggles.newDashboardSharingComponent) {
-      const subMenu: PanelMenuItem[] = [];
-      subMenu.push({
-        text: t('share-panel.menu.share-link-title', 'Share link'),
-        iconClassName: 'link',
-        shortcut: 'p u',
-        onClick: () => {
-          DashboardInteractions.sharingCategoryClicked({
-            item: shareDashboardType.link,
-            shareResource: getTrackingSource(panel?.getRef()),
-          });
+    // if (config.featureToggles.newDashboardSharingComponent) {
+    //   const subMenu: PanelMenuItem[] = [];
+    //   subMenu.push({
+    //     text: t('share-panel.menu.share-link-title', 'Share link'),
+    //     iconClassName: 'link',
+    //     shortcut: 'p u',
+    //     onClick: () => {
+    //       DashboardInteractions.sharingCategoryClicked({
+    //         item: shareDashboardType.link,
+    //         shareResource: getTrackingSource(panel?.getRef()),
+    //       });
 
-          const drawer = new ShareDrawer({
-            shareView: shareDashboardType.link,
-            panelRef: panel.getRef(),
-          });
+    //       const drawer = new ShareDrawer({
+    //         shareView: shareDashboardType.link,
+    //         panelRef: panel.getRef(),
+    //       });
 
-          dashboard.showModal(drawer);
-        },
-      });
-      subMenu.push({
-        text: t('share-panel.menu.share-embed-title', 'Share embed'),
-        iconClassName: 'arrow',
-        shortcut: 'p e',
-        onClick: () => {
-          DashboardInteractions.sharingCategoryClicked({
-            item: shareDashboardType.embed,
-            shareResource: getTrackingSource(panel.getRef()),
-          });
+    //       dashboard.showModal(drawer);
+    //     },
+    //   });
+    //   subMenu.push({
+    //     text: t('share-panel.menu.share-embed-title', 'Share embed'),
+    //     iconClassName: 'arrow',
+    //     shortcut: 'p e',
+    //     onClick: () => {
+    //       DashboardInteractions.sharingCategoryClicked({
+    //         item: shareDashboardType.embed,
+    //         shareResource: getTrackingSource(panel.getRef()),
+    //       });
 
-          const drawer = new ShareDrawer({
-            shareView: shareDashboardType.embed,
-            panelRef: panel.getRef(),
-          });
+    //       const drawer = new ShareDrawer({
+    //         shareView: shareDashboardType.embed,
+    //         panelRef: panel.getRef(),
+    //       });
 
-          dashboard.showModal(drawer);
-        },
-      });
+    //       dashboard.showModal(drawer);
+    //     },
+    //   });
 
-      if (
-        contextSrv.isSignedIn &&
-        config.snapshotEnabled &&
-        contextSrv.hasPermission(AccessControlAction.SnapshotsCreate)
-      ) {
-        subMenu.push({
-          text: t('share-panel.menu.share-snapshot-title', 'Share snapshot'),
-          iconClassName: 'camera',
-          shortcut: 'p s',
-          onClick: () => {
-            DashboardInteractions.sharingCategoryClicked({
-              item: shareDashboardType.snapshot,
-              shareResource: getTrackingSource(panel.getRef()),
-            });
+    //   if (
+    //     contextSrv.isSignedIn &&
+    //     config.snapshotEnabled &&
+    //     contextSrv.hasPermission(AccessControlAction.SnapshotsCreate)
+    //   ) {
+    //     subMenu.push({
+    //       text: t('share-panel.menu.share-snapshot-title', 'Share snapshot'),
+    //       iconClassName: 'camera',
+    //       shortcut: 'p s',
+    //       onClick: () => {
+    //         DashboardInteractions.sharingCategoryClicked({
+    //           item: shareDashboardType.snapshot,
+    //           shareResource: getTrackingSource(panel.getRef()),
+    //         });
 
-            const drawer = new ShareDrawer({
-              shareView: shareDashboardType.snapshot,
-              panelRef: panel.getRef(),
-            });
+    //         const drawer = new ShareDrawer({
+    //           shareView: shareDashboardType.snapshot,
+    //           panelRef: panel.getRef(),
+    //         });
 
-            dashboard.showModal(drawer);
-          },
-        });
-      }
+    //         dashboard.showModal(drawer);
+    //       },
+    //     });
+    //   }
 
-      items.push({
-        type: 'submenu',
-        text: t('panel.header-menu.share', 'Share'),
-        iconClassName: 'share-alt',
-        subMenu,
-        onClick: (e) => {
-          e.preventDefault();
-        },
-      });
-    } else {
-      items.push({
-        text: t('panel.header-menu.share', 'Share'),
-        iconClassName: 'share-alt',
-        onClick: () => {
-          dashboard.showModal(new ShareModal({ panelRef: panel.getRef() }));
-        },
-        shortcut: 'p s',
-      });
-    }
+    //   items.push({
+    //     type: 'submenu',
+    //     text: t('panel.header-menu.share', 'Share'),
+    //     iconClassName: 'share-alt',
+    //     subMenu,
+    //     onClick: (e) => {
+    //       e.preventDefault();
+    //     },
+    //   });
+    // } else {
+    //   items.push({
+    //     text: t('panel.header-menu.share', 'Share'),
+    //     iconClassName: 'share-alt',
+    //     onClick: () => {
+    //       dashboard.showModal(new ShareModal({ panelRef: panel.getRef() }));
+    //     },
+    //     shortcut: 'p s',
+    //   });
+    // }
 
-    if (dashboard.state.isEditing && !isReadOnlyRepeat && !isEditingPanel) {
-      moreSubMenu.push({
-        text: t('panel.header-menu.duplicate', `Duplicate`),
-        iconClassName: 'file-copy-alt',
-        onClick: () => {
-          dashboard.duplicatePanel(panel);
-        },
-        shortcut: 'p d',
-      });
-    }
+    // if (dashboard.state.isEditing && !isReadOnlyRepeat && !isEditingPanel) {
+    //   moreSubMenu.push({
+    //     text: t('panel.header-menu.duplicate', `Duplicate`),
+    //     iconClassName: 'file-copy-alt',
+    //     onClick: () => {
+    //       dashboard.duplicatePanel(panel);
+    //     },
+    //     shortcut: 'p d',
+    //   });
+    // }
 
-    if (!isEditingPanel) {
-      moreSubMenu.push({
-        text: t('panel.header-menu.copy', `Copy`),
-        iconClassName: 'copy',
-        onClick: () => {
-          dashboard.copyPanel(panel);
-        },
-      });
-    }
+    // if (!isEditingPanel) {
+    //   moreSubMenu.push({
+    //     text: t('panel.header-menu.copy', `Copy`),
+    //     iconClassName: 'copy',
+    //     onClick: () => {
+    //       dashboard.copyPanel(panel);
+    //     },
+    //   });
+    // }
 
-    if (dashboard.state.isEditing && !isReadOnlyRepeat && !isEditingPanel) {
-      if (isLibraryPanel(panel)) {
-        moreSubMenu.push({
-          text: t('panel.header-menu.unlink-library-panel', `Unlink library panel`),
-          iconClassName: 'link-broken',
-          onClick: () => {
-            dashboard.showModal(
-              new UnlinkLibraryPanelModal({
-                panelRef: panel.getRef(),
-              })
-            );
-          },
-        });
+    // if (dashboard.state.isEditing && !isReadOnlyRepeat && !isEditingPanel) {
+    //   if (isLibraryPanel(panel)) {
+    //     moreSubMenu.push({
+    //       text: t('panel.header-menu.unlink-library-panel', `Unlink library panel`),
+    //       iconClassName: 'link-broken',
+    //       onClick: () => {
+    //         dashboard.showModal(
+    //           new UnlinkLibraryPanelModal({
+    //             panelRef: panel.getRef(),
+    //           })
+    //         );
+    //       },
+    //     });
 
-        moreSubMenu.push({
-          text: t('panel.header-menu.replace-library-panel', `Replace library panel`),
-          iconClassName: 'library-panel',
-          onClick: () => {
-            dashboard.onShowAddLibraryPanelDrawer(panel.getRef());
-          },
-        });
-      } else {
-        if (config.featureToggles.newDashboardSharingComponent) {
-          moreSubMenu.push({
-            text: t('share-panel.menu.new-library-panel-title', 'New library panel'),
-            iconClassName: 'plus-square',
-            onClick: () => {
-              const drawer = new ShareDrawer({
-                shareView: shareDashboardType.libraryPanel,
-                panelRef: panel.getRef(),
-              });
+    //     moreSubMenu.push({
+    //       text: t('panel.header-menu.replace-library-panel', `Replace library panel`),
+    //       iconClassName: 'library-panel',
+    //       onClick: () => {
+    //         dashboard.onShowAddLibraryPanelDrawer(panel.getRef());
+    //       },
+    //     });
+    //   } else {
+    //     if (config.featureToggles.newDashboardSharingComponent) {
+    //       moreSubMenu.push({
+    //         text: t('share-panel.menu.new-library-panel-title', 'New library panel'),
+    //         iconClassName: 'plus-square',
+    //         onClick: () => {
+    //           const drawer = new ShareDrawer({
+    //             shareView: shareDashboardType.libraryPanel,
+    //             panelRef: panel.getRef(),
+    //           });
 
-              dashboard.showModal(drawer);
-            },
-          });
-        } else {
-          moreSubMenu.push({
-            text: t('panel.header-menu.create-library-panel', `Create library panel`),
-            onClick: () => {
-              dashboard.showModal(
-                new ShareModal({
-                  panelRef: panel.getRef(),
-                  activeTab: shareDashboardType.libraryPanel,
-                })
-              );
-            },
-          });
-        }
-      }
-    }
+    //           dashboard.showModal(drawer);
+    //         },
+    //       });
+    //     } else {
+    //       moreSubMenu.push({
+    //         text: t('panel.header-menu.create-library-panel', `Create library panel`),
+    //         onClick: () => {
+    //           dashboard.showModal(
+    //             new ShareModal({
+    //               panelRef: panel.getRef(),
+    //               activeTab: shareDashboardType.libraryPanel,
+    //             })
+    //           );
+    //         },
+    //       });
+    //     }
+    //   }
+    // }
 
-    const isCreateAlertMenuOptionAvailable = getCreateAlertInMenuAvailability();
+    // const isCreateAlertMenuOptionAvailable = getCreateAlertInMenuAvailability();
 
-    if (isCreateAlertMenuOptionAvailable) {
-      moreSubMenu.push({
-        text: t('panel.header-menu.new-alert-rule', `New alert rule`),
-        iconClassName: 'bell',
-        onClick: (e) => onCreateAlert(panel),
-      });
-    }
+    // if (isCreateAlertMenuOptionAvailable) {
+    //   moreSubMenu.push({
+    //     text: t('panel.header-menu.new-alert-rule', `New alert rule`),
+    //     iconClassName: 'bell',
+    //     onClick: (e) => onCreateAlert(panel),
+    //   });
+    // }
 
-    if (hasLegendOptions(panel.state.options) && !isEditingPanel) {
-      moreSubMenu.push({
-        text: panel.state.options.legend.showLegend
-          ? t('panel.header-menu.hide-legend', 'Hide legend')
-          : t('panel.header-menu.show-legend', 'Show legend'),
-        iconClassName: panel.state.options.legend.showLegend ? 'legend-hide' : 'legend-show',
-        onClick: (e) => {
-          e.preventDefault();
-          toggleVizPanelLegend(panel);
-        },
-        shortcut: 'p l',
-      });
-    }
+    // if (hasLegendOptions(panel.state.options) && !isEditingPanel) {
+    //   moreSubMenu.push({
+    //     text: panel.state.options.legend.showLegend
+    //       ? t('panel.header-menu.hide-legend', 'Hide legend')
+    //       : t('panel.header-menu.show-legend', 'Show legend'),
+    //     iconClassName: panel.state.options.legend.showLegend ? 'legend-hide' : 'legend-show',
+    //     onClick: (e) => {
+    //       e.preventDefault();
+    //       toggleVizPanelLegend(panel);
+    //     },
+    //     shortcut: 'p l',
+    //   });
+    // }
 
-    if (dashboard.canEditDashboard() && plugin && !plugin.meta.skipDataQuery && !isReadOnlyRepeat) {
-      moreSubMenu.push({
-        text: t('panel.header-menu.get-help', 'Get help'),
-        iconClassName: 'question-circle',
-        onClick: (e: React.MouseEvent) => {
-          e.preventDefault();
-          onInspectPanel(panel, InspectTab.Help);
-        },
-      });
-    }
+    // if (dashboard.canEditDashboard() && plugin && !plugin.meta.skipDataQuery && !isReadOnlyRepeat) {
+    //   moreSubMenu.push({
+    //     text: t('panel.header-menu.get-help', 'Get help'),
+    //     iconClassName: 'question-circle',
+    //     onClick: (e: React.MouseEvent) => {
+    //       e.preventDefault();
+    //       onInspectPanel(panel, InspectTab.Help);
+    //     },
+    //   });
+    // }
 
-    if (exploreMenuItem) {
-      items.push(exploreMenuItem);
-    }
+    // if (exploreMenuItem) {
+    //   items.push(exploreMenuItem);
+    // }
 
-    items.push(getInspectMenuItem(plugin, panel, dashboard));
+    // items.push(getInspectMenuItem(plugin, panel, dashboard));
 
-    setupGetPluginExtensions();
+    // setupGetPluginExtensions();
 
-    const { extensions } = getPluginExtensions({
-      extensionPointId: PluginExtensionPoints.DashboardPanelMenu,
-      context: createExtensionContext(panel, dashboard),
-      limitPerPlugin: 3,
-    });
+    // const { extensions } = getPluginExtensions({
+    //   extensionPointId: PluginExtensionPoints.DashboardPanelMenu,
+    //   context: createExtensionContext(panel, dashboard),
+    //   limitPerPlugin: 3,
+    // });
 
-    if (extensions.length > 0 && !dashboard.state.isEditing) {
-      const linkExtensions = extensions.filter((extension) => extension.type === PluginExtensionTypes.link);
+    // if (extensions.length > 0 && !dashboard.state.isEditing) {
+    //   const linkExtensions = extensions.filter((extension) => extension.type === PluginExtensionTypes.link);
 
-      // Separate metrics drilldown links from other links
-      const [metricsDrilldownLinks, otherLinks] = linkExtensions.reduce<[PluginExtensionLink[], PluginExtensionLink[]]>(
-        ([metricsDrilldownLinks, otherLinks], link) => {
-          if (link.category === METRICS_DRILLDOWN_CATEGORY) {
-            metricsDrilldownLinks.push(link);
-          } else {
-            otherLinks.push(link);
-          }
-          return [metricsDrilldownLinks, otherLinks];
-        },
-        [[], []]
-      );
+    //   // Separate metrics drilldown links from other links
+    //   const [metricsDrilldownLinks, otherLinks] = linkExtensions.reduce<[PluginExtensionLink[], PluginExtensionLink[]]>(
+    //     ([metricsDrilldownLinks, otherLinks], link) => {
+    //       if (link.category === METRICS_DRILLDOWN_CATEGORY) {
+    //         metricsDrilldownLinks.push(link);
+    //       } else {
+    //         otherLinks.push(link);
+    //       }
+    //       return [metricsDrilldownLinks, otherLinks];
+    //     },
+    //     [[], []]
+    //   );
 
-      // Add specific "Metrics drilldown" menu
-      if (metricsDrilldownLinks.length > 0) {
-        items.push({
-          text: t('dashboard-scene.panel-menu-behavior.async-func.text.metrics-drilldown', 'Metrics drilldown'),
-          iconClassName: 'code-branch',
-          type: 'submenu',
-          subMenu: createExtensionSubMenu(metricsDrilldownLinks),
-        });
-      }
+    //   // Add specific "Metrics drilldown" menu
+    //   if (metricsDrilldownLinks.length > 0) {
+    //     items.push({
+    //       text: t('dashboard-scene.panel-menu-behavior.async-func.text.metrics-drilldown', 'Metrics drilldown'),
+    //       iconClassName: 'code-branch',
+    //       type: 'submenu',
+    //       subMenu: createExtensionSubMenu(metricsDrilldownLinks),
+    //     });
+    //   }
 
-      // Add generic "Extensions" menu for other links
-      if (otherLinks.length > 0) {
-        items.push({
-          text: t('dashboard-scene.panel-menu-behavior.async-func.text.extensions', 'Extensions'),
-          iconClassName: 'plug',
-          type: 'submenu',
-          subMenu: createExtensionSubMenu(otherLinks),
-        });
-      }
-    }
+    //   // Add generic "Extensions" menu for other links
+    //   if (otherLinks.length > 0) {
+    //     items.push({
+    //       text: t('dashboard-scene.panel-menu-behavior.async-func.text.extensions', 'Extensions'),
+    //       iconClassName: 'plug',
+    //       type: 'submenu',
+    //       subMenu: createExtensionSubMenu(otherLinks),
+    //     });
+    //   }
+    // }
 
-    if (moreSubMenu.length) {
-      items.push({
-        type: 'submenu',
-        text: t('panel.header-menu.more', `More...`),
-        iconClassName: 'cube',
-        subMenu: moreSubMenu,
-        onClick: (e) => {
-          e.preventDefault();
-        },
-      });
-    }
+    // if (moreSubMenu.length) {
+    //   items.push({
+    //     type: 'submenu',
+    //     text: t('panel.header-menu.more', `More...`),
+    //     iconClassName: 'cube',
+    //     subMenu: moreSubMenu,
+    //     onClick: (e) => {
+    //       e.preventDefault();
+    //     },
+    //   });
+    // }
 
-    if (dashboard.state.isEditing && !isReadOnlyRepeat && !isEditingPanel) {
-      items.push({
-        text: '',
-        type: 'divider',
-      });
+    // if (dashboard.state.isEditing && !isReadOnlyRepeat && !isEditingPanel) {
+    //   items.push({
+    //     text: '',
+    //     type: 'divider',
+    //   });
 
-      items.push({
-        text: t('panel.header-menu.remove', `Remove`),
-        iconClassName: 'trash-alt',
-        onClick: () => {
-          onRemovePanel(dashboard, panel);
-        },
-        shortcut: 'p r',
-      });
-    }
+    //   items.push({
+    //     text: t('panel.header-menu.remove', `Remove`),
+    //     iconClassName: 'trash-alt',
+    //     onClick: () => {
+    //       onRemovePanel(dashboard, panel);
+    //     },
+    //     shortcut: 'p r',
+    //   });
+    // }
+    // END
 
     menu.setState({ items });
   };

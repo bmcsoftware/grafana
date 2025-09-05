@@ -32,8 +32,20 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
     return (
       <NativeScrollbar onSetScrollRef={dashboard.onSetScrollRef}>
         <div className={styles.canvasWrappperOld}>
-          <NavToolbarActions dashboard={dashboard} />
+          {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/13/2025
+            // Hide Unused toolbar actions.
+            <NavToolbarActions dashboard={dashboard} />
+            // END
+          */}
           <div className={styles.controlsWrapperSticky}>{controls}</div>
+          {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/13/2025
+            // Add Sticky header. */}
+          <div className={styles.stickyHeader}></div>
+          {/* // END */}
           <div className={styles.body}>{body}</div>
         </div>
       </NativeScrollbar>
@@ -98,6 +110,12 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
         >
           <NavToolbarActions dashboard={dashboard} />
           <div className={cx(!isEditing && styles.controlsWrapperSticky)}>{controls}</div>
+          {/* 
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 06/13/2025
+            // Add Sticky header. */}
+          <div className={styles.stickyHeader}></div>
+          {/* // END */}
           <div className={styles.bodyWrapper}>
             <div
               className={cx(styles.body, isEditing && styles.bodyEditing)}
@@ -147,6 +165,19 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
     canvasWithSplitterEditing: css({
       overflow: 'unset',
     }),
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 06/13/2025
+    // Added a sticky header.
+    stickyHeader: css({
+      position: 'fixed',
+      height:'40px',
+      width: '100%',
+      zIndex: 100,
+      background: 'white',
+      boxShadow:'rgba(0, 0, 0, 0.04) 0px 4px 8px',
+      top:0
+    }),
+    // END
     bodyWrapper: css({
       label: 'body-wrapper',
       display: 'flex',
@@ -162,7 +193,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       boxSizing: 'border-box',
       flexDirection: 'column',
       // without top padding the fixed controls headers is rendered over the selection outline.
-      padding: theme.spacing(0.125, 2, 2, 2),
+      padding: theme.spacing(4, 2),
     }),
     bodyEditing: css({
       position: 'absolute',
@@ -191,7 +222,11 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
         position: 'sticky',
         zIndex: theme.zIndex.activePanel,
         background: theme.colors.background.canvas,
-        top: headerHeight,
+         // @Copyright 2025 BMC Software, Inc.
+        // Date - 06/13/2025
+        // Adjusted dashboard controls positioning.
+        top: 0,
+        // END
       },
     }),
   };

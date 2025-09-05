@@ -1,4 +1,5 @@
 import { css, cx } from '@emotion/css';
+import { createPortal } from 'react-dom';
 
 import { GrafanaTheme2, VariableHide } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
@@ -16,6 +17,11 @@ import {
   CancelActivationHandler,
 } from '@grafana/scenes';
 import { Box, Stack, useStyles2 } from '@grafana/ui';
+import { Breadcrumbs } from 'app/core/components/Breadcrumbs/Breadcrumbs';
+import { buildBreadcrumbs } from 'app/core/components/Breadcrumbs/utils';
+import { useGrafana } from 'app/core/context/GrafanaContext';
+import { HOME_NAV_ID } from 'app/core/reducers/navModel';
+import { useSelector } from 'app/types/store';
 
 import { PanelEditControls } from '../panel-edit/PanelEditControls';
 import { getDashboardSceneFor } from '../utils/utils';
@@ -115,7 +121,18 @@ export class DashboardControls extends SceneObjectBase<DashboardControlsState> {
 
     return !(hideVariables && hideLinks && hideTimePicker);
   }
+
+  public hideVariables(): boolean {
+      const hasVariables = sceneGraph
+      .getVariables(this)
+      ?.state.variables.some((v) => v.state.hide !== VariableHide.hideVariable);
+      const hasAnnotations = sceneGraph.getDataLayers(this).some((d) => d.state.isEnabled && !d.state.isHidden);
+      const hideVariables = this.state.hideVariableControls || (!hasAnnotations && !hasVariables);
+  
+      return hideVariables;
+  }
 }
+
 
 function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardControls>) {
   const { refreshPicker, timePicker, hideTimeControls, hideVariableControls, hideLinksControls } = model.useState();
@@ -124,34 +141,80 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   const styles = useStyles2(getStyles);
   const showDebugger = window.location.search.includes('scene-debugger');
 
+  const { chrome } = useGrafana();
+  const state = chrome.useState();
+  const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
+
+  const sectionNav=state.sectionNav.node;
+  const pageNav=state.pageNav;
+  let breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  breadcrumbs = breadcrumbs.slice(Math.max(breadcrumbs.length - 2, 0));
+  breadcrumbs = breadcrumbs.filter(
+    (each) =>
+      each.text.toLowerCase() === 'view panel' ||
+      each.text.toLowerCase().startsWith('playback ') ||
+      each.text.toLowerCase().startsWith('realtime ') ||
+      each.text.toLowerCase().startsWith('rca ')
+  );
+  if (breadcrumbs.length) {
+    breadcrumbs = breadcrumbs.map((each) => {
+      if (
+        each.text.toLowerCase().startsWith('playback ') ||
+        each.text.toLowerCase().startsWith('realtime ') ||
+        each.text.toLowerCase().startsWith('rca ')
+      ) {
+        return {
+          ...each,
+          text: 'Graph View',
+        };
+      } else { 
+          return each;
+        }
+      });
+  } else {
+    breadcrumbs = [];
+  }
+
   if (!model.hasControls()) {
     // To still have spacing when no controls are rendered
     return <Box padding={1} />;
   }
 
   return (
-    <div
-      data-testid={selectors.pages.Dashboard.Controls}
-      className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
-    >
-      <Stack grow={1} wrap={'wrap'}>
-        {!hideVariableControls && (
-          <>
-            <VariableControls dashboard={dashboard} />
-            <DataLayerControls dashboard={dashboard} />
-          </>
+    <div className={styles.controlContainer} style={ !model.hideVariables() ? { marginBottom: '5vh'} : {}}>
+      <div
+        data-testid={selectors.pages.Dashboard.Controls}
+        className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
+      >
+        {!state.chromeless && (
+          <Stack>
+            <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
+          </Stack>
         )}
-        <Box grow={1} />
-        {!hideLinksControls && !editPanel && <DashboardLinksControls links={links} dashboard={dashboard} />}
-        {editPanel && <PanelEditControls panelEditor={editPanel} />}
-      </Stack>
-      {!hideTimeControls && (
-        <Stack justifyContent={'flex-end'}>
-          <timePicker.Component model={timePicker} />
-          <refreshPicker.Component model={refreshPicker} />
-        </Stack>
+        {!hideTimeControls && (
+          <Stack justifyContent={'flex-end'}>
+            <timePicker.Component model={timePicker} />
+            <refreshPicker.Component model={refreshPicker} />
+          </Stack>
+        )}
+        {showDebugger && <SceneDebugger scene={model} key={'scene-debugger'} />}
+      </div>
+      {createPortal(
+        <div className={styles.filterControl}>
+          <Stack grow={1} wrap={'wrap'}>
+            {!hideVariableControls && (
+              <>
+                <VariableControls dashboard={dashboard} />
+                <DataLayerControls dashboard={dashboard} />
+              </>
+            )}
+            <Box grow={1} />
+            {!hideLinksControls && !editPanel && <DashboardLinksControls links={links} dashboard={dashboard} />}
+            {editPanel && <PanelEditControls panelEditor={editPanel} />}
+          </Stack>
+        </div>,
+        document.body
       )}
-      {showDebugger && <SceneDebugger scene={model} key={'scene-debugger'} />}
     </div>
   );
 }
@@ -170,21 +233,47 @@ function DataLayerControls({ dashboard }: { dashboard: DashboardScene }) {
 
 function getStyles(theme: GrafanaTheme2) {
   return {
+    controlContainer: css({
+      display: 'flex',
+      flexDirection: 'column'
+    }),
     controls: css({
       display: 'flex',
       alignItems: 'flex-start',
       flex: '100%',
       gap: theme.spacing(1),
-      padding: theme.spacing(2),
       flexDirection: 'row',
       flexWrap: 'nowrap',
       position: 'relative',
       width: '100%',
+      // @Copyright 2025 BMC Software, Inc.
+      // Date - 06/13/2025
+      // Adjusted the dashboard control styles.
+      justifyContent: 'space-between',
+      padding:'0px 16px',
+      background:'white',
+      // END
       marginLeft: 'auto',
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column-reverse',
         alignItems: 'stretch',
       },
+    }),
+    breadcrumbsWrapper: css({
+      display: 'flex',
+      overflow: 'hidden',
+      [theme.breakpoints.down('sm')]: {
+        minWidth: '40%',
+      },
+    }),
+    filterControl: css({
+      label: 'filter-control',
+      display: 'flex',
+      position: 'absolute',
+      top: '6vh',
+      alignItems: 'flex-start',
+      flex: '100%',
+      padding: theme.spacing(2),
     }),
     controlsPanelEdit: css({
       // In panel edit we do not need any right padding as the splitter is providing it

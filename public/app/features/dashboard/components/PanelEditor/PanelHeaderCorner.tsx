@@ -116,7 +116,13 @@ function PanelInfoCorner({ infoMode, content, onClick }: PanelInfoCornerProps) {
 
   return (
     <Tooltip content={content} placement="top-start" theme={theme} interactive>
-      <button type="button" className={styles.infoCorner} onClick={onClick} aria-label={ariaLabel}>
+      {/* 
+        // @Copyright 2025 BMC Software, Inc.
+        // Date - 06/13/2025
+        // Remove click event from panel header
+        <button type="button" className={styles.infoCorner} onClick={onClick} aria-label={ariaLabel}> 
+      */}
+      <button type="button" className={styles.infoCorner} aria-label={ariaLabel}>
         <Icon
           name={iconMap[infoMode]}
           size={infoMode === InfoMode.Links ? 'sm' : 'lg'}
@@ -124,6 +130,7 @@ function PanelInfoCorner({ infoMode, content, onClick }: PanelInfoCornerProps) {
         />
         <span className={cx(styles.inner, { [styles.error]: infoMode === InfoMode.Error })} />
       </button>
+      {/* // END */}
     </Tooltip>
   );
 }

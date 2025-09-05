@@ -36,16 +36,24 @@ export function GrafanaRouteError({ error, errorInfo }: Props) {
               <Trans i18nKey="route-error.title">Unable to find application file</Trans>
             </h2>
             <br />
+            {/*
+              // @Copyright 2025 BMC Software, Inc.
+              // Date - 06/13/2025
+              // Replaced text from Grafana to Dashboard and hide Reload button
+            */}
             <h2 className="page-heading">
               <Trans i18nKey="route-error.description">
-                Grafana has likely been updated. Please try reloading the page.
+                Dashboard has likely been updated. Please try reloading the page.
               </Trans>
             </h2>
             <br />
-            <Button size="md" variant="secondary" icon="repeat" onClick={() => window.location.reload()}>
-              <Trans i18nKey="route-error.reload-button">Reload</Trans>
-            </Button>
-            <ErrorWithStack title={t('route-error.error-title', 'Error details')} error={error} errorInfo={errorInfo} />
+            {/* Dashboard
+              <Button size="md" variant="secondary" icon="repeat" onClick={() => window.location.reload()}>
+                <Trans i18nKey="route-error.reload-button">Reload</Trans>
+              </Button>
+              <ErrorWithStack title={t('route-error.error-title', 'Error details')} error={error} errorInfo={errorInfo} /> 
+            */}
+            {/* // END */}
           </div>
         )}
         {!isChunkLoadingError && (
