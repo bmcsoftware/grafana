@@ -3,6 +3,11 @@ import { createPortal } from 'react-dom';
 
 import { GrafanaTheme2, VariableHide } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 06/13/2025
+// Added import for internationalization.
+import { t } from '@grafana/i18n';
+// END
 import {
   SceneObjectState,
   SceneObjectBase,
@@ -141,6 +146,9 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   const styles = useStyles2(getStyles);
   const showDebugger = window.location.search.includes('scene-debugger');
 
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 06/13/2025
+  // Added breadcrumbs.
   const { chrome } = useGrafana();
   const state = chrome.useState();
   const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
@@ -165,7 +173,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
       ) {
         return {
           ...each,
-          text: 'Graph View',
+          text: t('','Graph View'),
         };
       } else { 
           return each;
@@ -174,23 +182,34 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   } else {
     breadcrumbs = [];
   }
+  // END
 
-  if (!model.hasControls()) {
-    // To still have spacing when no controls are rendered
-    return <Box padding={1} />;
-  }
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 06/13/2025
+  // Removed empty nav state.
+  // if (!model.hasControls()) {
+  //   // To still have spacing when no controls are rendered
+  //   return <Box padding={1} />;
+  // }
+  // END
 
   return (
-    <div className={styles.controlContainer} style={ !model.hideVariables() ? { marginBottom: '5vh'} : {}}>
+    <div className={styles.controlContainer} style={ !model.hideVariables() ? { marginBottom: '2vh'} : {}}>
       <div
         data-testid={selectors.pages.Dashboard.Controls}
         className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
       >
+        {/* 
+          // @Copyright 2025 BMC Software, Inc.
+          // Date - 06/13/2025
+          // Adjusted the breadcrumbs.
+        */}
         {!state.chromeless && (
           <Stack>
             <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
           </Stack>
         )}
+        {/* // END */}
         {!hideTimeControls && (
           <Stack justifyContent={'flex-end'}>
             <timePicker.Component model={timePicker} />
@@ -199,6 +218,11 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
         )}
         {showDebugger && <SceneDebugger scene={model} key={'scene-debugger'} />}
       </div>
+      {/* 
+        // @Copyright 2025 BMC Software, Inc.
+        // Date - 06/13/2025
+        // Added portal for variable controls. 
+      */}
       {createPortal(
         <div className={styles.filterControl}>
           <Stack grow={1} wrap={'wrap'}>
@@ -215,6 +239,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
         </div>,
         document.body
       )}
+      {/* // END */}
     </div>
   );
 }
@@ -270,7 +295,11 @@ function getStyles(theme: GrafanaTheme2) {
       label: 'filter-control',
       display: 'flex',
       position: 'absolute',
-      top: '6vh',
+      // @Copyright 2025 BMC Software, Inc.
+      // Date - 06/13/2025
+      // Adjusted top position.
+      top: '5vh',
+      // END
       alignItems: 'flex-start',
       flex: '100%',
       padding: theme.spacing(2),

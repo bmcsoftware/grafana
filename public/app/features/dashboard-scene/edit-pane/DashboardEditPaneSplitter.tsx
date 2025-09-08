@@ -193,7 +193,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       boxSizing: 'border-box',
       flexDirection: 'column',
       // without top padding the fixed controls headers is rendered over the selection outline.
-      padding: theme.spacing(4, 2),
+      padding: '5vh 16px',
     }),
     bodyEditing: css({
       position: 'absolute',
@@ -221,7 +221,6 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       [theme.breakpoints.up('md')]: {
         position: 'sticky',
         zIndex: theme.zIndex.activePanel,
-        background: theme.colors.background.canvas,
          // @Copyright 2025 BMC Software, Inc.
         // Date - 06/13/2025
         // Adjusted dashboard controls positioning.
