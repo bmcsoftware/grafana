@@ -98,7 +98,7 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
       items.push({
         text: t('panel.header-menu.view', `View`),
         iconClassName: 'eye',
-        shortcut: 'v',
+        shortcut: '',
         href: getViewPanelUrl(panel),
       });
     }

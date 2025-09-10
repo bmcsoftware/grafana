@@ -1,29 +1,21 @@
 import { locationUtil, SetPanelAttentionEvent } from '@grafana/data';
-import { locationService } from '@grafana/runtime';
+import { config, locationService } from '@grafana/runtime';
 import { sceneGraph, VizPanel } from '@grafana/scenes';
 import appEvents from 'app/core/app_events';
 import { KeybindingSet } from 'app/core/services/KeybindingSet';
+import { contextSrv } from 'app/core/services/context_srv';
+import { AccessControlAction } from 'app/types/accessControl';
 
-import { getViewPanelUrl } from '../utils/urlBuilders';
+import { shareDashboardType } from '../../dashboard/components/ShareModal/utils';
+import { ShareDrawer } from '../sharing/ShareDrawer/ShareDrawer';
+import { ShareModal } from '../sharing/ShareModal';
+import { dashboardSceneGraph } from '../utils/dashboardSceneGraph';
+import { getEditPanelUrl, getInspectUrl, getViewPanelUrl, tryGetExploreUrlForPanel } from '../utils/urlBuilders';
+import { getPanelIdForVizPanel } from '../utils/utils';
 
 import { DashboardScene } from './DashboardScene';
-// @Copyright 2025 BMC Software, Inc.
-// Date - 06/13/2025
-// Commented unused import
-// import { config } from '@grafana/runtime';
-// import { contextSrv } from 'app/core/services/context_srv';
-// import { AccessControlAction } from 'app/types/accessControl';
-
-// import { shareDashboardType } from '../../dashboard/components/ShareModal/utils';
-// import { ShareDrawer } from '../sharing/ShareDrawer/ShareDrawer';
-// import { ShareModal } from '../sharing/ShareModal';
-// import { getEditPanelUrl, getInspectUrl, tryGetExploreUrlForPanel } from '../utils/urlBuilders';
-// import { getPanelIdForVizPanel } from '../utils/utils';
-// import { dashboardSceneGraph } from '../utils/dashboardSceneGraph';
-
-// import { onRemovePanel, toggleVizPanelLegend } from './PanelMenuBehavior';
-// import { DefaultGridLayoutManager } from './layout-default/DefaultGridLayoutManager';
-// END
+import { onRemovePanel, toggleVizPanelLegend } from './PanelMenuBehavior';
+import { DefaultGridLayoutManager } from './layout-default/DefaultGridLayoutManager';
 
 export function setupKeyboardShortcuts(scene: DashboardScene) {
   const keybindings = new KeybindingSet();
@@ -65,212 +57,210 @@ export function setupKeyboardShortcuts(scene: DashboardScene) {
   });
 
   // Panel share
-  // if (config.featureToggles.newDashboardSharingComponent) {
-  //   keybindings.addBinding({
-  //     key: 'p u',
-  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-  //       const drawer = new ShareDrawer({
-  //         shareView: shareDashboardType.link,
-  //         panelRef: vizPanel.getRef(),
-  //       });
+  if (config.featureToggles.newDashboardSharingComponent) {
+    keybindings.addBinding({
+      key: 'p u',
+      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+        const drawer = new ShareDrawer({
+          shareView: shareDashboardType.link,
+          panelRef: vizPanel.getRef(),
+        });
 
-  //       scene.showModal(drawer);
-  //     }),
-  //   });
-  //   keybindings.addBinding({
-  //     key: 'p e',
-  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-  //       const drawer = new ShareDrawer({
-  //         shareView: shareDashboardType.embed,
-  //         panelRef: vizPanel.getRef(),
-  //       });
+        scene.showModal(drawer);
+      }),
+    });
+    keybindings.addBinding({
+      key: 'p e',
+      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+        const drawer = new ShareDrawer({
+          shareView: shareDashboardType.embed,
+          panelRef: vizPanel.getRef(),
+        });
 
-  //       scene.showModal(drawer);
-  //     }),
-  //   });
+        scene.showModal(drawer);
+      }),
+    });
 
-  //   if (
-  //     contextSrv.isSignedIn &&
-  //     config.snapshotEnabled &&
-  //     contextSrv.hasPermission(AccessControlAction.SnapshotsCreate)
-  //   ) {
-  //     keybindings.addBinding({
-  //       key: 'p s',
-  //       onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-  //         const drawer = new ShareDrawer({
-  //           shareView: shareDashboardType.snapshot,
-  //           panelRef: vizPanel.getRef(),
-  //         });
+    if (
+      contextSrv.isSignedIn &&
+      config.snapshotEnabled &&
+      contextSrv.hasPermission(AccessControlAction.SnapshotsCreate)
+    ) {
+      keybindings.addBinding({
+        key: 'p s',
+        onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+          const drawer = new ShareDrawer({
+            shareView: shareDashboardType.snapshot,
+            panelRef: vizPanel.getRef(),
+          });
 
-  //         scene.showModal(drawer);
-  //       }),
-  //     });
-  //   }
-  // } else {
-  //   keybindings.addBinding({
-  //     key: 'p s',
-  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-  //       scene.showModal(new ShareModal({ panelRef: vizPanel.getRef() }));
-  //     }),
-  //   });
-  // }
+          scene.showModal(drawer);
+        }),
+      });
+    }
+  } else {
+    keybindings.addBinding({
+      key: 'p s',
+      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+        scene.showModal(new ShareModal({ panelRef: vizPanel.getRef() }));
+      }),
+    });
+  }
 
   // Panel inspect
-  // keybindings.addBinding({
-  //   key: 'i',
-  //   onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-  //     if (scene.state.inspectPanelKey) {
-  //       locationService.push(
-  //         locationUtil.getUrlForPartial(locationService.getLocation(), {
-  //           inspect: undefined,
-  //         })
-  //       );
-  //     } else {
-  //       locationService.push(locationUtil.stripBaseFromUrl(getInspectUrl(vizPanel)));
-  //     }
-  //   }),
-  // });
+  keybindings.addBinding({
+    key: 'i',
+    onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+      if (scene.state.inspectPanelKey) {
+        locationService.push(
+          locationUtil.getUrlForPartial(locationService.getLocation(), {
+            inspect: undefined,
+          })
+        );
+      } else {
+        locationService.push(locationUtil.stripBaseFromUrl(getInspectUrl(vizPanel)));
+      }
+    }),
+  });
 
   // Got to Explore for panel
-  // keybindings.addBinding({
-  //   key: 'p x',
-  //   onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-  //     const url = await tryGetExploreUrlForPanel(vizPanel);
-  //     if (url) {
-  //       locationService.push(url);
-  //     }
-  //   }),
-  // });
+  keybindings.addBinding({
+    key: 'p x',
+    onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+      const url = await tryGetExploreUrlForPanel(vizPanel);
+      if (url) {
+        locationService.push(url);
+      }
+    }),
+  });
 
   // Toggle legend
-  // keybindings.addBinding({
-  //   key: 'p l',
-  //   onTrigger: withFocusedPanel(scene, toggleVizPanelLegend),
-  // });
+  keybindings.addBinding({
+    key: 'p l',
+    onTrigger: withFocusedPanel(scene, toggleVizPanelLegend),
+  });
 
   // Refresh
-  // keybindings.addBinding({
-  //   key: 'd r',
-  //   onTrigger: () => sceneGraph.getTimeRange(scene).onRefresh(),
-  // });
+  keybindings.addBinding({
+    key: 'd r',
+    onTrigger: () => sceneGraph.getTimeRange(scene).onRefresh(),
+  });
 
   // Zoom out
-  // keybindings.addBinding({
-  //   key: 't z',
-  //   onTrigger: () => {
-  //     handleZoomOut(scene);
-  //   },
-  // });
+  keybindings.addBinding({
+    key: 't z',
+    onTrigger: () => {
+      handleZoomOut(scene);
+    },
+  });
 
-  // keybindings.addBinding({
-  //   key: 'ctrl+z',
-  //   onTrigger: () => {
-  //     handleZoomOut(scene);
-  //   },
-  // });
+  keybindings.addBinding({
+    key: 'ctrl+z',
+    onTrigger: () => {
+      handleZoomOut(scene);
+    },
+  });
 
-// Relative -> Absolute time range
-  // keybindings.addBinding({
-  //   key: 't a',
-  //   onTrigger: () => {
-  //     const timePicker = dashboardSceneGraph.getTimePicker(scene);
-  //     timePicker?.toAbsolute();
-  //   },
-  // });
+  // Relative -> Absolute time range
+  keybindings.addBinding({
+    key: 't a',
+    onTrigger: () => {
+      const timePicker = dashboardSceneGraph.getTimePicker(scene);
+      timePicker?.toAbsolute();
+    },
+  });
 
-  // keybindings.addBinding({
-  //   key: 't left',
-  //   onTrigger: () => {
-  //     handleTimeRangeShift(scene, 'left');
-  //   },
-  // });
+  keybindings.addBinding({
+    key: 't left',
+    onTrigger: () => {
+      handleTimeRangeShift(scene, 'left');
+    },
+  });
 
-  // keybindings.addBinding({
-  //   key: 't right',
-  //   onTrigger: () => {
-  //     handleTimeRangeShift(scene, 'right');
-  //   },
-  // });
+  keybindings.addBinding({
+    key: 't right',
+    onTrigger: () => {
+      handleTimeRangeShift(scene, 'right');
+    },
+  });
 
-  // if (canEdit) {
-  // Panel edit
-  //   keybindings.addBinding({
-  //     key: 'e',
-  //     onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
-  //       const sceneRoot = vizPanel.getRoot();
-  //       if (sceneRoot instanceof DashboardScene) {
-  //         const panelId = getPanelIdForVizPanel(vizPanel);
-  //         if (scene.state.editPanel) {
-  //           locationService.push(
-  //             locationUtil.getUrlForPartial(locationService.getLocation(), {
-  //               editPanel: undefined,
-  //             })
-  //           );
-  //         } else {
-  //           const url = locationUtil.stripBaseFromUrl(getEditPanelUrl(panelId));
-  //           locationService.push(url);
-  //         }
-  //       }
-  //     }),
-  //   });
+  if (canEdit) {
+    // Panel edit
+    keybindings.addBinding({
+      key: 'e',
+      onTrigger: withFocusedPanel(scene, async (vizPanel: VizPanel) => {
+        const sceneRoot = vizPanel.getRoot();
+        if (sceneRoot instanceof DashboardScene) {
+          const panelId = getPanelIdForVizPanel(vizPanel);
+          if (scene.state.editPanel) {
+            locationService.push(
+              locationUtil.getUrlForPartial(locationService.getLocation(), {
+                editPanel: undefined,
+              })
+            );
+          } else {
+            const url = locationUtil.stripBaseFromUrl(getEditPanelUrl(panelId));
+            locationService.push(url);
+          }
+        }
+      }),
+    });
 
-  // Dashboard settings
-  //   keybindings.addBinding({
-  //     key: 'd s',
-  //     onTrigger: scene.onOpenSettings,
-  //   });
+    // Dashboard settings
+    keybindings.addBinding({
+      key: 'd s',
+      onTrigger: scene.onOpenSettings,
+    });
 
-  // Open save drawer
-  //   keybindings.addBinding({
-  //     key: 'mod+s',
-  //     onTrigger: () => scene.openSaveDrawer({}),
-  //   });
+    // Open save drawer
+    keybindings.addBinding({
+      key: 'mod+s',
+      onTrigger: () => scene.openSaveDrawer({}),
+    });
 
-  // delete panel
-  //   keybindings.addBinding({
-  //     key: 'p r',
-  //     onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
-  //       if (scene.state.isEditing) {
-  //         onRemovePanel(scene, vizPanel);
-  //       }
-  //     }),
-  //   });
+    // delete panel
+    keybindings.addBinding({
+      key: 'p r',
+      onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
+        if (scene.state.isEditing) {
+          onRemovePanel(scene, vizPanel);
+        }
+      }),
+    });
 
-  // duplicate panel
-  //   keybindings.addBinding({
-  //     key: 'p d',
-  //     onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
-  //       if (scene.state.isEditing) {
-  //         scene.duplicatePanel(vizPanel);
-  //       }
-  //     }),
-  //   });
+    // duplicate panel
+    keybindings.addBinding({
+      key: 'p d',
+      onTrigger: withFocusedPanel(scene, (vizPanel: VizPanel) => {
+        if (scene.state.isEditing) {
+          scene.duplicatePanel(vizPanel);
+        }
+      }),
+    });
 
-  // collapse all rows
-  //   keybindings.addBinding({
-  //     key: 'd shift+c',
-  //     onTrigger: () => {
-  //       if (scene.state.body instanceof DefaultGridLayoutManager) {
-  //         scene.state.body.collapseAllRows();
-  //       }
-  //     },
-  //   });
+    // collapse all rows
+    keybindings.addBinding({
+      key: 'd shift+c',
+      onTrigger: () => {
+        if (scene.state.body instanceof DefaultGridLayoutManager) {
+          scene.state.body.collapseAllRows();
+        }
+      },
+    });
 
-  // expand all rows
-  //   keybindings.addBinding({
-  //     key: 'd shift+e',
-  //     onTrigger: () => {
-  //       if (scene.state.body instanceof DefaultGridLayoutManager) {
-  //         scene.state.body.expandAllRows();
-  //       }
-  //     },
-  //   });
-  // }
+    // expand all rows
+    keybindings.addBinding({
+      key: 'd shift+e',
+      onTrigger: () => {
+        if (scene.state.body instanceof DefaultGridLayoutManager) {
+          scene.state.body.expandAllRows();
+        }
+      },
+    });
+  }
 
   // toggle all panel legends (TODO)
   // toggle all exemplars (TODO)
-
-  // END
 
   return () => {
     keybindings.removeAll();
@@ -278,22 +268,22 @@ export function setupKeyboardShortcuts(scene: DashboardScene) {
   };
 }
 
-// function handleZoomOut(scene: DashboardScene) {
-//   const timePicker = dashboardSceneGraph.getTimePicker(scene);
-//   timePicker?.onZoom();
-// }
+function handleZoomOut(scene: DashboardScene) {
+  const timePicker = dashboardSceneGraph.getTimePicker(scene);
+  timePicker?.onZoom();
+}
 
-// function handleTimeRangeShift(scene: DashboardScene, direction: 'left' | 'right') {
-//   const timePicker = dashboardSceneGraph.getTimePicker(scene);
+function handleTimeRangeShift(scene: DashboardScene, direction: 'left' | 'right') {
+  const timePicker = dashboardSceneGraph.getTimePicker(scene);
 
-//   if (!timePicker) {
-//     return;
-//   }
+  if (!timePicker) {
+    return;
+  }
 
-//   if (direction === 'left') {
-//     timePicker.onMoveBackward();
-//   }
-//   if (direction === 'right') {
-//     timePicker.onMoveForward();
-//   }
-// }
+  if (direction === 'left') {
+    timePicker.onMoveBackward();
+  }
+  if (direction === 'right') {
+    timePicker.onMoveForward();
+  }
+}
