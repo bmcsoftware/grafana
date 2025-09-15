@@ -4,7 +4,7 @@ import { GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans } from '@grafana/i18n';
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/13/2025
+// Date - 09/15/2025
 // Commented unused import
 // import { TextLink } from '@grafana/ui';
 // END
@@ -28,7 +28,7 @@ export function EntityNotFound({ entity = 'Page' }: Props) {
           We&apos;re looking but can&apos;t seem to find this {{ lowerCaseEntity }}. Try returning{' '}
           {/* 
             // @Copyright 2025 BMC Software, Inc.
-            // Date - 06/13/2025
+            // Date - 09/15/2025
             // Commented text
             <TextLink href="/">home</TextLink> or seeking help on the{' '}
             <TextLink href="https://community.grafana.com" external>

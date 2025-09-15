@@ -1,7 +1,7 @@
 import { EchoBackend, EchoEvent, EchoEventType } from '@grafana/runtime';
 
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/13/2025
+// Date - 09/15/2025
 // Commented unsued code
 // import { backendSrv } from '../../backend_srv';
 // END
@@ -36,7 +36,7 @@ export class PerformanceBackend implements EchoBackend<PerformanceEvent, Perform
       return;
     }
     // @Copyright 2025 BMC Software, Inc.
-    // Date - 06/13/2025
+    // Date - 09/15/2025
     // Stopped metrics API call
     // backendSrv
     //   .post(

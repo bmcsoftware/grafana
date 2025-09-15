@@ -235,7 +235,7 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
       dashboardWatcher.watch(this.state.uid);
     }
     // @Copyright 2025 BMC Software, Inc.
-    // Date - 06/13/2025
+    // Date - 09/15/2025
     // Remove Key bindings.
     // let clearKeyBindings = () => {};
     // if (!config.publicDashboardAccessToken) {

@@ -28,7 +28,7 @@ import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor } from '
 import { DashboardScene } from './DashboardScene';
 
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/13/2025
+// Date - 09/15/2025
 // Remove unused import.
 // import {
 //   PluginExtensionPoints
@@ -104,7 +104,7 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
     }
 
     // @Copyright 2025 BMC Software, Inc.
-    // Date - 06/13/2025
+    // Date - 09/15/2025
     // Made optional menu item hidden.
     // if (dashboard.canEditDashboard() && dashboard.state.editable && !isReadOnlyRepeat && !isEditingPanel) {
     //   // We could check isEditing here but I kind of think this should always be in the menu,

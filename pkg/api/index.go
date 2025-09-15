@@ -170,7 +170,7 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 		NavTree:                             navTree,
 		Nonce:                               c.RequestNonce,
 		// @Copyright 2025 BMC Software, Inc.
-		// Date - 06/13/2025
+		// Date - 09/15/2025
 		// Replaced with bmc icon
 		LoadingLogo:                         "public/img/dashboard_icon.svg",
 		// END

@@ -11,7 +11,7 @@ import { RouteDescriptor } from '../core/navigation/types';
 import { ROUTES as CONNECTIONS_ROUTES } from 'app/features/connections/constants';
 /*
  # @Copyright 2025 BMC Software, Inc.
- # Date - 06/13/2025
+ # Date - 09/15/2025
  # Commented unused imports
 */
 // import { contextSrv } from 'app/core/services/context_srv';
@@ -35,7 +35,7 @@ const isDevEnv = config.buildInfo.env === 'development';
 export const extraRoutes: RouteDescriptor[] = [];
 
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/13/2025
+// Date - 09/15/2025
 // Removed/commented all the routes which are not required
 export function getAppRoutes(): RouteDescriptor[] {
   return [

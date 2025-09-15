@@ -2,7 +2,7 @@ import { css, keyframes } from '@emotion/css';
 
 import { GrafanaTheme2 } from '@grafana/data';
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/13/2025
+// Date - 09/15/2025
 // Commented unused import
 // import { Trans } from '@grafana/i18n';
 // import { locationService } from '@grafana/runtime';
@@ -18,7 +18,7 @@ export interface Props {
 export const DashboardLoading = ({ initPhase }: Props) => {
   const styles = useStyles2(getStyles);
   // @Copyright 2025 BMC Software, Inc.
-  // Date - 06/13/2025
+  // Date - 09/15/2025
   // Commented unused functions
   // const cancelVariables = () => {
   //   locationService.push('/');
@@ -33,7 +33,7 @@ export const DashboardLoading = ({ initPhase }: Props) => {
           </HorizontalGroup>{' '}
           {/*
             // @Copyright 2025 BMC Software, Inc.
-            // Date - 06/13/2025
+            // Date - 09/15/2025
             // Remove button 
             <HorizontalGroup align="center" justify="center">
               <Button variant="secondary" size="md" icon="repeat" onClick={cancelVariables}>

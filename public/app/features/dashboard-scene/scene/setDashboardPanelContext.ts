@@ -26,7 +26,7 @@ export function setDashboardPanelContext(vizPanel: VizPanel, context: PanelConte
     const dashboard = getDashboardSceneFor(vizPanel);
     const builtInLayer = getBuiltInAnnotationsLayer(dashboard);
     // @Copyright 2025 BMC Software, Inc.
-    // Date - 06/13/2025
+    // Date - 09/15/2025
     // Remove annotations from tooltip.
     return false;
     // END

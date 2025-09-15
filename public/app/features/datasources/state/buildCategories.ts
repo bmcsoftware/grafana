@@ -3,7 +3,7 @@ import { t } from '@grafana/i18n';
 import { featureEnabled } from '@grafana/runtime';
 import { DataSourcePluginCategory } from 'app/types/datasources';
 // @Copyright 2025 BMC Software, Inc.
-// Date - 06/13/2025
+// Date - 09/15/2025
 // updated import for bmc icon
 import dashboardIconSvg from 'img/dashboard_icon.svg';
 // END
@@ -428,7 +428,7 @@ function getGrafanaCloudPhantomPlugin(): DataSourcePluginMeta {
         'Hosted Graphite, Prometheus, and Loki'
       ),
       // @Copyright 2025 BMC Software, Inc.
-      // Date - 06/13/2025
+      // Date - 09/15/2025
       // Replaced with bmc icon
       logos: { small: dashboardIconSvg, large: dashboardIconSvg },
       // END
