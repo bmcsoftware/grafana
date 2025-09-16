@@ -8,7 +8,11 @@ import {
   urlUtil,
 } from '@grafana/data';
 import { t } from '@grafana/i18n';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 09/16/2025
+// Removed unused import.
 import { locationService } from '@grafana/runtime';
+// END
 import { LocalValueVariable, sceneGraph, SceneGridRow, VizPanel, VizPanelMenu } from '@grafana/scenes';
 import { DataQuery, OptionsWithLegend } from '@grafana/schema';
 import appEvents from 'app/core/app_events';
@@ -22,8 +26,12 @@ import { dispatch } from 'app/store/store';
 
 import { isInCloneChain } from '../utils/clone';
 import { DashboardInteractions } from '../utils/interactions';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 09/16/2025
+// Updated import.
 import { getInspectUrl, getViewPanelUrl, tryGetExploreUrlForPanel } from '../utils/urlBuilders';
 import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor } from '../utils/utils';
+// END
 
 import { DashboardScene } from './DashboardScene';
 
@@ -65,6 +73,9 @@ import { DashboardScene } from './DashboardScene';
 //   return getPluginExtensions;
 // }
 
+// END
+
+
 // Define the category for metrics drilldown links
 const METRICS_DRILLDOWN_CATEGORY = 'metrics-drilldown';
 
@@ -95,12 +106,16 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
 
     const isEditingPanel = Boolean(dashboard.state.editPanel);
     if (!isEditingPanel) {
+      // @Copyright 2025 BMC Software, Inc.
+      // Date - 09/16/2025
+      // Removed keyboard shortcut.
       items.push({
         text: t('panel.header-menu.view', `View`),
         iconClassName: 'eye',
         shortcut: '',
         href: getViewPanelUrl(panel),
       });
+      // END
     }
 
     // @Copyright 2025 BMC Software, Inc.

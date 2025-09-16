@@ -192,8 +192,11 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       gap: theme.spacing(1),
       boxSizing: 'border-box',
       flexDirection: 'column',
-      // without top padding the fixed controls headers is rendered over the selection outline.
+      // @Copyright 2025 BMC Software, Inc. 
+      // Date - 09/16/2025
+      // Added a padding.
       padding: '5vh 16px',
+      // END
     }),
     bodyEditing: css({
       position: 'absolute',

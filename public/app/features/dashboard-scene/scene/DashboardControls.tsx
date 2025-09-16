@@ -22,12 +22,15 @@ import {
   CancelActivationHandler,
 } from '@grafana/scenes';
 import { Box, Stack, useStyles2 } from '@grafana/ui';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 09/16/2025
+// Added import for breadcrumbs.
 import { Breadcrumbs } from 'app/core/components/Breadcrumbs/Breadcrumbs';
 import { buildBreadcrumbs } from 'app/core/components/Breadcrumbs/utils';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { HOME_NAV_ID } from 'app/core/reducers/navModel';
 import { useSelector } from 'app/types/store';
-
+// END
 import { PanelEditControls } from '../panel-edit/PanelEditControls';
 import { getDashboardSceneFor } from '../utils/utils';
 
@@ -127,16 +130,20 @@ export class DashboardControls extends SceneObjectBase<DashboardControlsState> {
     return !(hideVariables && hideLinks && hideTimePicker);
   }
 
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 09/16/2025
+  // Added hideVariables method.
   public hideVariables(): boolean {
       const hasVariables = sceneGraph
       .getVariables(this)
       ?.state.variables.some((v) => v.state.hide !== VariableHide.hideVariable);
       const hasAnnotations = sceneGraph.getDataLayers(this).some((d) => d.state.isEnabled && !d.state.isHidden);
       const hideVariables = this.state.hideVariableControls || (!hasAnnotations && !hasVariables);
-  
+
       return hideVariables;
+    }
+    // END
   }
-}
 
 
 function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardControls>) {
@@ -258,10 +265,14 @@ function DataLayerControls({ dashboard }: { dashboard: DashboardScene }) {
 
 function getStyles(theme: GrafanaTheme2) {
   return {
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 09/16/2025
+    // Updated the css.
     controlContainer: css({
       display: 'flex',
       flexDirection: 'column'
     }),
+    // END
     controls: css({
       display: 'flex',
       alignItems: 'flex-start',
@@ -284,6 +295,9 @@ function getStyles(theme: GrafanaTheme2) {
         alignItems: 'stretch',
       },
     }),
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 09/16/2025
+    // Updated the breadcrumbs wrapper css.
     breadcrumbsWrapper: css({
       display: 'flex',
       overflow: 'hidden',
@@ -304,6 +318,7 @@ function getStyles(theme: GrafanaTheme2) {
       flex: '100%',
       padding: theme.spacing(2),
     }),
+    // END
     controlsPanelEdit: css({
       // In panel edit we do not need any right padding as the splitter is providing it
       paddingRight: 0,

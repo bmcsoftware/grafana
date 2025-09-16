@@ -7,9 +7,9 @@ import { GrafanaTheme2 } from '@grafana/data';
 // import { Trans } from '@grafana/i18n';
 // import { locationService } from '@grafana/runtime';
 // import { Button } from '@grafana/ui';
-// END
 import { HorizontalGroup, Spinner, useStyles2, VerticalGroup } from '@grafana/ui';
 import { DashboardInitPhase } from 'app/types/dashboard';
+// END
 
 export interface Props {
   initPhase: DashboardInitPhase;
@@ -23,6 +23,7 @@ export const DashboardLoading = ({ initPhase }: Props) => {
   // const cancelVariables = () => {
   //   locationService.push('/');
   // };
+  // END
 
   return (
     <div className={styles.dashboardLoading}>
@@ -40,6 +41,7 @@ export const DashboardLoading = ({ initPhase }: Props) => {
                 <Trans i18nKey="dashboard.dashboard-loading.cancel-loading-dashboard">Cancel loading dashboard</Trans>
               </Button>
             </HorizontalGroup> 
+            // END
           */}
         </VerticalGroup>
       </div>
