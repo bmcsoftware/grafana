@@ -25,6 +25,11 @@ export function setDashboardPanelContext(vizPanel: VizPanel, context: PanelConte
   context.canAddAnnotations = () => {
     const dashboard = getDashboardSceneFor(vizPanel);
     const builtInLayer = getBuiltInAnnotationsLayer(dashboard);
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 09/15/2025
+    // Remove annotations from tooltip.
+    return false;
+    // END
 
     // When there is no builtin annotations query we disable the ability to add annotations
     if (!builtInLayer) {

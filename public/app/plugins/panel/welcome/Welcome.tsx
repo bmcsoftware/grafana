@@ -16,9 +16,15 @@ export const WelcomeBanner = () => {
 
   return (
     <div className={styles.container}>
+      {/*
+        // @Copyright 2025 BMC Software, Inc.
+        // Date - 09/15/2025
+        // Replace text `Grafana` with `AMI Dashboard` 
+      */}
       <h1 className={styles.title}>
-        <Trans i18nKey="welcome.welcome-banner.welcome-to-grafana">Welcome to Grafana</Trans>
+        <Trans i18nKey="welcome.welcome-banner.welcome-to-grafana">Welcome to AMI Dashboard</Trans>
       </h1>
+      {/* // END */}
       <div className={styles.help}>
         <h3 className={styles.helpText}>
           <Trans i18nKey="welcome.welcome-banner.need-help">Need help?</Trans>
