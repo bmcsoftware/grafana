@@ -1,5 +1,9 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import grafanaConfig from '@grafana/plugin-configs/webpack.config.ts';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 09/15/2025
+// import Env type
+import grafanaConfig, { type Env } from '@grafana/plugin-configs/webpack.config.ts';
+// END
 import { mergeWithCustomize, unique } from 'webpack-merge';
 import { type Configuration } from 'webpack';
 
@@ -18,8 +22,11 @@ function skipFiles(f: string): boolean {
   }
   return true;
 }
-
-const config = async (env: Record<string, unknown>): Promise<Configuration> => {
+// @Copyright 2025 BMC Software, Inc.
+// Date - 09/15/2025
+// Updated parameter type
+const config = async (env: Env): Promise<Configuration> => {
+// END
   const baseConfig = await grafanaConfig(env);
   const customConfig = {
     plugins: [

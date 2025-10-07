@@ -30,8 +30,11 @@ function skipFiles(f: string): boolean {
   }
   return true;
 }
-
-type Env = {
+// @Copyright 2025 BMC Software, Inc.
+// Date - 09/15/2025
+// Export Env type
+export type Env = {
+// END
   [key: string]: true | string | Env;
 };
 

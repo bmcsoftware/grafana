@@ -1,10 +1,15 @@
 import { css, keyframes } from '@emotion/css';
 
 import { GrafanaTheme2 } from '@grafana/data';
-import { Trans } from '@grafana/i18n';
-import { locationService } from '@grafana/runtime';
-import { Button, HorizontalGroup, Spinner, useStyles2, VerticalGroup } from '@grafana/ui';
+// @Copyright 2025 BMC Software, Inc.
+// Date - 09/15/2025
+// Commented unused import
+// import { Trans } from '@grafana/i18n';
+// import { locationService } from '@grafana/runtime';
+// import { Button } from '@grafana/ui';
+import { HorizontalGroup, Spinner, useStyles2, VerticalGroup } from '@grafana/ui';
 import { DashboardInitPhase } from 'app/types/dashboard';
+// END
 
 export interface Props {
   initPhase: DashboardInitPhase;
@@ -12,9 +17,13 @@ export interface Props {
 
 export const DashboardLoading = ({ initPhase }: Props) => {
   const styles = useStyles2(getStyles);
-  const cancelVariables = () => {
-    locationService.push('/');
-  };
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 09/15/2025
+  // Commented unused functions
+  // const cancelVariables = () => {
+  //   locationService.push('/');
+  // };
+  // END
 
   return (
     <div className={styles.dashboardLoading}>
@@ -23,11 +32,17 @@ export const DashboardLoading = ({ initPhase }: Props) => {
           <HorizontalGroup align="center" justify="center" spacing="xs">
             <Spinner inline={true} /> {initPhase}
           </HorizontalGroup>{' '}
-          <HorizontalGroup align="center" justify="center">
-            <Button variant="secondary" size="md" icon="repeat" onClick={cancelVariables}>
-              <Trans i18nKey="dashboard.dashboard-loading.cancel-loading-dashboard">Cancel loading dashboard</Trans>
-            </Button>
-          </HorizontalGroup>
+          {/*
+            // @Copyright 2025 BMC Software, Inc.
+            // Date - 09/15/2025
+            // Remove button 
+            <HorizontalGroup align="center" justify="center">
+              <Button variant="secondary" size="md" icon="repeat" onClick={cancelVariables}>
+                <Trans i18nKey="dashboard.dashboard-loading.cancel-loading-dashboard">Cancel loading dashboard</Trans>
+              </Button>
+            </HorizontalGroup> 
+            // END
+          */}
         </VerticalGroup>
       </div>
     </div>

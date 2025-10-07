@@ -234,11 +234,14 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
     if (!this.state.meta.isEmbedded && this.state.uid) {
       dashboardWatcher.watch(this.state.uid);
     }
-
-    let clearKeyBindings = () => {};
-    if (!config.publicDashboardAccessToken) {
-      clearKeyBindings = setupKeyboardShortcuts(this);
-    }
+    // @Copyright 2025 BMC Software, Inc.
+    // Date - 09/15/2025
+    // Remove Key bindings.
+    // let clearKeyBindings = () => {};
+    // if (!config.publicDashboardAccessToken) {
+    //   clearKeyBindings = setupKeyboardShortcuts(this);
+    // }
+    // END
     const oldDashboardWrapper = new DashboardModelCompatibilityWrapper(this);
 
     // @ts-expect-error
@@ -247,7 +250,6 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
     // Deactivation logic
     return () => {
       window.__grafanaSceneContext = prevSceneContext;
-      clearKeyBindings();
       this._changeTracker.terminate();
       oldDashboardWrapper.destroy();
       dashboardWatcher.leave();

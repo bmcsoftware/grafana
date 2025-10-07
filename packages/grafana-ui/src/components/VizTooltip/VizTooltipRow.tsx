@@ -126,6 +126,13 @@ export const VizTooltipRow = ({
   if (label.length * HORIZONTAL_PX_PER_CHAR > window.innerWidth / 2) {
     label = label.replaceAll('{', '{\n  ').replaceAll('}', '\n}').replaceAll(', ', ',\n  ');
   }
+  // @Copyright 2025 BMC Software, Inc.
+  // Date - 09/15/2025
+  // Made optional menu item hidden.
+  if (label.startsWith('"') && label.endsWith('"')) {
+    label = label.substring(1, label.length - 1);
+  } 
+  // END
 
   return (
     <div className={styles.contentWrapper}>
