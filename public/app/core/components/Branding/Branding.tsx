@@ -5,8 +5,11 @@ import { colorManipulator } from '@grafana/data';
 import { useTheme2 } from '@grafana/ui';
 import g8LoginDarkSvg from 'img/g8_login_dark.svg';
 import g8LoginLightSvg from 'img/g8_login_light.svg';
+// @Copyright 2026 BMC Software, Inc.
+// Date - 01/07/2026
+// Updated the import
 import dashboardIconSvg from 'img/dashboard_icon.svg';
-
+// END
 export interface BrandComponentProps {
   className?: string;
   children?: JSX.Element | JSX.Element[];

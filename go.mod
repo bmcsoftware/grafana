@@ -147,7 +147,7 @@ require (
 	github.com/open-feature/go-sdk-contrib/providers/go-feature-flag v0.2.3 // @grafana/grafana-backend-group
 	github.com/openfga/api/proto v0.0.0-20250127102726-f9709139a369 // @grafana/identity-access-team
 	github.com/openfga/language/pkg/go v0.2.0-beta.2.0.20250220223040-ed0cfba54336 // @grafana/identity-access-team
-	github.com/openfga/openfga v1.11.2 // @grafana/identity-access-team
+	github.com/openfga/openfga v1.8.13 // @grafana/identity-access-team
 	github.com/opentracing-contrib/go-grpc v0.1.1 // @grafana/grafana-search-and-storage
 	github.com/opentracing/opentracing-go v1.2.0 // @grafana/grafana-search-and-storage
 	github.com/openzipkin/zipkin-go v0.4.3 // @grafana/oss-big-tent
