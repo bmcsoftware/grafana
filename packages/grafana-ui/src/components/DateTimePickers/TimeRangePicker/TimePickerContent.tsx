@@ -235,7 +235,7 @@ const EmptyRecentList = memo(() => {
       </div>
       {/* 
         // @Copyright 2026 BMC Software, Inc.
-        // Date - 01/07/2026
+        // Date - 02/16/2026
         // Commented documentation link 
         <Trans i18nKey="time-picker.content.empty-recent-list-docs">
           <div>

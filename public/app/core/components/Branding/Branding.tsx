@@ -14,7 +14,7 @@ export interface BrandComponentProps {
 
 export const LoginLogo: FC<BrandComponentProps & { logo?: string }> = ({ className, logo }) => {
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 01/07/2026
+  // Date - 02/16/2026
   // Replaced with bmc icon
   return <img className={className} src={`${logo ? logo : dashboardIconSvg}`} alt="Dashboard" />;
   // END
@@ -51,7 +51,7 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 01/07/2026
+  // Date - 02/16/2026
   // Replaced with bmc icon
   return <img className={className} src={dashboardIconSvg} alt="Dashboard" />;
   // END
@@ -71,7 +71,7 @@ export class Branding {
   static MenuLogo = MenuLogo;
   static LoginBoxBackground = LoginBoxBackground;
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 01/07/2026
+  // Date - 02/16/2026
   // Replaced text Grafana with Dashboard
   static AppTitle = 'AMI Dashboard';
   static LoginTitle = 'Welcome to AMI Dashboard';

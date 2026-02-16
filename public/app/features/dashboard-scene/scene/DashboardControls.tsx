@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { GrafanaTheme2, VariableHide } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 // @Copyright 2026 BMC Software, Inc.
-// Date - 01/07/2026
+// Date - 02/16/2026
 // Added import for internationalization.
 import { t } from '@grafana/i18n';
 // END
@@ -156,7 +156,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
 
 
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 01/07/2026
+  // Date - 02/16/2026
   // Added breadcrumbs.
   const { chrome } = useGrafana();
   const state = chrome.useState();
@@ -194,7 +194,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   // END
 
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 01/07/2026
+  // Date - 02/16/2026
   // Removed empty nav state.
   // if (!model.hasControls()) {
   //   // To still have spacing when no controls are rendered
@@ -210,7 +210,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
       >
         {/* 
           // @Copyright 2026 BMC Software, Inc.
-          // Date - 01/07/2026
+          // Date - 02/16/2026
           // Adjusted the breadcrumbs.
         */}
         {!state.chromeless && (
@@ -229,7 +229,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
       </div>
       {/* 
         // @Copyright 2026 BMC Software, Inc.
-        // Date - 01/07/2026
+        // Date - 02/16/2026
         // Added portal for variable controls. 
       */}
       {createPortal(
@@ -286,7 +286,7 @@ function getStyles(theme: GrafanaTheme2) {
       position: 'relative',
       width: '100%',
       // @Copyright 2026 BMC Software, Inc.
-      // Date - 01/07/2026
+      // Date - 02/16/2026
       // Adjusted the dashboard control styles.
       justifyContent: 'space-between',
       padding:'0px 16px',
@@ -313,7 +313,7 @@ function getStyles(theme: GrafanaTheme2) {
       display: 'flex',
       position: 'absolute',
       // @Copyright 2026 BMC Software, Inc.
-      // Date - 01/07/2026
+      // Date - 02/16/2026
       // Adjusted top position.
       top: '5vh',
       // END

@@ -19,7 +19,7 @@ export const WelcomeBanner = () => {
       <h1 className={styles.title}>
       {/*
         // @Copyright 2026 BMC Software, Inc.
-        // Date - 01/07/2026
+        // Date - 02/16/2026
         // Replace text `Grafana` with `AMI Dashboard` 
       */}
         <Trans i18nKey="welcome.welcome-banner.welcome-to-grafana">Welcome to AMI Dashboard</Trans>

@@ -38,7 +38,7 @@ export function GrafanaRouteError({ error, errorInfo }: Props) {
             <br />
             {/*
               // @Copyright 2026 BMC Software, Inc.
-              // Date - 01/07/2026
+              // Date - 02/16/2026
               // Replaced text from Grafana to Dashboard and hide Reload button
             */}
             <h2 className="page-heading">

@@ -231,7 +231,7 @@ export function TimeRangePicker(props: TimeRangePickerProps) {
 TimeRangePicker.displayName = 'TimeRangePicker';
 
 // @Copyright 2026 BMC Software, Inc.
-// Date - 01/07/2026
+// Date - 02/16/2026
 // Commented the `ZoomOutTooltip' function
 // const ZoomOutTooltip = () => (
 //   <>
@@ -243,7 +243,7 @@ TimeRangePicker.displayName = 'TimeRangePicker';
 // END
 
 // @Copyright 2026 BMC Software, Inc.
-// Date - 01/07/2026
+// Date - 02/16/2026
 // Removed <br/> tag from returned string
 const ZoomOutTooltip = () => (
   <>

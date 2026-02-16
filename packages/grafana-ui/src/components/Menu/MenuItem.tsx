@@ -181,7 +181,7 @@ export const MenuItem = React.memo(
           <div className={cx(styles.rightWrapper, { [styles.withShortcut]: hasShortcut })}>
             {/* 
             // @Copyright 2026 BMC Software, Inc.
-            // Date - 01/07/2026
+            // Date - 02/16/2026
             // Removed keyboard shortcut Icon from menuitem
               {hasShortcut && (
                 <div className={styles.shortcut}>

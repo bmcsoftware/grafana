@@ -129,7 +129,7 @@ export const VizTooltipRow = ({
     label = label.replaceAll('{', '{\n  ').replaceAll('}', '\n}').replaceAll(', ', ',\n  ');
   }
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 01/07/2026
+  // Date - 02/16/2026
   // Made optional menu item hidden.
   if (label.startsWith('"') && label.endsWith('"')) {
     label = label.substring(1, label.length - 1);
