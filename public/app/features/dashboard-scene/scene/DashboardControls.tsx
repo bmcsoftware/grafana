@@ -1,7 +1,13 @@
 import { css, cx } from '@emotion/css';
+import { createPortal } from 'react-dom';
 
 import { GrafanaTheme2, VariableHide } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
+// @Copyright 2026 BMC Software, Inc.
+// Date - 01/07/2026
+// Added import for internationalization.
+import { t } from '@grafana/i18n';
+// END
 import {
   SceneObjectState,
   SceneObjectBase,
@@ -16,6 +22,15 @@ import {
   CancelActivationHandler,
 } from '@grafana/scenes';
 import { Box, Stack, useStyles2 } from '@grafana/ui';
+// @Copyright 2026 BMC Software, Inc.
+// Date - 09/16/2025
+// Added import for breadcrumbs.
+import { Breadcrumbs } from 'app/core/components/Breadcrumbs/Breadcrumbs';
+import { buildBreadcrumbs } from 'app/core/components/Breadcrumbs/utils';
+import { useGrafana } from 'app/core/context/GrafanaContext';
+import { HOME_NAV_ID } from 'app/core/reducers/navModel';
+import { useSelector } from 'app/types/store';
+// END
 
 import { PanelEditControls } from '../panel-edit/PanelEditControls';
 import { getDashboardSceneFor } from '../utils/utils';
@@ -116,6 +131,20 @@ export class DashboardControls extends SceneObjectBase<DashboardControlsState> {
 
     return !(hideVariables && hideLinks && hideTimePicker);
   }
+
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 09/16/2025
+  // Added hideVariables method.
+  public hideVariables(): boolean {
+    const hasVariables = sceneGraph
+    .getVariables(this)
+    ?.state.variables.some((v) => v.state.hide !== VariableHide.hideVariable);
+    const hasAnnotations = sceneGraph.getDataLayers(this).some((d) => d.state.isEnabled && !d.state.isHidden);
+    const hideVariables = this.state.hideVariableControls || (!hasAnnotations && !hasVariables);
+
+    return hideVariables;
+  }
+  // END
 }
 
 function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardControls>) {
@@ -125,37 +154,102 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   const styles = useStyles2(getStyles);
   const showDebugger = window.location.search.includes('scene-debugger');
 
-  if (!model.hasControls()) {
-    // To still have spacing when no controls are rendered
-    return <Box padding={1} />;
+
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 01/07/2026
+  // Added breadcrumbs.
+  const { chrome } = useGrafana();
+  const state = chrome.useState();
+  const homeNav = useSelector((state) => state.navIndex)[HOME_NAV_ID];
+
+  const sectionNav=state.sectionNav.node;
+  const pageNav=state.pageNav;
+  let breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  breadcrumbs = breadcrumbs.slice(Math.max(breadcrumbs.length - 2, 0));
+  breadcrumbs = breadcrumbs.filter(
+    (each) =>
+      each.text.toLowerCase() === 'view panel' ||
+      each.text.toLowerCase().startsWith('playback ') ||
+      each.text.toLowerCase().startsWith('realtime ') ||
+      each.text.toLowerCase().startsWith('rca ')
+  );
+  if (breadcrumbs.length) {
+    breadcrumbs = breadcrumbs.map((each) => {
+      if (
+        each.text.toLowerCase().startsWith('playback ') ||
+        each.text.toLowerCase().startsWith('realtime ') ||
+        each.text.toLowerCase().startsWith('rca ')
+      ) {
+        return {
+          ...each,
+          text: t('','Graph View'),
+        };
+      } else { 
+          return each;
+        }
+      });
+  } else {
+    breadcrumbs = [];
   }
+  // END
+
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 01/07/2026
+  // Removed empty nav state.
+  // if (!model.hasControls()) {
+  //   // To still have spacing when no controls are rendered
+  //   return <Box padding={1} />;
+  // }
+  // END
 
   return (
-    <div
-      data-testid={selectors.pages.Dashboard.Controls}
-      className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
-    >
-      <Stack grow={1} wrap={'wrap'}>
-        {!hideVariableControls && (
-          <>
-            <VariableControls dashboard={dashboard} />
-            <DataLayerControls dashboard={dashboard} />
-          </>
+    <div className={styles.controlContainer} style={ !model.hideVariables() ? { marginBottom: '2vh'} : {}}>
+      <div
+        data-testid={selectors.pages.Dashboard.Controls}
+        className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
+      >
+        {/* 
+          // @Copyright 2026 BMC Software, Inc.
+          // Date - 01/07/2026
+          // Adjusted the breadcrumbs.
+        */}
+        {!state.chromeless && (
+          <Stack>
+            <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
+          </Stack>
         )}
-        <Box grow={1} />
-        {!hideLinksControls && !editPanel && <DashboardLinksControls links={links} dashboard={dashboard} />}
-        {editPanel && <PanelEditControls panelEditor={editPanel} />}
-      </Stack>
-      {!hideTimeControls && (
-        <div className={cx(styles.timeControls, editPanel && styles.timeControlsWrap)}>
-          <timePicker.Component model={timePicker} />
-          <refreshPicker.Component model={refreshPicker} />
-        </div>
+        {/* // END */}
+              {!hideTimeControls && (
+          <Stack justifyContent={'flex-end'}>
+            <timePicker.Component model={timePicker} />
+            <refreshPicker.Component model={refreshPicker} />
+          </Stack>
+        )}
+        {showDebugger && <SceneDebugger scene={model} key={'scene-debugger'} />}
+      </div>
+      {/* 
+        // @Copyright 2026 BMC Software, Inc.
+        // Date - 01/07/2026
+        // Added portal for variable controls. 
+      */}
+      {createPortal(
+        <div className={styles.filterControl}>
+          <Stack grow={1} wrap={'wrap'}>
+            {!hideVariableControls && (
+              <>
+                <VariableControls dashboard={dashboard} />
+                <DataLayerControls dashboard={dashboard} />
+              </>
+            )}
+            <Box grow={1} />
+            {!hideLinksControls && !editPanel && <DashboardLinksControls links={links} dashboard={dashboard} />}
+            {editPanel && <PanelEditControls panelEditor={editPanel} />}
+          </Stack>
+        </div>,
+        document.body
       )}
-      <Stack>
-        <DropdownVariableControls dashboard={dashboard} />
-      </Stack>
       {showDebugger && <SceneDebugger scene={model} key={'scene-debugger'} />}
+      {/* // END */}
     </div>
   );
 }
@@ -174,22 +268,60 @@ function DataLayerControls({ dashboard }: { dashboard: DashboardScene }) {
 
 function getStyles(theme: GrafanaTheme2) {
   return {
+    // @Copyright 2026 BMC Software, Inc.
+    // Date - 09/16/2025
+    // Updated the css.
+    controlContainer: css({
+      display: 'flex',
+      flexDirection: 'column'
+    }),
+    // END
     controls: css({
       display: 'flex',
       alignItems: 'flex-start',
       flex: '100%',
       gap: theme.spacing(1),
-      padding: theme.spacing(2),
       flexDirection: 'row',
       flexWrap: 'nowrap',
       position: 'relative',
       width: '100%',
+      // @Copyright 2026 BMC Software, Inc.
+      // Date - 01/07/2026
+      // Adjusted the dashboard control styles.
+      justifyContent: 'space-between',
+      padding:'0px 16px',
+      background:'white',
+      // END
       marginLeft: 'auto',
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column-reverse',
         alignItems: 'stretch',
       },
     }),
+        // @Copyright 2026 BMC Software, Inc.
+    // Date - 09/16/2025
+    // Updated the breadcrumbs wrapper css.
+    breadcrumbsWrapper: css({
+      display: 'flex',
+      overflow: 'hidden',
+      [theme.breakpoints.down('sm')]: {
+        minWidth: '40%',
+      },
+    }),
+    filterControl: css({
+      label: 'filter-control',
+      display: 'flex',
+      position: 'absolute',
+      // @Copyright 2026 BMC Software, Inc.
+      // Date - 01/07/2026
+      // Adjusted top position.
+      top: '5vh',
+      // END
+      alignItems: 'flex-start',
+      flex: '100%',
+      padding: theme.spacing(2),
+    }),
+    // END
     controlsPanelEdit: css({
       flexWrap: 'wrap-reverse',
       // In panel edit we do not need any right padding as the splitter is providing it

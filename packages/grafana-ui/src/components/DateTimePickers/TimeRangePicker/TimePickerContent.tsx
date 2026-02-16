@@ -233,14 +233,20 @@ const EmptyRecentList = memo(() => {
       <div>
         <span>{emptyRecentListText}</span>
       </div>
-      <Trans i18nKey="time-picker.content.empty-recent-list-docs">
-        <div>
-          <TextLink href="https://grafana.com/docs/grafana/latest/dashboards/time-range-controls" external>
-            Read the documentation
-          </TextLink>
-          <span> to find out more about how to enter custom time ranges.</span>
-        </div>
-      </Trans>
+      {/* 
+        // @Copyright 2026 BMC Software, Inc.
+        // Date - 01/07/2026
+        // Commented documentation link 
+        <Trans i18nKey="time-picker.content.empty-recent-list-docs">
+          <div>
+            <TextLink href="https://grafana.com/docs/grafana/latest/dashboards/time-range-controls" external>
+              Read the documentation
+            </TextLink>
+            <span> to find out more about how to enter custom time ranges.</span>
+          </div>
+        </Trans>
+        // END
+      */}
     </div>
   );
 });

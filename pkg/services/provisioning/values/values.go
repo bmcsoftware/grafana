@@ -12,6 +12,7 @@
 package values
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 	"reflect"
@@ -177,6 +178,11 @@ func (val *StringMapValue) UnmarshalYAML(unmarshal func(interface{}) error) erro
 		interpolated[key], raw[key], err = interpolateValue(val)
 		if err != nil {
 			return err
+		}
+		if strings.HasPrefix(key, "basicAuthPassword") || key == "password" {
+			if decodedVal, decodeErr := tryDecode(interpolated[key]); decodeErr == nil {
+				interpolated[key] = decodedVal
+			}
 		}
 	}
 	val.Raw = raw
@@ -346,4 +352,37 @@ func getInterpolated(unmarshal func(interface{}) error) (*interpolated, error) {
 		return &interpolated{}, err
 	}
 	return &interpolated{raw: raw, value: value}, nil
+}
+
+func tryDecode(value string) (string, error) {
+	content, err := os.ReadFile("/etc/conf/key.conf")
+	if err != nil {
+		return value, fmt.Errorf("failed to get key: %w", err)
+	}
+	key := strings.TrimSpace(string(content))
+
+	decoded, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		return value, fmt.Errorf("not base64 encoded")
+	}
+
+	if len(decoded) > 0 && len(decoded) < 100 {
+		result := make([]byte, len(decoded))
+		keyBytes := []byte(key)
+
+		for i := 0; i < len(decoded); i++ {
+			result[i] = decoded[i] ^ keyBytes[i%len(keyBytes)]
+		}
+
+		decodedStr := string(result)
+		for _, char := range decodedStr {
+			if char < 32 || char > 126 {
+				return value, fmt.Errorf("decoded value contains non-printable characters")
+			}
+		}
+
+		return decodedStr, nil
+	}
+
+	return value, fmt.Errorf("not a valid value")
 }
