@@ -1,9 +1,14 @@
 import { css, keyframes } from '@emotion/css';
 
 import { GrafanaTheme2 } from '@grafana/data';
-import { Trans } from '@grafana/i18n';
-import { locationService } from '@grafana/runtime';
-import { Button, Spinner, Stack, useStyles2 } from '@grafana/ui';
+// @Copyright 2026 BMC Software, Inc.
+// Date - 02/16/2026
+// Commented unused import
+// import { Trans } from '@grafana/i18n';
+// import { locationService } from '@grafana/runtime';
+// import { Button } from '@grafana/ui';
+// END
+import { Spinner, Stack, useStyles2 } from '@grafana/ui';
 import { DashboardInitPhase } from 'app/types/dashboard';
 
 export interface Props {
@@ -12,9 +17,13 @@ export interface Props {
 
 export const DashboardLoading = ({ initPhase }: Props) => {
   const styles = useStyles2(getStyles);
-  const cancelVariables = () => {
-    locationService.push('/');
-  };
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 02/16/2026
+  // Commented unused functions
+  // const cancelVariables = () => {
+  //   locationService.push('/');
+  // };
+  // END
 
   return (
     <div className={styles.dashboardLoading}>
@@ -23,11 +32,17 @@ export const DashboardLoading = ({ initPhase }: Props) => {
           <Stack alignItems="center" justifyContent="center" gap={0.5}>
             <Spinner inline={true} /> {initPhase}
           </Stack>{' '}
-          <Stack alignItems="center" justifyContent="center">
-            <Button variant="secondary" size="md" icon="repeat" onClick={cancelVariables}>
-              <Trans i18nKey="dashboard.dashboard-loading.cancel-loading-dashboard">Cancel loading dashboard</Trans>
-            </Button>
-          </Stack>
+          {/* 
+            // @Copyright 2026 BMC Software, Inc.
+            // Date - 02/16/2026
+            // Remove button 
+            <Stack alignItems="center" justifyContent="center">
+              <Button variant="secondary" size="md" icon="repeat" onClick={cancelVariables}>
+                <Trans i18nKey="dashboard.dashboard-loading.cancel-loading-dashboard">Cancel loading dashboard</Trans>
+              </Button>
+            </Stack> 
+            // END
+          */}
         </Stack>
       </div>
     </div>

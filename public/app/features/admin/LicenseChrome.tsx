@@ -3,7 +3,11 @@ import * as React from 'react';
 
 import { GrafanaTheme2 } from '@grafana/data';
 import { useStyles2, useTheme2 } from '@grafana/ui';
-import grafanaIconSvg from 'img/grafana_icon.svg';
+// @Copyright 2026 BMC Software, Inc.
+// Date - 02/16/2026
+// Imported bmc dashboard icon
+import dashboardIconSvg from 'img/dashboard_icon.svg';
+// END
 import headerDarkSvg from 'img/licensing/header_dark.svg';
 import headerLightSvg from 'img/licensing/header_light.svg';
 
@@ -59,8 +63,12 @@ export function LicenseChrome({ header, editionNotice, subheader, children }: Pr
           }}
         >
           <img
-            src={grafanaIconSvg}
-            alt="Grafana"
+            // @Copyright 2026 BMC Software, Inc.
+            // Date - 02/16/2026
+            // Replaced with bmc icon
+              src={dashboardIconSvg}
+              alt="Dashboard"
+            // END
             width="80px"
             style={{ position: 'absolute', left: '23px', top: '20px' }}
           />

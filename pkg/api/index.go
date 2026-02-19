@@ -189,9 +189,13 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 		AppTitle:                            "Grafana",
 		NavTree:                             navTree,
 		Nonce:                               c.RequestNonce,
-		LoadingLogo:                         "public/img/grafana_icon.svg",
-		IsDevelopmentEnv:                    hs.Cfg.Env == setting.Dev,
-		Assets:                              assets,
+		// @Copyright 2026 BMC Software, Inc.
+		// Date - 02/16/2026
+		// Replaced with bmc icon
+		LoadingLogo: "public/img/dashboard_icon.svg",
+		// END
+		IsDevelopmentEnv: hs.Cfg.Env == setting.Dev,
+		Assets:           assets,
 	}
 
 	if hs.Cfg.CSPEnabled {
