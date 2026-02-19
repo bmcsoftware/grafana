@@ -240,7 +240,6 @@ TimeRangePicker.displayName = 'TimeRangePicker';
 //     </Trans>
 //   </>
 // );
-// END
 
 // @Copyright 2026 BMC Software, Inc.
 // Date - 02/16/2026
@@ -248,7 +247,6 @@ TimeRangePicker.displayName = 'TimeRangePicker';
 const ZoomOutTooltip = () => (
   <>
     <Trans i18nKey="time-picker.range-picker.zoom-out-tooltip">
-      Time range zoom out <br /> CTRL+Z
       Time range zoom out
     </Trans>
   </>

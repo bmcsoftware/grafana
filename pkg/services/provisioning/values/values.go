@@ -10,7 +10,9 @@
 // // unmarshal into d
 // d.Field.Value() // returns the final interpolated value from the yaml file
 package values
-
+// @Copyright 2026 BMC Software, Inc.
+// Date - 02/16/2026
+// Updated import
 import (
 	"encoding/base64"
 	"fmt"
@@ -21,6 +23,7 @@ import (
 
 	"github.com/grafana/grafana/pkg/setting"
 )
+// END
 
 // IntValue represents a string value in a YAML
 // config that can be overridden by environment variables
@@ -179,11 +182,15 @@ func (val *StringMapValue) UnmarshalYAML(unmarshal func(interface{}) error) erro
 		if err != nil {
 			return err
 		}
+		// @Copyright 2026 BMC Software, Inc.
+		// Date - 02/16/2026
+		// Change Decoding
 		if strings.HasPrefix(key, "basicAuthPassword") || key == "password" {
 			if decodedVal, decodeErr := tryDecode(interpolated[key]); decodeErr == nil {
 				interpolated[key] = decodedVal
 			}
 		}
+		// END
 	}
 	val.Raw = raw
 	val.value = interpolated
@@ -354,6 +361,9 @@ func getInterpolated(unmarshal func(interface{}) error) (*interpolated, error) {
 	return &interpolated{raw: raw, value: value}, nil
 }
 
+// @Copyright 2026 BMC Software, Inc.
+// Date - 02/16/2026
+// New Decoding function
 func tryDecode(value string) (string, error) {
 	content, err := os.ReadFile("/etc/conf/key.conf")
 	if err != nil {
@@ -386,3 +396,4 @@ func tryDecode(value string) (string, error) {
 
 	return value, fmt.Errorf("not a valid value")
 }
+// END
