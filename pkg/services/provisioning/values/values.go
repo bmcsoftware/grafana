@@ -10,11 +10,15 @@
 // // unmarshal into d
 // d.Field.Value() // returns the final interpolated value from the yaml file
 package values
+
 // @Copyright 2026 BMC Software, Inc.
 // Date - 02/16/2026
 // Updated import
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"reflect"
@@ -23,6 +27,7 @@ import (
 
 	"github.com/grafana/grafana/pkg/setting"
 )
+
 // END
 
 // IntValue represents a string value in a YAML
@@ -367,33 +372,42 @@ func getInterpolated(unmarshal func(interface{}) error) (*interpolated, error) {
 func tryDecode(value string) (string, error) {
 	content, err := os.ReadFile("/etc/conf/key.conf")
 	if err != nil {
-		return value, fmt.Errorf("failed to get key: %w", err)
+		return value, fmt.Errorf("failed to read decryption key")
 	}
-	key := strings.TrimSpace(string(content))
 
-	decoded, err := base64.StdEncoding.DecodeString(value)
+	keyHex := strings.TrimSpace(string(content))
+	key, err := hex.DecodeString(keyHex)
 	if err != nil {
-		return value, fmt.Errorf("not base64 encoded")
+		return value, fmt.Errorf("invalid decryption key format")
 	}
 
-	if len(decoded) > 0 && len(decoded) < 100 {
-		result := make([]byte, len(decoded))
-		keyBytes := []byte(key)
-
-		for i := 0; i < len(decoded); i++ {
-			result[i] = decoded[i] ^ keyBytes[i%len(keyBytes)]
-		}
-
-		decodedStr := string(result)
-		for _, char := range decodedStr {
-			if char < 32 || char > 126 {
-				return value, fmt.Errorf("decoded value contains non-printable characters")
-			}
-		}
-
-		return decodedStr, nil
+	cipherData, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		return value, fmt.Errorf("invalid encrypted value")
 	}
 
-	return value, fmt.Errorf("not a valid value")
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return value, fmt.Errorf("decryption failed")
+	}
+
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return value, fmt.Errorf("decryption failed")
+	}
+
+	nonceSize := gcm.NonceSize()
+	if len(cipherData) < nonceSize {
+		return value, fmt.Errorf("invalid encrypted value")
+	}
+
+	nonce, ciphertext := cipherData[:nonceSize], cipherData[nonceSize:]
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return value, fmt.Errorf("decryption failed")
+	}
+
+	return string(plaintext), nil
 }
+
 // END
