@@ -179,12 +179,18 @@ export const MenuItem = React.memo(
           {icon && <Icon name={icon} className={styles.icon} aria-hidden />}
           <span className={styles.ellipsis}>{label}</span>
           <div className={cx(styles.rightWrapper, { [styles.withShortcut]: hasShortcut })}>
-            {hasShortcut && (
-              <div className={styles.shortcut}>
-                <Icon name="keyboard" title={t('grafana-ui.menu-item.keyboard-shortcut-label', 'Keyboard shortcut')} />
-                {shortcut}
-              </div>
-            )}
+            {/* 
+            // @Copyright 2026 BMC Software, Inc.
+            // Date - 02/16/2026
+            // Removed keyboard shortcut Icon from menuitem
+              {hasShortcut && (
+                <div className={styles.shortcut}>
+                  <Icon name="keyboard" title={t('grafana-ui.menu-item.keyboard-shortcut-label', 'Keyboard shortcut')} />
+                  {shortcut}
+                </div>
+              )}
+            // END
+            */}
             {hasSubMenu && (
               <SubMenu
                 items={childItems}

@@ -104,15 +104,21 @@ export class RefreshPicker extends PureComponent<Props> {
 
     return (
       <ButtonGroup className="refresh-picker">
+        {/* 
+          // @Copyright 2026 BMC Software, Inc.
+          // Date - 02/16/2026
+          // Added custom refresh tooltip 
+        */}
         <ToolbarButton
           aria-label={text}
-          tooltip={tooltip}
+          tooltip={"Refresh"}
           onClick={onRefresh}
           variant={variant}
           icon={isLoading ? 'spinner' : 'sync'}
           style={width ? { width } : undefined}
           data-testid={selectors.components.RefreshPicker.runButtonV2}
         >
+        {/* // END */}
           {text}
         </ToolbarButton>
         {!noIntervalPicker && (
