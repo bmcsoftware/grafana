@@ -33,7 +33,7 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
       <NativeScrollbar onSetScrollRef={dashboard.onSetScrollRef}>
         <div className={styles.canvasWrappperOld}>{/* 
             // @Copyright 2026 BMC Software, Inc.
-            // Date - 02/16/2026
+            // Date - 03/31/2026
             // Hide Unused toolbar actions.
             <NavToolbarActions dashboard={dashboard} />
             // END
@@ -41,7 +41,7 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
           <div className={styles.controlsWrapperSticky}>{controls}</div>
           {/* 
             // @Copyright 2026 BMC Software, Inc.
-            // Date - 02/16/2026
+            // Date - 03/31/2026
             // Add Sticky header. */}
           <div className={styles.stickyHeader}></div>
           {/* // END */}
@@ -111,7 +111,7 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
           <div className={cx(!isEditing && styles.controlsWrapperSticky)}>{controls}</div>
           {/* 
             // @Copyright 2026 BMC Software, Inc.
-            // Date - 02/16/2026
+            // Date - 03/31/2026
             // Add Sticky header. 
           */}
           <div className={styles.stickyHeader}></div>
@@ -166,7 +166,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       overflow: 'unset',
     }),
     // @Copyright 2026 BMC Software, Inc.
-    // Date - 02/16/2026
+    // Date - 03/31/2026
     // Added a sticky header.
     stickyHeader: css({
       position: 'fixed',
@@ -225,7 +225,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
         position: 'sticky',
         zIndex: theme.zIndex.activePanel,
         // @Copyright 2026 BMC Software, Inc.
-        // Date - 02/16/2026
+        // Date - 03/31/2026
         // Adjusted dashboard controls positioning.
         top: 0,
         // END

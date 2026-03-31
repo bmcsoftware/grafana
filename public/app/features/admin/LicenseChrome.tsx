@@ -4,7 +4,7 @@ import * as React from 'react';
 import { GrafanaTheme2 } from '@grafana/data';
 import { useStyles2, useTheme2 } from '@grafana/ui';
 // @Copyright 2026 BMC Software, Inc.
-// Date - 02/16/2026
+// Date - 03/31/2026
 // Imported bmc dashboard icon
 import dashboardIconSvg from 'img/dashboard_icon.svg';
 // END
@@ -64,7 +64,7 @@ export function LicenseChrome({ header, editionNotice, subheader, children }: Pr
         >
           <img
             // @Copyright 2026 BMC Software, Inc.
-            // Date - 02/16/2026
+            // Date - 03/31/2026
             // Replaced with bmc icon
               src={dashboardIconSvg}
               alt="Dashboard"

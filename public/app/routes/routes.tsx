@@ -11,7 +11,7 @@ import { ROUTES as CONNECTIONS_ROUTES } from 'app/features/connections/constants
 
 /*
  # @Copyright 2026 BMC Software, Inc.
- # Date - 02/16/2026
+ # Date - 03/31/2026
  # Commented unused imports
 */
 // import { NavLandingPage } from 'app/core/components/NavLandingPage/NavLandingPage';
@@ -36,7 +36,7 @@ const isDevEnv = config.buildInfo.env === 'development';
 export const extraRoutes: RouteDescriptor[] = [];
 
 // @Copyright 2026 BMC Software, Inc.
-// Date - 02/16/2026
+// Date - 03/31/2026
 // Removed/commented all the routes which are not required
 export function getAppRoutes(): RouteDescriptor[] {
   return [

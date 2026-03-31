@@ -237,7 +237,7 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
     }
 
     // @Copyright 2026 BMC Software, Inc.
-    // Date - 02/16/2026
+    // Date - 03/31/2026
     // Remove Key bindings.
     // let clearKeyBindings = () => {};
     // if (!config.publicDashboardAccessToken) {
