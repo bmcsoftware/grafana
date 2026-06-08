@@ -1,6 +1,10 @@
 import { EchoBackend, EchoEvent, EchoEventType } from '@grafana/runtime';
 
-import { backendSrv } from '../../backend_srv';
+// @Copyright 2026 BMC Software, Inc.
+// Date - 03/31/2026
+// Commented unsued code
+// import { backendSrv } from '../../backend_srv';
+// END
 
 export interface PerformanceEventPayload {
   name: string;
@@ -31,18 +35,21 @@ export class PerformanceBackend implements EchoBackend<PerformanceEvent, Perform
     if (this.buffer.length === 0) {
       return;
     }
-
-    backendSrv
-      .post(
-        '/api/frontend-metrics',
-        {
-          events: this.buffer,
-        },
-        { showErrorAlert: false }
-      )
-      .catch(() => {
-        // Just swallow this error - it's non-critical
-      });
+    // @Copyright 2026 BMC Software, Inc.
+    // Date - 03/31/2026
+    // Stopped metrics API call
+    // backendSrv
+    //   .post(
+    //     '/api/frontend-metrics',
+    //     {
+    //       events: this.buffer,
+    //     },
+    //     { showErrorAlert: false }
+    //   )
+    //   .catch(() => {
+    //     // Just swallow this error - it's non-critical
+    //   });
+    // END
 
     this.buffer = [];
   };

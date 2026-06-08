@@ -5,15 +5,22 @@ import { colorManipulator } from '@grafana/data';
 import { useTheme2 } from '@grafana/ui';
 import g8LoginDarkSvg from 'img/g8_login_dark.svg';
 import g8LoginLightSvg from 'img/g8_login_light.svg';
-import grafanaIconSvg from 'img/grafana_icon.svg';
-
+// @Copyright 2026 BMC Software, Inc.
+// Date - 03/31/2026
+// Updated the import
+import dashboardIconSvg from 'img/dashboard_icon.svg';
+// END
 export interface BrandComponentProps {
   className?: string;
   children?: JSX.Element | JSX.Element[];
 }
 
 export const LoginLogo: FC<BrandComponentProps & { logo?: string }> = ({ className, logo }) => {
-  return <img className={className} src={`${logo ? logo : grafanaIconSvg}`} alt="Grafana" />;
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 03/31/2026
+  // Replaced with bmc icon
+  return <img className={className} src={`${logo ? logo : dashboardIconSvg}`} alt="Dashboard" />;
+  // END
 };
 
 const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
@@ -46,7 +53,11 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 };
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
-  return <img className={className} src={grafanaIconSvg} alt="Grafana" />;
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 03/31/2026
+  // Replaced with bmc icon
+  return <img className={className} src={dashboardIconSvg} alt="Dashboard" />;
+  // END
 };
 
 const LoginBoxBackground = () => {
@@ -62,8 +73,12 @@ export class Branding {
   static LoginBackground = LoginBackground;
   static MenuLogo = MenuLogo;
   static LoginBoxBackground = LoginBoxBackground;
-  static AppTitle = 'Grafana';
-  static LoginTitle = 'Welcome to Grafana';
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 03/31/2026
+  // Replaced text Grafana with Dashboard
+  static AppTitle = 'AMI Dashboard';
+  static LoginTitle = 'Welcome to AMI Dashboard';
+  // END
   static HideEdition = false;
   static GetLoginSubTitle = (): null | string => {
     return null;

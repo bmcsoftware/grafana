@@ -2,7 +2,11 @@ import { DataSourcePluginMeta, PluginType } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { featureEnabled } from '@grafana/runtime';
 import { DataSourcePluginCategory } from 'app/types/datasources';
-import grafanaIconSvg from 'img/grafana_icon.svg';
+// @Copyright 2026 BMC Software, Inc.
+// Date - 03/31/2026
+// updated import for bmc icon
+import dashboardIconSvg from 'img/dashboard_icon.svg';
+// END
 import adobeAnalyticsSvg from 'img/plugins/adobe-analytics.svg';
 import appdynamicsSvg from 'img/plugins/appdynamics.svg';
 import atlassianStatuspageSvg from 'img/plugins/atlassian-statuspage.svg';
@@ -423,7 +427,11 @@ function getGrafanaCloudPhantomPlugin(): DataSourcePluginMeta {
         'datasources.get-grafana-cloud-phantom-plugin.description.hosted-graphite-prometheus-and-loki',
         'Hosted Graphite, Prometheus, and Loki'
       ),
-      logos: { small: grafanaIconSvg, large: grafanaIconSvg },
+      // @Copyright 2026 BMC Software, Inc.
+      // Date - 03/31/2026
+      // Replaced with bmc icon
+      logos: { small: dashboardIconSvg, large: dashboardIconSvg },
+      // END,
       author: { name: 'Grafana Labs' },
       links: [
         {
