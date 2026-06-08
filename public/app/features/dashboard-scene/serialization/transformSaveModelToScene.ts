@@ -361,7 +361,7 @@ export function createDashboardSceneFromDashboardModel(oldModel: DashboardModel,
       $data: new DashboardDataLayerSet({ annotationLayers, alertStatesLayer }),
       controls: new DashboardControls({
         // @Copyright 2026 BMC Software, Inc.
-        // Date - 03/31/2026
+        // Date - 06/08/2026
         // Adjusted time and refresh picker styling.
         timePicker: new SceneTimePicker({
           quickRanges: oldModel.timepicker.quick_ranges,
@@ -389,7 +389,7 @@ export function buildGridItemForPanel(panel: PanelModel): DashboardGridItem {
     ? {
         variableName: panel.repeat,
         // @Copyright 2026 BMC Software, Inc.
-        // Date - 03/31/2026
+        // Date - 06/08/2026
         // Changed panel repeat direction to horizontal.
         repeatDirection: 'h',
         // END

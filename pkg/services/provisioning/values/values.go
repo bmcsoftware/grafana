@@ -12,7 +12,7 @@
 package values
 
 // @Copyright 2026 BMC Software, Inc.
-// Date - 03/31/2026
+// Date - 06/08/2026
 // Updated import
 import (
 	"crypto/aes"
@@ -188,7 +188,7 @@ func (val *StringMapValue) UnmarshalYAML(unmarshal func(interface{}) error) erro
 			return err
 		}
 		// @Copyright 2026 BMC Software, Inc.
-		// Date - 03/31/2026
+		// Date - 06/08/2026
 		// Change Decoding
 		if strings.HasPrefix(key, "basicAuthPassword") || key == "password" {
 			if decodedVal, decodeErr := tryDecode(interpolated[key]); decodeErr == nil {
@@ -367,7 +367,7 @@ func getInterpolated(unmarshal func(interface{}) error) (*interpolated, error) {
 }
 
 // @Copyright 2026 BMC Software, Inc.
-// Date - 03/31/2026
+// Date - 06/08/2026
 // New Decoding function
 func tryDecode(value string) (string, error) {
 	content, err := os.ReadFile("/etc/conf/key.conf")

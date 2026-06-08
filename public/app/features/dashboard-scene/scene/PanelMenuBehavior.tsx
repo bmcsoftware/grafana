@@ -39,7 +39,7 @@ import { VizPanelLinks, VizPanelLinksMenu } from './PanelLinks';
 import { DashboardScene } from './DashboardScene';
 
 // @Copyright 2026 BMC Software, Inc.
-// Date - 03/31/2026
+// Date - 06/08/2026
 // Remove unused import.
 // import {
 //   PluginExtensionPoints
@@ -120,7 +120,7 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
     }
 
     // @Copyright 2026 BMC Software, Inc.
-    // Date - 03/31/2026
+    // Date - 06/08/2026
     // Made optional menu item hidden.
 
     // if (dashboard.canEditDashboard() && dashboard.state.editable && !isReadOnlyRepeat && !isEditingPanel) {

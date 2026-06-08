@@ -40,7 +40,7 @@ export function AppChrome({ children }: Props) {
   const scopes = useScopes();
 
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 03/31/2026
+  // Date - 06/08/2026
   // Always hide docked menu
   const menuDockedAndOpen = false;
   // END
@@ -97,7 +97,7 @@ export function AppChrome({ children }: Props) {
     >
     {/*
       // @Copyright 2026 BMC Software, Inc.
-      // Date - 03/31/2026
+      // Date - 06/08/2026
       // Commented Grafana Header
       {!state.chromeless && (
         <>
@@ -202,7 +202,7 @@ const getStyles = (theme: GrafanaTheme2, headerHeight: number) => {
       display: 'flex',
       flexDirection: 'column',
       // @Copyright 2026 BMC Software, Inc.
-      // Date - 03/31/2026
+      // Date - 06/08/2026
       // Adjusted padding
       paddingTop: 0,
       // END

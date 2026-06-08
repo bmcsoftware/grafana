@@ -6,7 +6,7 @@ import { useTheme2 } from '@grafana/ui';
 import g8LoginDarkSvg from 'img/g8_login_dark.svg';
 import g8LoginLightSvg from 'img/g8_login_light.svg';
 // @Copyright 2026 BMC Software, Inc.
-// Date - 03/31/2026
+// Date - 06/08/2026
 // Updated the import
 import dashboardIconSvg from 'img/dashboard_icon.svg';
 // END
@@ -17,7 +17,7 @@ export interface BrandComponentProps {
 
 export const LoginLogo: FC<BrandComponentProps & { logo?: string }> = ({ className, logo }) => {
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 03/31/2026
+  // Date - 06/08/2026
   // Replaced with bmc icon
   return <img className={className} src={`${logo ? logo : dashboardIconSvg}`} alt="Dashboard" />;
   // END
@@ -54,7 +54,7 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 03/31/2026
+  // Date - 06/08/2026
   // Replaced with bmc icon
   return <img className={className} src={dashboardIconSvg} alt="Dashboard" />;
   // END
@@ -74,7 +74,7 @@ export class Branding {
   static MenuLogo = MenuLogo;
   static LoginBoxBackground = LoginBoxBackground;
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 03/31/2026
+  // Date - 06/08/2026
   // Replaced text Grafana with Dashboard
   static AppTitle = 'AMI Dashboard';
   static LoginTitle = 'Welcome to AMI Dashboard';

@@ -1,4 +1,4 @@
-# **_Change details in Grafana v12.2.8_**
+# **_Change details in Grafana v12.2.9_**
 
 # **_Rebranding:_**
 

@@ -90,7 +90,7 @@ export const VizLegendListItem = <T = unknown,>({
       >
         {/*  
           // @Copyright 2026 BMC Software, Inc.
-          // Date - 03/31/2026
+          // Date - 06/08/2026
           // Formatted the panel legend 
         */}
         {(item.label.startsWith('"') && item.label.endsWith('"')) ? item.label.substring(1, item.label.length - 1) : item.label}
