@@ -360,15 +360,21 @@ export function createDashboardSceneFromDashboardModel(oldModel: DashboardModel,
       $behaviors: behaviorList,
       $data: new DashboardDataLayerSet({ annotationLayers, alertStatesLayer }),
       controls: new DashboardControls({
+        // @Copyright 2026 BMC Software, Inc.
+        // Date - 06/08/2026
+        // Adjusted time and refresh picker styling.
         timePicker: new SceneTimePicker({
           quickRanges: oldModel.timepicker.quick_ranges,
           defaultQuickRanges: config.quickRanges,
+          isOnCanvas: false
         }),
         refreshPicker: new SceneRefreshPicker({
           refresh: oldModel.refresh,
           intervals: oldModel.timepicker.refresh_intervals,
-          withText: true,
+          withText: false,
+          isOnCanvas: false
         }),
+        // END
         hideTimeControls: oldModel.timepicker.hidden,
       }),
     },
@@ -382,7 +388,11 @@ export function buildGridItemForPanel(panel: PanelModel): DashboardGridItem {
   const repeatOptions: Partial<{ variableName: string; repeatDirection: RepeatDirection }> = panel.repeat
     ? {
         variableName: panel.repeat,
-        repeatDirection: panel.repeatDirection === 'v' ? 'v' : 'h',
+        // @Copyright 2026 BMC Software, Inc.
+        // Date - 06/08/2026
+        // Changed panel repeat direction to horizontal.
+        repeatDirection: 'h',
+        // END
       }
     : {};
 
