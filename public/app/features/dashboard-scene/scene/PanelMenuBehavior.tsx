@@ -10,7 +10,7 @@ import {
 } from '@grafana/data';
 import { t } from '@grafana/i18n';
 // @Copyright 2026 BMC Software, Inc.
-// Date - 09/16/2025
+// Date - 06/08/2026
 // Removed unused import.
 import { locationService } from '@grafana/runtime';
 // END
@@ -29,7 +29,7 @@ import { PanelInspectDrawer } from '../inspect/PanelInspectDrawer';
 import { isRepeatCloneOrChildOf } from '../utils/clone';
 import { DashboardInteractions } from '../utils/interactions';
 // @Copyright 2026 BMC Software, Inc.
-// Date - 09/16/2025
+// Date - 06/08/2026
 // Updated import.
 import { tryGetExploreUrlForPanel } from '../utils/urlBuilders';
 import { getDashboardSceneFor, getPanelIdForVizPanel, getQueryRunnerFor } from '../utils/utils';
@@ -105,7 +105,7 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
     const isEditingPanel = Boolean(dashboard.state.editPanel);
     if (!isEditingPanel) {
       // @Copyright 2026 BMC Software, Inc.
-      // Date - 09/16/2025
+      // Date - 06/08/2026
       // Removed keyboard shortcut.
       items.push({
         text: t('panel.header-menu.view', `View`),

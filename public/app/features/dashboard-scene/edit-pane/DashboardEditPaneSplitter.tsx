@@ -193,7 +193,7 @@ function getStyles(theme: GrafanaTheme2, headerHeight: number) {
       boxSizing: 'border-box',
       flexDirection: 'column',
       // @Copyright 2026 BMC Software, Inc. 
-      // Date - 09/16/2025
+      // Date - 06/08/2026
       // Added a padding.
       padding: '5vh 16px',
       // END

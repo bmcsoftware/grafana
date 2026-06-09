@@ -23,7 +23,7 @@ import {
 } from '@grafana/scenes';
 import { Box, Stack, useStyles2 } from '@grafana/ui';
 // @Copyright 2026 BMC Software, Inc.
-// Date - 09/16/2025
+// Date - 06/08/2026
 // Added import for breadcrumbs.
 import { Breadcrumbs } from 'app/core/components/Breadcrumbs/Breadcrumbs';
 import { buildBreadcrumbs } from 'app/core/components/Breadcrumbs/utils';
@@ -133,7 +133,7 @@ export class DashboardControls extends SceneObjectBase<DashboardControlsState> {
   }
 
   // @Copyright 2026 BMC Software, Inc.
-  // Date - 09/16/2025
+  // Date - 06/08/2026
   // Added hideVariables method.
   public hideVariables(): boolean {
     const hasVariables = sceneGraph
@@ -269,7 +269,7 @@ function DataLayerControls({ dashboard }: { dashboard: DashboardScene }) {
 function getStyles(theme: GrafanaTheme2) {
   return {
     // @Copyright 2026 BMC Software, Inc.
-    // Date - 09/16/2025
+    // Date - 06/08/2026
     // Updated the css.
     controlContainer: css({
       display: 'flex',
@@ -299,7 +299,7 @@ function getStyles(theme: GrafanaTheme2) {
       },
     }),
         // @Copyright 2026 BMC Software, Inc.
-    // Date - 09/16/2025
+    // Date - 06/08/2026
     // Updated the breadcrumbs wrapper css.
     breadcrumbsWrapper: css({
       display: 'flex',
