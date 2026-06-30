@@ -39,7 +39,11 @@ export function AppChrome({ children }: Props) {
   const state = chrome.useState();
   const scopes = useScopes();
 
-  const menuDockedAndOpen = !state.chromeless && state.megaMenuDocked && state.megaMenuOpen;
+  // @Copyright 2026 BMC Software, Inc.
+  // Date - 06/08/2026
+  // Always hide docked menu
+  const menuDockedAndOpen = false;
+  // END
   const isScopesDashboardsOpen = Boolean(
     scopes?.state.enabled && scopes?.state.drawerOpened && !scopes?.state.readOnly
   );
@@ -91,6 +95,10 @@ export function AppChrome({ children }: Props) {
         'main-view--chrome-hidden': state.chromeless,
       })}
     >
+    {/*
+      // @Copyright 2026 BMC Software, Inc.
+      // Date - 06/08/2026
+      // Commented Grafana Header
       {!state.chromeless && (
         <>
           <LinkButton className={styles.skipLink} href="#pageContent">
@@ -113,6 +121,8 @@ export function AppChrome({ children }: Props) {
           </header>
         </>
       )}
+      // END
+    */}
       <div className={contentClass}>
         <div className={cx(styles.panes, { [styles.panesWithSidebar]: isExtensionSidebarOpen })}>
           {!state.chromeless && (
@@ -191,7 +201,11 @@ const getStyles = (theme: GrafanaTheme2, headerHeight: number) => {
       label: 'page-content',
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: headerHeight,
+      // @Copyright 2026 BMC Software, Inc.
+      // Date - 06/08/2026
+      // Adjusted padding
+      paddingTop: 0,
+      // END
       flexGrow: 1,
       height: 'auto',
     }),
